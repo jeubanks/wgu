@@ -132,7 +132,7 @@ Movie(ID PK AI, Title, Genre, RatingCode FK->Rating, ReleaseYear, Minutes, Gross
 The data includes edge cases on purpose, because that's where SQL answers most often go wrong:
 
 - an employee with no department, and a department with no employees
-- a movie whose attributes are all NULL, and a rating no movie uses
+- a movie that has only an ID and a Title (every other column is NULL), and a rating no movie uses
 - a horse with no lessons, a student with no lessons, and a lesson slot with no student
 
 ## Working through the exercises

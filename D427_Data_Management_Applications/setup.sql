@@ -101,7 +101,7 @@ INSERT INTO Horse (ID, RegisteredName, Breed, Height, BirthDate) VALUES
 INSERT INTO Student (ID, FirstName, LastName, Street, City, State, Zip, Phone, Email) VALUES
  (1, 'Rosie',  'Hewitt',   '1 Main St',      'Austin',      'TX', 78701, '5125550101', 'rosie@example.com'),
  (2, 'Jamal',  'Carter',   '22 Oak Ave',     'Round Rock',  'TX', 78664, '5125550102', 'jamal@example.com'),
- (3, 'Priya',  'Nair',     '300 Elm Blvd',   'Austin',      'TX', 78702, '5125550103', NULL),
+ (3, 'Priya',  'Nair',     '300 Elm Blvd',   'Austin',      'TX', 78702, NULL,         NULL),
  (4, 'Miguel', 'Santos',   '45 Pine Rd',     'San Marcos',  'TX', 78666, NULL,         'miguel@example.com'),
  (5, 'Hannah', 'Becker',   '9 Cedar Ln',     'Tulsa',       'OK', 74103, '9185550105', 'hannah@example.com'),
  (6, 'Liam',   'O''Brien', '77 Birch Ct',    'Austin',      'TX', 78704, '5125550106', 'liam@example.com'),

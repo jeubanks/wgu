@@ -1,7 +1,7 @@
 -- =====================================================================
 -- D427 practice : SOLUTIONS
 -- Sections 1-10 are meant to be worked in order against a fresh
--- `setup.sql` load (sections 7-9 change data/schema that later ones see).
+-- `setup.sql` load (sections 7-10 change data/schema that later ones see).
 -- Section 11 (mock assessment) starts from a FRESH setup.sql load again.
 -- There is usually more than one correct answer; these are one each.
 -- =====================================================================
@@ -72,7 +72,8 @@ SELECT FirstName, LastName, City, Phone FROM Student
 WHERE (City = 'Austin' OR City = 'Round Rock')
   AND Phone IS NOT NULL;
 -- AND binds tighter than OR. Drop the parentheses and you get
--- "Austin  OR  (Round Rock AND has phone)" - a different question.
+-- "Austin  OR  (Round Rock AND has phone)" - a different question: Priya (Austin,
+-- no phone) sneaks in, so you get 5 rows instead of 4.
 
 -- =====================================================================
 -- 3. Built-in functions
@@ -573,7 +574,7 @@ CREATE TABLE NF_Enrollment (StudentID INT, CourseID CHAR(6), Grade CHAR(2),
 SHOW TABLES LIKE 'NF\_%';
 
 -- =====================================================================
--- 11. Mock assessment  (start from a FRESH load:  SOURCE setup.sql  or re-run it)
+-- 11. Mock assessment  (start from a FRESH load:  SOURCE /work/setup.sql;  or re-run it)
 -- =====================================================================
 -- [11.1]
 CREATE TABLE Instructor (
