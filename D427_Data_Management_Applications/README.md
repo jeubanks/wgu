@@ -2,7 +2,9 @@
 
 Hands-on SQL practice for WGU **D427 Data Management – Applications**, run against a real MySQL 8.4 server in a container.
 
-85 exercises cover the D427 skills: querying, built-in functions, aggregation, joins, subqueries, inserting/updating/deleting data, creating and altering tables with constraints, views, indexes, and turning a design into tables. The final section is a 12-task mock assessment written in the style of the OA's lab items (Horse / Student / LessonSchedule).
+136 exercises cover the D427 skills: querying, built-in functions, aggregation, joins, subqueries, inserting/updating/deleting data, creating and altering tables with constraints, views, indexes, and turning a design into tables.
+
+Sections 11–13 are built from the two D427 practice tests and the D427 Challenge. They cover writing tables from the OA's column descriptions, the OA's join wording ("if available", "regardless of"), and a multiple-choice concepts check. The final section is a 12-task mock assessment written in the style of the OA's lab items (Horse / Student / LessonSchedule).
 
 ## What's in this folder
 
@@ -75,7 +77,7 @@ SHOW TABLES;
 SELECT COUNT(*) FROM Employee;   -- should return 15
 ```
 
-You should see seven tables: `Department`, `Employee`, `Horse`, `LessonSchedule`, `Movie`, `Rating`, `Student`.
+You should see thirteen tables: `Book`, `Compensation`, `Department`, `Employee`, `Horse`, `LessonSchedule`, `Movie`, `Passport`, `Rating`, `Student`, `student_grades`, `Visa`, `YearSales`.
 
 ## Day-to-day use
 
@@ -112,7 +114,7 @@ Every command above works with `podman` in place of `docker`. On SELinux systems
 
 ## The practice database
 
-`setup.sql` creates three small schemas in one database:
+`setup.sql` creates three small schemas in one database, plus six drill tables for Section 12:
 
 ```
 Department(DeptID PK, DeptName UNIQUE, Budget, Location)
@@ -127,6 +129,13 @@ LessonSchedule(HorseID FK->Horse ON DELETE CASCADE,
 
 Rating(RatingCode PK, RatingDescription)
 Movie(ID PK AI, Title, Genre, RatingCode FK->Rating, ReleaseYear, Minutes, Gross)
+
+YearSales(Year PK, TotalSales, Releases)
+Book(ID PK AI, Title, Genre, Year, Cost)
+Passport(PassportID PK, PassportHolderName, Nationality, IssueDate, ExpiryDate)
+Visa(VisaID PK, PassportID FK->Passport, Country, VisaType, IssueDate, ExpiryDate)
+Compensation(ID PK, Name, Salary, Bonus)
+student_grades(studentID PK, lastName, grade)
 ```
 
 The data includes edge cases on purpose, because that's where SQL answers most often go wrong:
@@ -134,6 +143,7 @@ The data includes edge cases on purpose, because that's where SQL answers most o
 - an employee with no department, and a department with no employees
 - a movie that has only an ID and a Title (every other column is NULL), and a rating no movie uses
 - a horse with no lessons, a student with no lessons, and a lesson slot with no student
+- books whose year has no sales row and a sales year with no books, unassigned visas, a passport with no visas, and NULL salaries and bonuses
 
 ## Working through the exercises
 
@@ -149,14 +159,18 @@ The data includes edge cases on purpose, because that's where SQL answers most o
 | 8 | CREATE / ALTER / DROP TABLE, constraints | Yes |
 | 9 | Views and indexes | Yes |
 | 10 | Design and normalization to tables | Yes |
-| 11 | Mock assessment (12 tasks, about 60 minutes) | Yes |
+| 11 | Writing tables from OA-style column descriptions; ADD PRIMARY KEY / FOREIGN KEY / CHECK; ON DELETE RESTRICT; unique indexes; ALTER VIEW | Yes (in `d427_drills`) |
+| 12 | OA-style queries: "if available" / "regardless of" joins, GROUP BY, row vs table subqueries, NULL traps | 12.20–12.22 only |
+| 13 | Concepts check: DDL/DML, data types, keys, FK actions, joins, views, indexes, ER modeling | No (no SQL) |
+| 14 | Mock assessment (12 tasks, about 60 minutes) | Yes |
 
 A few rules keep the expected row counts accurate:
 
 1. **Work sections 1–10 in order.** Sections 7–10 change data and schema, and later exercises assume the earlier ones were done.
-2. **Reload `setup.sql` before Section 11.** The mock assessment starts from fresh data.
-3. **If you get lost, reset.** Re-running `setup.sql` rebuilds everything from scratch. To pick up in the middle of Section 7–10, reset and then run the earlier solutions from `solutions.sql` to bring the data back to that point.
-4. **Check your row count before looking at the answer.** A wrong count usually means a NULL or join issue; the hint in the exercise often points at which one.
+2. **Sections 11–13 stand alone.** Do them whenever you like. Section 11 works in its own `d427_drills` database, and the tables Section 12 uses aren't touched by any other section.
+3. **Reload `setup.sql` before Section 14.** The mock assessment starts from fresh data.
+4. **If you get lost, reset.** Re-running `setup.sql` rebuilds everything from scratch. To pick up in the middle of Section 7–10, reset and then run the earlier solutions from `solutions.sql` to bring the data back to that point.
+5. **Check your row count before looking at the answer.** A wrong count usually means a NULL or join issue; the hint in the exercise often points at which one.
 
 Some exercises are meant to fail so you can read the error (for example, deleting a parent row that other rows still reference). In `solutions.sql` those statements are commented out with the expected error shown.
 

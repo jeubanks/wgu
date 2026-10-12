@@ -161,3 +161,109 @@ INSERT INTO Movie (ID, Title, Genre, RatingCode, ReleaseYear, Minutes, Gross) VA
  (10, 'Interstellar',           'Sci-Fi',    'PG-13', 2014, 169, 188020017),
  (11, 'The Godfather',          'Drama',     'R',     1972, 175, 134966411),
  (12, 'Untitled Indie Project', NULL,        NULL,    NULL,  NULL, NULL);
+
+-- ---------------------------------------------------------------------
+-- OA-style query drills (Section 12): Book / YearSales, Passport / Visa,
+-- Compensation, student_grades. Names and wording mirror the practice tests.
+-- ---------------------------------------------------------------------
+CREATE TABLE YearSales (
+  Year        SMALLINT PRIMARY KEY,
+  TotalSales  BIGINT UNSIGNED NOT NULL,
+  Releases    INT NOT NULL
+);
+
+CREATE TABLE Book (               -- deliberately no FK on Year: some books have no YearSales row
+  ID     INT AUTO_INCREMENT PRIMARY KEY,
+  Title  VARCHAR(60) NOT NULL,
+  Genre  VARCHAR(20),
+  Year   SMALLINT,
+  Cost   DECIMAL(6,2) CHECK (Cost >= 0)
+);
+
+INSERT INTO YearSales VALUES
+ (2018, 1200000, 40),
+ (2019, 1500000, 45),
+ (2020,  900000, 30),
+ (2021, 1750000, 52),
+ (2022, 2100000, 60),
+ (2023, 2400000, 70);   -- no books (outer-join practice)
+
+INSERT INTO Book (ID, Title, Genre, Year, Cost) VALUES
+ (1,  'The Joy Luck Club',          NULL,        1989,  14.99),   -- genre "No Data"; year not in YearSales
+ (2,  'Educated',                   'Memoir',    2018,  18.00),
+ (3,  'Becoming',                   'Memoir',    2018,  32.50),
+ (4,  'Where the Crawdads Sing',    'Fiction',   2018,  26.00),
+ (5,  'Normal People',              'Fiction',   2019,  16.95),
+ (6,  'The Testaments',             'Fiction',   2019,  28.95),
+ (7,  'Atomic Habits',              'Self-Help', 2018,  27.00),
+ (8,  'The Midnight Library',       'Fiction',   2020,  26.00),
+ (9,  'Project Hail Mary',          'Sci-Fi',    2021,  28.99),
+ (10, 'Klara and the Sun',          'Sci-Fi',    2021,  28.00),
+ (11, 'Tomorrow, and Tomorrow',     'Fiction',   2022,  28.00),
+ (12, 'An Atlas of Rare Maps',      'Reference', 2017, 125.00),   -- year not in YearSales
+ (13, 'Lessons in Chemistry',       'Fiction',   2022,  29.00);
+
+CREATE TABLE Passport (
+  PassportID          INT PRIMARY KEY,
+  PassportHolderName  VARCHAR(100) NOT NULL,
+  Nationality         VARCHAR(50),
+  IssueDate           DATE,
+  ExpiryDate          DATE
+);
+
+CREATE TABLE Visa (
+  VisaID      INT PRIMARY KEY,
+  PassportID  INT,                -- NULL = visa not yet assigned to a passport
+  Country     VARCHAR(50) NOT NULL,
+  VisaType    VARCHAR(50) NOT NULL,
+  IssueDate   DATE NOT NULL,
+  ExpiryDate  DATE,
+  FOREIGN KEY (PassportID) REFERENCES Passport(PassportID)
+);
+
+INSERT INTO Passport VALUES
+ (1, 'Amara Okafor',   'Nigeria', '2019-04-12', '2029-04-11'),
+ (2, 'Lucas Moreau',   'France',  '2020-08-01', '2030-07-31'),
+ (3, 'Mei Tanaka',     'Japan',   '2018-01-20', '2028-01-19'),
+ (4, 'Diego Alvarez',  'Mexico',  '2021-11-05', '2031-11-04'),
+ (5, 'Sara Lindqvist', 'Sweden',  '2022-06-30', '2032-06-29');   -- no visas
+
+INSERT INTO Visa VALUES
+ (101, 1,    'United States',  'Tourist', '2023-02-14', '2024-02-13'),
+ (102, 1,    'United Kingdom', 'Student', '2022-09-01', '2025-08-31'),
+ (103, 2,    'Canada',         'Work',    '2023-05-10', '2026-05-09'),
+ (104, 3,    'Australia',      'Tourist', '2021-12-01', '2022-11-30'),
+ (105, 3,    'United States',  'Work',    '2023-07-22', '2026-07-21'),
+ (106, 4,    'Spain',          'Student', '2024-01-15', '2025-01-14'),
+ (107, NULL, 'Brazil',         'Tourist', '2023-10-03', '2024-10-02'),   -- unassigned
+ (108, NULL, 'Germany',        'Work',    '2024-03-18', '2027-03-17');   -- unassigned
+
+CREATE TABLE Compensation (
+  ID      INT PRIMARY KEY,
+  Name    VARCHAR(40) NOT NULL,
+  Salary  DECIMAL(10,2),
+  Bonus   DECIMAL(10,2)
+);
+
+INSERT INTO Compensation VALUES
+ (2538, 'Lisa Ellison',    115000, NULL),
+ (5348, 'Sam Snead',        35000, 35000),
+ (6381, 'Maria Rodriguez',  95000,  3000),
+ (7104, 'Ravi Patel',       52000, NULL),
+ (8820, 'Jiho Chen',         NULL, NULL);
+
+CREATE TABLE student_grades (
+  studentID  CHAR(5) PRIMARY KEY,   -- CHAR, not INT: '00878' keeps its leading zeros
+  lastName   VARCHAR(30) NOT NULL,
+  grade      CHAR(1) NOT NULL
+);
+
+INSERT INTO student_grades VALUES
+ ('44444', 'Jones',     'B'),
+ ('24352', 'Chang',     'A'),
+ ('98724', 'Wu',        'B'),
+ ('98789', 'Chatham',   'A'),
+ ('98887', 'Fredricks', 'C'),
+ ('00878', 'Moore',     'A'),
+ ('22078', 'Prasad',    'C'),
+ ('79692', 'Perez',     'A');

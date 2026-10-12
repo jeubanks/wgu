@@ -2,7 +2,10 @@
 -- D427 practice : SOLUTIONS
 -- Sections 1-10 are meant to be worked in order against a fresh
 -- `setup.sql` load (sections 7-10 change data/schema that later ones see).
--- Section 11 (mock assessment) starts from a FRESH setup.sql load again.
+-- Sections 11-13 stand alone: 11 builds its own `d427_drills` database,
+-- 12 uses tables no other section touches, and 13 is answers only.
+-- Section 14 (mock assessment) starts from a FRESH setup.sql load again.
+-- Statements marked "Expected to FAIL" are commented out; the error they raise is shown.
 -- There is usually more than one correct answer; these are one each.
 -- =====================================================================
 USE d427;
@@ -402,8 +405,15 @@ ALTER TABLE Song MODIFY COLUMN Genre VARCHAR(30) DEFAULT 'Pop';
 -- MODIFY replaces the whole definition: omit DEFAULT here and the default is lost.
 
 -- [8.4]
-ALTER TABLE Song RENAME COLUMN DurationSec TO Seconds;
--- Older syntax that also works: ALTER TABLE Song CHANGE DurationSec Seconds INT;
+-- Expected to FAIL (the CHECK from 8.1 uses the column):
+--   ALTER TABLE Song RENAME COLUMN DurationSec TO Seconds;
+--   ERROR 3959: Check constraint 'Song_chk_1' uses column 'DurationSec', hence column cannot be dropped or renamed.
+-- Drop the check, rename, and re-add the check in ONE statement (SHOW CREATE TABLE Song gives the check's name):
+ALTER TABLE Song
+  DROP CHECK Song_chk_1,
+  RENAME COLUMN DurationSec TO Seconds,
+  ADD CONSTRAINT Song_chk_1 CHECK (Seconds > 0);
+-- Without a CHECK on the column, RENAME COLUMN alone (or CHANGE DurationSec Seconds INT) is enough.
 
 -- [8.5]
 ALTER TABLE Song DROP COLUMN Album;
@@ -574,9 +584,532 @@ CREATE TABLE NF_Enrollment (StudentID INT, CourseID CHAR(6), Grade CHAR(2),
 SHOW TABLES LIKE 'NF\_%';
 
 -- =====================================================================
--- 11. Mock assessment  (start from a FRESH load:  SOURCE /work/setup.sql;  or re-run it)
+-- 11. Writing tables from a specification (OA style)
+--     Runs in its own database so it can reuse the OA's table names.
 -- =====================================================================
+DROP DATABASE IF EXISTS d427_drills;
+CREATE DATABASE d427_drills;
+USE d427_drills;
+
 -- [11.1]
+-- "integer with range 0 to 65 thousand"            -> SMALLINT UNSIGNED (0..65,535)
+-- "3 significant digits and 1 decimal place"       -> DECIMAL(3,1)  (precision = total digits)
+CREATE TABLE Horse (
+  ID              SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  RegisteredName  VARCHAR(15) NOT NULL,
+  Breed           VARCHAR(20) CHECK (Breed IN ('Egyptian Arab', 'Holsteiner', 'Quarter Horse', 'Paint', 'Saddlebred')),
+  Height          DECIMAL(3,1) CHECK (Height >= 10.0 AND Height <= 20.0),
+  BirthDate       DATE CHECK (BirthDate >= '2015-01-01')
+);
+INSERT INTO Horse (RegisteredName, Breed, Height, BirthDate)
+VALUES ('Babe', 'Quarter Horse', 15.3, '2015-02-10');
+-- Expected to FAIL (Height out of range):
+--   INSERT INTO Horse (RegisteredName, Breed, Height, BirthDate) VALUES ('Goliath', 'Paint', 21.0, '2018-01-01');
+--   ERROR 3819: Check constraint 'Horse_chk_2' is violated.
+SELECT * FROM Horse;
+SHOW CREATE TABLE d427.Horse;
+
+-- [11.2]
+-- "integer with range 0 to 16 million" -> MEDIUMINT UNSIGNED (0..16,777,215)
+CREATE TABLE Student (
+  ID         SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  FirstName  VARCHAR(20) NOT NULL,
+  LastName   VARCHAR(30) NOT NULL,
+  Street     VARCHAR(50) NOT NULL,
+  City       VARCHAR(20) NOT NULL,
+  State      CHAR(2)     NOT NULL DEFAULT 'TX',
+  Zip        MEDIUMINT UNSIGNED NOT NULL,
+  Phone      CHAR(10)    NOT NULL,
+  Email      VARCHAR(30) UNIQUE
+);
+INSERT INTO Student (FirstName, LastName, Street, City, Zip, Phone, Email)
+VALUES ('Rosie', 'Hewitt', '1 Main St', 'Austin', 78701, '5125550101', 'rosie@example.com');
+SELECT ID, FirstName, State FROM Student;     -- State = 'TX' from the DEFAULT
+
+-- [11.3]
+CREATE TABLE LessonSchedule (
+  HorseID         SMALLINT UNSIGNED NOT NULL,
+  StudentID       SMALLINT UNSIGNED,            -- must allow NULL, or SET NULL is impossible
+  LessonDateTime  DATETIME NOT NULL,
+  PRIMARY KEY (HorseID, LessonDateTime),
+  FOREIGN KEY (HorseID)   REFERENCES Horse(ID)   ON DELETE CASCADE,
+  FOREIGN KEY (StudentID) REFERENCES Student(ID) ON DELETE SET NULL
+);
+-- FK columns must have the SAME type as the column they reference (SMALLINT UNSIGNED here).
+-- Declaring StudentID NOT NULL fails:
+--   ERROR 1830: Column 'StudentID' cannot be NOT NULL: needed in a foreign key constraint ... SET NULL
+
+-- [11.4]
+INSERT INTO LessonSchedule VALUES
+  (1, 1, '2026-03-01 09:00:00'),
+  (1, 1, '2026-03-02 09:00:00');
+DELETE FROM Student WHERE ID = 1;
+SELECT * FROM LessonSchedule;                 -- 2 rows, StudentID now NULL  (SET NULL)
+DELETE FROM Horse WHERE ID = 1;
+SELECT COUNT(*) AS LessonsLeft FROM LessonSchedule;   -- 0  (CASCADE)
+
+-- [11.5]
+-- "positive integer"                         -> INT UNSIGNED
+-- "up to $19,999.99 with 2 digits for cents" -> DECIMAL(7,2): 5 digits before the point + 2 after
+CREATE TABLE Customer (
+  CustomerID     INT UNSIGNED,
+  FirstName      VARCHAR(50),
+  MiddleInitial  CHAR(1),
+  LastName       VARCHAR(50),
+  DateOfBirth    DATE,
+  CreditLimit    DECIMAL(7,2) CHECK (CreditLimit >= 0 AND CreditLimit <= 19999.99)
+);
+-- The practice-test key writes  DECIMAL(7,2) UNSIGNED CHECK (CreditLimit <= 19999.99).
+-- That works too, but MySQL warns (1681) that UNSIGNED on DECIMAL is deprecated.
+-- "Do not add any additional constraints": no PRIMARY KEY, no NOT NULL - the spec didn't ask.
+DESCRIBE Customer;
+
+-- [11.6]
+CREATE TABLE Country (
+  ID                  TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,    -- 0..255
+  CountryName         VARCHAR(100),
+  Continent           VARCHAR(50) CHECK (Continent IN ('Africa', 'Asia', 'Europe', 'North America',
+                                                       'South America', 'Oceania', 'Antarctica')),
+  PopulationMillions  DECIMAL(5,1) CHECK (PopulationMillions BETWEEN 0.1 AND 9999.9),
+  IndependenceDate    DATE CHECK (IndependenceDate >= '1800-01-01')
+);
+INSERT INTO Country (CountryName, Continent, PopulationMillions, IndependenceDate) VALUES
+  ('Canada',  'North America', NULL,  '1867-07-01'),    -- "<No Value>" means NULL
+  ('Brazil',  'South America', 214.3, '1822-09-07'),
+  ('Germany', 'Europe',        83.2,  '1871-01-18');
+-- A CHECK only rejects FALSE. NULL makes the check UNKNOWN, which passes - so Canada is accepted.
+-- Expected to FAIL:
+--   INSERT INTO Country (CountryName, Continent) VALUES ('Atlantis', 'Atlantic');
+--   ERROR 3819: Check constraint 'Country_chk_1' is violated.
+SELECT * FROM Country;
+
+-- [11.7]
+CREATE TABLE Genre (
+  GenreCode         VARCHAR(5) PRIMARY KEY,
+  GenreDescription  VARCHAR(40)
+);
+CREATE TABLE Book (
+  Title      VARCHAR(30),
+  GenreCode  VARCHAR(5),
+  FOREIGN KEY (GenreCode) REFERENCES Genre(GenreCode)
+);
+INSERT INTO Genre VALUES ('FIC', 'Fiction');
+INSERT INTO Book VALUES ('Beloved', 'FIC');
+-- Expected to FAIL (no such parent row):
+--   INSERT INTO Book VALUES ('Dune', 'SCI');
+--   ERROR 1452: Cannot add or update a child row: a foreign key constraint fails
+SELECT * FROM Book;
+
+-- [11.8]
+CREATE TABLE Pet (
+  PetID      INT,
+  Name       VARCHAR(30),
+  Breed      VARCHAR(30),
+  Birthdate  DATE
+);
+INSERT INTO Pet VALUES (1, 'Rex', 'Beagle', '2020-05-01'),
+                       (2, 'Bella', 'Poodle', '2021-07-12'),
+                       (2, 'Milo', 'Pug', '2022-02-20');
+-- Expected to FAIL (two rows have PetID 2):
+--   ALTER TABLE Pet ADD PRIMARY KEY (PetID);
+--   ERROR 1062: Duplicate entry '2' for key 'Pet.PRIMARY'
+UPDATE Pet SET PetID = 3 WHERE Name = 'Milo';
+ALTER TABLE Pet ADD PRIMARY KEY (PetID);
+DESCRIBE Pet;                                 -- PetID: Key = PRI, Null = NO
+
+-- [11.9]
+CREATE TABLE Breed (
+  breedID           INT,
+  breedDescription  VARCHAR(40)
+);
+CREATE TABLE Dog (
+  dogID      INT PRIMARY KEY,
+  name       VARCHAR(30),
+  breedID    INT,
+  birthdate  DATE
+);
+-- Expected to FAIL (Breed.breedID is not a primary key or unique):
+--   ALTER TABLE Dog ADD FOREIGN KEY (breedID) REFERENCES Breed(breedID);
+--   ERROR 6125: Failed to add the foreign key constraint. Missing unique key ...
+ALTER TABLE Breed ADD PRIMARY KEY (breedID);
+ALTER TABLE Dog ADD CONSTRAINT fk_dog_breed FOREIGN KEY (breedID) REFERENCES Breed(breedID);
+SHOW CREATE TABLE Dog;
+
+-- [11.10]
+CREATE TABLE Department (
+  DeptID     INT PRIMARY KEY,
+  DeptName   VARCHAR(50),
+  ManagerID  INT
+);
+INSERT INTO Department VALUES (1, 'Sales', 2100), (2, 'Legal', 1500);
+-- Expected to FAIL (existing row 'Legal' already breaks the rule):
+--   ALTER TABLE Department ADD CONSTRAINT MgrIDCheck CHECK (ManagerID >= 2000);
+--   ERROR 3819: Check constraint 'MgrIDCheck' is violated.
+UPDATE Department SET ManagerID = 2500 WHERE DeptID = 2;
+ALTER TABLE Department ADD CONSTRAINT MgrIDCheck CHECK (ManagerID >= 2000);
+-- Expected to FAIL:
+--   INSERT INTO Department VALUES (3, 'Finance', 1999);
+--   ERROR 3819: Check constraint 'MgrIDCheck' is violated.
+ALTER TABLE Department DROP CHECK MgrIDCheck;   -- naming the constraint is what makes this easy
+INSERT INTO Department VALUES (3, 'Finance', 1999);
+SELECT * FROM Department;
+
+-- [11.11]
+CREATE TABLE Automobile (
+  ID     INT PRIMARY KEY,
+  Make   VARCHAR(30),
+  Model  VARCHAR(30),
+  Year   INT
+);
+-- DECIMAL(3,1) holds up to 99.9, so the CHECK is what enforces "less than 80".
+ALTER TABLE Automobile
+  ADD SafetyRating DECIMAL(3,1) CHECK (SafetyRating >= 0 AND SafetyRating < 80);
+-- "less than or equal to 7.9 with one decimal place" -> DECIMAL(2,1)
+ALTER TABLE Automobile
+  ADD EngineSize DECIMAL(2,1) CHECK (EngineSize >= 0 AND EngineSize <= 7.9);
+INSERT INTO Automobile VALUES (1, 'Toyota', 'Camry', 2024, 79.9, 2.5);
+-- Expected to FAIL:
+--   INSERT INTO Automobile VALUES (2, 'Honda', 'Civic', 2024, 80.0, 2.0);
+--   ERROR 3819: Check constraint 'Automobile_chk_1' is violated.
+SELECT * FROM Automobile;
+
+-- [11.12]
+CREATE TABLE Movie (
+  MovieID      INT NOT NULL,
+  MovieName    VARCHAR(25) NOT NULL,
+  ReleaseDate  DATE
+);
+-- a) Same name, longer type. MODIFY (or CHANGE with the name twice) replaces the WHOLE
+--    definition, so restate NOT NULL or the column silently becomes nullable.
+ALTER TABLE Movie MODIFY MovieName VARCHAR(50) NOT NULL;
+--    equivalent:  ALTER TABLE Movie CHANGE MovieName MovieName VARCHAR(50) NOT NULL;
+-- b) New name AND type: CHANGE old new definition
+ALTER TABLE Movie CHANGE MovieName CanadianMovieName VARCHAR(50) NOT NULL;
+DESCRIBE Movie;
+
+-- [11.13]
+CREATE TABLE Patient (
+  patient_id  INT PRIMARY KEY,
+  first_name  VARCHAR(20),
+  last_name   VARCHAR(30),
+  birthdate   DATE
+);
+CREATE TABLE Exam (
+  exam_id      INT AUTO_INCREMENT,
+  exam_date    DATE NOT NULL,
+  exam_reason  VARCHAR(250),
+  patient_id   INT NOT NULL,
+  PRIMARY KEY (exam_id),
+  CONSTRAINT fk_exam_patient FOREIGN KEY (patient_id) REFERENCES Patient(patient_id) ON DELETE RESTRICT
+);
+INSERT INTO Patient VALUES (1, 'Ana', 'Silva', '1990-03-14'), (2, 'Ben', 'Okoro', '1985-11-02');
+INSERT INTO Exam (exam_date, exam_reason, patient_id) VALUES ('2026-09-30', 'Annual physical', 1);
+-- Expected to FAIL (patient 1 still has an exam):
+--   DELETE FROM Patient WHERE patient_id = 1;
+--   ERROR 1451: Cannot delete or update a parent row: a foreign key constraint fails
+DELETE FROM Patient WHERE patient_id = 2;     -- no exams, so this one is allowed
+SELECT COUNT(*) AS Patients FROM Patient;     -- 1
+
+-- [11.14]
+-- There is no "ALTER FOREIGN KEY". Drop it by name, fix the column, add the new one.
+-- (The practice tests' "ON DELETE SET TO NULL" is not valid MySQL; it's ON DELETE SET NULL.)
+ALTER TABLE Exam DROP FOREIGN KEY fk_exam_patient;
+ALTER TABLE Exam MODIFY patient_id INT;       -- SET NULL needs a nullable column
+ALTER TABLE Exam ADD CONSTRAINT fk_exam_patient
+  FOREIGN KEY (patient_id) REFERENCES Patient(patient_id) ON DELETE SET NULL;
+DELETE FROM Patient WHERE patient_id = 1;
+SELECT * FROM Exam;                           -- 1 row, patient_id NULL
+
+-- [11.15]
+INSERT INTO Student (FirstName, LastName, Street, City, Zip, Phone, Email) VALUES
+  ('Jamal', 'Carter', '22 Oak Ave',  'Round Rock', 78664, '5125550102', 'jamal@example.com'),
+  ('Priya', 'Nair',   '300 Elm Blvd','Austin',     78702, '5125550103', 'priya@example.com');
+CREATE UNIQUE INDEX idx_student_phone ON Student (Phone);
+-- Expected to FAIL (Phone already used by Jamal):
+--   INSERT INTO Student (FirstName, LastName, Street, City, Zip, Phone)
+--   VALUES ('Noah', 'Kim', '12 Maple Dr', 'Round Rock', 78665, '5125550102');
+--   ERROR 1062: Duplicate entry '5125550102' for key 'Student.idx_student_phone'
+SHOW INDEX FROM Student;
+DROP INDEX idx_student_phone ON Student;      -- or: ALTER TABLE Student DROP INDEX idx_student_phone;
+-- A UNIQUE constraint and a unique index are the same thing in MySQL: Email's UNIQUE shows up
+-- in SHOW INDEX as an index named Email.
+
+-- [11.16]
+CREATE VIEW StudentContact AS
+SELECT FirstName, LastName, Phone
+FROM Student;
+ALTER VIEW StudentContact AS
+SELECT FirstName, LastName, Phone, Email
+FROM Student;
+-- CREATE OR REPLACE VIEW StudentContact AS ...  does the same thing (and works if the view doesn't exist yet).
+SELECT * FROM StudentContact ORDER BY LastName;    -- 2 rows, 4 columns
+DROP VIEW StudentContact;
+DROP VIEW IF EXISTS StudentContact;           -- no error the second time
+USE d427;
+
+-- =====================================================================
+-- 12. OA-style query drills  (Book / YearSales, Passport / Visa, Compensation, student_grades)
+-- =====================================================================
+-- [12.1]
+SELECT * FROM Book;
+
+-- [12.2]
+SELECT Title, Genre
+FROM Book
+WHERE Year = 2018;
+
+-- [12.3]
+SELECT Title
+FROM Book
+ORDER BY Title ASC;      -- ASC is the default; writing it costs nothing
+
+-- [12.4]
+SELECT Genre, COUNT(*) AS GenreCount
+FROM Book
+GROUP BY Genre
+ORDER BY Genre DESC;
+-- The NULL genre is its own group, and sorts LAST in DESC order.
+-- The answer key's  SELECT DISTINCT Genre, COUNT(*) ... GROUP BY Genre  also works:
+-- GROUP BY already makes each Genre unique, so DISTINCT does nothing.
+
+-- [12.5]
+SELECT COUNT(*) FROM Book WHERE Year = 2019;   -- a) 2
+SELECT SUM(Cost) FROM Book;                    -- b)
+SELECT MAX(Cost) FROM Book;                    -- c)
+
+-- [12.6]
+SELECT *
+FROM Book
+WHERE Cost > (SELECT AVG(Cost) FROM Book);   -- a) 1 row: one $125 book pulls the average up to 33.03
+
+SELECT *
+FROM Book
+WHERE Cost < (SELECT AVG(Cost) FROM Book);   -- b) 12 rows
+-- WHERE Cost > AVG(Cost) fails with ERROR 1111 (Invalid use of group function):
+-- WHERE is checked one row at a time, before any aggregate exists.
+
+-- [12.7]
+-- "Title (if available)"  -> Book is the optional side.  "for all YearSales" -> keep every YearSales row.
+SELECT YearSales.TotalSales, Book.Title
+FROM Book
+RIGHT JOIN YearSales ON Book.Year = YearSales.Year;
+
+-- [12.8]
+-- No "if available" / "regardless" wording, so the OA expects an INNER JOIN.
+SELECT Book.Title, YearSales.TotalSales
+FROM Book
+INNER JOIN YearSales ON Book.Year = YearSales.Year;
+-- The two books whose Year has no YearSales row (1989, 2017) drop out, and so does 2023.
+
+-- [12.9]
+-- "regardless of whether they had any sales" -> YearSales is optional; "for all Books" -> keep every book.
+SELECT Book.Title, YearSales.TotalSales
+FROM YearSales
+RIGHT JOIN Book ON YearSales.Year = Book.Year;
+-- Same thing written as a LEFT JOIN:  FROM Book LEFT JOIN YearSales ON ...
+
+-- [12.10]
+SELECT YearSales.TotalSales, Book.Title
+FROM YearSales
+LEFT JOIN Book ON Book.Year = YearSales.Year;
+-- A RIGHT JOIN B  ==  B LEFT JOIN A. The table whose rows you keep is the one the arrow points at.
+
+-- [12.11]
+SELECT ys.Year
+FROM YearSales ys
+LEFT JOIN Book b ON b.Year = ys.Year
+WHERE b.ID IS NULL;
+
+-- [12.12]
+SELECT Visa.VisaID, Passport.PassportHolderName
+FROM Visa
+LEFT JOIN Passport ON Visa.PassportID = Passport.PassportID
+ORDER BY Visa.VisaID;
+
+-- [12.13]
+SELECT Passport.PassportHolderName, Visa.VisaType
+FROM Passport
+INNER JOIN Visa ON Visa.PassportID = Passport.PassportID
+ORDER BY Passport.PassportHolderName;
+
+-- [12.14]
+SELECT VisaType, COUNT(*) AS VisaCount
+FROM Visa
+GROUP BY VisaType;
+
+-- [12.15]
+CREATE VIEW Visas_2023 AS
+SELECT *
+FROM Visa
+WHERE YEAR(IssueDate) = 2023;
+--  equivalent: WHERE IssueDate BETWEEN '2023-01-01' AND '2023-12-31'
+--  (the BETWEEN form can use an index on IssueDate; wrapping the column in YEAR() can't)
+SELECT * FROM Visas_2023;
+
+-- [12.16]
+SELECT p.PassportID, p.PassportHolderName
+FROM Passport p
+LEFT JOIN Visa v ON v.PassportID = p.PassportID
+WHERE v.VisaID IS NULL;
+
+-- [12.17]
+-- a) Row subquery: returns ONE row with SEVERAL columns, compared with a row constructor.
+SELECT Title, Genre, Year
+FROM Book
+WHERE (Genre, Year) = (SELECT Genre, Year FROM Book WHERE Title = 'Normal People');
+-- b) Table subquery: returns SEVERAL rows, used with IN / EXISTS (or in FROM as a derived table).
+SELECT Title, Year
+FROM Book
+WHERE Year IN (SELECT Year FROM YearSales WHERE Releases > 50);
+-- (A scalar subquery, like the AVG in 12.6, returns exactly one row and one column.)
+
+-- [12.18]
+SELECT grade, COUNT(*) AS gradeCount
+FROM student_grades
+GROUP BY grade;
+
+SELECT grade, COUNT(*) AS gradeCount
+FROM student_grades
+GROUP BY grade
+HAVING gradeCount > 2;     -- MySQL allows the alias here; HAVING COUNT(*) > 2 works everywhere
+
+-- [12.19]
+SELECT Name FROM Compensation WHERE Salary = Bonus;    -- Sam Snead only
+SELECT Name FROM Compensation WHERE Salary <> Bonus;   -- Maria Rodriguez only
+-- Any comparison with NULL is UNKNOWN, and WHERE keeps only TRUE rows. Lisa, Ravi and Jiho
+-- are in NEITHER result, even though "=" and "<>" look like they should cover everything.
+
+-- [12.20]
+UPDATE Compensation
+SET Bonus = COALESCE(Bonus, 0) + 2000
+WHERE Salary < 70000;
+-- Bonus + 2000 would leave Ravi's bonus NULL (NULL + 2000 = NULL).
+-- Jiho (NULL salary) isn't updated: NULL < 70000 is UNKNOWN.
+SELECT Name, Salary, Bonus FROM Compensation ORDER BY ID;
+
+-- [12.21]
+INSERT INTO Book (Title, Genre, Year, Cost)
+VALUES ('Circe', NULL, 2018, 15.00);      -- "No Data" is NULL, not the string 'No Data'
+SELECT * FROM Book WHERE Genre IS NULL;
+
+-- [12.22]
+UPDATE Book SET Cost = Cost + 1  WHERE Cost <= 50;
+UPDATE Book SET Cost = Cost + 10 WHERE Cost > 100;
+SELECT Title, Cost FROM Book ORDER BY Cost DESC LIMIT 3;
+
+-- =====================================================================
+-- 13. Concepts check  (answers only - nothing to run)
+-- =====================================================================
+-- [13.1]
+-- DDL: CREATE TABLE, ALTER TABLE, CREATE INDEX, DROP VIEW, CREATE VIEW, TRUNCATE TABLE
+-- DML: INSERT, UPDATE, DELETE
+-- SELECT: zyBooks files it under DQL (Data Query Language); many sources lump it in with DML.
+--         Either way it is never the DDL answer.
+-- Modifies existing data: UPDATE.   Every change to a table's structure: ALTER TABLE.
+-- Difference: (a) DDL defines the structure, DML manages the data inside it.
+
+-- [13.2]
+-- a) VARCHAR(56): variable length, sized to the data. CHAR pads every value to full length;
+--    TEXT is for long documents and can't have a normal DEFAULT.
+-- b) CHAR(2)                  c) DECIMAL(6,2)  (4 digits before the point + 2 after)
+-- d) TINYINT UNSIGNED  0..255 e) SMALLINT UNSIGNED  0..65,535
+-- f) MEDIUMINT UNSIGNED  0..16,777,215
+-- g) DATE                     h) DATETIME (TIMESTAMP also stores date + time)
+-- i) DECIMAL(3,1): precision 3 = total digits, scale 1 = digits after the point (max 99.9)
+-- j) CHAR(10). You never do math on a phone number, INT drops leading zeros, and
+--    5125550101 is bigger than INT's maximum (2,147,483,647).
+-- k) Decimal
+
+-- [13.3]
+-- Book: primary key isbn_number (unique per book); foreign key author_id (points to an Author table).
+-- Exam: primary key exam_id; foreign key patient_id.
+-- first_name / birthdate are not unique (two people can share them), so they can't identify a row.
+
+-- [13.4]
+-- a) CASCADE   -> the invoices are deleted too.
+-- b) SET NULL  -> the invoices stay, with customer_id set to NULL (the column must allow NULL).
+-- c) RESTRICT  -> the DELETE of the customer is refused (ERROR 1451); nothing changes.
+-- d) no clause -> same as RESTRICT (MySQL's default is NO ACTION, which InnoDB treats as RESTRICT).
+-- e) It's a syntax error (ERROR 1064). The correct form is ON DELETE SET NULL.
+--    (The practice test still expects answer "c", the SET NULL behavior.)
+-- f) UNIQUE on the FK column means each customer_id can appear only once: at most one invoice
+--    per customer, which makes it a one-to-one relationship.
+
+-- [13.5]
+-- a) Only rows in A and B that match the join condition.
+-- b) Every row in A, plus the matching rows of B (NULLs where B has no match).
+-- c) Every row in B, plus the matching rows of A.
+-- d) Every row from both tables. MySQL does NOT support FULL OUTER JOIN directly;
+--    emulate it with LEFT JOIN ... UNION ... RIGHT JOIN (exercise 5.12).
+-- e) 5 x 4 = 20 rows.
+
+-- [13.6]
+-- LEFT JOIN: every Creator is kept, and Alice, Dan, and Eva get NULL titles.
+-- The other joins: INNER 3 rows, RIGHT 5 (the two creator_id 10 posts get a NULL name),
+-- FULL 8 (the 6 LEFT rows + the 2 unmatched Content rows), CROSS 5 x 5 = 25.
+
+-- [13.7]
+-- c) is the outer join with a different table.
+-- a) An inner join written in the old comma style (the join condition is in WHERE).
+-- b) LEFT JOINs Book with ITSELF (a self-join), then comma-joins Author with no condition,
+--    which is a cross join. MySQL runs it, but it's not an outer join with Author.
+--    (The practice-test key calls it "invalid"; either way it's the wrong answer.)
+-- d) An inner join.
+-- Outer self-join: e). f) is an inner self-join; g) is an outer join with a different table.
+
+-- [13.8]
+-- a) LEFT   (Patient is on the left, and you keep all patients)
+-- b) RIGHT  (Model_Type is on the right, and you keep all model types)
+-- c) RIGHT  (YearSales is on the right; "if available" marks Book as the optional side)
+-- d) INNER  (no "if available" / "regardless" wording)
+
+-- [13.9]
+-- Materialized view: (b) it is stored, and (c) it must be refreshed when its base tables change.
+-- A regular view stores only its query. Each SELECT from it re-runs that query against the base tables.
+-- MySQL has no materialized views; you'd build one yourself as a table that you refresh.
+-- Each row of a GROUP BY view is a summary of many base rows, so there is no single row to update.
+
+-- [13.10]
+-- a) True   - every new row needs an index entry (so does every deleted row).
+-- b) False  - only changes to the indexed column touch that index.
+-- c) False  - reading the table (a join) never changes an index.
+-- d) True
+-- e) False  - a sparse index has one entry per block (page) of rows, and the table must be sorted
+--             on the indexed column.
+-- f) True   - every write also has to maintain each index.
+-- g) True
+-- h) False  - bitmap indexes suit columns with FEW distinct values (Gender, State, Yes/No).
+-- i) True   - with a high hit ratio, reading the table straight through beats jumping back and forth.
+-- j) False  - CREATE INDEX defines structure, so it's DDL.
+
+-- [13.11]
+-- a) 3 entities: Child, School District, School. "two" and "four" are counts, not entities.
+-- b) As written, one person has many skills (one-to-many from Person to Skill). If a skill can
+--    belong to many people, which is almost always true, it is many-to-many.
+--    Build M:N with a linking table: PersonSkill(PersonID FK, SkillID FK, PRIMARY KEY (PersonID, SkillID)).
+-- c) Treatment Plan. The patient is prescribed the plan; doctors and companies relate to the plan.
+-- d) manages: unary one-to-many.   married to: unary one-to-one.
+--    prerequisite: unary many-to-many.   enrolls: binary many-to-many.
+--    supplier/part/project: ternary (three entities in one relationship).
+-- e) entity -> table; attribute -> column; one-to-many -> a foreign key in the "many" table;
+--    many-to-many -> a new linking table with two foreign keys (usually its composite primary key).
+
+-- [13.12]
+-- a) All three return NULL (UNKNOWN). Use IS NULL / IS NOT NULL to test for NULL.
+-- b) COUNT(*) = 3, COUNT(column) = 2, SUM = 30, AVG = 15. AVG ignores the NULL; it does not count it as 0.
+-- c) COUNT(column)
+-- d) WHERE is checked one row at a time, before rows are grouped, so no aggregate exists yet.
+--    Use HAVING to filter groups, or a subquery to compare against a total (12.6).
+
+-- [13.13]
+-- a) subquery   b) ON   c) CONCAT()   d) DISTINCT   e) HAVING
+-- f) ascending (ASC)   g) first
+-- h) DELETE can be rolled back. TRUNCATE is DDL: it commits immediately and can't be undone.
+
+-- =====================================================================
+-- 14. Mock assessment  (start from a FRESH load:  SOURCE /work/setup.sql;  or re-run it)
+-- =====================================================================
+-- [14.1]
 CREATE TABLE Instructor (
   ID         SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   FirstName  VARCHAR(20) NOT NULL,
@@ -585,25 +1118,25 @@ CREATE TABLE Instructor (
   Rate       DECIMAL(5,2) NOT NULL DEFAULT 45.00 CHECK (Rate BETWEEN 20 AND 150)
 );
 
--- [11.2]
+-- [14.2]
 ALTER TABLE LessonSchedule
   ADD COLUMN InstructorID SMALLINT UNSIGNED,
   ADD FOREIGN KEY (InstructorID) REFERENCES Instructor(ID) ON DELETE SET NULL;
 
--- [11.3]
+-- [14.3]
 INSERT INTO Instructor (FirstName, LastName, HireDate) VALUES
   ('Dale', 'Evans',  '2020-04-01'),
   ('Roy',  'Rogers', '2022-09-15');
 INSERT INTO Instructor (FirstName, LastName, HireDate, Rate) VALUES
   ('Annie', 'Oakley', '2024-06-03', 60.00);
 
--- [11.4]
+-- [14.4]
 UPDATE LessonSchedule SET InstructorID = 1 WHERE HorseID IN (1, 2, 3);
 UPDATE LessonSchedule SET InstructorID = 2 WHERE HorseID IN (4, 5, 6);
 UPDATE LessonSchedule SET InstructorID = 3 WHERE InstructorID IS NULL;
 SELECT InstructorID, COUNT(*) AS Lessons FROM LessonSchedule GROUP BY InstructorID;
 
--- [11.5]
+-- [14.5]
 SELECT ls.LessonDateTime, h.RegisteredName,
        CONCAT(s.FirstName, ' ', s.LastName) AS Student,
        CONCAT(i.FirstName, ' ', i.LastName) AS Instructor
@@ -613,7 +1146,7 @@ JOIN Instructor i ON i.ID = ls.InstructorID
 LEFT JOIN Student s ON s.ID = ls.StudentID
 ORDER BY ls.LessonDateTime;
 
--- [11.6]
+-- [14.6]
 SELECT CONCAT(i.FirstName, ' ', i.LastName) AS Instructor,
        COUNT(ls.HorseID)          AS Lessons,
        COUNT(ls.HorseID) * i.Rate AS Earnings
@@ -622,7 +1155,7 @@ LEFT JOIN LessonSchedule ls ON ls.InstructorID = i.ID
 GROUP BY i.ID, i.FirstName, i.LastName, i.Rate
 ORDER BY Earnings DESC, Instructor;
 
--- [11.7]
+-- [14.7]
 SELECT Breed, COUNT(*) AS Horses, ROUND(AVG(Height), 2) AS AvgHeight
 FROM Horse
 WHERE Breed IS NOT NULL
@@ -630,13 +1163,13 @@ GROUP BY Breed
 HAVING COUNT(*) > 1
 ORDER BY AvgHeight DESC;
 
--- [11.8]
+-- [14.8]
 SELECT ID, RegisteredName, Height
 FROM Horse
 WHERE Height > (SELECT AVG(Height) FROM Horse)
 ORDER BY Height DESC;
 
--- [11.9]
+-- [14.9]
 CREATE VIEW AustinStudentLessons AS
 SELECT s.FirstName, s.LastName, ls.LessonDateTime, h.RegisteredName
 FROM Student s
@@ -645,17 +1178,17 @@ JOIN Horse h           ON h.ID = ls.HorseID
 WHERE s.City = 'Austin';
 SELECT * FROM AustinStudentLessons ORDER BY LessonDateTime;
 
--- [11.10]
+-- [14.10]
 CREATE INDEX idx_lesson_student ON LessonSchedule (StudentID);   -- speeds joins / lookups by student
 -- (MySQL InnoDB already auto-creates an index for each FK column; naming one explicitly is still valid.)
 
--- [11.11]
+-- [14.11]
 UPDATE Student
 SET Email = CONCAT(LOWER(FirstName), '.', LOWER(REPLACE(LastName, '''', '')), '@stable.example')
 WHERE Email IS NULL;
 SELECT ID, FirstName, LastName, Email FROM Student WHERE Email LIKE '%@stable.example';
 
--- [11.12]
+-- [14.12]
 DELETE FROM Horse
 WHERE ID NOT IN (SELECT HorseID FROM LessonSchedule);   -- HorseID is NOT NULL, so NOT IN is safe here
 SELECT COUNT(*) AS HorsesLeft FROM Horse;               -- 9
