@@ -12,7 +12,8 @@ Sections 11–13 are built from the two D427 practice tests and the D427 Challen
 |---|---|
 | `README.md` | This file: setup, how to work through the exercises, troubleshooting. |
 | `setup.sql` | Builds the `d427` database and loads the sample data. Re-run it any time to reset. |
-| `exercises.md` | The exercises. Each one lists the expected row count so you can check yourself. |
+| `exercises.md` | Start here: the table of contents, the order to work in, and a summary of the tables. |
+| `01-queries.md` … `05-mock-assessment.md` | The exercises, in five parts. Each one lists the expected row count so you can check yourself. Part 4 (concepts check) has its answers folded under each question. |
 | `solutions.sql` | One worked answer per exercise, labeled `-- [1.1]`, `-- [5.3]`, etc., with notes on the common traps. |
 
 ## Requirements
@@ -147,22 +148,24 @@ The data includes edge cases on purpose, because that's where SQL answers most o
 
 ## Working through the exercises
 
-| Section | Topic | Changes data? |
-|---|---|---|
-| 1 | SELECT basics, ORDER BY, LIMIT, aliases | No |
-| 2 | WHERE: BETWEEN, IN, LIKE, NULL, AND/OR | No |
-| 3 | Built-in string, date, and numeric functions; CASE | No |
-| 4 | Aggregates, GROUP BY, HAVING | No |
-| 5 | Joins: inner, outer, self, anti-join, full outer emulation | No |
-| 6 | Subqueries: scalar, IN, correlated, EXISTS, derived tables | No |
-| 7 | INSERT, UPDATE, DELETE, transactions, FK actions | Yes |
-| 8 | CREATE / ALTER / DROP TABLE, constraints | Yes |
-| 9 | Views and indexes | Yes |
-| 10 | Design and normalization to tables | Yes |
-| 11 | Writing tables from OA-style column descriptions; ADD PRIMARY KEY / FOREIGN KEY / CHECK; ON DELETE RESTRICT; unique indexes; ALTER VIEW | Yes (in `d427_drills`) |
-| 12 | OA-style queries: "if available" / "regardless of" joins, GROUP BY, row vs table subqueries, NULL traps | 12.20–12.22 only |
-| 13 | Concepts check: DDL/DML, data types, keys, FK actions, joins, views, indexes, ER modeling | No (no SQL) |
-| 14 | Mock assessment (12 tasks, about 60 minutes) | Yes |
+Start with [`exercises.md`](exercises.md), which links to every section.
+
+| Section | File | Topic | Changes data? |
+|---|---|---|---|
+| 1 | [`01-queries.md`](01-queries.md) | SELECT basics, ORDER BY, LIMIT, aliases | No |
+| 2 | [`01-queries.md`](01-queries.md) | WHERE: BETWEEN, IN, LIKE, NULL, AND/OR | No |
+| 3 | [`01-queries.md`](01-queries.md) | Built-in string, date, and numeric functions; CASE | No |
+| 4 | [`01-queries.md`](01-queries.md) | Aggregates, GROUP BY, HAVING | No |
+| 5 | [`01-queries.md`](01-queries.md) | Joins: inner, outer, self, anti-join, full outer emulation | No |
+| 6 | [`01-queries.md`](01-queries.md) | Subqueries: scalar, IN, correlated, EXISTS, derived tables | No |
+| 7 | [`02-changing-data.md`](02-changing-data.md) | INSERT, UPDATE, DELETE, transactions, FK actions | Yes |
+| 8 | [`02-changing-data.md`](02-changing-data.md) | CREATE / ALTER / DROP TABLE, constraints | Yes |
+| 9 | [`02-changing-data.md`](02-changing-data.md) | Views and indexes | Yes |
+| 10 | [`02-changing-data.md`](02-changing-data.md) | Design and normalization to tables | Yes |
+| 11 | [`03-assessment-drills.md`](03-assessment-drills.md) | Writing tables from OA-style column descriptions; ADD PRIMARY KEY / FOREIGN KEY / CHECK; ON DELETE RESTRICT; unique indexes; ALTER VIEW | Yes (in `d427_drills`) |
+| 12 | [`03-assessment-drills.md`](03-assessment-drills.md) | OA-style queries: "if available" / "regardless of" joins, GROUP BY, row vs table subqueries, NULL traps | 12.20–12.22 only |
+| 13 | [`04-concepts-check.md`](04-concepts-check.md) | Concepts check: DDL/DML, data types, keys, FK actions, joins, views, indexes, ER modeling | No (no SQL) |
+| 14 | [`05-mock-assessment.md`](05-mock-assessment.md) | Mock assessment (12 tasks, about 60 minutes) | Yes |
 
 A few rules keep the expected row counts accurate:
 
