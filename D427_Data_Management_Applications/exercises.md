@@ -54,6 +54,8 @@ The note in parentheses at the end of an exercise tells you how many rows your q
 
 Some exercises change data instead of returning rows. For those, the note in parentheses tells you what to check afterward.
 
+Under every exercise there is a folded **Solution** (or **Answer**). Click it to open it, but write your own answer first.
+
 ## The tables
 
 Here is a short summary of the main tables in the database. These short labels are used below:

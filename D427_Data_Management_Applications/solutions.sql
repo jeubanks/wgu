@@ -6,6 +6,8 @@
 -- 12 uses tables no other section touches, and 13 has no SQL (its answers are in 04-concepts-check.md).
 -- Section 14 (mock assessment) starts from a FRESH setup.sql load again.
 -- Statements marked "Expected to FAIL" are commented out; the error they raise is shown.
+-- This file is the source of truth for the folded Solution blocks in the
+-- 0N-*.md exercise files. After editing it, run:  python3 build_solutions.py
 -- There is usually more than one correct answer; these are one each.
 -- =====================================================================
 USE d427;

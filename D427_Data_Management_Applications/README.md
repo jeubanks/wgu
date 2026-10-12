@@ -15,6 +15,7 @@ Sections 11–13 are built from the two D427 practice tests and the D427 Challen
 | `exercises.md` | Start here: the table of contents, the order to work in, and a summary of the tables. |
 | `01-queries.md` … `05-mock-assessment.md` | The exercises, in five parts. Each one lists the expected row count so you can check yourself. Part 4 (concepts check) has its answers folded under each question. |
 | `solutions.sql` | One worked answer per exercise, labeled `-- [1.1]`, `-- [5.3]`, etc., with notes on the common traps. |
+| `build_solutions.py` | Copies each answer from `solutions.sql` into the exercise files as a folded **Solution** block. Run `python3 build_solutions.py` after changing `solutions.sql`. |
 
 ## Requirements
 

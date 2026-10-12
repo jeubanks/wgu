@@ -16,12 +16,57 @@ Do this part last, as a timed practice run.
   - `HireDate`: a date. It is required.
   - `Rate`: a decimal number, DECIMAL(5,2). It is required. If no rate is given, it should be 45.00. It must be between 20 and 150.
 
+  <!-- solution:14.1 -->
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  CREATE TABLE Instructor (
+    ID         SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    FirstName  VARCHAR(20) NOT NULL,
+    LastName   VARCHAR(30) NOT NULL,
+    HireDate   DATE NOT NULL,
+    Rate       DECIMAL(5,2) NOT NULL DEFAULT 45.00 CHECK (Rate BETWEEN 20 AND 150)
+  );
+  ```
+
+  </details>
+  <!-- /solution -->
+
 - **14.2** Add a column named `InstructorID` to the LessonSchedule table, with a foreign key that points to the Instructor table. If an instructor is deleted, their lessons should stay in the table, but with no instructor (NULL).
+
+  <!-- solution:14.2 -->
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  ALTER TABLE LessonSchedule
+    ADD COLUMN InstructorID SMALLINT UNSIGNED,
+    ADD FOREIGN KEY (InstructorID) REFERENCES Instructor(ID) ON DELETE SET NULL;
+  ```
+
+  </details>
+  <!-- /solution -->
 
 - **14.3** Add these three instructors:
   - Dale Evans, hired 2020-04-01, using the default rate
   - Roy Rogers, hired 2022-09-15, using the default rate
   - Annie Oakley, hired 2024-06-03, with a rate of 60.00
+
+  <!-- solution:14.3 -->
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  INSERT INTO Instructor (FirstName, LastName, HireDate) VALUES
+    ('Dale', 'Evans',  '2020-04-01'),
+    ('Roy',  'Rogers', '2022-09-15');
+  INSERT INTO Instructor (FirstName, LastName, HireDate, Rate) VALUES
+    ('Annie', 'Oakley', '2024-06-03', 60.00);
+  ```
+
+  </details>
+  <!-- /solution -->
 
 - **14.4** Assign instructors to lessons:
   - Dale teaches every lesson on horses 1, 2, and 3.
@@ -30,21 +75,156 @@ Do this part last, as a timed practice run.
 
   Then show how many lessons each instructor has. *(3 rows)*
 
+  <!-- solution:14.4 -->
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  UPDATE LessonSchedule SET InstructorID = 1 WHERE HorseID IN (1, 2, 3);
+  UPDATE LessonSchedule SET InstructorID = 2 WHERE HorseID IN (4, 5, 6);
+  UPDATE LessonSchedule SET InstructorID = 3 WHERE InstructorID IS NULL;
+  SELECT InstructorID, COUNT(*) AS Lessons FROM LessonSchedule GROUP BY InstructorID;
+  ```
+
+  </details>
+  <!-- /solution -->
+
 - **14.5** Show every lesson with these columns: the date and time, the horse's name, the student's full name, and the instructor's full name. If a lesson has no student, the student name should be NULL. Sort the lessons from earliest to latest. *(12 rows)*
+
+  <!-- solution:14.5 -->
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT ls.LessonDateTime, h.RegisteredName,
+         CONCAT(s.FirstName, ' ', s.LastName) AS Student,
+         CONCAT(i.FirstName, ' ', i.LastName) AS Instructor
+  FROM LessonSchedule ls
+  JOIN Horse      h ON h.ID = ls.HorseID
+  JOIN Instructor i ON i.ID = ls.InstructorID
+  LEFT JOIN Student s ON s.ID = ls.StudentID
+  ORDER BY ls.LessonDateTime;
+  ```
+
+  </details>
+  <!-- /solution -->
 
 - **14.6** For each instructor, show their full name, how many lessons they teach, and how much they earn (the number of lessons multiplied by their rate). Sort the list so the instructor who earns the most is first. If two instructors earn the same amount, sort them by name. *(3 rows)*
 
+  <!-- solution:14.6 -->
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT CONCAT(i.FirstName, ' ', i.LastName) AS Instructor,
+         COUNT(ls.HorseID)          AS Lessons,
+         COUNT(ls.HorseID) * i.Rate AS Earnings
+  FROM Instructor i
+  LEFT JOIN LessonSchedule ls ON ls.InstructorID = i.ID
+  GROUP BY i.ID, i.FirstName, i.LastName, i.Rate
+  ORDER BY Earnings DESC, Instructor;
+  ```
+
+  </details>
+  <!-- /solution -->
+
 - **14.7** For each breed that has more than one horse, show the breed, the number of horses, and the average height (rounded to 2 decimal places). Leave out horses whose breed is unknown (NULL). Sort the list so the breed with the tallest average height is first. *(4 rows)*
+
+  <!-- solution:14.7 -->
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT Breed, COUNT(*) AS Horses, ROUND(AVG(Height), 2) AS AvgHeight
+  FROM Horse
+  WHERE Breed IS NOT NULL
+  GROUP BY Breed
+  HAVING COUNT(*) > 1
+  ORDER BY AvgHeight DESC;
+  ```
+
+  </details>
+  <!-- /solution -->
 
 - **14.8** Show the horses that are taller than the average height of all horses. Sort the list so the tallest horse is first. *(4 rows)*
 
+  <!-- solution:14.8 -->
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT ID, RegisteredName, Height
+  FROM Horse
+  WHERE Height > (SELECT AVG(Height) FROM Horse)
+  ORDER BY Height DESC;
+  ```
+
+  </details>
+  <!-- /solution -->
+
 - **14.9** Create a view named **AustinStudentLessons** with the columns FirstName, LastName, LessonDateTime, and RegisteredName. The view should show only the lessons taken by students who live in Austin. Then select everything from the view, sorted from earliest to latest lesson. *(6 rows)*
+
+  <!-- solution:14.9 -->
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  CREATE VIEW AustinStudentLessons AS
+  SELECT s.FirstName, s.LastName, ls.LessonDateTime, h.RegisteredName
+  FROM Student s
+  JOIN LessonSchedule ls ON ls.StudentID = s.ID
+  JOIN Horse h           ON h.ID = ls.HorseID
+  WHERE s.City = 'Austin';
+  SELECT * FROM AustinStudentLessons ORDER BY LessonDateTime;
+  ```
+
+  </details>
+  <!-- /solution -->
 
 - **14.10** Create an index that makes it faster to find all the lessons for a given student.
 
+  <!-- solution:14.10 -->
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  CREATE INDEX idx_lesson_student ON LessonSchedule (StudentID);   -- speeds joins / lookups by student
+  -- (MySQL InnoDB already auto-creates an index for each FK column; naming one explicitly is still valid.)
+  ```
+
+  </details>
+  <!-- /solution -->
+
 - **14.11** Some students have no email address. For each of them, set their email to their first name, a period, their last name, and then `@stable.example`, all in lowercase. For example, a student named Maria Lopez would get `maria.lopez@stable.example`. *(check: 1 row changed)*
 
+  <!-- solution:14.11 -->
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  UPDATE Student
+  SET Email = CONCAT(LOWER(FirstName), '.', LOWER(REPLACE(LastName, '''', '')), '@stable.example')
+  WHERE Email IS NULL;
+  SELECT ID, FirstName, LastName, Email FROM Student WHERE Email LIKE '%@stable.example';
+  ```
+
+  </details>
+  <!-- /solution -->
+
 - **14.12** Delete every horse that has no lessons scheduled. Then show how many horses are left. *(1 row: 9)*
+
+  <!-- solution:14.12 -->
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  DELETE FROM Horse
+  WHERE ID NOT IN (SELECT HorseID FROM LessonSchedule);   -- HorseID is NOT NULL, so NOT IN is safe here
+  SELECT COUNT(*) AS HorsesLeft FROM Horse;               -- 9
+  ```
+
+  </details>
+  <!-- /solution -->
 
 ---
 
