@@ -431,6 +431,65 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
+- **7.15** Making changes permanent with COMMIT:
+  - Start a transaction and add two guests: Fay Wong from Dallas with 2 visits, and Gus Hale from Waco with 1 visit.
+  - Run `COMMIT;`, then run `ROLLBACK;`, then look at the table. Are the two guests still there? Why?
+
+  *(3 rows)*
+
+  <!-- solution:7.15 -->
+  <details>
+  <summary>Hint</summary>
+
+  - COMMIT ends the transaction and makes its changes permanent. After that, ROLLBACK has nothing left to undo.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  START TRANSACTION;
+  INSERT INTO Guest (FullName, City, Visits) VALUES
+    ('Fay Wong', 'Dallas', 2),
+    ('Gus Hale', 'Waco',   1);
+  COMMIT;
+  ROLLBACK;                                     -- nothing to undo: the transaction already ended
+  SELECT * FROM Guest;                          -- Eli Moss, Fay Wong, Gus Hale
+  ```
+
+  </details>
+  <!-- /solution -->
+
+- **7.16** UPDATE with no WHERE. Start a transaction, then run `UPDATE Guest SET Visits = Visits + 1;` with **no** WHERE clause. How many rows did MySQL say it changed? Look at the table, then ROLLBACK and look again.
+
+  Why do people say to always write the WHERE (or the SELECT from 7.12) first? *(check: 3 rows changed, then back to 0, 2, and 1 visits)*
+
+  <!-- solution:7.16 -->
+  <details>
+  <summary>Hint</summary>
+
+  - Without a WHERE, an UPDATE changes every row in the table.
+  - The client prints how many rows were changed, like "Rows matched: 3  Changed: 3".
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  START TRANSACTION;
+  UPDATE Guest SET Visits = Visits + 1;         -- Rows matched: 3  Changed: 3
+  SELECT * FROM Guest;                          -- every guest went up by 1
+  ROLLBACK;
+  SELECT * FROM Guest;                          -- back to 0, 2, and 1
+  -- Some tools turn on "safe updates" mode, which refuses an UPDATE or DELETE without a WHERE
+  -- on a key column, for exactly this reason.
+  ```
+
+  </details>
+  <!-- /solution -->
+
 ---
 
 ## 8. CREATE / ALTER / DROP

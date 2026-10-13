@@ -98,11 +98,36 @@ These sections only read data, so you can redo any exercise at any time.
   </details>
   <!-- /solution -->
 
-### Employee
-
-- **1.5** Show the FirstName, LastName, and Salary of every employee who earns more than 150,000. *(4 rows)*
+- **1.5** Show the Title and Gross of the movies ranked **4th, 5th, and 6th** by Gross (highest first). Use `LIMIT` with `OFFSET`. Where would the movie with no Gross (NULL) end up in this ranking? *(3 rows)*
 
   <!-- solution:1.5 -->
+  <details>
+  <summary>Hint</summary>
+
+  - `LIMIT 3` keeps the first 3 rows. `LIMIT 3 OFFSET 3` skips the first 3, then keeps the next 3.
+  - In descending order, MySQL puts NULLs last.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT Title, Gross
+  FROM Movie
+  ORDER BY Gross DESC
+  LIMIT 3 OFFSET 3;                 -- also written  LIMIT 3, 3  (offset first, then count)
+  -- The NULL Gross sorts last in DESC order, so it would be 12th.
+  ```
+
+  </details>
+  <!-- /solution -->
+
+### Employee
+
+- **1.6** Show the FirstName, LastName, and Salary of every employee who earns more than 150,000. *(4 rows)*
+
+  <!-- solution:1.6 -->
   <details>
   <summary>Hint</summary>
 
@@ -122,13 +147,13 @@ These sections only read data, so you can redo any exercise at any time.
   </details>
   <!-- /solution -->
 
-- **1.6** For every employee, show two columns:
+- **1.7** For every employee, show two columns:
   - `FullName`: the first name and last name joined together with a space between them, in one column.
   - `MonthlyPay`: the yearly Salary divided by 12, rounded to 2 decimal places.
 
   Sort the list so the highest monthly pay is first. *(15 rows)*
 
-  <!-- solution:1.6 -->
+  <!-- solution:1.7 -->
   <details>
   <summary>Hint</summary>
 
@@ -145,6 +170,31 @@ These sections only read data, so you can redo any exercise at any time.
          ROUND(Salary / 12, 2)            AS MonthlyPay
   FROM Employee
   ORDER BY MonthlyPay DESC;   -- aliases are allowed in ORDER BY (not in WHERE)
+  ```
+
+  </details>
+  <!-- /solution -->
+
+- **1.8** Show each employee's LastName and Salary, but make the column headings read **Last Name** and **Annual Salary**, with the spaces. Sort by salary, highest first. *(15 rows)*
+
+  <!-- solution:1.8 -->
+  <details>
+  <summary>Hint</summary>
+
+  - An alias with a space must be in quotes: `AS "Last Name"`. MySQL also accepts backticks around the name.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT LastName AS "Last Name",
+         Salary   AS "Annual Salary"
+  FROM Employee
+  ORDER BY Salary DESC;
+  -- Quoted aliases are fine for display, but you'd have to quote them every time you use them,
+  -- so most people use names like LastName or Annual_Salary instead.
   ```
 
   </details>
@@ -221,11 +271,41 @@ These sections only read data, so you can redo any exercise at any time.
   </details>
   <!-- /solution -->
 
-### Student
+- **2.4** The opposite of 2.1 and 2.3:
+  - Show the movies that did **not** come out from 2014 to 2016. Use `NOT BETWEEN`. There are 12 movies and 6 came out in those years, so why do you get 5 and not 6?
+  - Show the movies whose title does **not** start with "The ". Use `NOT LIKE`.
 
-- **2.4** Show the students whose last name has the letter "a" as its **second** letter (for example, "Garcia"). *(3 rows)*
+  *(5 rows, then 9 rows)*
 
   <!-- solution:2.4 -->
+  <details>
+  <summary>Hint</summary>
+
+  - `NOT BETWEEN` and `NOT LIKE` are the opposites of BETWEEN and LIKE.
+  - One movie has no ReleaseYear. A comparison with NULL is UNKNOWN, and NOT UNKNOWN is still UNKNOWN.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT Title, ReleaseYear
+  FROM Movie
+  WHERE ReleaseYear NOT BETWEEN 2014 AND 2016;      -- 5 rows: the NULL year is in neither result
+  SELECT Title
+  FROM Movie
+  WHERE Title NOT LIKE 'The %';                     -- 9 rows
+  ```
+
+  </details>
+  <!-- /solution -->
+
+### Student
+
+- **2.5** Show the students whose last name has the letter "a" as its **second** letter (for example, "Garcia"). *(3 rows)*
+
+  <!-- solution:2.5 -->
   <details>
   <summary>Hint</summary>
 
@@ -244,11 +324,11 @@ These sections only read data, so you can redo any exercise at any time.
   </details>
   <!-- /solution -->
 
-- **2.5** Show the students who live in Austin or in Round Rock **and** who have a phone number.
+- **2.6** Show the students who live in Austin or in Round Rock **and** who have a phone number.
   - After it works, remove the parentheses from your WHERE clause and run it again.
   - Explain why the result is different. *(4 rows)*
 
-  <!-- solution:2.5 -->
+  <!-- solution:2.6 -->
   <details>
   <summary>Hint</summary>
 
@@ -271,11 +351,41 @@ These sections only read data, so you can redo any exercise at any time.
   </details>
   <!-- /solution -->
 
+- **2.7** Show the students who do **not** live in Austin or Round Rock. Use `NOT IN` with a list of the two cities.
+  - One student has no city (NULL). Is she in your result? Why not?
+  - Change the query so she's included.
+
+  *(2 rows, then 3 rows)*
+
+  <!-- solution:2.7 -->
+  <details>
+  <summary>Hint</summary>
+
+  - `City NOT IN ('Austin', 'Round Rock')` means `City <> 'Austin' AND City <> 'Round Rock'`.
+  - When City is NULL, both of those comparisons are UNKNOWN, so the row is dropped. Add a second condition with OR.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT FirstName, LastName, City
+  FROM Student
+  WHERE City NOT IN ('Austin', 'Round Rock');               -- 2 rows: Sofia (NULL city) is missing
+  SELECT FirstName, LastName, City
+  FROM Student
+  WHERE City NOT IN ('Austin', 'Round Rock') OR City IS NULL;   -- 3 rows
+  ```
+
+  </details>
+  <!-- /solution -->
+
 ### Employee
 
-- **2.6** Show the employees who do not have an email address (their Email is NULL). *(2 rows)*
+- **2.8** Show the employees who do not have an email address (their Email is NULL). *(2 rows)*
 
-  <!-- solution:2.6 -->
+  <!-- solution:2.8 -->
   <details>
   <summary>Hint</summary>
 
@@ -296,11 +406,11 @@ These sections only read data, so you can redo any exercise at any time.
 
 ### Horse
 
-- **2.7** Show the horses whose breed is **not** Quarter Horse. Include horses whose breed is unknown (NULL).
+- **2.9** Show the horses whose breed is **not** Quarter Horse. Include horses whose breed is unknown (NULL).
   - First, write the query without doing anything special for NULL. Count the rows.
   - Then fix the query so the horse with an unknown breed is included. Compare the two results. *(8 rows)*
 
-  <!-- solution:2.7 -->
+  <!-- solution:2.9 -->
   <details>
   <summary>Hint</summary>
 
@@ -376,11 +486,71 @@ These sections only read data, so you can redo any exercise at any time.
   </details>
   <!-- /solution -->
 
-### Employee
+- **3.3** More string functions. For every student who has a phone number, show:
+  - their FirstName and LastName
+  - their initials, like `RH` for Rosie Hewitt (use `LEFT`)
+  - the last 4 digits of their phone (use `RIGHT`)
+  - their email with `@example.com` changed to `@stable.example` (use `REPLACE`)
 
-- **3.3** For every employee, show how many full years they have worked here as of 2026-10-01. Use `TIMESTAMPDIFF` to do this. Sort the list so the employee who has worked here the longest is first. *(15 rows)*
+  Then run `SELECT CONCAT('[', TRIM('   Round Rock  '), ']');` and the same thing without TRIM. What does TRIM remove? *(6 rows)*
 
   <!-- solution:3.3 -->
+  <details>
+  <summary>Hint</summary>
+
+  - `LEFT(text, n)` returns the first n characters and `RIGHT(text, n)` the last n.
+  - `REPLACE(text, 'find', 'replace with')` changes every match. `TRIM()` removes spaces from both ends.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT FirstName, LastName,
+         CONCAT(LEFT(FirstName, 1), LEFT(LastName, 1))  AS Initials,
+         RIGHT(Phone, 4)                                 AS PhoneLast4,
+         REPLACE(Email, '@example.com', '@stable.example') AS NewEmail
+  FROM Student
+  WHERE Phone IS NOT NULL;
+  SELECT CONCAT('[', TRIM('   Round Rock  '), ']') AS Trimmed,     -- [Round Rock]
+         CONCAT('[', '   Round Rock  ', ']')       AS NotTrimmed;  -- [   Round Rock  ]
+  -- TRIM removes spaces at the start and end only, never the space inside "Round Rock".
+  -- (LTRIM and RTRIM remove them from just one side.)
+  ```
+
+  </details>
+  <!-- /solution -->
+
+- **3.4** Use CASE to sort in your own order: list every student with Texas students first, then everyone else. Within each part, sort by LastName. (`ORDER BY State` alone won't work. Why not?) *(8 rows)*
+
+  <!-- solution:3.4 -->
+  <details>
+  <summary>Hint</summary>
+
+  - ORDER BY can sort on an expression. Make a CASE that returns 0 for TX and 1 for everything else, and sort by it first.
+  - `ORDER BY State` sorts alphabetically, and NM and OK come before TX.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT FirstName, LastName, State
+  FROM Student
+  ORDER BY CASE WHEN State = 'TX' THEN 0 ELSE 1 END,
+           LastName;
+  ```
+
+  </details>
+  <!-- /solution -->
+
+### Employee
+
+- **3.5** For every employee, show how many full years they have worked here as of 2026-10-01. Use `TIMESTAMPDIFF` to do this. Sort the list so the employee who has worked here the longest is first. *(15 rows)*
+
+  <!-- solution:3.5 -->
   <details>
   <summary>Hint</summary>
 
@@ -401,9 +571,45 @@ These sections only read data, so you can redo any exercise at any time.
   </details>
   <!-- /solution -->
 
+- **3.6** More date functions:
+  - For every employee hired on or after 2019-01-01, show their name, HireDate, how many **days** they have worked as of 2026-10-01 (`DATEDIFF`), the date of their **90-day review** (`DATE_ADD` with `INTERVAL`), and the **name of the month** they were hired (`MONTHNAME`). Sort by HireDate.
+  - Then show the employees hired in June, July, or August of any year. Use `MONTH()`.
+
+  *(8 rows, then 3 rows)*
+
+  <!-- solution:3.6 -->
+  <details>
+  <summary>Hint</summary>
+
+  - `DATEDIFF(later, earlier)` returns the number of days between two dates.
+  - `DATE_ADD(date, INTERVAL 90 DAY)` adds days. MONTH() returns the month as a number from 1 to 12.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT FirstName, LastName, HireDate,
+         DATEDIFF('2026-10-01', HireDate)    AS DaysEmployed,
+         DATE_ADD(HireDate, INTERVAL 90 DAY) AS ReviewDate,
+         MONTHNAME(HireDate)                 AS HireMonth
+  FROM Employee
+  WHERE HireDate >= '2019-01-01'
+  ORDER BY HireDate;
+  SELECT FirstName, LastName, HireDate
+  FROM Employee
+  WHERE MONTH(HireDate) BETWEEN 6 AND 8;
+  -- DATE_SUB(date, INTERVAL n DAY) goes backward. INTERVAL also works with MONTH and YEAR,
+  -- and DAY(date) returns the day of the month.
+  ```
+
+  </details>
+  <!-- /solution -->
+
 ### LessonSchedule
 
-- **3.4** For every lesson in LessonSchedule, show:
+- **3.7** For every lesson in LessonSchedule, show:
   - the HorseID
   - only the date part of LessonDateTime
   - only the time part of LessonDateTime
@@ -411,7 +617,7 @@ These sections only read data, so you can redo any exercise at any time.
 
   Sort the lessons from earliest to latest. *(12 rows)*
 
-  <!-- solution:3.4 -->
+  <!-- solution:3.7 -->
   <details>
   <summary>Hint</summary>
 
@@ -436,7 +642,7 @@ These sections only read data, so you can redo any exercise at any time.
 
 ### Movie
 
-- **3.5** For every movie, show the Title, the Minutes, and a new column named `LengthClass`. Fill in `LengthClass` using these rules:
+- **3.8** For every movie, show the Title, the Minutes, and a new column named `LengthClass`. Fill in `LengthClass` using these rules:
   - "Short" if the movie is less than 100 minutes
   - "Standard" if the movie is 100 to 139 minutes
   - "Long" if the movie is 140 minutes or more
@@ -444,7 +650,7 @@ These sections only read data, so you can redo any exercise at any time.
 
   *(12 rows)*
 
-  <!-- solution:3.5 -->
+  <!-- solution:3.8 -->
   <details>
   <summary>Hint</summary>
 
@@ -470,9 +676,46 @@ These sections only read data, so you can redo any exercise at any time.
   </details>
   <!-- /solution -->
 
-- **3.6** For every movie, show the Title and the Genre. If the Genre is NULL, show the word "Unclassified" instead. *(12 rows)*
+- **3.9** CASE has two forms. 3.8 used the **searched** form (`CASE WHEN condition THEN ...`). This time use the **simple** form, which compares one column against a list of values: `CASE RatingCode WHEN 'G' THEN ... END`. For every movie, show the Title, the RatingCode, and an `Audience` column:
+  - G → "Everyone", PG → "Parental guidance", PG-13 → "Teens and up", R → "Adults"
+  - anything else → "Not rated"
 
-  <!-- solution:3.6 -->
+  Which movie gets "Not rated"? Could you catch it with `WHEN NULL THEN ...` instead of ELSE? (Try `SELECT CASE NULL WHEN NULL THEN 'matched' ELSE 'no match' END;`.) *(12 rows)*
+
+  <!-- solution:3.9 -->
+  <details>
+  <summary>Hint</summary>
+
+  - In the simple form, the column goes right after CASE, and each WHEN gives just a value: `CASE RatingCode WHEN 'G' THEN 'Everyone' ...`.
+  - The simple form compares with `=`, and NULL = NULL is never true.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT Title, RatingCode,
+         CASE RatingCode
+           WHEN 'G'     THEN 'Everyone'
+           WHEN 'PG'    THEN 'Parental guidance'
+           WHEN 'PG-13' THEN 'Teens and up'
+           WHEN 'R'     THEN 'Adults'
+           ELSE              'Not rated'
+         END AS Audience
+  FROM Movie;
+  SELECT CASE NULL WHEN NULL THEN 'matched' ELSE 'no match' END;   -- 'no match'
+  -- The simple form tests RatingCode = 'G', RatingCode = 'PG', and so on. WHEN NULL would test
+  -- RatingCode = NULL, which is never true, so the NULL rating has to be caught by ELSE
+  -- (or by the searched form: CASE WHEN RatingCode IS NULL THEN ...).
+  ```
+
+  </details>
+  <!-- /solution -->
+
+- **3.10** For every movie, show the Title and the Genre. If the Genre is NULL, show the word "Unclassified" instead. *(12 rows)*
+
+  <!-- solution:3.10 -->
   <details>
   <summary>Hint</summary>
 
@@ -491,9 +734,9 @@ These sections only read data, so you can redo any exercise at any time.
   </details>
   <!-- /solution -->
 
-- **3.7** For every movie, show the Title and the Gross in millions of dollars, rounded to one decimal place. For example, Arrival's Gross of 100,546,139 should show as 100.5. Leave out movies with no Gross (NULL). Sort the list so the largest amount is first. *(11 rows)*
+- **3.11** For every movie, show the Title and the Gross in millions of dollars, rounded to one decimal place. For example, Arrival's Gross of 100,546,139 should show as 100.5. Leave out movies with no Gross (NULL). Sort the list so the largest amount is first. *(11 rows)*
 
-  <!-- solution:3.7 -->
+  <!-- solution:3.11 -->
   <details>
   <summary>Hint</summary>
 
@@ -510,6 +753,42 @@ These sections only read data, so you can redo any exercise at any time.
   FROM Movie
   WHERE Gross IS NOT NULL
   ORDER BY GrossMillions DESC;
+  ```
+
+  </details>
+  <!-- /solution -->
+
+- **3.12** Numeric functions. For every movie that has a length, show the Title, Minutes, and these columns:
+  - `Hours`: the whole hours in the movie (133 minutes is 2 hours). Use `FLOOR`.
+  - `ExtraMinutes`: the minutes left over (133 minutes is 13 extra). Use `MOD`.
+  - `BilledHours`: the hours a theater would book, rounding **up** (133 minutes needs 3). Use `CEIL`.
+  - `OffFrom2Hours`: how far the length is from 120 minutes, in either direction. Use `ABS`.
+
+  Sort by Minutes. Then compare `7 / 2`, `7 DIV 2`, and `MOD(7, 2)` in one SELECT with no FROM. *(11 rows)*
+
+  <!-- solution:3.12 -->
+  <details>
+  <summary>Hint</summary>
+
+  - FLOOR rounds down to a whole number and CEIL rounds up. `MOD(a, b)` is the remainder when you divide a by b.
+  - ABS removes the minus sign, so ABS(Minutes - 120) is the distance either way.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT Title, Minutes,
+         FLOOR(Minutes / 60)  AS Hours,
+         MOD(Minutes, 60)     AS ExtraMinutes,
+         CEIL(Minutes / 60)   AS BilledHours,
+         ABS(Minutes - 120)   AS OffFrom2Hours
+  FROM Movie
+  WHERE Minutes IS NOT NULL
+  ORDER BY Minutes;
+  SELECT 7 / 2, 7 DIV 2, MOD(7, 2);    -- 3.5000, 3, 1:  "/" keeps decimals, DIV drops them
+  -- POW(2, 10) = 1024 and SQRT(144) = 12 are two more you may see.
   ```
 
   </details>
@@ -566,9 +845,34 @@ These sections only read data, so you can redo any exercise at any time.
   </details>
   <!-- /solution -->
 
-- **4.2** For each genre, show the total Gross of all its movies. Sort the list so the largest total is first. Leave out movies whose genre is NULL. *(4 rows)*
+- **4.2** Write one query that returns one row with these four numbers for the Movie table: the number of movies, the number that have a genre, the number of **different** genres, and the number of **different** ratings. Use `COUNT(DISTINCT ...)`. Exercise 1.3 showed 5 genres. Why does `COUNT(DISTINCT Genre)` say 4? *(1 row)*
 
   <!-- solution:4.2 -->
+  <details>
+  <summary>Hint</summary>
+
+  - `COUNT(DISTINCT column)` counts the different non-NULL values.
+  - DISTINCT in a SELECT list keeps NULL as one of the values, but COUNT never counts NULL.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT COUNT(*)                   AS Movies,       -- 12
+         COUNT(Genre)               AS WithGenre,    -- 11
+         COUNT(DISTINCT Genre)      AS Genres,       -- 4
+         COUNT(DISTINCT RatingCode) AS Ratings       -- 4
+  FROM Movie;
+  ```
+
+  </details>
+  <!-- /solution -->
+
+- **4.3** For each genre, show the total Gross of all its movies. Sort the list so the largest total is first. Leave out movies whose genre is NULL. *(4 rows)*
+
+  <!-- solution:4.3 -->
   <details>
   <summary>Hint</summary>
 
@@ -593,9 +897,9 @@ These sections only read data, so you can redo any exercise at any time.
 
 ### Employee
 
-- **4.3** Write one query that returns one row with these four numbers for all employees: the average salary (rounded to 2 decimal places), the lowest salary, the highest salary, and the total of all salaries. *(1 row)*
+- **4.4** Write one query that returns one row with these four numbers for all employees: the average salary (rounded to 2 decimal places), the lowest salary, the highest salary, and the total of all salaries. *(1 row)*
 
-  <!-- solution:4.3 -->
+  <!-- solution:4.4 -->
   <details>
   <summary>Hint</summary>
 
@@ -617,9 +921,9 @@ These sections only read data, so you can redo any exercise at any time.
   </details>
   <!-- /solution -->
 
-- **4.4** Show how many employees are in each DeptID. What happens to the employee who has no department? *(6 rows)*
+- **4.5** Show how many employees are in each DeptID. What happens to the employee who has no department? *(6 rows)*
 
-  <!-- solution:4.4 -->
+  <!-- solution:4.5 -->
   <details>
   <summary>Hint</summary>
 
@@ -640,9 +944,9 @@ These sections only read data, so you can redo any exercise at any time.
   </details>
   <!-- /solution -->
 
-- **4.5** Show each DeptID where the average salary of its employees is more than 120,000. *(3 rows)*
+- **4.6** Show each DeptID where the average salary of its employees is more than 120,000. *(3 rows)*
 
-  <!-- solution:4.5 -->
+  <!-- solution:4.6 -->
   <details>
   <summary>Hint</summary>
 
@@ -665,13 +969,13 @@ These sections only read data, so you can redo any exercise at any time.
   </details>
   <!-- /solution -->
 
-- **4.6** This one needs **both** WHERE and HAVING. For each DeptID, count the employees who were hired on or after 2018-01-01. Show only the departments where that count is 2 or more. Name the count column RecentHires.
+- **4.7** This one needs **both** WHERE and HAVING. For each DeptID, count the employees who were hired on or after 2018-01-01. Show only the departments where that count is 2 or more. Name the count column RecentHires.
   - Which condition goes in WHERE, and which goes in HAVING? Why?
   - Then remove the WHERE clause and run it again. Why do you get more rows?
 
   *(3 rows, then 5 rows)*
 
-  <!-- solution:4.6 -->
+  <!-- solution:4.7 -->
   <details>
   <summary>Hint</summary>
 
@@ -699,11 +1003,39 @@ These sections only read data, so you can redo any exercise at any time.
   </details>
   <!-- /solution -->
 
+- **4.8** Counting by category with CASE. For each DeptID, show three numbers in one row: how many employees earn 100,000 or more, how many earn less than 100,000, and the total. Sort by DeptID. *(6 rows)*
+
+  <!-- solution:4.8 -->
+  <details>
+  <summary>Hint</summary>
+
+  - Inside SUM, a CASE that returns 1 or 0 counts the rows that match: `SUM(CASE WHEN Salary >= 100000 THEN 1 ELSE 0 END)`.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT DeptID,
+         SUM(CASE WHEN Salary >= 100000 THEN 1 ELSE 0 END) AS Over100k,
+         SUM(CASE WHEN Salary <  100000 THEN 1 ELSE 0 END) AS Under100k,
+         COUNT(*)                                           AS Total
+  FROM Employee
+  GROUP BY DeptID
+  ORDER BY DeptID;
+  -- MySQL also lets you write SUM(Salary >= 100000), because a true comparison counts as 1,
+  -- but the CASE form works in every database.
+  ```
+
+  </details>
+  <!-- /solution -->
+
 ### LessonSchedule
 
-- **4.7** Using the LessonSchedule table, show each HorseID that has two or more lessons scheduled. (Each row in LessonSchedule is one lesson. Its HorseID column holds the ID of a horse in the Horse table.) *(3 rows)*
+- **4.9** Using the LessonSchedule table, show each HorseID that has two or more lessons scheduled. (Each row in LessonSchedule is one lesson. Its HorseID column holds the ID of a horse in the Horse table.) *(3 rows)*
 
-  <!-- solution:4.7 -->
+  <!-- solution:4.9 -->
   <details>
   <summary>Hint</summary>
 
@@ -729,9 +1061,9 @@ These sections only read data, so you can redo any exercise at any time.
 
 ### Student
 
-- **4.8** Show how many students live in each combination of State and City. Sort the list by State, then by City. *(5 rows)*
+- **4.10** Show how many students live in each combination of State and City. Sort the list by State, then by City. *(5 rows)*
 
-  <!-- solution:4.8 -->
+  <!-- solution:4.10 -->
   <details>
   <summary>Hint</summary>
 
@@ -1047,6 +1379,42 @@ These sections only read data, so you can redo any exercise at any time.
   ```sql
   SELECT COUNT(*) AS Pairings
   FROM Horse CROSS JOIN Student;     -- 10 horses x 8 students = 80
+  ```
+
+  </details>
+  <!-- /solution -->
+
+### Combining results
+
+- **5.13** Make one list of every city that appears in the kit: the City of every student, and the Location of every department.
+  - Combine the two queries with `UNION`, then with `UNION ALL`. Why do the row counts differ?
+  - Try adding DeptName to the second query only. What error do you get, and what does it tell you about the two SELECTs?
+
+  *(8 rows with UNION, 14 rows with UNION ALL)*
+
+  <!-- solution:5.13 -->
+  <details>
+  <summary>Hint</summary>
+
+  - `SELECT ... UNION SELECT ...` stacks the two results. Both SELECTs must return the same number of columns.
+  - UNION removes duplicate rows; UNION ALL keeps them all.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT City FROM Student
+  UNION
+  SELECT Location FROM Department;          -- 8 rows: each city once (NULL counts as one value)
+  SELECT City FROM Student
+  UNION ALL
+  SELECT Location FROM Department;          -- 14 rows: 8 students + 6 departments
+  -- Expected to FAIL (the two SELECTs return different numbers of columns):
+  --   SELECT City FROM Student UNION SELECT Location, DeptName FROM Department;
+  --   ERROR 1222: The used SELECT statements have a different number of columns
+  -- The column names come from the first SELECT, so the result's column is called City.
   ```
 
   </details>

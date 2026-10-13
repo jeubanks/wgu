@@ -40,18 +40,36 @@ ORDER BY Gross DESC
 LIMIT 3;
 
 -- [1.5]
+-- Hint: `LIMIT 3` keeps the first 3 rows. `LIMIT 3 OFFSET 3` skips the first 3, then keeps the next 3.
+-- Hint: In descending order, MySQL puts NULLs last.
+SELECT Title, Gross
+FROM Movie
+ORDER BY Gross DESC
+LIMIT 3 OFFSET 3;                 -- also written  LIMIT 3, 3  (offset first, then count)
+-- The NULL Gross sorts last in DESC order, so it would be 12th.
+
+-- [1.6]
 -- Hint: Filter with WHERE and `>`. Write the number without the comma: 150000.
 SELECT FirstName, LastName, Salary
 FROM Employee
 WHERE Salary > 150000;
 
--- [1.6]
+-- [1.7]
 -- Hint: `CONCAT(a, ' ', b)` joins strings together, and `ROUND(x, 2)` rounds to 2 decimal places.
 -- Hint: Name each expression with `AS`. You can sort by that name in ORDER BY.
 SELECT CONCAT(FirstName, ' ', LastName) AS FullName,
        ROUND(Salary / 12, 2)            AS MonthlyPay
 FROM Employee
 ORDER BY MonthlyPay DESC;   -- aliases are allowed in ORDER BY (not in WHERE)
+
+-- [1.8]
+-- Hint: An alias with a space must be in quotes: `AS "Last Name"`. MySQL also accepts backticks around the name.
+SELECT LastName AS "Last Name",
+       Salary   AS "Annual Salary"
+FROM Employee
+ORDER BY Salary DESC;
+-- Quoted aliases are fine for display, but you'd have to quote them every time you use them,
+-- so most people use names like LastName or Annual_Salary instead.
 
 -- =====================================================================
 -- 2. Filtering: comparison, BETWEEN, IN, LIKE, NULL, AND/OR
@@ -73,11 +91,21 @@ SELECT Title FROM Movie
 WHERE Title LIKE 'The %';
 
 -- [2.4]
+-- Hint: `NOT BETWEEN` and `NOT LIKE` are the opposites of BETWEEN and LIKE.
+-- Hint: One movie has no ReleaseYear. A comparison with NULL is UNKNOWN, and NOT UNKNOWN is still UNKNOWN.
+SELECT Title, ReleaseYear
+FROM Movie
+WHERE ReleaseYear NOT BETWEEN 2014 AND 2016;      -- 5 rows: the NULL year is in neither result
+SELECT Title
+FROM Movie
+WHERE Title NOT LIKE 'The %';                     -- 9 rows
+
+-- [2.5]
 -- Hint: In a LIKE pattern, `_` matches exactly one character and `%` matches any number of characters.
 SELECT FirstName, LastName FROM Student
 WHERE LastName LIKE '_a%';                     -- _ = exactly one char, % = zero or more
 
--- [2.5]
+-- [2.6]
 -- Hint: AND is evaluated before OR. Use parentheses to keep the two cities together.
 SELECT FirstName, LastName, City, Phone FROM Student
 WHERE (City = 'Austin' OR City = 'Round Rock')
@@ -86,12 +114,22 @@ WHERE (City = 'Austin' OR City = 'Round Rock')
 -- "Austin  OR  (Round Rock AND has phone)" - a different question: Priya (Austin,
 -- no phone) sneaks in, so you get 5 rows instead of 4.
 
--- [2.6]
+-- [2.7]
+-- Hint: `City NOT IN ('Austin', 'Round Rock')` means `City <> 'Austin' AND City <> 'Round Rock'`.
+-- Hint: When City is NULL, both of those comparisons are UNKNOWN, so the row is dropped. Add a second condition with OR.
+SELECT FirstName, LastName, City
+FROM Student
+WHERE City NOT IN ('Austin', 'Round Rock');               -- 2 rows: Sofia (NULL city) is missing
+SELECT FirstName, LastName, City
+FROM Student
+WHERE City NOT IN ('Austin', 'Round Rock') OR City IS NULL;   -- 3 rows
+
+-- [2.8]
 -- Hint: `= NULL` never matches anything. Use `IS NULL`.
 SELECT EmpID, FirstName, LastName FROM Employee
 WHERE Email IS NULL;                           -- "= NULL" never matches anything
 
--- [2.7]
+-- [2.9]
 -- Hint: When Breed is NULL, `Breed <> 'Quarter Horse'` is UNKNOWN, not TRUE, so WHERE drops that row.
 -- Hint: Add a second condition with OR to keep the horse whose breed is NULL.
 SELECT RegisteredName, Breed FROM Horse
@@ -118,13 +156,51 @@ FROM Student
 WHERE Phone IS NOT NULL;
 
 -- [3.3]
+-- Hint: `LEFT(text, n)` returns the first n characters and `RIGHT(text, n)` the last n.
+-- Hint: `REPLACE(text, 'find', 'replace with')` changes every match. `TRIM()` removes spaces from both ends.
+SELECT FirstName, LastName,
+       CONCAT(LEFT(FirstName, 1), LEFT(LastName, 1))  AS Initials,
+       RIGHT(Phone, 4)                                 AS PhoneLast4,
+       REPLACE(Email, '@example.com', '@stable.example') AS NewEmail
+FROM Student
+WHERE Phone IS NOT NULL;
+SELECT CONCAT('[', TRIM('   Round Rock  '), ']') AS Trimmed,     -- [Round Rock]
+       CONCAT('[', '   Round Rock  ', ']')       AS NotTrimmed;  -- [   Round Rock  ]
+-- TRIM removes spaces at the start and end only, never the space inside "Round Rock".
+-- (LTRIM and RTRIM remove them from just one side.)
+
+-- [3.4]
+-- Hint: ORDER BY can sort on an expression. Make a CASE that returns 0 for TX and 1 for everything else, and sort by it first.
+-- Hint: `ORDER BY State` sorts alphabetically, and NM and OK come before TX.
+SELECT FirstName, LastName, State
+FROM Student
+ORDER BY CASE WHEN State = 'TX' THEN 0 ELSE 1 END,
+         LastName;
+
+-- [3.5]
 -- Hint: `TIMESTAMPDIFF(YEAR, start, end)` counts the whole years between two dates. Use '2026-10-01' as the end date.
 SELECT FirstName, LastName, HireDate,
        TIMESTAMPDIFF(YEAR, HireDate, '2026-10-01') AS YearsOfService
 FROM Employee
 ORDER BY YearsOfService DESC;
 
--- [3.4]
+-- [3.6]
+-- Hint: `DATEDIFF(later, earlier)` returns the number of days between two dates.
+-- Hint: `DATE_ADD(date, INTERVAL 90 DAY)` adds days. MONTH() returns the month as a number from 1 to 12.
+SELECT FirstName, LastName, HireDate,
+       DATEDIFF('2026-10-01', HireDate)    AS DaysEmployed,
+       DATE_ADD(HireDate, INTERVAL 90 DAY) AS ReviewDate,
+       MONTHNAME(HireDate)                 AS HireMonth
+FROM Employee
+WHERE HireDate >= '2019-01-01'
+ORDER BY HireDate;
+SELECT FirstName, LastName, HireDate
+FROM Employee
+WHERE MONTH(HireDate) BETWEEN 6 AND 8;
+-- DATE_SUB(date, INTERVAL n DAY) goes backward. INTERVAL also works with MONTH and YEAR,
+-- and DAY(date) returns the day of the month.
+
+-- [3.7]
 -- Hint: `DATE()`, `TIME()`, and `DAYNAME()` each take a DATETIME value and return one part of it.
 SELECT HorseID,
        DATE(LessonDateTime)      AS LessonDate,
@@ -133,7 +209,7 @@ SELECT HorseID,
 FROM LessonSchedule
 ORDER BY LessonDateTime;
 
--- [3.5]
+-- [3.8]
 -- Hint: Use a `CASE WHEN ... THEN ... ELSE ... END` expression.
 -- Hint: CASE uses the first WHEN that is true, so check for NULL first.
 SELECT Title, Minutes,
@@ -145,18 +221,49 @@ SELECT Title, Minutes,
        END AS LengthClass
 FROM Movie;
 
--- [3.6]
+-- [3.9]
+-- Hint: In the simple form, the column goes right after CASE, and each WHEN gives just a value: `CASE RatingCode WHEN 'G' THEN 'Everyone' ...`.
+-- Hint: The simple form compares with `=`, and NULL = NULL is never true.
+SELECT Title, RatingCode,
+       CASE RatingCode
+         WHEN 'G'     THEN 'Everyone'
+         WHEN 'PG'    THEN 'Parental guidance'
+         WHEN 'PG-13' THEN 'Teens and up'
+         WHEN 'R'     THEN 'Adults'
+         ELSE              'Not rated'
+       END AS Audience
+FROM Movie;
+SELECT CASE NULL WHEN NULL THEN 'matched' ELSE 'no match' END;   -- 'no match'
+-- The simple form tests RatingCode = 'G', RatingCode = 'PG', and so on. WHEN NULL would test
+-- RatingCode = NULL, which is never true, so the NULL rating has to be caught by ELSE
+-- (or by the searched form: CASE WHEN RatingCode IS NULL THEN ...).
+
+-- [3.10]
 -- Hint: `COALESCE(col, 'something')` returns 'something' when col is NULL. (`IFNULL` works the same way.)
 SELECT Title, COALESCE(Genre, 'Unclassified') AS Genre   -- IFNULL(Genre,'Unclassified') also fine
 FROM Movie;
 
--- [3.7]
+-- [3.11]
 -- Hint: Divide by 1000000, then round with `ROUND(..., 1)`.
 -- Hint: Leave out the NULL gross with `IS NOT NULL`.
 SELECT Title, ROUND(Gross / 1000000, 1) AS GrossMillions
 FROM Movie
 WHERE Gross IS NOT NULL
 ORDER BY GrossMillions DESC;
+
+-- [3.12]
+-- Hint: FLOOR rounds down to a whole number and CEIL rounds up. `MOD(a, b)` is the remainder when you divide a by b.
+-- Hint: ABS removes the minus sign, so ABS(Minutes - 120) is the distance either way.
+SELECT Title, Minutes,
+       FLOOR(Minutes / 60)  AS Hours,
+       MOD(Minutes, 60)     AS ExtraMinutes,
+       CEIL(Minutes / 60)   AS BilledHours,
+       ABS(Minutes - 120)   AS OffFrom2Hours
+FROM Movie
+WHERE Minutes IS NOT NULL
+ORDER BY Minutes;
+SELECT 7 / 2, 7 DIV 2, MOD(7, 2);    -- 3.5000, 3, 1:  "/" keeps decimals, DIV drops them
+-- POW(2, 10) = 1024 and SQRT(144) = 12 are two more you may see.
 
 -- =====================================================================
 -- 4. Aggregates, GROUP BY, HAVING
@@ -168,6 +275,15 @@ SELECT COUNT(*)          AS TotalMovies,
 FROM Movie;
 
 -- [4.2]
+-- Hint: `COUNT(DISTINCT column)` counts the different non-NULL values.
+-- Hint: DISTINCT in a SELECT list keeps NULL as one of the values, but COUNT never counts NULL.
+SELECT COUNT(*)                   AS Movies,       -- 12
+       COUNT(Genre)               AS WithGenre,    -- 11
+       COUNT(DISTINCT Genre)      AS Genres,       -- 4
+       COUNT(DISTINCT RatingCode) AS Ratings       -- 4
+FROM Movie;
+
+-- [4.3]
 -- Hint: "Leave out movies whose genre is NULL" is about single rows, so it goes in WHERE.
 -- Hint: Then GROUP BY Genre and add up the Gross with `SUM()`.
 SELECT Genre, SUM(Gross) AS TotalGross
@@ -176,7 +292,7 @@ WHERE Genre IS NOT NULL
 GROUP BY Genre
 ORDER BY TotalGross DESC;
 
--- [4.3]
+-- [4.4]
 -- Hint: `AVG`, `MIN`, `MAX`, and `SUM` can all go in one SELECT. Without GROUP BY, they summarize the whole table as one row.
 SELECT ROUND(AVG(Salary), 2) AS AvgSalary,
        MIN(Salary)           AS MinSalary,
@@ -184,14 +300,14 @@ SELECT ROUND(AVG(Salary), 2) AS AvgSalary,
        SUM(Salary)           AS Payroll
 FROM Employee;
 
--- [4.4]
+-- [4.5]
 -- Hint: GROUP BY DeptID, and use `COUNT(*)` to count each group.
 -- Hint: Look for a row whose DeptID is NULL.
 SELECT DeptID, COUNT(*) AS Headcount
 FROM Employee
 GROUP BY DeptID;      -- employees with NULL DeptID form their own group
 
--- [4.5]
+-- [4.6]
 -- Hint: "More than 120,000" is about each department's **average**, not about one employee's salary.
 -- Hint: A condition on an aggregate like `AVG(Salary)` goes in HAVING, after GROUP BY.
 SELECT DeptID, ROUND(AVG(Salary), 2) AS AvgSalary
@@ -200,7 +316,7 @@ GROUP BY DeptID
 HAVING AVG(Salary) > 120000;
 -- WHERE filters rows before grouping; HAVING filters groups after.
 
--- [4.6]
+-- [4.7]
 -- Hint: "Hired on or after 2018-01-01" is about one employee's row, so it goes in WHERE.
 -- Hint: "2 or more" is about the group's count, so it goes in HAVING.
 SELECT DeptID, COUNT(*) AS RecentHires
@@ -214,7 +330,19 @@ FROM Employee
 GROUP BY DeptID
 HAVING COUNT(*) >= 2;               -- 5 rows
 
--- [4.7]
+-- [4.8]
+-- Hint: Inside SUM, a CASE that returns 1 or 0 counts the rows that match: `SUM(CASE WHEN Salary >= 100000 THEN 1 ELSE 0 END)`.
+SELECT DeptID,
+       SUM(CASE WHEN Salary >= 100000 THEN 1 ELSE 0 END) AS Over100k,
+       SUM(CASE WHEN Salary <  100000 THEN 1 ELSE 0 END) AS Under100k,
+       COUNT(*)                                           AS Total
+FROM Employee
+GROUP BY DeptID
+ORDER BY DeptID;
+-- MySQL also lets you write SUM(Salary >= 100000), because a true comparison counts as 1,
+-- but the CASE form works in every database.
+
+-- [4.9]
 -- Hint: "Two or more lessons" is a count of each horse's lessons. You only know it after you GROUP BY HorseID.
 -- Hint: So the condition goes in HAVING, not WHERE.
 SELECT HorseID, COUNT(*) AS Lessons
@@ -224,7 +352,7 @@ HAVING COUNT(*) >= 2;
 -- "two or more lessons" is a COUNT per horse, which only exists after GROUP BY, so it's HAVING.
 -- WHERE COUNT(*) >= 2 fails with ERROR 1111 (Invalid use of group function).
 
--- [4.8]
+-- [4.10]
 -- Hint: You can GROUP BY two columns: `GROUP BY State, City`.
 SELECT State, City, COUNT(*) AS Students
 FROM Student
@@ -330,6 +458,20 @@ WHERE ls.HorseID IS NULL;
 -- Hint: A cross join has no ON clause. Count the rows it returns with `COUNT(*)`.
 SELECT COUNT(*) AS Pairings
 FROM Horse CROSS JOIN Student;     -- 10 horses x 8 students = 80
+
+-- [5.13]
+-- Hint: `SELECT ... UNION SELECT ...` stacks the two results. Both SELECTs must return the same number of columns.
+-- Hint: UNION removes duplicate rows; UNION ALL keeps them all.
+SELECT City FROM Student
+UNION
+SELECT Location FROM Department;          -- 8 rows: each city once (NULL counts as one value)
+SELECT City FROM Student
+UNION ALL
+SELECT Location FROM Department;          -- 14 rows: 8 students + 6 departments
+-- Expected to FAIL (the two SELECTs return different numbers of columns):
+--   SELECT City FROM Student UNION SELECT Location, DeptName FROM Department;
+--   ERROR 1222: The used SELECT statements have a different number of columns
+-- The column names come from the first SELECT, so the result's column is called City.
 
 -- =====================================================================
 -- 6. Subqueries
@@ -543,6 +685,27 @@ SELECT COUNT(*) AS Guests FROM Guest;         -- 0: ROLLBACK can't undo a TRUNCA
 INSERT INTO Guest (FullName, City) VALUES ('Eli Moss', 'Austin');
 SELECT * FROM Guest;                          -- GuestID 1: TRUNCATE reset the counter
 -- After a DELETE of every row, the counter would have kept going, and Eli Moss would be 102.
+
+-- [7.15]
+-- Hint: COMMIT ends the transaction and makes its changes permanent. After that, ROLLBACK has nothing left to undo.
+START TRANSACTION;
+INSERT INTO Guest (FullName, City, Visits) VALUES
+  ('Fay Wong', 'Dallas', 2),
+  ('Gus Hale', 'Waco',   1);
+COMMIT;
+ROLLBACK;                                     -- nothing to undo: the transaction already ended
+SELECT * FROM Guest;                          -- Eli Moss, Fay Wong, Gus Hale
+
+-- [7.16]
+-- Hint: Without a WHERE, an UPDATE changes every row in the table.
+-- Hint: The client prints how many rows were changed, like "Rows matched: 3  Changed: 3".
+START TRANSACTION;
+UPDATE Guest SET Visits = Visits + 1;         -- Rows matched: 3  Changed: 3
+SELECT * FROM Guest;                          -- every guest went up by 1
+ROLLBACK;
+SELECT * FROM Guest;                          -- back to 0, 2, and 1
+-- Some tools turn on "safe updates" mode, which refuses an UPDATE or DELETE without a WHERE
+-- on a key column, for exactly this reason.
 
 -- =====================================================================
 -- 8. Defining structure: CREATE / ALTER / DROP

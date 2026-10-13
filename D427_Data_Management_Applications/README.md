@@ -2,7 +2,7 @@
 
 Hands-on SQL practice for WGU **D427 Data Management – Applications**, run against a real MySQL 8.4 server in a container.
 
-148 exercises cover the D427 skills: querying, built-in functions, aggregation, joins, subqueries, inserting/updating/deleting data, creating and altering tables with constraints, views, indexes, and turning a design into tables.
+162 exercises cover the D427 skills: querying, built-in functions, aggregation, joins, subqueries, inserting/updating/deleting data, creating and altering tables with constraints, views, indexes, and turning a design into tables.
 
 Sections 11–13 are built from the two D427 practice tests and the D427 Challenge. They cover writing tables from the OA's column descriptions, the OA's join wording ("if available", "regardless of"), and a multiple-choice concepts check. The final section is a 12-task mock assessment written in the style of the OA's lab items (Horse / Student / LessonSchedule).
 
