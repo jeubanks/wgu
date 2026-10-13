@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
-"""Copy each answer in solutions.sql into the exercise files as a folded block.
+"""Copy each hint and answer in solutions.sql into the exercise files as folded blocks.
 
-solutions.sql is the source of truth. After changing an answer there, run:
+solutions.sql is the source of truth. After changing a hint or an answer there, run:
 
     python3 build_solutions.py
 
-For every exercise label like `-- [5.3]` in solutions.sql, this puts a
-collapsible "Solution" block under exercise **5.3** in the 0N-*.md files.
+For every exercise label like `-- [5.3]` in solutions.sql, this puts collapsible
+"Hint" and "Solution" blocks under exercise **5.3** in the 0N-*.md files.
+Lines that start with `-- Hint:` become the hint (one bullet per line); the rest
+of the label's lines become the solution. A label with only hints (like the
+concepts check) gets just a Hint block, placed above the exercise's own Answer.
 Blocks it wrote before are replaced, so running it again is always safe.
 """
 import re
@@ -17,45 +20,53 @@ HERE = Path(__file__).resolve().parent
 PARTS = sorted(HERE.glob("0[0-9]-*.md"))
 
 LABEL = re.compile(r"^-- \[(\d+\.\d+)\]\s*$")
+HINT = re.compile(r"^-- Hint:\s*(.*)$")
 SECTION_RULE = re.compile(r"^-- =+\s*$")
 ITEM = re.compile(r"^- \*\*(\d+\.\d+)\*\*")
 BLOCK = re.compile(r"\n*  <!-- solution:[\d.]+ -->\n.*?  <!-- /solution -->\n", re.S)
 
 
 def read_solutions():
-    """Return {label: sql} from solutions.sql."""
-    answers, label, buf = {}, None, []
+    """Return {label: (hints, sql)} from solutions.sql."""
+    answers, label, hints, buf = {}, None, [], []
 
     def flush():
         if label:
-            answers[label] = "\n".join(buf).strip("\n")
+            answers[label] = (hints, "\n".join(buf).strip("\n"))
 
     for line in (HERE / "solutions.sql").read_text().splitlines():
         m = LABEL.match(line)
         if m:
             flush()
-            label, buf = m.group(1), []
+            label, hints, buf = m.group(1), [], []
         elif SECTION_RULE.match(line):
             flush()
-            label, buf = None, []
+            label, hints, buf = None, [], []
         elif label:
-            buf.append(line)
+            h = HINT.match(line)
+            if h:
+                hints.append(h.group(1))
+            else:
+                buf.append(line)
     flush()
     return answers
 
 
-def block(label, sql):
-    body = "\n".join(("  " + l) if l.strip() else "" for l in sql.splitlines())
-    return (
-        f"\n  <!-- solution:{label} -->\n"
-        "  <details>\n"
-        "  <summary>Solution</summary>\n\n"
-        "  ```sql\n"
-        f"{body}\n"
-        "  ```\n\n"
-        "  </details>\n"
-        "  <!-- /solution -->\n"
-    )
+def block(label, hints, sql):
+    parts = [f"  <!-- solution:{label} -->"]
+    if hints:
+        parts += ["  <details>", "  <summary>Hint</summary>", ""]
+        parts += [f"  - {h}" for h in hints]
+        parts += ["", "  </details>"]
+    if sql.strip():
+        if hints:
+            parts.append("")
+        body = [("  " + l) if l.strip() else "" for l in sql.splitlines()]
+        parts += ["  <details>", "  <summary>Solution</summary>", "", "  ```sql"]
+        parts += body
+        parts += ["  ```", "", "  </details>"]
+    parts.append("  <!-- /solution -->")
+    return parts
 
 
 def ends_item(line):
@@ -86,10 +97,15 @@ def build(text, answers, used):
         while item and item[-1].strip() == "":
             item.pop()
             trailing += 1
-        out.extend(item)
         if label in answers:
-            out.extend(block(label, answers[label]).rstrip("\n").split("\n"))
+            new = block(label, *answers[label])
             used.add(label)
+            if "  <details>" in item:         # hand-written Answer: hint goes above it
+                k = item.index("  <details>")
+                item[k:k] = new + [""]
+            else:
+                item += [""] + new
+        out.extend(item)
         out.extend([""] * trailing)
         i = j
     return "\n".join(out)
@@ -103,7 +119,8 @@ def main():
         new = build(old, answers, used)
         if new != old:
             path.write_text(new)
-        print(f"{path.name}: {len(re.findall(r'<!-- solution:', new))} solutions")
+        print(f"{path.name}: {new.count('<summary>Hint</summary>')} hints, "
+              f"{new.count('<summary>Solution</summary>')} solutions")
     unused = sorted(set(answers) - used, key=lambda s: tuple(map(int, s.split("."))))
     if unused:
         print("No exercise found for:", ", ".join(unused), file=sys.stderr)

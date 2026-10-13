@@ -34,6 +34,15 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
   <!-- solution:11.1 -->
   <details>
+  <summary>Hint</summary>
+
+  - 0 to 65 thousand fits SMALLINT UNSIGNED (0 to 65,535).
+  - "3 significant digits and 1 decimal place" is DECIMAL(3,1).
+  - "Must be one of" is `CHECK (Breed IN (...))`. In a CHECK, write the date as a string: '2015-01-01'.
+
+  </details>
+
+  <details>
   <summary>Solution</summary>
 
   ```sql
@@ -73,6 +82,14 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
   <!-- solution:11.2 -->
   <details>
+  <summary>Hint</summary>
+
+  - 0 to 16 million fits MEDIUMINT UNSIGNED (0 to 16,777,215).
+  - "Fixed-length string of 2 chars" is CHAR(2). State needs both `NOT NULL` and `DEFAULT 'TX'`.
+
+  </details>
+
+  <details>
   <summary>Solution</summary>
 
   ```sql
@@ -108,6 +125,14 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
   <!-- solution:11.3 -->
   <details>
+  <summary>Hint</summary>
+
+  - A foreign key column must have exactly the same type as the column it points to (here, SMALLINT UNSIGNED).
+  - Write `PRIMARY KEY (HorseID, LessonDateTime)` on its own line. Each FOREIGN KEY gets its own ON DELETE rule.
+
+  </details>
+
+  <details>
   <summary>Solution</summary>
 
   ```sql
@@ -136,6 +161,13 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
   <!-- solution:11.4 -->
   <details>
+  <summary>Hint</summary>
+
+  - Add both lessons with one INSERT. Then do the two DELETEs one at a time, and look at LessonSchedule after each one.
+
+  </details>
+
+  <details>
   <summary>Solution</summary>
 
   ```sql
@@ -162,6 +194,15 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   Use `DESCRIBE Customer;` to check your work. *(6 columns)*
 
   <!-- solution:11.5 -->
+  <details>
+  <summary>Hint</summary>
+
+  - "Positive integer" is INT UNSIGNED.
+  - Up to 19,999.99 is 5 digits before the point and 2 after: DECIMAL(7,2). Use a CHECK to keep it from 0 to 19999.99.
+  - Don't add PRIMARY KEY or NOT NULL. The spec doesn't ask for them.
+
+  </details>
+
   <details>
   <summary>Solution</summary>
 
@@ -204,6 +245,15 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
   <!-- solution:11.6 -->
   <details>
+  <summary>Hint</summary>
+
+  - 0 to 255 fits TINYINT UNSIGNED.
+  - "5 digits total and 1 decimal place" is DECIMAL(5,1).
+  - "No value" means NULL. A CHECK rejects a row only when the check is FALSE, and a check on NULL is UNKNOWN.
+
+  </details>
+
+  <details>
   <summary>Solution</summary>
 
   ```sql
@@ -241,6 +291,14 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
   <!-- solution:11.7 -->
   <details>
+  <summary>Hint</summary>
+
+  - Create Genre first. A foreign key can only point to a table that already exists.
+  - In Book, add `FOREIGN KEY (GenreCode) REFERENCES Genre(GenreCode)`.
+
+  </details>
+
+  <details>
   <summary>Solution</summary>
 
   ```sql
@@ -274,6 +332,14 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
   <!-- solution:11.8 -->
   <details>
+  <summary>Hint</summary>
+
+  - The statement is `ALTER TABLE ... ADD PRIMARY KEY (...)`.
+  - A primary key must be unique. Look at the PetIDs you just added.
+
+  </details>
+
+  <details>
   <summary>Solution</summary>
 
   ```sql
@@ -304,6 +370,14 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   Write a statement to make the breedID column in Dog a foreign key to the breedID column in Breed. It fails. Read the error, fix Breed, and try again. This time, give the foreign key the name `fk_dog_breed`.
 
   <!-- solution:11.9 -->
+  <details>
+  <summary>Hint</summary>
+
+  - A foreign key can only point to a column that is a primary key or has a UNIQUE index.
+  - Fix Breed with `ALTER TABLE ... ADD PRIMARY KEY`. Name the foreign key with `ADD CONSTRAINT fk_dog_breed FOREIGN KEY ...`.
+
+  </details>
+
   <details>
   <summary>Solution</summary>
 
@@ -339,6 +413,15 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
   <!-- solution:11.10 -->
   <details>
+  <summary>Hint</summary>
+
+  - `ALTER TABLE ... ADD CONSTRAINT MgrIDCheck CHECK (...)`
+  - When you add a CHECK, MySQL also checks the rows that are already in the table.
+  - Remove the check with `ALTER TABLE ... DROP CHECK MgrIDCheck`.
+
+  </details>
+
+  <details>
   <summary>Solution</summary>
 
   ```sql
@@ -371,6 +454,14 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   Add the car (1, 'Toyota', 'Camry', 2024, 79.9, 2.5). Then try to add (2, 'Honda', 'Civic', 2024, 80.0, 2.0), which should fail. If the data type already limits the size, why do you still need a CHECK? *(1 row)*
 
   <!-- solution:11.11 -->
+  <details>
+  <summary>Hint</summary>
+
+  - "Less than 80 with 1 decimal place" needs 2 digits before the point and 1 after: DECIMAL(3,1). That type allows up to 99.9, so a CHECK has to enforce "less than 80".
+  - "Positive" means the CHECK also needs `>= 0`.
+
+  </details>
+
   <details>
   <summary>Solution</summary>
 
@@ -413,6 +504,14 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
   <!-- solution:11.12 -->
   <details>
+  <summary>Hint</summary>
+
+  - `MODIFY col definition` keeps the name. `CHANGE old_name new_name definition` renames the column.
+  - Both replace the whole definition, so write NOT NULL again.
+
+  </details>
+
+  <details>
   <summary>Solution</summary>
 
   ```sql
@@ -440,6 +539,14 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   Add patients (1, 'Ana', 'Silva', '1990-03-14') and (2, 'Ben', 'Okoro', '1985-11-02'), and one exam for patient 1 on 2026-09-30 for an 'Annual physical'. Then try to delete each patient. *(check: patient 1's delete fails; patient 2's delete works; 1 patient left)*
 
   <!-- solution:11.13 -->
+  <details>
+  <summary>Hint</summary>
+
+  - "Must not be deletable" is `ON DELETE RESTRICT`.
+  - To name a foreign key, write `CONSTRAINT fk_exam_patient` in front of `FOREIGN KEY`.
+
+  </details>
+
   <details>
   <summary>Solution</summary>
 
@@ -474,6 +581,14 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
   <!-- solution:11.14 -->
   <details>
+  <summary>Hint</summary>
+
+  - You can't edit a foreign key: drop it with `ALTER TABLE Exam DROP FOREIGN KEY fk_exam_patient;` and add a new one.
+  - ON DELETE SET NULL needs a column that allows NULL. Change patient_id with MODIFY before you add the new foreign key.
+
+  </details>
+
+  <details>
   <summary>Solution</summary>
 
   ```sql
@@ -502,6 +617,14 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
   <!-- solution:11.15 -->
   <details>
+  <summary>Hint</summary>
+
+  - A unique index is CREATE INDEX with the word UNIQUE in front of INDEX.
+  - Remove it with `DROP INDEX name ON Student;`.
+
+  </details>
+
+  <details>
   <summary>Solution</summary>
 
   ```sql
@@ -526,6 +649,14 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
   <!-- solution:11.16 -->
   <details>
+  <summary>Hint</summary>
+
+  - `ALTER VIEW name AS SELECT ...` replaces the view's whole query.
+  - `DROP VIEW IF EXISTS` doesn't fail if the view is already gone.
+
+  </details>
+
+  <details>
   <summary>Solution</summary>
 
   ```sql
@@ -539,6 +670,167 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   SELECT * FROM StudentContact ORDER BY LastName;    -- 2 rows, 4 columns
   DROP VIEW StudentContact;
   DROP VIEW IF EXISTS StudentContact;           -- no error the second time
+  ```
+
+  </details>
+  <!-- /solution -->
+
+- **11.17** Changing a primary key:
+  - Create the **CourseSection** table: CourseCode — fixed-length string of 6 chars, primary key; Section — integer from 0 to 255, not NULL; Room — variable-length string, max 10.
+  - Add the sections ('D427', 1, 'A101') and ('C175', 1, 'B205').
+  - Now try to add a second section of D427: ('D427', 2, 'A102'). It fails. Why?
+  - The primary key is wrong: a course can have many sections, so the key should be CourseCode **and** Section together. Change the primary key in **one** ALTER TABLE statement, then add the second D427 section again.
+  - Finally, try `ALTER TABLE Horse DROP PRIMARY KEY;` and read the error. What is different about Horse's primary key?
+
+  *(3 rows)*
+
+  <!-- solution:11.17 -->
+  <details>
+  <summary>Hint</summary>
+
+  - A primary key can't have the same value twice. Look at CourseCode for the row you're adding.
+  - One ALTER TABLE can do two things, separated by a comma: `DROP PRIMARY KEY, ADD PRIMARY KEY (...)`.
+  - Horse's ID is AUTO_INCREMENT. MySQL requires an AUTO_INCREMENT column to be part of a key.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  CREATE TABLE CourseSection (
+    CourseCode  CHAR(6) PRIMARY KEY,
+    Section     TINYINT UNSIGNED NOT NULL,
+    Room        VARCHAR(10)
+  );
+  INSERT INTO CourseSection VALUES ('D427', 1, 'A101'), ('C175', 1, 'B205');
+  -- Expected to FAIL (D427 is already in the primary key column):
+  --   INSERT INTO CourseSection VALUES ('D427', 2, 'A102');
+  --   ERROR 1062: Duplicate entry 'D427' for key 'CourseSection.PRIMARY'
+  ALTER TABLE CourseSection
+    DROP PRIMARY KEY,
+    ADD PRIMARY KEY (CourseCode, Section);       -- a table has only one primary key, so there's no name to give
+  INSERT INTO CourseSection VALUES ('D427', 2, 'A102');
+  SELECT * FROM CourseSection ORDER BY CourseCode, Section;
+  -- Expected to FAIL (Horse.ID is AUTO_INCREMENT, and an auto-increment column must be a key):
+  --   ALTER TABLE Horse DROP PRIMARY KEY;
+  --   ERROR 1075: Incorrect table definition; there can be only one auto column and it must be defined as a key
+  -- To change it, remove AUTO_INCREMENT first (MODIFY ID SMALLINT UNSIGNED NOT NULL), or drop and add the key
+  -- in the same statement.
+  ```
+
+  </details>
+  <!-- /solution -->
+
+- **11.18** Adding and removing a UNIQUE constraint:
+  - Using ALTER TABLE, add a UNIQUE constraint named `uq_country_name` to the CountryName column of the Country table (from 11.6).
+  - Try to add another country named Brazil. It should fail.
+  - Run `SHOW INDEX FROM Country;`. What did MySQL create for the constraint?
+  - Remove the constraint by name.
+  - How is a UNIQUE constraint different from a primary key? (Think about NULLs, and how many of each a table can have.)
+
+  <!-- solution:11.18 -->
+  <details>
+  <summary>Hint</summary>
+
+  - `ALTER TABLE ... ADD CONSTRAINT name UNIQUE (column)`.
+  - MySQL keeps a UNIQUE constraint as a unique index with the same name, so you can remove it either with DROP INDEX or with DROP CONSTRAINT.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  ALTER TABLE Country ADD CONSTRAINT uq_country_name UNIQUE (CountryName);
+  -- Expected to FAIL:
+  --   INSERT INTO Country (CountryName, Continent) VALUES ('Brazil', 'South America');
+  --   ERROR 1062: Duplicate entry 'Brazil' for key 'Country.uq_country_name'
+  SHOW INDEX FROM Country;                      -- a unique index named uq_country_name
+  ALTER TABLE Country DROP INDEX uq_country_name;
+  --  equivalent (MySQL 8.0.19+):  ALTER TABLE Country DROP CONSTRAINT uq_country_name;
+  -- UNIQUE vs PRIMARY KEY: a table has ONE primary key but can have many UNIQUE constraints,
+  -- and a UNIQUE column can hold NULLs (as many as you like), while a primary key column can't.
+  ```
+
+  </details>
+  <!-- /solution -->
+
+- **11.19** Removing a relationship: the shelter has stopped tracking breeds, so the Dog table no longer needs its foreign key to Breed (from 11.9).
+  - Drop the foreign key `fk_dog_breed`. Then run `SHOW CREATE TABLE Dog;`. Something named fk_dog_breed is still there. What is it?
+  - Add the dog (1, 'Biscuit', 99, '2023-04-01'). There is no breed 99. Why does this work now?
+  - Drop the leftover index too, and check with `SHOW INDEX FROM Dog;`.
+
+  *(check: only the PRIMARY index is left)*
+
+  <!-- solution:11.19 -->
+  <details>
+  <summary>Hint</summary>
+
+  - `ALTER TABLE Dog DROP FOREIGN KEY fk_dog_breed;`
+  - When you add a foreign key, MySQL creates an index on that column (if there isn't one already). Dropping the foreign key leaves that index behind.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  ALTER TABLE Dog DROP FOREIGN KEY fk_dog_breed;
+  SHOW CREATE TABLE Dog;                        -- KEY `fk_dog_breed` (`breedID`) is still there: it's the index
+  INSERT INTO Dog VALUES (1, 'Biscuit', 99, '2023-04-01');   -- allowed: nothing checks breedID any more
+  ALTER TABLE Dog DROP INDEX fk_dog_breed;
+  SHOW INDEX FROM Dog;                          -- only PRIMARY
+  ```
+
+  </details>
+  <!-- /solution -->
+
+- **11.20** ON UPDATE CASCADE:
+  - Create **Team**: TeamCode — fixed-length string of 3 chars, primary key; TeamName — variable-length string, max 30, not NULL.
+  - Create **Player**: PlayerID — integer, primary key; Name — variable-length string, max 30, not NULL; TeamCode — fixed-length string of 3 chars, foreign key to Team. **If a team's code changes, its players' TeamCode should change automatically.**
+  - Add the team ('AUS', 'Austin FC') and the players (1, 'Sam Diaz', 'AUS') and (2, 'Lee Park', 'AUS').
+  - The team changes its code from AUS to ATX. Update the Team table only, then look at Player.
+  - Now try the same kind of change on a foreign key that has no ON UPDATE rule: change the genre code 'FIC' to 'FICT' in the Genre table (from 11.7). What happens, and why?
+  - Last, try to delete the ATX team. What stops it?
+
+  *(check: both players now have TeamCode ATX)*
+
+  <!-- solution:11.20 -->
+  <details>
+  <summary>Hint</summary>
+
+  - Put `ON UPDATE CASCADE` on the foreign key, the same way you'd write an ON DELETE rule.
+  - A foreign key with no ON UPDATE (or no ON DELETE) rule uses RESTRICT for it.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  CREATE TABLE Team (
+    TeamCode  CHAR(3) PRIMARY KEY,
+    TeamName  VARCHAR(30) NOT NULL
+  );
+  CREATE TABLE Player (
+    PlayerID  INT PRIMARY KEY,
+    Name      VARCHAR(30) NOT NULL,
+    TeamCode  CHAR(3),
+    FOREIGN KEY (TeamCode) REFERENCES Team(TeamCode) ON UPDATE CASCADE
+  );
+  INSERT INTO Team VALUES ('AUS', 'Austin FC');
+  INSERT INTO Player VALUES (1, 'Sam Diaz', 'AUS'), (2, 'Lee Park', 'AUS');
+  UPDATE Team SET TeamCode = 'ATX' WHERE TeamCode = 'AUS';
+  SELECT * FROM Player;                         -- both players now say ATX (CASCADE)
+  -- Expected to FAIL (Book's foreign key to Genre has no ON UPDATE rule, so it's RESTRICT):
+  --   UPDATE Genre SET GenreCode = 'FICT' WHERE GenreCode = 'FIC';
+  --   ERROR 1451: Cannot delete or update a parent row: a foreign key constraint fails
+  -- Expected to FAIL (Player's foreign key has no ON DELETE rule, so deletes are RESTRICT):
+  --   DELETE FROM Team WHERE TeamCode = 'ATX';
+  --   ERROR 1451: Cannot delete or update a parent row: a foreign key constraint fails
+  -- ON UPDATE and ON DELETE are separate rules. You can give a foreign key both, e.g.
+  --   FOREIGN KEY (TeamCode) REFERENCES Team(TeamCode) ON UPDATE CASCADE ON DELETE SET NULL
   USE d427;
   ```
 
@@ -576,11 +868,20 @@ The data has these unusual rows on purpose:
 > The wording in this section copies the assessment on purpose. Pay attention to phrases like **"if available"** and **"regardless of whether"**. They tell you which table is optional, so they decide which kind of join you need. When a question has neither phrase, the assessment expects an **inner join**, even if it says "for all books."
 
 > [!IMPORTANT]
-> Exercises 12.1 to 12.19 only read data (12.15 creates a view). Exercises 12.20 to 12.22 change data, so do them last.
+> Exercises 12.1 to 12.19 only read data (12.16 creates a view). Exercises 12.20 to 12.22 change data, so do them last.
+
+### Book and YearSales
 
 - **12.1** Write a query to return all data from the Book table without directly referencing any column names. *(13 rows)*
 
   <!-- solution:12.1 -->
+  <details>
+  <summary>Hint</summary>
+
+  - "Without directly referencing any column names" means `*`.
+
+  </details>
+
   <details>
   <summary>Solution</summary>
 
@@ -594,6 +895,13 @@ The data has these unusual rows on purpose:
 - **12.2** Write a query to retrieve the Title and Genre values for all records in the Book table with a Year value of 2018. Make sure your result returns the columns in the order given. *(4 rows)*
 
   <!-- solution:12.2 -->
+  <details>
+  <summary>Hint</summary>
+
+  - List the columns in SELECT in the order asked: Title, then Genre.
+
+  </details>
+
   <details>
   <summary>Solution</summary>
 
@@ -610,6 +918,13 @@ The data has these unusual rows on purpose:
 
   <!-- solution:12.3 -->
   <details>
+  <summary>Hint</summary>
+
+  - `ORDER BY Title ASC`. ASC is the default, but writing it makes your intent clear.
+
+  </details>
+
+  <details>
   <summary>Solution</summary>
 
   ```sql
@@ -624,6 +939,14 @@ The data has these unusual rows on purpose:
 - **12.4** Write a query to output the unique Genre values and the number of books with each genre value from the Book table as GenreCount. Sort the results by Genre in reverse alphabetical order (Z–A). Where does the book with no genre show up? *(6 rows)*
 
   <!-- solution:12.4 -->
+  <details>
+  <summary>Hint</summary>
+
+  - "Unique Genre values and the number of books with each" means GROUP BY Genre with COUNT(*). Name the count with `AS GenreCount`.
+  - Reverse alphabetical order (Z–A) is DESC.
+
+  </details>
+
   <details>
   <summary>Solution</summary>
 
@@ -647,6 +970,13 @@ The data has these unusual rows on purpose:
 
   <!-- solution:12.5 -->
   <details>
+  <summary>Hint</summary>
+
+  - Each part is a one-line query with one aggregate function: COUNT, SUM, or MAX.
+
+  </details>
+
+  <details>
   <summary>Solution</summary>
 
   ```sql
@@ -661,6 +991,14 @@ The data has these unusual rows on purpose:
 - **12.6** Write a query to pull all data for books that cost more than the average cost. Then do the same for books that cost less than the average. Also try `WHERE Cost > AVG(Cost)` and read the error. Why doesn't it work? *(1 row, then 12 rows)*
 
   <!-- solution:12.6 -->
+  <details>
+  <summary>Hint</summary>
+
+  - Compare Cost with a subquery that returns the average: `(SELECT AVG(Cost) FROM Book)`.
+  - WHERE is checked one row at a time, before any average exists. That's why `WHERE Cost > AVG(Cost)` fails.
+
+  </details>
+
   <details>
   <summary>Solution</summary>
 
@@ -683,6 +1021,14 @@ The data has these unusual rows on purpose:
 
   <!-- solution:12.7 -->
   <details>
+  <summary>Hint</summary>
+
+  - "Title (if available)" means Book is the optional side. "For all YearSales" means every YearSales row is kept.
+  - If you write Book first, the table you keep, YearSales, is on the RIGHT.
+
+  </details>
+
+  <details>
   <summary>Solution</summary>
 
   ```sql
@@ -698,6 +1044,13 @@ The data has these unusual rows on purpose:
 - **12.8** Write a query to display both the Title and the TotalSales for all books. Make sure your result returns the columns in the order given. *(11 rows)*
 
   <!-- solution:12.8 -->
+  <details>
+  <summary>Hint</summary>
+
+  - There's no "if available" or "regardless of" wording, so the assessment expects an INNER JOIN.
+
+  </details>
+
   <details>
   <summary>Solution</summary>
 
@@ -716,6 +1069,14 @@ The data has these unusual rows on purpose:
 
   <!-- solution:12.9 -->
   <details>
+  <summary>Hint</summary>
+
+  - "Regardless of whether they had any sales" means YearSales is the optional side, and every book is kept.
+  - Join the two tables on Year.
+
+  </details>
+
+  <details>
   <summary>Solution</summary>
 
   ```sql
@@ -733,6 +1094,13 @@ The data has these unusual rows on purpose:
 
   <!-- solution:12.10 -->
   <details>
+  <summary>Hint</summary>
+
+  - `A RIGHT JOIN B` gives the same rows as `B LEFT JOIN A`. Swap the order of the tables.
+
+  </details>
+
+  <details>
   <summary>Solution</summary>
 
   ```sql
@@ -749,6 +1117,13 @@ The data has these unusual rows on purpose:
 
   <!-- solution:12.11 -->
   <details>
+  <summary>Hint</summary>
+
+  - LEFT JOIN from YearSales to Book, then keep the rows where the Book side is NULL.
+
+  </details>
+
+  <details>
   <summary>Solution</summary>
 
   ```sql
@@ -761,94 +1136,20 @@ The data has these unusual rows on purpose:
   </details>
   <!-- /solution -->
 
-- **12.12** Write a query to display all visas and the name of the passport holder (if available). Display the VisaID and the PassportHolderName. Order by VisaID. *(8 rows)*
-
-  <!-- solution:12.12 -->
-  <details>
-  <summary>Solution</summary>
-
-  ```sql
-  SELECT Visa.VisaID, Passport.PassportHolderName
-  FROM Visa
-  LEFT JOIN Passport ON Visa.PassportID = Passport.PassportID
-  ORDER BY Visa.VisaID;
-  ```
-
-  </details>
-  <!-- /solution -->
-
-- **12.13** Write a query to return the PassportHolderName and VisaType. Unassigned visas should not appear in the results. Sort the results by PassportHolderName. *(6 rows)*
-
-  <!-- solution:12.13 -->
-  <details>
-  <summary>Solution</summary>
-
-  ```sql
-  SELECT Passport.PassportHolderName, Visa.VisaType
-  FROM Passport
-  INNER JOIN Visa ON Visa.PassportID = Passport.PassportID
-  ORDER BY Passport.PassportHolderName;
-  ```
-
-  </details>
-  <!-- /solution -->
-
-- **12.14** Write a query to display each unique VisaType along with the number of visas issued under that type. *(3 rows)*
-
-  <!-- solution:12.14 -->
-  <details>
-  <summary>Solution</summary>
-
-  ```sql
-  SELECT VisaType, COUNT(*) AS VisaCount
-  FROM Visa
-  GROUP BY VisaType;
-  ```
-
-  </details>
-  <!-- /solution -->
-
-- **12.15** Write a statement to create a view called **Visas_2023** that retrieves all visas issued in the year 2023 from the Visa table. Then select everything from the view. Can you write the filter two different ways? *(4 rows)*
-
-  <!-- solution:12.15 -->
-  <details>
-  <summary>Solution</summary>
-
-  ```sql
-  CREATE VIEW Visas_2023 AS
-  SELECT *
-  FROM Visa
-  WHERE YEAR(IssueDate) = 2023;
-  --  equivalent: WHERE IssueDate BETWEEN '2023-01-01' AND '2023-12-31'
-  --  (the BETWEEN form can use an index on IssueDate; wrapping the column in YEAR() can't)
-  SELECT * FROM Visas_2023;
-  ```
-
-  </details>
-  <!-- /solution -->
-
-- **12.16** Show the passports that have no visas. *(1 row)*
-
-  <!-- solution:12.16 -->
-  <details>
-  <summary>Solution</summary>
-
-  ```sql
-  SELECT p.PassportID, p.PassportHolderName
-  FROM Passport p
-  LEFT JOIN Visa v ON v.PassportID = p.PassportID
-  WHERE v.VisaID IS NULL;
-  ```
-
-  </details>
-  <!-- /solution -->
-
-- **12.17** The course guide asks you to know the difference between a **row subquery** and a **table subquery**.
+- **12.12** The course guide asks you to know the difference between a **row subquery** and a **table subquery**.
   - a) Using a **row subquery**, show the Title, Genre, and Year of every book that has the same Genre **and** the same Year as 'Normal People'. Compare both columns at once. *(2 rows)*
   - b) Using a **table subquery**, show the Title and Year of every book published in a year that had more than 50 releases (from YearSales). *(4 rows)*
   - In your own words: what does each kind of subquery return, and how is that different from the scalar subquery you wrote in 12.6?
 
-  <!-- solution:12.17 -->
+  <!-- solution:12.12 -->
+  <details>
+  <summary>Hint</summary>
+
+  - a) Compare two columns at once: `WHERE (Genre, Year) = (subquery)`. The subquery must return exactly one row with two columns.
+  - b) This subquery returns many rows, so use it with IN: `WHERE Year IN (SELECT Year FROM YearSales WHERE ...)`.
+
+  </details>
+
   <details>
   <summary>Solution</summary>
 
@@ -867,11 +1168,142 @@ The data has these unusual rows on purpose:
   </details>
   <!-- /solution -->
 
+### Passport and Visa
+
+- **12.13** Write a query to display all visas and the name of the passport holder (if available). Display the VisaID and the PassportHolderName. Order by VisaID. *(8 rows)*
+
+  <!-- solution:12.13 -->
+  <details>
+  <summary>Hint</summary>
+
+  - "All visas" are kept, and the passport holder's name is the optional ("if available") side.
+  - Two visas have a NULL PassportID. Their name should show as NULL.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT Visa.VisaID, Passport.PassportHolderName
+  FROM Visa
+  LEFT JOIN Passport ON Visa.PassportID = Passport.PassportID
+  ORDER BY Visa.VisaID;
+  ```
+
+  </details>
+  <!-- /solution -->
+
+- **12.14** Write a query to return the PassportHolderName and VisaType. Unassigned visas should not appear in the results. Sort the results by PassportHolderName. *(6 rows)*
+
+  <!-- solution:12.14 -->
+  <details>
+  <summary>Hint</summary>
+
+  - "Unassigned visas should not appear" means you want only the matching rows: an INNER JOIN.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT Passport.PassportHolderName, Visa.VisaType
+  FROM Passport
+  INNER JOIN Visa ON Visa.PassportID = Passport.PassportID
+  ORDER BY Passport.PassportHolderName;
+  ```
+
+  </details>
+  <!-- /solution -->
+
+- **12.15** Write a query to display each unique VisaType along with the number of visas issued under that type. *(3 rows)*
+
+  <!-- solution:12.15 -->
+  <details>
+  <summary>Hint</summary>
+
+  - GROUP BY VisaType, with COUNT(*).
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT VisaType, COUNT(*) AS VisaCount
+  FROM Visa
+  GROUP BY VisaType;
+  ```
+
+  </details>
+  <!-- /solution -->
+
+- **12.16** Write a statement to create a view called **Visas_2023** that retrieves all visas issued in the year 2023 from the Visa table. Then select everything from the view. Can you write the filter two different ways? *(4 rows)*
+
+  <!-- solution:12.16 -->
+  <details>
+  <summary>Hint</summary>
+
+  - `CREATE VIEW Visas_2023 AS SELECT * FROM Visa WHERE ...`
+  - `YEAR(IssueDate)` returns just the year. A date range with BETWEEN works too.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  CREATE VIEW Visas_2023 AS
+  SELECT *
+  FROM Visa
+  WHERE YEAR(IssueDate) = 2023;
+  --  equivalent: WHERE IssueDate BETWEEN '2023-01-01' AND '2023-12-31'
+  --  (the BETWEEN form can use an index on IssueDate; wrapping the column in YEAR() can't)
+  SELECT * FROM Visas_2023;
+  ```
+
+  </details>
+  <!-- /solution -->
+
+- **12.17** Show the passports that have no visas. *(1 row)*
+
+  <!-- solution:12.17 -->
+  <details>
+  <summary>Hint</summary>
+
+  - Same pattern as 12.11: LEFT JOIN, then keep the rows where the Visa side is NULL.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  SELECT p.PassportID, p.PassportHolderName
+  FROM Passport p
+  LEFT JOIN Visa v ON v.PassportID = p.PassportID
+  WHERE v.VisaID IS NULL;
+  ```
+
+  </details>
+  <!-- /solution -->
+
+### student_grades
+
 - **12.18** Using the student_grades table:
   - Write a query to count how many students have each grade (A, B, and C). Name the count gradeCount. *(3 rows)*
   - Add a clause to the query so it shows only the grades that have a count greater than 2. *(1 row)*
 
   <!-- solution:12.18 -->
+  <details>
+  <summary>Hint</summary>
+
+  - The first query is GROUP BY grade, with COUNT(*).
+  - "Only the grades that have a count greater than 2" is a condition on each group's count. Which clause filters groups?
+
+  </details>
+
   <details>
   <summary>Solution</summary>
 
@@ -889,6 +1321,8 @@ The data has these unusual rows on purpose:
   </details>
   <!-- /solution -->
 
+### Compensation
+
 - **12.19** Look at the Compensation table. Before you run anything, predict which names each query returns:
   - `SELECT Name FROM Compensation WHERE Salary = Bonus;`
   - `SELECT Name FROM Compensation WHERE Salary <> Bonus;`
@@ -896,6 +1330,14 @@ The data has these unusual rows on purpose:
   Run them. There are 5 people, but the two results together contain only 2 names. Where did the other three go? *(1 row, then 1 row)*
 
   <!-- solution:12.19 -->
+  <details>
+  <summary>Hint</summary>
+
+  - Any comparison with NULL is UNKNOWN, and WHERE keeps only the rows where the condition is TRUE.
+  - Look at which people have a NULL salary or a NULL bonus.
+
+  </details>
+
   <details>
   <summary>Solution</summary>
 
@@ -913,6 +1355,14 @@ The data has these unusual rows on purpose:
 
   <!-- solution:12.20 -->
   <details>
+  <summary>Hint</summary>
+
+  - `Bonus + 2000` is NULL when Bonus is NULL.
+  - `COALESCE(Bonus, 0)` turns a NULL bonus into 0 before you add to it.
+
+  </details>
+
+  <details>
   <summary>Solution</summary>
 
   ```sql
@@ -927,9 +1377,18 @@ The data has these unusual rows on purpose:
   </details>
   <!-- /solution -->
 
+### Book: changing data
+
 - **12.21** Add the book Circe to the Book table: Genre "No Data", Year 2018, Cost 15.00. Do not give an ID. Then show the books that have no genre. *(2 rows)*
 
   <!-- solution:12.21 -->
+  <details>
+  <summary>Hint</summary>
+
+  - "No Data" means NULL. Write NULL without quotes. `'No Data'` in quotes would store those words.
+
+  </details>
+
   <details>
   <summary>Solution</summary>
 
@@ -949,6 +1408,14 @@ The data has these unusual rows on purpose:
   *(check: 13 rows changed, then 1 row changed; An Atlas of Rare Maps now costs 135.00)*
 
   <!-- solution:12.22 -->
+  <details>
+  <summary>Hint</summary>
+
+  - `SET Cost = Cost + 1` adds to the current value. Use `<=` for "$50 or less".
+  - Circe, the book you added in 12.21, counts too.
+
+  </details>
+
   <details>
   <summary>Solution</summary>
 

@@ -14,6 +14,15 @@ About half of the assessment is multiple choice. These questions cover the conce
   - Which one statement makes every change to a table's structure?
   - Which describes the difference between them: (a) DDL defines structure, DML manages the data inside that structure; (b) DDL manipulates data, DML defines the schema; (c) they are the same thing?
 
+  <!-- solution:13.1 -->
+  <details>
+  <summary>Hint</summary>
+
+  - DDL statements create, change, or remove database objects like tables, views, and indexes. DML statements work with the rows inside tables.
+
+  </details>
+  <!-- /solution -->
+
   <details>
   <summary>Answer</summary>
 
@@ -37,6 +46,16 @@ About half of the assessment is multiple choice. These questions cover the conce
   - i) "number with 3 significant digits and 1 decimal place"
   - j) A 10-digit phone number stored with no symbols. Why is INT a bad choice here?
   - k) Which data type represents numbers with fractional values: Integer, Decimal, Character, or Binary?
+
+  <!-- solution:13.2 -->
+  <details>
+  <summary>Hint</summary>
+
+  - Ask three questions: Is it text, a whole number, or a number with decimals? Is it always the same length? How big can it get?
+  - Whole-number ranges: TINYINT UNSIGNED 0–255, SMALLINT UNSIGNED 0–65,535, MEDIUMINT UNSIGNED 0–16,777,215, INT UNSIGNED 0–4,294,967,295.
+
+  </details>
+  <!-- /solution -->
 
   <details>
   <summary>Answer</summary>
@@ -62,6 +81,15 @@ About half of the assessment is multiple choice. These questions cover the conce
   - The Exam table has exam_id, exam_date, exam_reason, and patient_id. Which column is the primary key, and which is the foreign key?
   - Why is a column like first_name or birthdate a poor primary key?
 
+  <!-- solution:13.3 -->
+  <details>
+  <summary>Hint</summary>
+
+  - A primary key must be different for every row and should never change. A foreign key holds a value of another table's primary key.
+
+  </details>
+  <!-- /solution -->
+
   <details>
   <summary>Answer</summary>
 
@@ -78,6 +106,15 @@ About half of the assessment is multiple choice. These questions cover the conce
   - d) nothing at all (no ON DELETE clause)
   - e) One practice test writes `ON DELETE SET TO NULL`. What does MySQL do with that?
   - f) One practice test also declares `customer_id INT NOT NULL UNIQUE`. What does the UNIQUE say about how many invoices a customer can have?
+
+  <!-- solution:13.4 -->
+  <details>
+  <summary>Hint</summary>
+
+  - CASCADE passes the delete on to the child rows. SET NULL keeps the child rows but clears the link. RESTRICT refuses the delete.
+
+  </details>
+  <!-- /solution -->
 
   <details>
   <summary>Answer</summary>
@@ -98,13 +135,22 @@ About half of the assessment is multiple choice. These questions cover the conce
   - d) A FULL OUTER JOIN B (and does MySQL support FULL OUTER JOIN directly?)
   - e) A CROSS JOIN B, when A has 5 rows and B has 4 rows. How many rows?
 
+  <!-- solution:13.5 -->
+  <details>
+  <summary>Hint</summary>
+
+  - For each join, ask: whose rows are guaranteed to be in the result, even when there's no match on the other side?
+
+  </details>
+  <!-- /solution -->
+
   <details>
   <summary>Answer</summary>
 
   - a) Only the rows in A and B that match the join condition.
   - b) Every row in A, plus the matching rows of B (NULLs where B has no match).
   - c) Every row in B, plus the matching rows of A.
-  - d) Every row from both tables. MySQL does **not** support FULL OUTER JOIN directly. You emulate it with `LEFT JOIN ... UNION ... RIGHT JOIN` (exercise 5.12).
+  - d) Every row from both tables. MySQL does **not** support FULL OUTER JOIN directly. You emulate it with `LEFT JOIN ... UNION ... RIGHT JOIN` (exercise 5.6).
   - e) 5 × 4 = 20 rows.
 
   </details>
@@ -137,6 +183,15 @@ About half of the assessment is multiple choice. These questions cover the conce
 
   How many rows would each of the other four joins return?
 
+  <!-- solution:13.6 -->
+  <details>
+  <summary>Hint</summary>
+
+  - Look at the creators who have no content: Alice, Dan, and Eva. They're in the result with NULL titles. Which table's rows were all kept?
+
+  </details>
+  <!-- /solution -->
+
   <details>
   <summary>Answer</summary>
 
@@ -161,6 +216,16 @@ About half of the assessment is multiple choice. These questions cover the conce
   - f) `SELECT E.LastName, M.LastName FROM Employee E INNER JOIN Employee M ON E.ManagerID = M.EmpID;`
   - g) `SELECT E.LastName, D.DeptName FROM Employee E LEFT JOIN Department D ON E.DeptID = D.DeptID;`
 
+  <!-- solution:13.7 -->
+  <details>
+  <summary>Hint</summary>
+
+  - An outer join uses LEFT, RIGHT, or FULL JOIN. For the first question, it also has to join to a *different* table.
+  - A self-join joins a table to itself, using two aliases.
+
+  </details>
+  <!-- /solution -->
+
   <details>
   <summary>Answer</summary>
 
@@ -179,6 +244,16 @@ About half of the assessment is multiple choice. These questions cover the conce
   - c) "Display the Title (if available) and TotalSales for all YearSales": `FROM Book ___ JOIN YearSales ON ...`
   - d) "List all model IDs, the model type they are assigned, and their hourly fees": `FROM Models ___ JOIN Model_Type ON ...`
 
+  <!-- solution:13.8 -->
+  <details>
+  <summary>Hint</summary>
+
+  - Find the table whose rows must all appear ("all patients", "all YearSales"). Is it on the left or the right of JOIN?
+  - With no "if available" or "regardless" wording, it's INNER.
+
+  </details>
+  <!-- /solution -->
+
   <details>
   <summary>Answer</summary>
 
@@ -194,6 +269,15 @@ About half of the assessment is multiple choice. These questions cover the conce
   - Is a regular (non-materialized) view's data stored on disk? What happens each time you select from it?
   - Does MySQL support materialized views?
   - Why can't you UPDATE rows through a view that uses GROUP BY?
+
+  <!-- solution:13.9 -->
+  <details>
+  <summary>Hint</summary>
+
+  - "Materialized" means the results are actually saved, not worked out again each time.
+
+  </details>
+  <!-- /solution -->
 
   <details>
   <summary>Answer</summary>
@@ -216,6 +300,16 @@ About half of the assessment is multiple choice. These questions cover the conce
   - h) A **bitmap** index works best on columns with many distinct values, like Email.
   - i) When a query returns most of the rows in a table, a full table scan can be faster than using an index.
   - j) In MySQL, `CREATE INDEX` is a DML statement.
+
+  <!-- solution:13.10 -->
+  <details>
+  <summary>Hint</summary>
+
+  - An index is a sorted list of one column's values, each with a pointer to its row. Does the change alter that column's values, or add or remove rows?
+  - Dense means one entry per row. Sparse means one entry per block of rows.
+
+  </details>
+  <!-- /solution -->
 
   <details>
   <summary>Answer</summary>
@@ -247,6 +341,16 @@ About half of the assessment is multiple choice. These questions cover the conce
     - A supplier supplies a part to a project.
   - e) When an ER diagram becomes tables, what does each of these become: an entity, an attribute, a one-to-many relationship, a many-to-many relationship?
 
+  <!-- solution:13.11 -->
+  <details>
+  <summary>Hint</summary>
+
+  - Entities are the nouns you'd store rows for. Words like "two" and "four" tell you how many, not what.
+  - A relationship's degree is how many entity types take part in it: one (unary), two (binary), or three (ternary).
+
+  </details>
+  <!-- /solution -->
+
   <details>
   <summary>Answer</summary>
 
@@ -269,6 +373,16 @@ About half of the assessment is multiple choice. These questions cover the conce
   - c) Which aggregate function gives the number of rows that have a non-NULL value in a given column?
   - d) Why can't an aggregate function appear in a WHERE clause? What do you use instead?
 
+  <!-- solution:13.12 -->
+  <details>
+  <summary>Hint</summary>
+
+  - NULL means "unknown". Comparing anything with an unknown value, or adding to it, gives unknown.
+  - Every aggregate function except COUNT(*) skips NULLs.
+
+  </details>
+  <!-- /solution -->
+
   <details>
   <summary>Answer</summary>
 
@@ -288,6 +402,15 @@ About half of the assessment is multiple choice. These questions cover the conce
   - f) If ORDER BY doesn't say ASC or DESC, the sort order is _____.
   - g) In MySQL, NULLs sort _____ in ascending order.
   - h) `DELETE FROM t;` and `TRUNCATE TABLE t;` both remove every row. Which one can be undone with ROLLBACK?
+
+  <!-- solution:13.13 -->
+  <details>
+  <summary>Hint</summary>
+
+  - All of these words come up in Section 4 and in the practice tests.
+
+  </details>
+  <!-- /solution -->
 
   <details>
   <summary>Answer</summary>

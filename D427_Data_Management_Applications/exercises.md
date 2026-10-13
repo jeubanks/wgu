@@ -1,6 +1,6 @@
 # D427 Data Management – Applications: MySQL Practice
 
-136 exercises that cover the D427 topics: writing queries, using built-in functions, grouping and totals, joins, subqueries, changing data, creating and changing tables, constraints, views, indexes, and turning a database design into tables.
+148 exercises that cover the D427 topics: writing queries, using built-in functions, grouping and totals, joins, subqueries, changing data, creating and changing tables, constraints, views, indexes, and turning a database design into tables.
 
 Parts 3 and 4 are built from the D427 practice tests and the D427 Challenge. Part 5 is a mock assessment that uses the same kind of tables as the lab questions on the real assessment (Horse, Student, and LessonSchedule).
 
@@ -50,11 +50,16 @@ SOURCE /work/setup.sql;
 
 ### How to read each exercise
 
+In Sections 1 to 9 and 12, the exercises are grouped by the table they use, under small headings like **Movie** or **Employee and Department**, so you can stay with one table for a while before moving to the next.
+
 The note in parentheses at the end of an exercise tells you how many rows your query should return. For example, *(12 rows)* means your result should have 12 rows. If you get a different number, look at your query again before you check the solution.
 
 Some exercises change data instead of returning rows. For those, the note in parentheses tells you what to check afterward.
 
-Under every exercise there is a folded **Solution** (or **Answer**). Click it to open it, but write your own answer first.
+Under every exercise there are two folded blocks. Click to open them:
+
+- **Hint** points you to the right clause, function, or trap without giving the answer away. Open it when you're stuck.
+- **Solution** (called **Answer** in the concepts check) shows a worked answer. Write your own answer first.
 
 ## The tables
 
