@@ -56,11 +56,29 @@ These sections change the data and the tables. Do them in order: later exercises
   </details>
   <!-- /solution -->
 
-- **7.3** This exercise shows how a transaction can undo changes:
-  - Start a transaction.
+> [!NOTE]
+> **What is a transaction?** A transaction is a group of changes that MySQL treats as one unit: either all of them are kept, or none of them are.
+>
+> Normally MySQL is in **autocommit** mode: every INSERT, UPDATE, or DELETE is saved permanently the moment it finishes, and there's no undo. A transaction turns that off for a while:
+>
+> | Statement | What it does |
+> |---|---|
+> | `START TRANSACTION;` | Begins a transaction. From here on, your changes are only tentative. You can see them in your own queries, but nothing is saved yet. |
+> | `COMMIT;` | Ends the transaction and saves every change since START TRANSACTION. |
+> | `ROLLBACK;` | Ends the transaction and throws away every change since START TRANSACTION, as if they never happened. |
+>
+> After COMMIT or ROLLBACK, MySQL goes back to autocommit mode until the next START TRANSACTION. (`BEGIN;` is another way to write START TRANSACTION.)
+>
+> Things to know:
+> - A transaction belongs to the connection that started it. Run every step in the **same** console or MySQL session.
+> - Only changes to **rows** (INSERT, UPDATE, DELETE) can be rolled back. Statements that change the **structure**, like CREATE, ALTER, DROP, and TRUNCATE, save immediately and also commit any transaction that's open (exercise 7.14 shows this).
+> - Banks use transactions for exactly this reason: moving money is two UPDATEs (take it from one account, add it to another), and you never want only one of them to happen.
+
+- **7.3** This exercise shows how a transaction can undo changes. Run each step as its own statement, in the same console:
+  - Start a transaction: `START TRANSACTION;`
   - Delete all movies rated R.
-  - Count the movies.
-  - Run `ROLLBACK`.
+  - Count the movies. The R-rated movies are gone, but only tentatively.
+  - Undo everything since START TRANSACTION: `ROLLBACK;`
   - Count the movies again.
 
   *(check: 10 movies during the transaction, 13 after the rollback)*
