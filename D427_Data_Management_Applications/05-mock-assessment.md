@@ -64,10 +64,13 @@ Do this part last, as a timed practice run.
   </details>
   <!-- /solution -->
 
-- **14.3** Add these three instructors:
-  - Dale Evans, hired 2020-04-01, using the default rate
-  - Roy Rogers, hired 2022-09-15, using the default rate
-  - Annie Oakley, hired 2024-06-03, with a rate of 60.00
+- **14.3** Add these three instructors to the **Instructor** table. Dale and Roy use the default rate:
+
+  | ID | FirstName | LastName | HireDate | Rate |
+  |---|---|---|---|---|
+  | *(leave out)* | Dale | Evans | 2020-04-01 | *(leave out)* |
+  | *(leave out)* | Roy | Rogers | 2022-09-15 | *(leave out)* |
+  | *(leave out)* | Annie | Oakley | 2024-06-03 | 60.00 |
 
   <!-- solution:14.3 -->
   <details>

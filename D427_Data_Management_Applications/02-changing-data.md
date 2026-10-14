@@ -8,10 +8,15 @@ These sections change the data and the tables. Do them in order: later exercises
 
 ## 7. Modifying data
 
-
 ### Movie and Rating
 
-- **7.1** Add the movie *Dune* to the Movie table with these values: Genre Sci-Fi, rating PG-13, released in 2021, 155 minutes long, and Gross 108327830. Do not give it an ID. Let MySQL choose the ID. What ID did MySQL give it? *(check: 1 new row)*
+- **7.1** Add this movie to the **Movie** table:
+
+  | ID | Title | Genre | RatingCode | ReleaseYear | Minutes | Gross |
+  |---|---|---|---|---|---|---|
+  | *(leave out)* | Dune | Sci-Fi | PG-13 | 2021 | 155 | 108327830 |
+
+  Don't give an ID; let MySQL choose it. What ID did MySQL give *Dune*? *(check: 1 new row)*
 
   <!-- solution:7.1 -->
   <details>
@@ -138,11 +143,14 @@ These sections change the data and the tables. Do them in order: later exercises
 
 ### Student
 
-- **7.5** Add two students using a single INSERT statement:
-  - Ava Nguyen, who lives in Austin, with the email ava@example.com
-  - Ethan Brooks, who lives in Georgetown, with the email ethan@example.com
+- **7.5** Add these two students to the **Student** table using a single INSERT statement:
 
-  Do not give a value for State. After the insert, look at the two new rows. What State did they get, and why? *(check: 2 new rows)*
+  | FirstName | LastName | City | Email |
+  |---|---|---|---|
+  | Ava | Nguyen | Austin | ava@example.com |
+  | Ethan | Brooks | Georgetown | ethan@example.com |
+
+  Leave out every other column: ID, Street, State, Zip, and Phone. After the insert, look at the two new rows. What State did they get, and why? *(check: 2 new rows)*
 
   <!-- solution:7.5 -->
   <details>
@@ -278,9 +286,15 @@ CREATE TABLE Guest (
 );
 ```
 
-- **7.10** Two ways to write an INSERT:
-  - Add Ana Ruiz from Austin, with 3 visits, **without** a column list. With no column list you must give a value for every column, in the table's order. What do you put for GuestID so MySQL still picks the number?
-  - Add Ben Cho from Dallas **with** a column list, and leave Visits out. What does he get for Visits?
+- **7.10** Two ways to write an INSERT. Add these two guests to the **Guest** table:
+
+  | GuestID | FullName | City | Visits |
+  |---|---|---|---|
+  | *(leave out)* | Ana Ruiz | Austin | 3 |
+  | *(leave out)* | Ben Cho | Dallas | *(leave out)* |
+
+  - Add Ana Ruiz **without** a column list. With no column list you must give a value for every column, in the table's order. What do you put for GuestID so MySQL still picks the number?
+  - Add Ben Cho **with** a column list, and leave Visits out. What does he get for Visits?
   - Try to add a guest with only a City: `INSERT INTO Guest (City) VALUES ('Waco');`. It fails. Why?
   - Try `INSERT INTO Guest VALUES ('Cara Lin', 'Austin', 5);`. It fails too. Why?
 
@@ -320,9 +334,14 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **7.11** Choosing your own AUTO_INCREMENT value:
-  - Add Cara Lin from Austin with 5 visits, and give her GuestID **100** yourself.
-  - Add Dev Patel from Houston without giving an ID. What GuestID does he get, and why not 3?
+- **7.11** Choosing your own AUTO_INCREMENT value. Add these two guests, one at a time:
+
+  | GuestID | FullName | City | Visits |
+  |---|---|---|---|
+  | **100** | Cara Lin | Austin | 5 |
+  | *(leave out)* | Dev Patel | Houston | *(leave out)* |
+
+  You give Cara Lin's GuestID yourself; Dev Patel gets his from MySQL. What GuestID does he get, and why not 3?
 
   *(4 rows)*
 
@@ -415,7 +434,13 @@ CREATE TABLE Guest (
 - **7.14** DELETE versus TRUNCATE. Both remove every row from a table:
   - Start a transaction, run `DELETE FROM Guest;` with **no** WHERE, and count the rows. Then ROLLBACK and count again.
   - Start another transaction, run `TRUNCATE TABLE Guest;`, then ROLLBACK and count again. What's different?
-  - Add Eli Moss from Austin without an ID. What GuestID does he get? What would he have gotten after a DELETE instead?
+  - Add this guest:
+
+    | GuestID | FullName | City | Visits |
+    |---|---|---|---|
+    | *(leave out)* | Eli Moss | Austin | *(leave out)* |
+
+    What GuestID does he get? What would he have gotten after a DELETE instead?
 
   *(check: 0, then 2 after the first rollback; 0 after the TRUNCATE rollback; Eli Moss gets GuestID 1)*
 
@@ -450,7 +475,13 @@ CREATE TABLE Guest (
   <!-- /solution -->
 
 - **7.15** Making changes permanent with COMMIT:
-  - Start a transaction and add two guests: Fay Wong from Dallas with 2 visits, and Gus Hale from Waco with 1 visit.
+  - Start a transaction and add these two guests:
+
+    | GuestID | FullName | City | Visits |
+    |---|---|---|---|
+    | *(leave out)* | Fay Wong | Dallas | 2 |
+    | *(leave out)* | Gus Hale | Waco | 1 |
+
   - Run `COMMIT;`, then run `ROLLBACK;`, then look at the table. Are the two guests still there? Why?
 
   *(3 rows)*
@@ -512,7 +543,6 @@ CREATE TABLE Guest (
 
 ## 8. CREATE / ALTER / DROP
 
-
 ### Song and Playlist
 
 - **8.1** Create a table named **Song** with these columns:
@@ -523,7 +553,14 @@ CREATE TABLE Guest (
   - `Genre`: text up to 20 characters. If no genre is given, it should be 'Pop'.
   - `DurationSec`: a whole number. It must be greater than 0.
 
-  Two songs must not have the same Title **and** the same Artist. After you create the table, add two songs without giving a Genre. Check that both songs got 'Pop' as their Genre. *(2 rows)*
+  Two songs must not have the same Title **and** the same Artist. After you create the table, add these two songs:
+
+  | ID | Title | Artist | ReleaseYear | Genre | DurationSec |
+  |---|---|---|---|---|---|
+  | *(leave out)* | Bohemian Rhapsody | Queen | 1975 | *(leave out)* | 354 |
+  | *(leave out)* | Clocks | Coldplay | 2002 | *(leave out)* | 307 |
+
+  Check that both songs got 'Pop' as their Genre. *(2 rows)*
 
   <!-- solution:8.1 -->
   <details>
@@ -652,7 +689,20 @@ CREATE TABLE Guest (
   - **Playlist**, with the columns ID, Name, and Created (a date).
   - **PlaylistSong**, which connects playlists to songs. It has the columns PlaylistID, SongID, and Position (the song's place in the playlist). Its primary key is made of both PlaylistID and SongID together (a composite primary key).
 
-  If a playlist is deleted, its rows in PlaylistSong should be deleted too. If a song is deleted, its rows in PlaylistSong should also be deleted. After you create the tables, add one playlist that has both songs in it. Then show the songs in the playlist in order by Position. *(2 rows)*
+  If a playlist is deleted, its rows in PlaylistSong should be deleted too. If a song is deleted, its rows in PlaylistSong should also be deleted. After you create the tables, add this playlist to **Playlist**:
+
+  | ID | Name | Created |
+  |---|---|---|
+  | *(leave out)* | Road Trip | 2026-10-01 |
+
+  Then put both songs from 8.1 in it by adding these rows to **PlaylistSong**:
+
+  | PlaylistID | SongID | Position |
+  |---|---|---|
+  | 1 | 1 | 1 |
+  | 1 | 2 | 2 |
+
+  Then show the songs in the playlist in order by Position. *(2 rows)*
 
   <!-- solution:8.6 -->
   <details>
@@ -696,7 +746,13 @@ CREATE TABLE Guest (
 
 - **8.7** This exercise adds a new table and connects it to Movie:
   - Create a table named **Director** with the columns ID and Name.
-  - Add two directors: Denis Villeneuve and Christopher Nolan.
+  - Add these two directors:
+
+    | ID | Name |
+    |---|---|
+    | *(leave out)* | Denis Villeneuve |
+    | *(leave out)* | Christopher Nolan |
+
   - Using **one** `ALTER TABLE` statement, add a `DirectorID` column to the Movie table, and also add a foreign key on that column that points to Director. Give the foreign key a name.
   - Set the director of *Arrival* and *Dune* to Villeneuve, and the director of *Interstellar* to Nolan.
   - Show each of these movies' titles next to its director's name.
@@ -795,7 +851,6 @@ CREATE TABLE Guest (
 
 ## 9. Views and indexes
 
-
 ### LessonSchedule
 
 - **9.1** Create a view named **LessonDetail** with the columns LessonDateTime, Horse (the horse's RegisteredName), FirstName, and LastName. The view must include lesson times that have no student assigned. Then use the view to find the lessons that have no student. *(2 rows)*
@@ -827,7 +882,13 @@ CREATE TABLE Guest (
 
 - **9.2** Change the LessonDetail view so it also shows each horse's **Breed**, right after the Horse column. Use `ALTER VIEW`.
   - Count the rows in LessonDetail.
-  - Add a lesson to the **LessonSchedule table** (not to the view): horse 1, student 1, at 2026-03-01 10:00. Look for it in LessonDetail and count the rows again.
+  - Add this lesson to the **LessonSchedule table** (not to the view):
+
+    | HorseID | StudentID | LessonDateTime |
+    |---|---|---|
+    | 1 | 1 | 2026-03-01 10:00:00 |
+
+    Look for it in LessonDetail and count the rows again.
   - Delete that lesson from LessonSchedule, and count the rows in the view once more.
   - Finally, try `ALTER VIEW NoSuchView AS SELECT 1;` and read the error.
 
@@ -1053,7 +1114,29 @@ CREATE TABLE Guest (
   - An order can contain many **Products**, and a product can appear on many orders. Each product has a name and a unit price. The unit price must be 0 or more.
   - Each time a product appears on an order, it has a quantity. The quantity must be greater than 0.
 
-  You decide the primary keys, the foreign keys, and what should happen when a row is deleted. Then add one customer, two products, and one order that has both products on it. Finally, write a query that calculates the total cost of the order. *(1 row: 20.00)*
+  You decide the primary keys, the foreign keys, and what should happen when a row is deleted. Then add this data. The column names below are the ones the solution uses; use your own if you named your columns differently.
+
+  One customer:
+
+  | Name | Email |
+  |---|---|
+  | Pat Lee | pat@example.com |
+
+  Two products:
+
+  | Name | UnitPrice |
+  |---|---|
+  | Widget | 2.50 |
+  | Gadget | 10.00 |
+
+  One order for Pat Lee, placed on 2026-10-01, with both products on it:
+
+  | Product | Quantity |
+  |---|---|
+  | Widget | 4 |
+  | Gadget | 1 |
+
+  Finally, write a query that calculates the total cost of the order. *(1 row: 20.00)*
 
   <!-- solution:10.1 -->
   <details>

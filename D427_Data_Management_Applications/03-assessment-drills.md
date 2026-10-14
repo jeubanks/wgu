@@ -30,7 +30,19 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   - Height — number with 3 significant digits and 1 decimal place, must be ≥ 10.0 and ≤ 20.0
   - BirthDate — date, must be ≥ Jan 1, 2015
 
-  Add the horse Babe (Quarter Horse, height 15.3, born 2015-02-10) without giving an ID. Then try to add a horse named Goliath (Paint, height 21.0, born 2018-01-01), which should fail. Finally, compare your table with the one `setup.sql` built by running `SHOW CREATE TABLE d427.Horse;`. *(1 row)*
+  Add this horse:
+
+  | ID | RegisteredName | Breed | Height | BirthDate |
+  |---|---|---|---|---|
+  | *(leave out)* | Babe | Quarter Horse | 15.3 | 2015-02-10 |
+
+  Then try to add this one, which should fail:
+
+  | ID | RegisteredName | Breed | Height | BirthDate |
+  |---|---|---|---|---|
+  | *(leave out)* | Goliath | Paint | 21.0 | 2018-01-01 |
+
+  Finally, compare your table with the one `setup.sql` built by running `SHOW CREATE TABLE d427.Horse;`. *(1 row)*
 
   <!-- solution:11.1 -->
   <details>
@@ -78,7 +90,13 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   - Phone — fixed-length string of 10 chars, not NULL
   - Email — variable-length string with max 30 chars, must be unique
 
-  Add the student Rosie Hewitt, 1 Main St, Austin, zip 78701, phone 5125550101, email rosie@example.com. Do not give a State. What State did she get? *(1 row)*
+  Add this student:
+
+  | ID | FirstName | LastName | Street | City | State | Zip | Phone | Email |
+  |---|---|---|---|---|---|---|---|---|
+  | *(leave out)* | Rosie | Hewitt | 1 Main St | Austin | *(leave out)* | 78701 | 5125550101 | rosie@example.com |
+
+  What State did she get? *(1 row)*
 
   <!-- solution:11.2 -->
   <details>
@@ -153,7 +171,13 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   <!-- /solution -->
 
 - **11.4** Test the two foreign key rules from 11.3:
-  - Add two lessons for Babe (horse 1) and Rosie (student 1): one at 2026-03-01 09:00 and one at 2026-03-02 09:00.
+  - Add these two lessons for Babe (horse 1) and Rosie (student 1):
+
+    | HorseID | StudentID | LessonDateTime |
+    |---|---|---|
+    | 1 | 1 | 2026-03-01 09:00:00 |
+    | 1 | 1 | 2026-03-02 09:00:00 |
+
   - Delete Rosie from Student. Look at LessonSchedule.
   - Delete Babe from Horse. Count the lessons.
 
@@ -237,11 +261,17 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
   | CountryName | Continent | PopulationMillions | IndependenceDate |
   |---|---|---|---|
-  | Canada | North America | *(no value)* | 1867-07-01 |
+  | Canada | North America | *NULL* | 1867-07-01 |
   | Brazil | South America | 214.3 | 1822-09-07 |
   | Germany | Europe | 83.2 | 1871-01-18 |
 
-  Then try to add a country named Atlantis on the continent 'Atlantic', which should fail. Why did Canada's missing population **not** break the BETWEEN check? *(3 rows)*
+  Then try to add this country, which should fail:
+
+  | CountryName | Continent |
+  |---|---|
+  | Atlantis | Atlantic |
+
+  Why did Canada's missing population **not** break the BETWEEN check? *(3 rows)*
 
   <!-- solution:11.6 -->
   <details>
@@ -287,7 +317,23 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   - Title — variable-length string, maximum 30 characters
   - GenreCode — variable-length string, maximum 5 characters
 
-  Add the genre ('FIC', 'Fiction') and the book ('Beloved', 'FIC'). Then try to add the book ('Dune', 'SCI'), which should fail. *(1 row)*
+  Add this genre to **Genre** and this book to **Book**:
+
+  | GenreCode | GenreDescription |
+  |---|---|
+  | FIC | Fiction |
+
+  | Title | GenreCode |
+  |---|---|
+  | Beloved | FIC |
+
+  Then try to add this book, which should fail:
+
+  | Title | GenreCode |
+  |---|---|
+  | Dune | SCI |
+
+  *(1 row)*
 
   <!-- solution:11.7 -->
   <details>
@@ -328,7 +374,15 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   - Breed — variable-length string, max 30
   - Birthdate — date
 
-  Add these pets: (1, Rex, Beagle, 2020-05-01), (2, Bella, Poodle, 2021-07-12), (2, Milo, Pug, 2022-02-20). Now write a statement that modifies the Pet table to make PetID the primary key. It fails. Why? Fix the data so Milo has PetID 3, then add the primary key. *(check: `DESCRIBE Pet` shows PRI on PetID)*
+  Add these pets:
+
+  | PetID | Name | Breed | Birthdate |
+  |---|---|---|---|
+  | 1 | Rex | Beagle | 2020-05-01 |
+  | 2 | Bella | Poodle | 2021-07-12 |
+  | 2 | Milo | Pug | 2022-02-20 |
+
+  Now write a statement that modifies the Pet table to make PetID the primary key. It fails. Why? Fix the data so Milo has PetID 3, then add the primary key. *(check: `DESCRIBE Pet` shows PRI on PetID)*
 
   <!-- solution:11.8 -->
   <details>
@@ -403,10 +457,21 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.10** Create the **Department** table: DeptID — integer, primary key; DeptName — variable-length string, max 50; ManagerID — integer. Add the departments (1, 'Sales', 2100) and (2, 'Legal', 1500).
+- **11.10** Create the **Department** table: DeptID — integer, primary key; DeptName — variable-length string, max 50; ManagerID — integer. Add these departments:
+
+  | DeptID | DeptName | ManagerID |
+  |---|---|---|
+  | 1 | Sales | 2100 |
+  | 2 | Legal | 1500 |
+
   - Add a constraint named **MgrIDCheck** that makes sure ManagerID is always 2000 or above. It fails. Why?
   - Change Legal's ManagerID to 2500 and add the constraint again.
-  - Try to add the department (3, 'Finance', 1999). It should fail.
+  - Try to add this department. It should fail:
+
+    | DeptID | DeptName | ManagerID |
+    |---|---|---|
+    | 3 | Finance | 1999 |
+
   - Remove the MgrIDCheck constraint by name, then add Finance again.
 
   *(3 rows)*
@@ -451,7 +516,14 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   - SafetyRating — a positive number that is less than 80 with 1 decimal place
   - EngineSize — a positive decimal value less than or equal to 7.9 with one decimal place
 
-  Add the car (1, 'Toyota', 'Camry', 2024, 79.9, 2.5). Then try to add (2, 'Honda', 'Civic', 2024, 80.0, 2.0), which should fail. If the data type already limits the size, why do you still need a CHECK? *(1 row)*
+  Add the first car, then try to add the second, which should fail:
+
+  | ID | Make | Model | Year | SafetyRating | EngineSize |
+  |---|---|---|---|---|---|
+  | 1 | Toyota | Camry | 2024 | 79.9 | 2.5 |
+  | 2 | Honda | Civic | 2024 | 80.0 | 2.0 |
+
+  If the data type already limits the size, why do you still need a CHECK? *(1 row)*
 
   <!-- solution:11.11 -->
   <details>
@@ -536,7 +608,20 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
   Create the **Exam** table: exam_id — integer, auto increment, primary key; exam_date — date, not NULL; exam_reason — variable-length string with 250 characters; patient_id — integer, not NULL, foreign key to Patient. Name the foreign key `fk_exam_patient`. **A patient who still has exams must not be deletable.**
 
-  Add patients (1, 'Ana', 'Silva', '1990-03-14') and (2, 'Ben', 'Okoro', '1985-11-02'), and one exam for patient 1 on 2026-09-30 for an 'Annual physical'. Then try to delete each patient. *(check: patient 1's delete fails; patient 2's delete works; 1 patient left)*
+  Add these two patients to **Patient**:
+
+  | patient_id | first_name | last_name | birthdate |
+  |---|---|---|---|
+  | 1 | Ana | Silva | 1990-03-14 |
+  | 2 | Ben | Okoro | 1985-11-02 |
+
+  and this exam to **Exam**:
+
+  | exam_id | exam_date | exam_reason | patient_id |
+  |---|---|---|---|
+  | *(leave out)* | 2026-09-30 | Annual physical | 1 |
+
+  Then try to delete each patient. *(check: patient 1's delete fails; patient 2's delete works; 1 patient left)*
 
   <!-- solution:11.13 -->
   <details>
@@ -606,12 +691,20 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   <!-- /solution -->
 
 - **11.15** Add two more students:
-  - Jamal Carter, 22 Oak Ave, Round Rock, zip 78664, phone 5125550102, email jamal@example.com
-  - Priya Nair, 300 Elm Blvd, Austin, zip 78702, phone 5125550103, email priya@example.com
+
+  | ID | FirstName | LastName | Street | City | State | Zip | Phone | Email |
+  |---|---|---|---|---|---|---|---|---|
+  | *(leave out)* | Jamal | Carter | 22 Oak Ave | Round Rock | *(leave out)* | 78664 | 5125550102 | jamal@example.com |
+  | *(leave out)* | Priya | Nair | 300 Elm Blvd | Austin | *(leave out)* | 78702 | 5125550103 | priya@example.com |
 
   Then:
   - Create a **unique index** named `idx_student_phone` on the Phone column.
-  - Try to add a student with Jamal's phone number. It should fail.
+  - Try to add this student, who has Jamal's phone number. It should fail:
+
+    | FirstName | LastName | Street | City | Zip | Phone |
+    |---|---|---|---|---|---|
+    | Noah | Kim | 12 Maple Dr | Round Rock | 78665 | 5125550102 |
+
   - Run `SHOW INDEX FROM Student;`. Which index did MySQL create for you because Email is UNIQUE?
   - Drop `idx_student_phone`.
 
@@ -677,8 +770,19 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
 - **11.17** Changing a primary key:
   - Create the **CourseSection** table: CourseCode — fixed-length string of 6 chars, primary key; Section — integer from 0 to 255, not NULL; Room — variable-length string, max 10.
-  - Add the sections ('D427', 1, 'A101') and ('C175', 1, 'B205').
-  - Now try to add a second section of D427: ('D427', 2, 'A102'). It fails. Why?
+  - Add these sections:
+
+    | CourseCode | Section | Room |
+    |---|---|---|
+    | D427 | 1 | A101 |
+    | C175 | 1 | B205 |
+
+  - Now try to add a second section of D427. It fails. Why?
+
+    | CourseCode | Section | Room |
+    |---|---|---|
+    | D427 | 2 | A102 |
+
   - The primary key is wrong: a course can have many sections, so the key should be CourseCode **and** Section together. Change the primary key in **one** ALTER TABLE statement, then add the second D427 section again.
   - Finally, try `ALTER TABLE Horse DROP PRIMARY KEY;` and read the error. What is different about Horse's primary key?
 
@@ -758,7 +862,12 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
 - **11.19** Removing a relationship: the shelter has stopped tracking breeds, so the Dog table no longer needs its foreign key to Breed (from 11.9).
   - Drop the foreign key `fk_dog_breed`. Then run `SHOW CREATE TABLE Dog;`. Something named fk_dog_breed is still there. What is it?
-  - Add the dog (1, 'Biscuit', 99, '2023-04-01'). There is no breed 99. Why does this work now?
+  - Add this dog. There is no breed 99. Why does this work now?
+
+    | dogID | name | breedID | birthdate |
+    |---|---|---|---|
+    | 1 | Biscuit | 99 | 2023-04-01 |
+
   - Drop the leftover index too, and check with `SHOW INDEX FROM Dog;`.
 
   *(check: only the PRIMARY index is left)*
@@ -789,7 +898,17 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 - **11.20** ON UPDATE CASCADE:
   - Create **Team**: TeamCode — fixed-length string of 3 chars, primary key; TeamName — variable-length string, max 30, not NULL.
   - Create **Player**: PlayerID — integer, primary key; Name — variable-length string, max 30, not NULL; TeamCode — fixed-length string of 3 chars, foreign key to Team. **If a team's code changes, its players' TeamCode should change automatically.**
-  - Add the team ('AUS', 'Austin FC') and the players (1, 'Sam Diaz', 'AUS') and (2, 'Lee Park', 'AUS').
+  - Add this team to **Team** and these players to **Player**:
+
+    | TeamCode | TeamName |
+    |---|---|
+    | AUS | Austin FC |
+
+    | PlayerID | Name | TeamCode |
+    |---|---|---|
+    | 1 | Sam Diaz | AUS |
+    | 2 | Lee Park | AUS |
+
   - The team changes its code from AUS to ATX. Update the Team table only, then look at Player.
   - Now try the same kind of change on a foreign key that has no ON UPDATE rule: change the genre code 'FIC' to 'FICT' in the Genre table (from 11.7). What happens, and why?
   - Last, try to delete the ATX team. What stops it?
@@ -1379,7 +1498,13 @@ The data has these unusual rows on purpose:
 
 ### Book: changing data
 
-- **12.21** Add the book Circe to the Book table: Genre "No Data", Year 2018, Cost 15.00. Do not give an ID. Then show the books that have no genre. *(2 rows)*
+- **12.21** Add this book to the **Book** table. Its genre is "No Data":
+
+  | ID | Title | Genre | Year | Cost |
+  |---|---|---|---|---|
+  | *(leave out)* | Circe | *NULL* | 2018 | 15.00 |
+
+  Then show the books that have no genre. *(2 rows)*
 
   <!-- solution:12.21 -->
   <details>
