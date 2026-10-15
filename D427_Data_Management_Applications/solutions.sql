@@ -1426,6 +1426,7 @@ SELECT Title, Cost FROM Book ORDER BY Cost DESC LIMIT 3;
 -- [13.2]
 -- Hint: Ask three questions: Is it text, a whole number, or a number with decimals? Is it always the same length? How big can it get?
 -- Hint: Whole-number ranges: TINYINT UNSIGNED 0–255, SMALLINT UNSIGNED 0–65,535, MEDIUMINT UNSIGNED 0–16,777,215, INT UNSIGNED 0–4,294,967,295.
+-- Hint: A range that goes below 0 needs a signed type (leave out UNSIGNED). Signed TINYINT is -128 to 127.
 
 -- [13.3]
 -- Hint: A primary key must be different for every row and should never change. A foreign key holds a value of another table's primary key.

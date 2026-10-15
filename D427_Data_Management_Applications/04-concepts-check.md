@@ -80,10 +80,13 @@ About half of the assessment is multiple choice. These questions cover the conce
   | **h)** | The date and time a lesson starts | |
   | **i)** | "number with 3 significant digits and 1 decimal place" | |
   | **j)** | A 10-digit phone number stored with no symbols. Also say why INT is a bad choice. | |
+  | **k)** | "integer with range 0 to 4 billion" | |
+  | **l)** | "integer with range -128 to 127" | |
+  | **m)** | "integer with range 0 to 300" | |
 
-  <!-- answer:13.2a-j table: VARCHAR(56); CHAR(2); DECIMAL(6,2) | NUMERIC(6,2); TINYINT UNSIGNED; SMALLINT UNSIGNED; MEDIUMINT UNSIGNED; DATE; DATETIME | TIMESTAMP; DECIMAL(3,1) | NUMERIC(3,1); CHAR(10) -->
+  <!-- answer:13.2a-m table: VARCHAR(56); CHAR(2); DECIMAL(6,2) | NUMERIC(6,2); TINYINT UNSIGNED; SMALLINT UNSIGNED; MEDIUMINT UNSIGNED; DATE; DATETIME | TIMESTAMP; DECIMAL(3,1) | NUMERIC(3,1); CHAR(10); INT UNSIGNED | INTEGER UNSIGNED; TINYINT | TINYINT SIGNED; SMALLINT UNSIGNED -->
 
-  **k)** Which data type represents numbers with fractional values?
+  **n)** Which data type represents numbers with fractional values?
 
   A. Integer
 
@@ -93,7 +96,7 @@ About half of the assessment is multiple choice. These questions cover the conce
 
   D. Binary
 
-  <!-- answer:13.2k choice: B -->
+  <!-- answer:13.2n choice: B -->
 
   <!-- solution:13.2 -->
   <details>
@@ -101,6 +104,7 @@ About half of the assessment is multiple choice. These questions cover the conce
 
   - Ask three questions: Is it text, a whole number, or a number with decimals? Is it always the same length? How big can it get?
   - Whole-number ranges: TINYINT UNSIGNED 0–255, SMALLINT UNSIGNED 0–65,535, MEDIUMINT UNSIGNED 0–16,777,215, INT UNSIGNED 0–4,294,967,295.
+  - A range that goes below 0 needs a signed type (leave out UNSIGNED). Signed TINYINT is -128 to 127.
 
   </details>
   <!-- /solution -->
@@ -120,7 +124,10 @@ About half of the assessment is multiple choice. These questions cover the conce
   | h | `DATETIME` | `TIMESTAMP` also stores a date and time. |
   | i | `DECIMAL(3,1)` | Precision 3 = total digits, scale 1 = digits after the point (max 99.9). |
   | j | `CHAR(10)` | You never do math on a phone number, INT drops leading zeros, and 5125550101 is bigger than INT's maximum (2,147,483,647). |
-  | k | **B.** Decimal | |
+  | k | `INT UNSIGNED` | 0 to 4,294,967,295. MEDIUMINT UNSIGNED stops at about 16.7 million. |
+  | l | `TINYINT` | Signed, because the range goes below 0. -128 to 127 is exactly TINYINT's range. |
+  | m | `SMALLINT UNSIGNED` | 300 is past TINYINT UNSIGNED's 255, so it takes the next size up. |
+  | n | **B.** Decimal | |
 
   </details>
 

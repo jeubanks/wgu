@@ -8,7 +8,7 @@ hidden HTML comment, right after the part, with a machine-readable key:
     <!-- answer:13.6b blanks: INNER => 3; RIGHT => 5 -->       labelled text boxes
     <!-- answer:13.13c blanks: CONCAT() | CONCAT -->           one unlabelled text box
     <!-- answer:13.10a-j table [True, False]: True; False; ... -->
-    <!-- answer:13.2a-j table: VARCHAR(56); CHAR(2); ... -->   text boxes
+    <!-- answer:13.2a-m table: VARCHAR(56); CHAR(2); ... -->   text boxes
     <!-- answer:13.3c written -->                     write, then mark yourself
 
 - `blanks` entries are separated by `;`. Each is `Label [options] => answers`;
