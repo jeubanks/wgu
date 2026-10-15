@@ -40,36 +40,18 @@ ORDER BY Gross DESC
 LIMIT 3;
 
 -- [1.5]
--- Hint: `LIMIT 3` keeps the first 3 rows. `LIMIT 3 OFFSET 3` skips the first 3, then keeps the next 3.
--- Hint: In descending order, MySQL puts NULLs last.
-SELECT Title, Gross
-FROM Movie
-ORDER BY Gross DESC
-LIMIT 3 OFFSET 3;                 -- also written  LIMIT 3, 3  (offset first, then count)
--- The NULL Gross sorts last in DESC order, so it would be 12th.
-
--- [1.6]
 -- Hint: Filter with WHERE and `>`. Write the number without the comma: 150000.
 SELECT FirstName, LastName, Salary
 FROM Employee
 WHERE Salary > 150000;
 
--- [1.7]
+-- [1.6]
 -- Hint: `CONCAT(a, ' ', b)` joins strings together, and `ROUND(x, 2)` rounds to 2 decimal places.
 -- Hint: Name each expression with `AS`. You can sort by that name in ORDER BY.
 SELECT CONCAT(FirstName, ' ', LastName) AS FullName,
        ROUND(Salary / 12, 2)            AS MonthlyPay
 FROM Employee
 ORDER BY MonthlyPay DESC;   -- aliases are allowed in ORDER BY (not in WHERE)
-
--- [1.8]
--- Hint: An alias with a space must be in quotes: `AS "Last Name"`. MySQL also accepts backticks around the name.
-SELECT LastName AS "Last Name",
-       Salary   AS "Annual Salary"
-FROM Employee
-ORDER BY Salary DESC;
--- Quoted aliases are fine for display, but you'd have to quote them every time you use them,
--- so most people use names like LastName or Annual_Salary instead.
 
 -- =====================================================================
 -- 2. Filtering: comparison, BETWEEN, IN, LIKE, NULL, AND/OR
@@ -156,51 +138,36 @@ FROM Student
 WHERE Phone IS NOT NULL;
 
 -- [3.3]
--- Hint: `LEFT(text, n)` returns the first n characters and `RIGHT(text, n)` the last n.
 -- Hint: `REPLACE(text, 'find', 'replace with')` changes every match. `TRIM()` removes spaces from both ends.
-SELECT FirstName, LastName,
-       CONCAT(LEFT(FirstName, 1), LEFT(LastName, 1))  AS Initials,
-       RIGHT(Phone, 4)                                 AS PhoneLast4,
+SELECT LOWER(LastName) AS LastLower,
        REPLACE(Email, '@example.com', '@stable.example') AS NewEmail
 FROM Student
-WHERE Phone IS NOT NULL;
+WHERE Email IS NOT NULL;
 SELECT CONCAT('[', TRIM('   Round Rock  '), ']') AS Trimmed,     -- [Round Rock]
        CONCAT('[', '   Round Rock  ', ']')       AS NotTrimmed;  -- [   Round Rock  ]
 -- TRIM removes spaces at the start and end only, never the space inside "Round Rock".
--- (LTRIM and RTRIM remove them from just one side.)
 
 -- [3.4]
--- Hint: ORDER BY can sort on an expression. Make a CASE that returns 0 for TX and 1 for everything else, and sort by it first.
--- Hint: `ORDER BY State` sorts alphabetically, and NM and OK come before TX.
-SELECT FirstName, LastName, State
-FROM Student
-ORDER BY CASE WHEN State = 'TX' THEN 0 ELSE 1 END,
-         LastName;
-
--- [3.5]
 -- Hint: `TIMESTAMPDIFF(YEAR, start, end)` counts the whole years between two dates. Use '2026-10-01' as the end date.
 SELECT FirstName, LastName, HireDate,
        TIMESTAMPDIFF(YEAR, HireDate, '2026-10-01') AS YearsOfService
 FROM Employee
 ORDER BY YearsOfService DESC;
 
--- [3.6]
+-- [3.5]
 -- Hint: `DATEDIFF(later, earlier)` returns the number of days between two dates.
--- Hint: `DATE_ADD(date, INTERVAL 90 DAY)` adds days. MONTH() returns the month as a number from 1 to 12.
+-- Hint: MONTH() returns the month as a number from 1 to 12, so June to August is 6 to 8.
 SELECT FirstName, LastName, HireDate,
-       DATEDIFF('2026-10-01', HireDate)    AS DaysEmployed,
-       DATE_ADD(HireDate, INTERVAL 90 DAY) AS ReviewDate,
-       MONTHNAME(HireDate)                 AS HireMonth
+       DATEDIFF('2026-10-01', HireDate) AS DaysEmployed
 FROM Employee
 WHERE HireDate >= '2019-01-01'
 ORDER BY HireDate;
 SELECT FirstName, LastName, HireDate
 FROM Employee
 WHERE MONTH(HireDate) BETWEEN 6 AND 8;
--- DATE_SUB(date, INTERVAL n DAY) goes backward. INTERVAL also works with MONTH and YEAR,
--- and DAY(date) returns the day of the month.
+-- YEAR() and DAY() work the same way.
 
--- [3.7]
+-- [3.6]
 -- Hint: `DATE()`, `TIME()`, and `DAYNAME()` each take a DATETIME value and return one part of it.
 SELECT HorseID,
        DATE(LessonDateTime)      AS LessonDate,
@@ -209,7 +176,7 @@ SELECT HorseID,
 FROM LessonSchedule
 ORDER BY LessonDateTime;
 
--- [3.8]
+-- [3.7]
 -- Hint: Use a `CASE WHEN ... THEN ... ELSE ... END` expression.
 -- Hint: CASE uses the first WHEN that is true, so check for NULL first.
 SELECT Title, Minutes,
@@ -221,7 +188,7 @@ SELECT Title, Minutes,
        END AS LengthClass
 FROM Movie;
 
--- [3.9]
+-- [3.8]
 -- Hint: In the simple form, the column goes right after CASE, and each WHEN gives just a value: `CASE RatingCode WHEN 'G' THEN 'Everyone' ...`.
 -- Hint: The simple form compares with `=`, and NULL = NULL is never true.
 SELECT Title, RatingCode,
@@ -238,32 +205,18 @@ SELECT CASE NULL WHEN NULL THEN 'matched' ELSE 'no match' END;   -- 'no match'
 -- RatingCode = NULL, which is never true, so the NULL rating has to be caught by ELSE
 -- (or by the searched form: CASE WHEN RatingCode IS NULL THEN ...).
 
--- [3.10]
+-- [3.9]
 -- Hint: `COALESCE(col, 'something')` returns 'something' when col is NULL. (`IFNULL` works the same way.)
 SELECT Title, COALESCE(Genre, 'Unclassified') AS Genre   -- IFNULL(Genre,'Unclassified') also fine
 FROM Movie;
 
--- [3.11]
+-- [3.10]
 -- Hint: Divide by 1000000, then round with `ROUND(..., 1)`.
 -- Hint: Leave out the NULL gross with `IS NOT NULL`.
 SELECT Title, ROUND(Gross / 1000000, 1) AS GrossMillions
 FROM Movie
 WHERE Gross IS NOT NULL
 ORDER BY GrossMillions DESC;
-
--- [3.12]
--- Hint: FLOOR rounds down to a whole number and CEIL rounds up. `MOD(a, b)` is the remainder when you divide a by b.
--- Hint: ABS removes the minus sign, so ABS(Minutes - 120) is the distance either way.
-SELECT Title, Minutes,
-       FLOOR(Minutes / 60)  AS Hours,
-       MOD(Minutes, 60)     AS ExtraMinutes,
-       CEIL(Minutes / 60)   AS BilledHours,
-       ABS(Minutes - 120)   AS OffFrom2Hours
-FROM Movie
-WHERE Minutes IS NOT NULL
-ORDER BY Minutes;
-SELECT 7 / 2, 7 DIV 2, MOD(7, 2);    -- 3.5000, 3, 1:  "/" keeps decimals, DIV drops them
--- POW(2, 10) = 1024 and SQRT(144) = 12 are two more you may see.
 
 -- =====================================================================
 -- 4. Aggregates, GROUP BY, HAVING
@@ -331,18 +284,6 @@ GROUP BY DeptID
 HAVING COUNT(*) >= 2;               -- 5 rows
 
 -- [4.8]
--- Hint: Inside SUM, a CASE that returns 1 or 0 counts the rows that match: `SUM(CASE WHEN Salary >= 100000 THEN 1 ELSE 0 END)`.
-SELECT DeptID,
-       SUM(CASE WHEN Salary >= 100000 THEN 1 ELSE 0 END) AS Over100k,
-       SUM(CASE WHEN Salary <  100000 THEN 1 ELSE 0 END) AS Under100k,
-       COUNT(*)                                           AS Total
-FROM Employee
-GROUP BY DeptID
-ORDER BY DeptID;
--- MySQL also lets you write SUM(Salary >= 100000), because a true comparison counts as 1,
--- but the CASE form works in every database.
-
--- [4.9]
 -- Hint: "Two or more lessons" is a count of each horse's lessons. You only know it after you GROUP BY HorseID.
 -- Hint: So the condition goes in HAVING, not WHERE.
 SELECT HorseID, COUNT(*) AS Lessons
@@ -352,7 +293,7 @@ HAVING COUNT(*) >= 2;
 -- "two or more lessons" is a COUNT per horse, which only exists after GROUP BY, so it's HAVING.
 -- WHERE COUNT(*) >= 2 fails with ERROR 1111 (Invalid use of group function).
 
--- [4.10]
+-- [4.9]
 -- Hint: You can GROUP BY two columns: `GROUP BY State, City`.
 SELECT State, City, COUNT(*) AS Students
 FROM Student
@@ -407,22 +348,12 @@ JOIN Department md ON m.DeptID    = md.DeptID
 WHERE e.DeptID <> m.DeptID;
 
 -- [5.6]
--- Hint: Combine a LEFT JOIN and a RIGHT JOIN of the same two tables with `UNION`.
--- Hint: UNION removes duplicate rows, so employees who appear in both halves show up only once.
--- MySQL has no FULL OUTER JOIN; emulate it with LEFT JOIN UNION RIGHT JOIN.
-SELECT e.FirstName, e.LastName, d.DeptName
-FROM Employee e LEFT JOIN Department d ON e.DeptID = d.DeptID
-UNION
-SELECT e.FirstName, e.LastName, d.DeptName
-FROM Employee e RIGHT JOIN Department d ON e.DeptID = d.DeptID;
-
--- [5.7]
 -- Hint: "Include movies that have no rating" means every movie is kept. Put Movie on the left of a LEFT JOIN.
 SELECT m.Title, r.RatingDescription
 FROM Movie m
 LEFT JOIN Rating r ON m.RatingCode = r.RatingCode;
 
--- [5.8]
+-- [5.7]
 -- Hint: LEFT JOIN from Rating to Movie. A rating that no movie uses gets NULL in every Movie column.
 -- Hint: Keep only those rows with `WHERE m.ID IS NULL`.
 SELECT r.RatingCode, r.RatingDescription
@@ -430,7 +361,7 @@ FROM Rating r
 LEFT JOIN Movie m ON m.RatingCode = r.RatingCode
 WHERE m.ID IS NULL;
 
--- [5.9]
+-- [5.8]
 -- Hint: You need three tables: LessonSchedule in the middle, joined to Horse and to Student.
 -- Hint: Inner joins drop the lesson whose StudentID is NULL, which is what you want here.
 SELECT ls.LessonDateTime, h.RegisteredName, s.FirstName, s.LastName
@@ -439,7 +370,7 @@ INNER JOIN Horse   h ON ls.HorseID   = h.ID
 INNER JOIN Student s ON ls.StudentID = s.ID
 ORDER BY ls.LessonDateTime, h.RegisteredName;
 
--- [5.10]
+-- [5.9]
 -- Hint: Change only the join to Student. Which side of that join has to be kept?
 SELECT ls.LessonDateTime, h.RegisteredName, s.FirstName, s.LastName
 FROM LessonSchedule ls
@@ -447,31 +378,17 @@ INNER JOIN Horse   h ON ls.HorseID   = h.ID
 LEFT  JOIN Student s ON ls.StudentID = s.ID
 ORDER BY ls.LessonDateTime, h.RegisteredName;
 
--- [5.11]
+-- [5.10]
 -- Hint: LEFT JOIN Horse to LessonSchedule, then keep the rows where the lesson side is NULL.
 SELECT h.ID, h.RegisteredName
 FROM Horse h
 LEFT JOIN LessonSchedule ls ON ls.HorseID = h.ID
 WHERE ls.HorseID IS NULL;
 
--- [5.12]
+-- [5.11]
 -- Hint: A cross join has no ON clause. Count the rows it returns with `COUNT(*)`.
 SELECT COUNT(*) AS Pairings
 FROM Horse CROSS JOIN Student;     -- 10 horses x 8 students = 80
-
--- [5.13]
--- Hint: `SELECT ... UNION SELECT ...` stacks the two results. Both SELECTs must return the same number of columns.
--- Hint: UNION removes duplicate rows; UNION ALL keeps them all.
-SELECT City FROM Student
-UNION
-SELECT Location FROM Department;          -- 8 rows: each city once (NULL counts as one value)
-SELECT City FROM Student
-UNION ALL
-SELECT Location FROM Department;          -- 14 rows: 8 students + 6 departments
--- Expected to FAIL (the two SELECTs return different numbers of columns):
---   SELECT City FROM Student UNION SELECT Location, DeptName FROM Department;
---   ERROR 1222: The used SELECT statements have a different number of columns
--- The column names come from the first SELECT, so the result's column is called City.
 
 -- =====================================================================
 -- 6. Subqueries
@@ -492,48 +409,25 @@ WHERE e.Salary > (SELECT AVG(e2.Salary)
                   WHERE e2.DeptID = e.DeptID);     -- correlated: re-evaluated per row
 
 -- [6.3]
--- Hint: Compare each employee's salary with the MAX salary in their own department. This is a correlated subquery, like 6.2.
--- Hint: Join Department to get the department name.
-SELECT d.DeptName, e.FirstName, e.LastName, e.Salary
-FROM Employee e
-JOIN Department d ON e.DeptID = d.DeptID
-WHERE e.Salary = (SELECT MAX(e2.Salary) FROM Employee e2 WHERE e2.DeptID = e.DeptID)
-ORDER BY e.Salary DESC;
-
--- [6.4]
--- Hint: First write a query that returns each DeptID with its SUM(Salary). Then put that query in FROM, as a derived table.
--- Hint: A derived table must have an alias, like `AS t`.
-SELECT t.DeptID, t.Payroll
-FROM (SELECT DeptID, SUM(Salary) AS Payroll
-      FROM Employee
-      WHERE DeptID IS NOT NULL
-      GROUP BY DeptID) AS t                  -- derived tables MUST have an alias
-WHERE t.Payroll > (SELECT AVG(Payroll)
-                   FROM (SELECT SUM(Salary) AS Payroll
-                         FROM Employee
-                         WHERE DeptID IS NOT NULL
-                         GROUP BY DeptID) AS t2);
-
--- [6.5]
 -- Hint: EXISTS is true when its subquery returns at least one row. The subquery has to match employees to the outer query's department.
 SELECT d.DeptName
 FROM Department d
 WHERE EXISTS (SELECT 1 FROM Employee e
               WHERE e.DeptID = d.DeptID AND e.HireDate > '2020-01-01');
 
--- [6.6]
+-- [6.4]
 -- Hint: The subquery needs its own WHERE, so it averages only the Sci-Fi movies.
 SELECT Title, Genre, Minutes
 FROM Movie
 WHERE Minutes > (SELECT AVG(Minutes) FROM Movie WHERE Genre = 'Sci-Fi');
 
--- [6.7]
+-- [6.5]
 -- Hint: The subquery returns the list of StudentIDs that appear in LessonSchedule.
 SELECT ID, FirstName, LastName
 FROM Student
 WHERE ID IN (SELECT StudentID FROM LessonSchedule);
 
--- [6.8]
+-- [6.6]
 -- Hint: One lesson has no student, so the subquery's list contains a NULL. `x NOT IN (1, 2, NULL)` can never be TRUE.
 -- Hint: Fix 1: leave the NULL out inside the subquery. Fix 2: use `NOT EXISTS` with a subquery that matches on the student's ID.
 -- The trap: this returns ZERO rows, because LessonSchedule.StudentID contains a NULL.
@@ -552,7 +446,7 @@ FROM Student s
 WHERE NOT EXISTS (SELECT 1 FROM LessonSchedule ls WHERE ls.StudentID = s.ID);
 
 -- =====================================================================
--- 7. Modifying data: INSERT, UPDATE, DELETE, transactions
+-- 7. Modifying data: INSERT, UPDATE, DELETE
 -- =====================================================================
 -- [7.1]
 -- Hint: List the columns you are filling in. If you leave ID out, MySQL assigns the next number.
@@ -568,14 +462,6 @@ WHERE Genre IS NULL;
 SELECT ID, Title, Genre, ReleaseYear FROM Movie WHERE ID = 12;
 
 -- [7.3]
--- Hint: `START TRANSACTION;` begins the transaction. Changes aren't permanent until `COMMIT`, and `ROLLBACK` undoes them.
-START TRANSACTION;
-DELETE FROM Movie WHERE RatingCode = 'R';
-SELECT COUNT(*) AS DuringTxn FROM Movie;    -- 10
-ROLLBACK;
-SELECT COUNT(*) AS AfterRollback FROM Movie; -- 13 again
-
--- [7.4]
 -- Hint: Rating is the parent table and Movie is the child table. Which one does each statement break?
 -- Hint: Errors 1451 and 1452 are both foreign key errors. Read which one talks about a parent row and which one about a child row.
 -- Expected to FAIL - run it to see the error, then move on:
@@ -586,7 +472,7 @@ SELECT COUNT(*) AS AfterRollback FROM Movie; -- 13 again
 --   INSERT INTO Movie (Title, RatingCode) VALUES ('Bad', 'XX');
 SELECT COUNT(*) AS PGStillThere FROM Rating WHERE RatingCode = 'PG';
 
--- [7.5]
+-- [7.4]
 -- Hint: One INSERT can add several rows: `VALUES (...), (...)`.
 -- Hint: Leave State out of the column list, and MySQL uses its DEFAULT.
 INSERT INTO Student (FirstName, LastName, City, Email) VALUES
@@ -594,7 +480,7 @@ INSERT INTO Student (FirstName, LastName, City, Email) VALUES
   ('Ethan', 'Brooks', 'Georgetown', 'ethan@example.com');
 SELECT ID, FirstName, LastName, City, State FROM Student WHERE ID > 8;  -- State = 'TX' (DEFAULT)
 
--- [7.6]
+-- [7.5]
 -- Hint: Raise the salary with `SET Salary = Salary * 1.05`.
 -- Hint: Find the DeptID with a subquery on Department: `WHERE DeptID = (SELECT DeptID FROM Department WHERE ...)`.
 UPDATE Employee
@@ -602,25 +488,25 @@ SET Salary = Salary * 1.05
 WHERE DeptID = (SELECT DeptID FROM Department WHERE DeptName = 'Support');
 SELECT FirstName, LastName, Salary FROM Employee WHERE DeptID = 30;
 
--- [7.7]
+-- [7.6]
 -- Hint: Compare LessonDateTime with '2026-02-02'. A date with no time means midnight at the start of that day.
 DELETE FROM LessonSchedule
 WHERE LessonDateTime < '2026-02-02';
 SELECT COUNT(*) AS LessonsLeft FROM LessonSchedule;     -- 12 - 2 = 10
 
--- [7.8]
+-- [7.7]
 -- Hint: Look at the HorseID foreign key with `SHOW CREATE TABLE LessonSchedule;`. What does its ON DELETE say?
 SELECT COUNT(*) AS MidnightLessons FROM LessonSchedule WHERE HorseID = 9;   -- 1
 DELETE FROM Horse WHERE ID = 9;
 SELECT COUNT(*) AS MidnightLessons FROM LessonSchedule WHERE HorseID = 9;   -- 0  (ON DELETE CASCADE)
 
--- [7.9]
--- Hint: Same idea as 7.8, but look at the ON DELETE rule for StudentID.
+-- [7.8]
+-- Hint: Same idea as 7.7, but look at the ON DELETE rule for StudentID.
 -- Hint: One lesson already had no student before you started.
 DELETE FROM Student WHERE ID = 2;
 SELECT * FROM LessonSchedule WHERE StudentID IS NULL;    -- Jamal's 2/4 lesson now has NULL (SET NULL)
 
--- [7.10]
+-- [7.9]
 -- Hint: With no column list, the VALUES must cover every column, in the order the table defines them. Writing NULL (or DEFAULT) for an AUTO_INCREMENT column lets MySQL choose the number.
 -- Hint: A column you leave out of the column list gets its DEFAULT. A NOT NULL column with no DEFAULT can't be left out.
 CREATE TABLE Guest (
@@ -640,72 +526,40 @@ SELECT * FROM Guest;
 --   ERROR 1136: Column count doesn't match value count at row 1
 -- Listing the columns is safer: the INSERT still works if someone adds a column to the table later.
 
--- [7.11]
+-- [7.10]
 -- Hint: You can give an AUTO_INCREMENT column a value yourself, as long as it isn't already used.
 -- Hint: MySQL's next number is always one more than the highest ID it has seen so far.
 INSERT INTO Guest (GuestID, FullName, City, Visits) VALUES (100, 'Cara Lin', 'Austin', 5);
 INSERT INTO Guest (FullName, City) VALUES ('Dev Patel', 'Houston');
 SELECT * FROM Guest;                          -- Dev Patel is 101: the counter jumped past 100
 
--- [7.12]
+-- [7.11]
 -- Hint: Write the WHERE once, in a SELECT. If the rows it returns are the ones you want gone, swap `SELECT *` for `DELETE`.
 SELECT * FROM Guest WHERE Visits = 0;         -- Ben Cho and Dev Patel
 DELETE FROM Guest WHERE Visits = 0;
 SELECT * FROM Guest;                          -- Ana Ruiz and Cara Lin are left
--- A DELETE can't be undone outside a transaction. The SELECT shows you exactly what will go first.
+-- A DELETE can't be undone. The SELECT shows you exactly what will go first.
 
--- [7.13]
--- Hint: The subquery finds the IDs of the students who live in Austin: `SELECT ID FROM Student WHERE City = 'Austin'`.
--- Hint: The subquery returns several IDs, so compare with IN. `=` only works when a subquery returns exactly one value.
-SELECT COUNT(*) AS Lessons FROM LessonSchedule;                   -- 9
-START TRANSACTION;
-SELECT * FROM LessonSchedule
-WHERE StudentID IN (SELECT ID FROM Student WHERE City = 'Austin'); -- 4 rows
-DELETE FROM LessonSchedule
-WHERE StudentID IN (SELECT ID FROM Student WHERE City = 'Austin');
-SELECT COUNT(*) AS Lessons FROM LessonSchedule;                   -- 5
-ROLLBACK;
-SELECT COUNT(*) AS Lessons FROM LessonSchedule;                   -- 9 again
--- Expected to FAIL (four students live in Austin, so the subquery returns more than one value):
---   DELETE FROM LessonSchedule WHERE StudentID = (SELECT ID FROM Student WHERE City = 'Austin');
---   ERROR 1242: Subquery returns more than 1 row
-
--- [7.14]
--- Hint: DELETE is DML, so a transaction can undo it. TRUNCATE is DDL: it commits right away.
--- Hint: TRUNCATE empties the table by re-creating it, which also restarts its AUTO_INCREMENT counter.
-START TRANSACTION;
-DELETE FROM Guest;                            -- no WHERE: every row
-SELECT COUNT(*) AS Guests FROM Guest;         -- 0
-ROLLBACK;
-SELECT COUNT(*) AS Guests FROM Guest;         -- 2: the DELETE was undone
-START TRANSACTION;
-TRUNCATE TABLE Guest;
-ROLLBACK;
-SELECT COUNT(*) AS Guests FROM Guest;         -- 0: ROLLBACK can't undo a TRUNCATE
-INSERT INTO Guest (FullName, City) VALUES ('Eli Moss', 'Austin');
-SELECT * FROM Guest;                          -- GuestID 1: TRUNCATE reset the counter
--- After a DELETE of every row, the counter would have kept going, and Eli Moss would be 102.
-
--- [7.15]
--- Hint: COMMIT ends the transaction and makes its changes permanent. After that, ROLLBACK has nothing left to undo.
-START TRANSACTION;
-INSERT INTO Guest (FullName, City, Visits) VALUES
-  ('Fay Wong', 'Dallas', 2),
-  ('Gus Hale', 'Waco',   1);
-COMMIT;
-ROLLBACK;                                     -- nothing to undo: the transaction already ended
-SELECT * FROM Guest;                          -- Eli Moss, Fay Wong, Gus Hale
-
--- [7.16]
+-- [7.12]
 -- Hint: Without a WHERE, an UPDATE changes every row in the table.
--- Hint: The client prints how many rows were changed, like "Rows matched: 3  Changed: 3".
-START TRANSACTION;
-UPDATE Guest SET Visits = Visits + 1;         -- Rows matched: 3  Changed: 3
-SELECT * FROM Guest;                          -- every guest went up by 1
-ROLLBACK;
-SELECT * FROM Guest;                          -- back to 0, 2, and 1
+-- Hint: The client prints how many rows were changed, like "Rows matched: 2  Changed: 2".
+UPDATE Guest SET Visits = Visits + 1;         -- Rows matched: 2  Changed: 2
+SELECT * FROM Guest;                          -- Ana Ruiz 4, Cara Lin 6
 -- Some tools turn on "safe updates" mode, which refuses an UPDATE or DELETE without a WHERE
 -- on a key column, for exactly this reason.
+
+-- [7.13]
+-- Hint: `DELETE FROM Guest;` removes the rows but keeps the AUTO_INCREMENT counter where it was.
+-- Hint: TRUNCATE empties the table by re-creating it, which also restarts its AUTO_INCREMENT counter at 1.
+DELETE FROM Guest;                            -- no WHERE: every row
+SELECT COUNT(*) AS Guests FROM Guest;         -- 0
+INSERT INTO Guest (FullName, City) VALUES ('Eli Moss', 'Austin');
+SELECT * FROM Guest;                          -- GuestID 102: the counter kept going after 101
+TRUNCATE TABLE Guest;
+INSERT INTO Guest (FullName, City) VALUES ('Fay Wong', 'Dallas');
+SELECT * FROM Guest;                          -- GuestID 1: TRUNCATE reset the counter
+-- TRUNCATE is DDL and is also faster on big tables, but it can't have a WHERE:
+-- it always removes everything.
 
 -- =====================================================================
 -- 8. Defining structure: CREATE / ALTER / DROP
@@ -756,8 +610,9 @@ ALTER TABLE Song DROP COLUMN Album;
 DESCRIBE Song;
 
 -- [8.6]
--- Hint: Create Playlist first, because PlaylistSong points to it.
--- Hint: Write `PRIMARY KEY (PlaylistID, SongID)` on its own line, and give both foreign keys `ON DELETE CASCADE`.
+-- Hint: Create Playlist first. A foreign key can only point to a table that already exists.
+-- Hint: Write `PRIMARY KEY (PlaylistID, SongID)` on its own line. Then add one `FOREIGN KEY (...) REFERENCES ...` line for each foreign key, each ending with `ON DELETE CASCADE`.
+-- Hint: For d), join three tables: Playlist to PlaylistSong on the playlist ID, and PlaylistSong to Song on the song ID.
 CREATE TABLE Playlist (
   ID       INT AUTO_INCREMENT PRIMARY KEY,
   Name     VARCHAR(40) NOT NULL,
@@ -771,6 +626,7 @@ CREATE TABLE PlaylistSong (
   FOREIGN KEY (PlaylistID) REFERENCES Playlist(ID) ON DELETE CASCADE,
   FOREIGN KEY (SongID)     REFERENCES Song(ID)     ON DELETE CASCADE
 );
+-- The foreign key columns must have the same type as the columns they point to (INT here, like Song.ID).
 INSERT INTO Playlist (Name, Created) VALUES ('Road Trip', '2026-10-01');
 INSERT INTO PlaylistSong VALUES (1, 1, 1), (1, 2, 2);
 SELECT p.Name, ps.Position, s.Title
@@ -782,6 +638,7 @@ ORDER BY ps.Position;
 -- [8.7]
 -- Hint: One ALTER TABLE can have several parts separated by commas: `ADD COLUMN ...` and `ADD CONSTRAINT name FOREIGN KEY ...`.
 -- Hint: The new DirectorID column must have the same type as Director.ID.
+-- Hint: For d), an inner join between Movie and Director keeps only the movies that have a director.
 CREATE TABLE Director (
   ID    INT AUTO_INCREMENT PRIMARY KEY,
   Name  VARCHAR(50) NOT NULL
@@ -793,7 +650,7 @@ ALTER TABLE Movie
 UPDATE Movie SET DirectorID = 1 WHERE Title IN ('Arrival', 'Dune');
 UPDATE Movie SET DirectorID = 2 WHERE Title = 'Interstellar';
 SELECT m.Title, d.Name AS Director
-FROM Movie m JOIN Director d ON m.DirectorID = d.ID;
+FROM Movie m JOIN Director d ON m.DirectorID = d.ID;   -- the inner join skips movies with no director
 
 -- [8.8]
 -- Hint: `INSERT INTO table (columns) SELECT ... FROM ... WHERE ...` has no VALUES keyword.
@@ -823,7 +680,7 @@ DROP TABLE IF EXISTS FormerEmployee;              -- IF EXISTS: no error the sec
 -- 9. Views and indexes
 -- =====================================================================
 -- [9.1]
--- Hint: `CREATE VIEW name AS SELECT ...`. The SELECT needs a LEFT JOIN to Student, like 5.10.
+-- Hint: `CREATE VIEW name AS SELECT ...`. The SELECT needs a LEFT JOIN to Student, like 5.9.
 -- Hint: Rename the RegisteredName column with `AS Horse`.
 CREATE VIEW LessonDetail AS
 SELECT ls.LessonDateTime, h.RegisteredName AS Horse,
@@ -886,38 +743,22 @@ SELECT * FROM DeptSummary ORDER BY DeptID;        -- 5 rows
 -- clear you're changing something that should already exist.
 
 -- [9.5]
--- Hint: `WITH CHECK OPTION` goes at the very end of CREATE VIEW.
--- Hint: MySQL refuses any change through the view that would move a row out of the view (here, a DeptID that isn't 30).
-CREATE VIEW SupportStaff AS
-SELECT EmpID, FirstName, LastName, Salary, DeptID
-FROM Employee
-WHERE DeptID = 30
-WITH CHECK OPTION;
-UPDATE SupportStaff SET Salary = Salary + 1000 WHERE EmpID = 12;   -- allowed: simple view
-SELECT EmpID, Salary FROM Employee WHERE EmpID = 12;
--- Expected to FAIL (row would fall outside the view):
---   UPDATE SupportStaff SET DeptID = 20 WHERE EmpID = 12;
---   ERROR 1369: CHECK OPTION failed
--- DeptSummary is NOT updatable at all because it uses GROUP BY / aggregates.
-
--- [9.6]
 -- Hint: `CREATE INDEX name ON Employee (LastName);`, then `SHOW INDEX FROM Employee;`.
 -- Hint: In the EXPLAIN output, the `key` column shows which index MySQL used.
 CREATE INDEX idx_employee_lastname ON Employee (LastName);
 SHOW INDEX FROM Employee;
 EXPLAIN SELECT * FROM Employee WHERE LastName = 'Knuth';    -- key: idx_employee_lastname
 
--- [9.7]
+-- [9.6]
 -- Hint: List both columns in the index, in order: `ON Movie (Genre, ReleaseYear)`.
 -- Hint: Think of a phone book sorted by last name, then first name. Can it help you find everyone whose first name is Ana?
 CREATE INDEX idx_movie_genre_year ON Movie (Genre, ReleaseYear);
 EXPLAIN SELECT Title FROM Movie WHERE Genre = 'Sci-Fi' AND ReleaseYear >= 2015;
 -- A query on ReleaseYear ALONE cannot use this index efficiently: leftmost-prefix rule.
 
--- [9.8]
--- Hint: `DROP INDEX name ON Movie;` and `DROP VIEW name;`
+-- [9.7]
+-- Hint: `DROP INDEX name ON Movie;`
 DROP INDEX idx_movie_genre_year ON Movie;
-DROP VIEW SupportStaff;
 SHOW INDEX FROM Movie;
 
 -- =====================================================================
@@ -1151,7 +992,8 @@ CREATE TABLE Dog (
 );
 -- Expected to FAIL (Breed.breedID is not a primary key or unique):
 --   ALTER TABLE Dog ADD FOREIGN KEY (breedID) REFERENCES Breed(breedID);
---   ERROR 6125: Failed to add the foreign key constraint. Missing unique key ...
+--   MySQL 8.0:  ERROR 1822: Failed to add the foreign key constraint. Missing index for constraint ...
+--   MySQL 8.4+: ERROR 6125: Failed to add the foreign key constraint. Missing unique key ...
 ALTER TABLE Breed ADD PRIMARY KEY (breedID);
 ALTER TABLE Dog ADD CONSTRAINT fk_dog_breed FOREIGN KEY (breedID) REFERENCES Breed(breedID);
 SHOW CREATE TABLE Dog;
@@ -1587,7 +1429,7 @@ SELECT Title, Cost FROM Book ORDER BY Cost DESC LIMIT 3;
 -- Hint: Every aggregate function except COUNT(*) skips NULLs.
 
 -- [13.13]
--- Hint: All of these words come up in Section 4 and in the practice tests.
+-- Hint: All of these words come up in Sections 3 to 7 and in the practice tests.
 
 
 -- =====================================================================
@@ -1691,7 +1533,7 @@ SELECT ID, FirstName, LastName, Email FROM Student WHERE Email LIKE '%@stable.ex
 
 -- [14.12]
 -- Hint: Delete the horses whose ID is NOT IN the list of HorseIDs in LessonSchedule.
--- Hint: NOT IN is safe here because HorseID can never be NULL. Compare this with 6.8.
+-- Hint: NOT IN is safe here because HorseID can never be NULL. Compare this with 6.6.
 DELETE FROM Horse
 WHERE ID NOT IN (SELECT HorseID FROM LessonSchedule);   -- HorseID is NOT NULL, so NOT IN is safe here
 SELECT COUNT(*) AS HorsesLeft FROM Horse;               -- 9

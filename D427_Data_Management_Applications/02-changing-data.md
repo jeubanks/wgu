@@ -61,62 +61,13 @@ These sections change the data and the tables. Do them in order: later exercises
   </details>
   <!-- /solution -->
 
-> [!NOTE]
-> **What is a transaction?** A transaction is a group of changes that MySQL treats as one unit: either all of them are kept, or none of them are.
->
-> Normally MySQL is in **autocommit** mode: every INSERT, UPDATE, or DELETE is saved permanently the moment it finishes, and there's no undo. A transaction turns that off for a while:
->
-> | Statement | What it does |
-> |---|---|
-> | `START TRANSACTION;` | Begins a transaction. From here on, your changes are only tentative. You can see them in your own queries, but nothing is saved yet. |
-> | `COMMIT;` | Ends the transaction and saves every change since START TRANSACTION. |
-> | `ROLLBACK;` | Ends the transaction and throws away every change since START TRANSACTION, as if they never happened. |
->
-> After COMMIT or ROLLBACK, MySQL goes back to autocommit mode until the next START TRANSACTION. (`BEGIN;` is another way to write START TRANSACTION.)
->
-> Things to know:
-> - A transaction belongs to the connection that started it. Run every step in the **same** console or MySQL session.
-> - Only changes to **rows** (INSERT, UPDATE, DELETE) can be rolled back. Statements that change the **structure**, like CREATE, ALTER, DROP, and TRUNCATE, save immediately and also commit any transaction that's open (exercise 7.14 shows this).
-> - Banks use transactions for exactly this reason: moving money is two UPDATEs (take it from one account, add it to another), and you never want only one of them to happen.
-
-- **7.3** This exercise shows how a transaction can undo changes. Run each step as its own statement, in the same console:
-  - Start a transaction: `START TRANSACTION;`
-  - Delete all movies rated R.
-  - Count the movies. The R-rated movies are gone, but only tentatively.
-  - Undo everything since START TRANSACTION: `ROLLBACK;`
-  - Count the movies again.
-
-  *(check: 10 movies during the transaction, 13 after the rollback)*
-
-  <!-- solution:7.3 -->
-  <details>
-  <summary>Hint</summary>
-
-  - `START TRANSACTION;` begins the transaction. Changes aren't permanent until `COMMIT`, and `ROLLBACK` undoes them.
-
-  </details>
-
-  <details>
-  <summary>Solution</summary>
-
-  ```sql
-  START TRANSACTION;
-  DELETE FROM Movie WHERE RatingCode = 'R';
-  SELECT COUNT(*) AS DuringTxn FROM Movie;    -- 10
-  ROLLBACK;
-  SELECT COUNT(*) AS AfterRollback FROM Movie; -- 13 again
-  ```
-
-  </details>
-  <!-- /solution -->
-
-- **7.4** Both of these statements will fail. Run each one and read the error message:
+- **7.3** Both of these statements will fail. Run each one and read the error message:
   - Try to delete the 'PG' rating from the Rating table.
-  - Try to add a movie with the RatingCode 'XX' (a rating that does not exist).
+  - Try to add a movie with the Title 'Bad' and the RatingCode 'XX' (a rating that does not exist). Leave out every other column.
 
   Which constraint stops each one? What error number does MySQL show for each one?
 
-  <!-- solution:7.4 -->
+  <!-- solution:7.3 -->
   <details>
   <summary>Hint</summary>
 
@@ -143,7 +94,7 @@ These sections change the data and the tables. Do them in order: later exercises
 
 ### Student
 
-- **7.5** Add these two students to the **Student** table using a single INSERT statement:
+- **7.4** Add these two students to the **Student** table using a single INSERT statement:
 
   | FirstName | LastName | City | Email |
   |---|---|---|---|
@@ -152,7 +103,7 @@ These sections change the data and the tables. Do them in order: later exercises
 
   Leave out every other column: ID, Street, State, Zip, and Phone. After the insert, look at the two new rows. What State did they get, and why? *(check: 2 new rows)*
 
-  <!-- solution:7.5 -->
+  <!-- solution:7.4 -->
   <details>
   <summary>Hint</summary>
 
@@ -176,9 +127,9 @@ These sections change the data and the tables. Do them in order: later exercises
 
 ### Employee and Department
 
-- **7.6** Give everyone in the Support department a 5% raise. In your WHERE clause, find the department by its **name** ("Support"). Do not type the DeptID number 30 directly. *(check: 3 rows changed)*
+- **7.5** Give everyone in the Support department a 5% raise. In your WHERE clause, find the department by its **name** ("Support"). Do not type the DeptID number 30 directly. *(check: 3 rows changed)*
 
-  <!-- solution:7.6 -->
+  <!-- solution:7.5 -->
   <details>
   <summary>Hint</summary>
 
@@ -202,9 +153,9 @@ These sections change the data and the tables. Do them in order: later exercises
 
 ### Horse, Student, and LessonSchedule
 
-- **7.7** Delete all lessons that are scheduled before 2026-02-02. *(check: 10 lessons should be left)*
+- **7.6** Delete all lessons that are scheduled before 2026-02-02. *(check: 10 lessons should be left)*
 
-  <!-- solution:7.7 -->
+  <!-- solution:7.6 -->
   <details>
   <summary>Hint</summary>
 
@@ -224,14 +175,14 @@ These sections change the data and the tables. Do them in order: later exercises
   </details>
   <!-- /solution -->
 
-- **7.8** This exercise shows what a foreign key does when you delete a row:
+- **7.7** This exercise shows what a foreign key does when you delete a row:
   - Count how many lessons the horse Midnight (ID 9) has.
   - Delete the horse Midnight.
   - Count Midnight's lessons again.
 
   What happened to the lessons? Which foreign key action caused this? *(check: 1 lesson before, 0 after)*
 
-  <!-- solution:7.8 -->
+  <!-- solution:7.7 -->
   <details>
   <summary>Hint</summary>
 
@@ -251,13 +202,13 @@ These sections change the data and the tables. Do them in order: later exercises
   </details>
   <!-- /solution -->
 
-- **7.9** Delete the student Jamal Carter (ID 2). Then look at the LessonSchedule table. What happened to his lesson? Which foreign key action caused this? *(check: 2 lessons should now have a NULL StudentID)*
+- **7.8** Delete the student Jamal Carter (ID 2). Then look at the LessonSchedule table. What happened to his lesson? Which foreign key action caused this? *(check: 2 lessons should now have a NULL StudentID)*
 
-  <!-- solution:7.9 -->
+  <!-- solution:7.8 -->
   <details>
   <summary>Hint</summary>
 
-  - Same idea as 7.8, but look at the ON DELETE rule for StudentID.
+  - Same idea as 7.7, but look at the ON DELETE rule for StudentID.
   - One lesson already had no student before you started.
 
   </details>
@@ -273,7 +224,7 @@ These sections change the data and the tables. Do them in order: later exercises
   </details>
   <!-- /solution -->
 
-### Adding and deleting: more practice
+### Guest: adding, changing, and deleting
 
 These exercises use a small scratch table named Guest that no other exercise uses. Create it first:
 
@@ -286,7 +237,7 @@ CREATE TABLE Guest (
 );
 ```
 
-- **7.10** Two ways to write an INSERT. Add these two guests to the **Guest** table:
+- **7.9** Two ways to write an INSERT. Add these two guests to the **Guest** table:
 
   | GuestID | FullName | City | Visits |
   |---|---|---|---|
@@ -300,7 +251,7 @@ CREATE TABLE Guest (
 
   *(2 rows)*
 
-  <!-- solution:7.10 -->
+  <!-- solution:7.9 -->
   <details>
   <summary>Hint</summary>
 
@@ -334,7 +285,7 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **7.11** Choosing your own AUTO_INCREMENT value. Add these two guests, one at a time:
+- **7.10** Choosing your own AUTO_INCREMENT value. Add these two guests, one at a time:
 
   | GuestID | FullName | City | Visits |
   |---|---|---|---|
@@ -345,7 +296,7 @@ CREATE TABLE Guest (
 
   *(4 rows)*
 
-  <!-- solution:7.11 -->
+  <!-- solution:7.10 -->
   <details>
   <summary>Hint</summary>
 
@@ -366,13 +317,13 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **7.12** Check before you delete. You want to remove every guest who has never visited (Visits is 0).
+- **7.11** Check before you delete. You want to remove every guest who has never visited (Visits is 0).
   - First write a **SELECT** with the WHERE clause you plan to use, and look at which rows it returns.
   - When the rows look right, change `SELECT *` to `DELETE` and keep the same WHERE.
 
   Why is this a good habit? *(2 rows, then check: 2 guests left)*
 
-  <!-- solution:7.12 -->
+  <!-- solution:7.11 -->
   <details>
   <summary>Hint</summary>
 
@@ -387,26 +338,22 @@ CREATE TABLE Guest (
   SELECT * FROM Guest WHERE Visits = 0;         -- Ben Cho and Dev Patel
   DELETE FROM Guest WHERE Visits = 0;
   SELECT * FROM Guest;                          -- Ana Ruiz and Cara Lin are left
-  -- A DELETE can't be undone outside a transaction. The SELECT shows you exactly what will go first.
+  -- A DELETE can't be undone. The SELECT shows you exactly what will go first.
   ```
 
   </details>
   <!-- /solution -->
 
-- **7.13** Delete with a subquery, inside a transaction so you can undo it:
-  - Count the lessons in LessonSchedule.
-  - Start a transaction. Using a subquery, delete every lesson taken by a student who lives in Austin. (The city is in Student, but the rows you're deleting are in LessonSchedule.) Write it as a SELECT first, like in 7.12.
-  - Count the lessons again, then run ROLLBACK and count once more.
-  - Why does `StudentID = (subquery)` fail here, while `StudentID IN (subquery)` works?
+- **7.12** UPDATE with no WHERE. Run `UPDATE Guest SET Visits = Visits + 1;` with **no** WHERE clause. How many rows did MySQL say it changed? Look at the table.
 
-  *(4 rows in the SELECT; check: 9 lessons, then 5, then 9 after the rollback)*
+  There's no undo for this: every guest's Visits went up. Why do people say to always write the WHERE (or the SELECT from 7.11) first? *(check: 2 rows changed; Ana Ruiz now has 4 visits and Cara Lin 6)*
 
-  <!-- solution:7.13 -->
+  <!-- solution:7.12 -->
   <details>
   <summary>Hint</summary>
 
-  - The subquery finds the IDs of the students who live in Austin: `SELECT ID FROM Student WHERE City = 'Austin'`.
-  - The subquery returns several IDs, so compare with IN. `=` only works when a subquery returns exactly one value.
+  - Without a WHERE, an UPDATE changes every row in the table.
+  - The client prints how many rows were changed, like "Rows matched: 2  Changed: 2".
 
   </details>
 
@@ -414,83 +361,39 @@ CREATE TABLE Guest (
   <summary>Solution</summary>
 
   ```sql
-  SELECT COUNT(*) AS Lessons FROM LessonSchedule;                   -- 9
-  START TRANSACTION;
-  SELECT * FROM LessonSchedule
-  WHERE StudentID IN (SELECT ID FROM Student WHERE City = 'Austin'); -- 4 rows
-  DELETE FROM LessonSchedule
-  WHERE StudentID IN (SELECT ID FROM Student WHERE City = 'Austin');
-  SELECT COUNT(*) AS Lessons FROM LessonSchedule;                   -- 5
-  ROLLBACK;
-  SELECT COUNT(*) AS Lessons FROM LessonSchedule;                   -- 9 again
-  -- Expected to FAIL (four students live in Austin, so the subquery returns more than one value):
-  --   DELETE FROM LessonSchedule WHERE StudentID = (SELECT ID FROM Student WHERE City = 'Austin');
-  --   ERROR 1242: Subquery returns more than 1 row
+  UPDATE Guest SET Visits = Visits + 1;         -- Rows matched: 2  Changed: 2
+  SELECT * FROM Guest;                          -- Ana Ruiz 4, Cara Lin 6
+  -- Some tools turn on "safe updates" mode, which refuses an UPDATE or DELETE without a WHERE
+  -- on a key column, for exactly this reason.
   ```
 
   </details>
   <!-- /solution -->
 
-- **7.14** DELETE versus TRUNCATE. Both remove every row from a table:
-  - Start a transaction, run `DELETE FROM Guest;` with **no** WHERE, and count the rows. Then ROLLBACK and count again.
-  - Start another transaction, run `TRUNCATE TABLE Guest;`, then ROLLBACK and count again. What's different?
-  - Add this guest:
+- **7.13** DELETE versus TRUNCATE. Both remove every row from a table, but they aren't the same:
+  - Run `DELETE FROM Guest;` with **no** WHERE, and count the rows.
+  - Add this guest, then look at the table. What GuestID did he get?
 
     | GuestID | FullName | City | Visits |
     |---|---|---|---|
     | *(leave out)* | Eli Moss | Austin | *(leave out)* |
 
-    What GuestID does he get? What would he have gotten after a DELETE instead?
-
-  *(check: 0, then 2 after the first rollback; 0 after the TRUNCATE rollback; Eli Moss gets GuestID 1)*
-
-  <!-- solution:7.14 -->
-  <details>
-  <summary>Hint</summary>
-
-  - DELETE is DML, so a transaction can undo it. TRUNCATE is DDL: it commits right away.
-  - TRUNCATE empties the table by re-creating it, which also restarts its AUTO_INCREMENT counter.
-
-  </details>
-
-  <details>
-  <summary>Solution</summary>
-
-  ```sql
-  START TRANSACTION;
-  DELETE FROM Guest;                            -- no WHERE: every row
-  SELECT COUNT(*) AS Guests FROM Guest;         -- 0
-  ROLLBACK;
-  SELECT COUNT(*) AS Guests FROM Guest;         -- 2: the DELETE was undone
-  START TRANSACTION;
-  TRUNCATE TABLE Guest;
-  ROLLBACK;
-  SELECT COUNT(*) AS Guests FROM Guest;         -- 0: ROLLBACK can't undo a TRUNCATE
-  INSERT INTO Guest (FullName, City) VALUES ('Eli Moss', 'Austin');
-  SELECT * FROM Guest;                          -- GuestID 1: TRUNCATE reset the counter
-  -- After a DELETE of every row, the counter would have kept going, and Eli Moss would be 102.
-  ```
-
-  </details>
-  <!-- /solution -->
-
-- **7.15** Making changes permanent with COMMIT:
-  - Start a transaction and add these two guests:
+  - Now run `TRUNCATE TABLE Guest;` and add this guest. What GuestID did she get?
 
     | GuestID | FullName | City | Visits |
     |---|---|---|---|
-    | *(leave out)* | Fay Wong | Dallas | 2 |
-    | *(leave out)* | Gus Hale | Waco | 1 |
+    | *(leave out)* | Fay Wong | Dallas | *(leave out)* |
 
-  - Run `COMMIT;`, then run `ROLLBACK;`, then look at the table. Are the two guests still there? Why?
+  - What does TRUNCATE do that DELETE doesn't?
 
-  *(3 rows)*
+  *(check: 0 rows after the DELETE; Eli Moss gets GuestID 102; Fay Wong gets GuestID 1)*
 
-  <!-- solution:7.15 -->
+  <!-- solution:7.13 -->
   <details>
   <summary>Hint</summary>
 
-  - COMMIT ends the transaction and makes its changes permanent. After that, ROLLBACK has nothing left to undo.
+  - `DELETE FROM Guest;` removes the rows but keeps the AUTO_INCREMENT counter where it was.
+  - TRUNCATE empties the table by re-creating it, which also restarts its AUTO_INCREMENT counter at 1.
 
   </details>
 
@@ -498,42 +401,15 @@ CREATE TABLE Guest (
   <summary>Solution</summary>
 
   ```sql
-  START TRANSACTION;
-  INSERT INTO Guest (FullName, City, Visits) VALUES
-    ('Fay Wong', 'Dallas', 2),
-    ('Gus Hale', 'Waco',   1);
-  COMMIT;
-  ROLLBACK;                                     -- nothing to undo: the transaction already ended
-  SELECT * FROM Guest;                          -- Eli Moss, Fay Wong, Gus Hale
-  ```
-
-  </details>
-  <!-- /solution -->
-
-- **7.16** UPDATE with no WHERE. Start a transaction, then run `UPDATE Guest SET Visits = Visits + 1;` with **no** WHERE clause. How many rows did MySQL say it changed? Look at the table, then ROLLBACK and look again.
-
-  Why do people say to always write the WHERE (or the SELECT from 7.12) first? *(check: 3 rows changed, then back to 0, 2, and 1 visits)*
-
-  <!-- solution:7.16 -->
-  <details>
-  <summary>Hint</summary>
-
-  - Without a WHERE, an UPDATE changes every row in the table.
-  - The client prints how many rows were changed, like "Rows matched: 3  Changed: 3".
-
-  </details>
-
-  <details>
-  <summary>Solution</summary>
-
-  ```sql
-  START TRANSACTION;
-  UPDATE Guest SET Visits = Visits + 1;         -- Rows matched: 3  Changed: 3
-  SELECT * FROM Guest;                          -- every guest went up by 1
-  ROLLBACK;
-  SELECT * FROM Guest;                          -- back to 0, 2, and 1
-  -- Some tools turn on "safe updates" mode, which refuses an UPDATE or DELETE without a WHERE
-  -- on a key column, for exactly this reason.
+  DELETE FROM Guest;                            -- no WHERE: every row
+  SELECT COUNT(*) AS Guests FROM Guest;         -- 0
+  INSERT INTO Guest (FullName, City) VALUES ('Eli Moss', 'Austin');
+  SELECT * FROM Guest;                          -- GuestID 102: the counter kept going after 101
+  TRUNCATE TABLE Guest;
+  INSERT INTO Guest (FullName, City) VALUES ('Fay Wong', 'Dallas');
+  SELECT * FROM Guest;                          -- GuestID 1: TRUNCATE reset the counter
+  -- TRUNCATE is DDL and is also faster on big tables, but it can't have a WHERE:
+  -- it always removes everything.
   ```
 
   </details>
@@ -553,7 +429,9 @@ CREATE TABLE Guest (
   - `Genre`: text up to 20 characters. If no genre is given, it should be 'Pop'.
   - `DurationSec`: a whole number. It must be greater than 0.
 
-  Two songs must not have the same Title **and** the same Artist. After you create the table, add these two songs:
+  Add one UNIQUE rule that covers Title and Artist together: no two songs can have both the same Title and the same Artist. The same Title by a different Artist is allowed.
+
+  After you create the table, add these two songs:
 
   | ID | Title | Artist | ReleaseYear | Genre | DurationSec |
   |---|---|---|---|---|---|
@@ -614,7 +492,7 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **8.3** Change the `Genre` column so it can hold up to 30 characters instead of 20. **Make sure it still uses 'Pop' as the default.** (Check this afterward. It is easy to lose the default by mistake.)
+- **8.3** Change the `Genre` column so it can hold up to 30 characters instead of 20. **Make sure it still uses 'Pop' as the default.** Afterward, run `DESCRIBE Song` and check that Genre shows `varchar(30)` with the default `Pop`. It is easy to lose the default by mistake.
 
   <!-- solution:8.3 -->
   <details>
@@ -635,7 +513,10 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **8.4** Rename the `DurationSec` column to `Seconds`. Your first try will fail because of the CHECK you added in 8.1. Read the error. Then do the rename in a way that keeps the rule that the value must be greater than 0.
+- **8.4** Rename the `DurationSec` column to `Seconds`.
+  - Try a plain rename first. It fails because of the CHECK you added in 8.1. Read the error. It gives the check's name, `Song_chk_1`.
+  - Then do the rename so the rule still holds: `Seconds` must be greater than 0. Give the check the same name, `Song_chk_1`.
+  - Run `SHOW CREATE TABLE Song` and check that the CHECK now uses `Seconds`.
 
   <!-- solution:8.4 -->
   <details>
@@ -685,31 +566,46 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **8.6** Create two new tables:
-  - **Playlist**, with the columns ID, Name, and Created (a date).
-  - **PlaylistSong**, which connects playlists to songs. It has the columns PlaylistID, SongID, and Position (the song's place in the playlist). Its primary key is made of both PlaylistID and SongID together (a composite primary key).
+- **8.6** A playlist holds many songs, and a song can be on many playlists. You'll build this with two new tables: **Playlist**, and a linking table **PlaylistSong** that connects playlists to the songs from 8.1.
 
-  If a playlist is deleted, its rows in PlaylistSong should be deleted too. If a song is deleted, its rows in PlaylistSong should also be deleted. After you create the tables, add this playlist to **Playlist**:
+  **a)** Create the **Playlist** table:
+  - `ID`: a whole number that MySQL fills in automatically (auto-increment). It is the primary key.
+  - `Name`: text up to 40 characters. It is required (cannot be NULL).
+  - `Created`: a date. It is required.
+
+  **b)** Create the **PlaylistSong** table. Each row puts one song on one playlist:
+  - `PlaylistID`: a whole number. It is required. It is a **foreign key** to Playlist's `ID`.
+  - `SongID`: a whole number. It is required. It is a **foreign key** to Song's `ID`.
+  - `Position`: the song's place in the playlist (1, 2, 3, …), a small whole number from 0 to 255. It is required.
+
+  The primary key is **PlaylistID and SongID together** (a composite primary key), so the same song can't be on the same playlist twice.
+
+  Each foreign key needs a delete rule:
+  - If a **playlist** is deleted, its rows in PlaylistSong are deleted too.
+  - If a **song** is deleted, its rows in PlaylistSong are deleted too.
+
+  **c)** Add this playlist to **Playlist**:
 
   | ID | Name | Created |
   |---|---|---|
   | *(leave out)* | Road Trip | 2026-10-01 |
 
-  Then put both songs from 8.1 in it by adding these rows to **PlaylistSong**:
+  Then put both songs from 8.1 on it by adding these rows to **PlaylistSong**:
 
   | PlaylistID | SongID | Position |
   |---|---|---|
   | 1 | 1 | 1 |
   | 1 | 2 | 2 |
 
-  Then show the songs in the playlist in order by Position. *(2 rows)*
+  **d)** Show the playlist's songs with three columns: the playlist's Name, the Position, and the song's Title. Sort by Position. *(2 rows)*
 
   <!-- solution:8.6 -->
   <details>
   <summary>Hint</summary>
 
-  - Create Playlist first, because PlaylistSong points to it.
-  - Write `PRIMARY KEY (PlaylistID, SongID)` on its own line, and give both foreign keys `ON DELETE CASCADE`.
+  - Create Playlist first. A foreign key can only point to a table that already exists.
+  - Write `PRIMARY KEY (PlaylistID, SongID)` on its own line. Then add one `FOREIGN KEY (...) REFERENCES ...` line for each foreign key, each ending with `ON DELETE CASCADE`.
+  - For d), join three tables: Playlist to PlaylistSong on the playlist ID, and PlaylistSong to Song on the song ID.
 
   </details>
 
@@ -730,6 +626,7 @@ CREATE TABLE Guest (
     FOREIGN KEY (PlaylistID) REFERENCES Playlist(ID) ON DELETE CASCADE,
     FOREIGN KEY (SongID)     REFERENCES Song(ID)     ON DELETE CASCADE
   );
+  -- The foreign key columns must have the same type as the columns they point to (INT here, like Song.ID).
   INSERT INTO Playlist (Name, Created) VALUES ('Road Trip', '2026-10-01');
   INSERT INTO PlaylistSong VALUES (1, 1, 1), (1, 2, 2);
   SELECT p.Name, ps.Position, s.Title
@@ -744,20 +641,26 @@ CREATE TABLE Guest (
 
 ### Movie and Director
 
-- **8.7** This exercise adds a new table and connects it to Movie:
-  - Create a table named **Director** with the columns ID and Name.
-  - Add these two directors:
+- **8.7** Each movie can have a director. You'll add a **Director** table and link the Movie table to it.
 
-    | ID | Name |
-    |---|---|
-    | *(leave out)* | Denis Villeneuve |
-    | *(leave out)* | Christopher Nolan |
+  **a)** Create the **Director** table:
+  - `ID`: a whole number that MySQL fills in automatically (auto-increment). It is the primary key.
+  - `Name`: text up to 50 characters. It is required (cannot be NULL).
 
-  - Using **one** `ALTER TABLE` statement, add a `DirectorID` column to the Movie table, and also add a foreign key on that column that points to Director. Give the foreign key a name.
-  - Set the director of *Arrival* and *Dune* to Villeneuve, and the director of *Interstellar* to Nolan.
-  - Show each of these movies' titles next to its director's name.
+  Then add these two directors:
 
-  *(3 rows)*
+  | ID | Name |
+  |---|---|
+  | *(leave out)* | Denis Villeneuve |
+  | *(leave out)* | Christopher Nolan |
+
+  **b)** Using **one** `ALTER TABLE` statement, make two changes to the **Movie** table:
+  - Add a column named `DirectorID`: a whole number, the same type as Director's `ID`. It can be NULL, because most movies won't have a director yet.
+  - Add a **foreign key** named `fk_movie_director` on DirectorID that points to Director's `ID`.
+
+  **c)** Set the DirectorID of *Arrival* and *Dune* to Denis Villeneuve (ID 1), and of *Interstellar* to Christopher Nolan (ID 2).
+
+  **d)** Show two columns for every movie that has a director: the movie's Title, and the director's Name with the column name `Director`. *(3 rows)*
 
   <!-- solution:8.7 -->
   <details>
@@ -765,6 +668,7 @@ CREATE TABLE Guest (
 
   - One ALTER TABLE can have several parts separated by commas: `ADD COLUMN ...` and `ADD CONSTRAINT name FOREIGN KEY ...`.
   - The new DirectorID column must have the same type as Director.ID.
+  - For d), an inner join between Movie and Director keeps only the movies that have a director.
 
   </details>
 
@@ -783,7 +687,7 @@ CREATE TABLE Guest (
   UPDATE Movie SET DirectorID = 1 WHERE Title IN ('Arrival', 'Dune');
   UPDATE Movie SET DirectorID = 2 WHERE Title = 'Interstellar';
   SELECT m.Title, d.Name AS Director
-  FROM Movie m JOIN Director d ON m.DirectorID = d.ID;
+  FROM Movie m JOIN Director d ON m.DirectorID = d.ID;   -- the inner join skips movies with no director
   ```
 
   </details>
@@ -791,7 +695,18 @@ CREATE TABLE Guest (
 
 ### EmployeeArchive
 
-- **8.8** Create a table named **EmployeeArchive** with the columns EmpID (the primary key), FullName, Salary, and ArchivedOn (a date). Then fill it using **one** `INSERT … SELECT` statement that copies every employee in the Support department. Use today's date for ArchivedOn. *(3 rows)*
+- **8.8** *(Optional: goes beyond what the D427 practice tests ask.)* Create a table named **EmployeeArchive**:
+  - `EmpID`: a whole number. It is the primary key. (Not auto-increment: you'll copy each employee's existing EmpID.)
+  - `FullName`: text up to 70 characters. It is required.
+  - `Salary`: a decimal number, DECIMAL(10,2), like the Employee table's Salary.
+  - `ArchivedOn`: a date. It is required.
+
+  Then fill it using **one** `INSERT … SELECT` statement that copies every employee in the Support department (DeptID 30):
+  - EmpID and Salary come straight from Employee.
+  - FullName is the first and last name joined with a space, like `Radia Perlman`.
+  - ArchivedOn is today's date.
+
+  *(3 rows)*
 
   <!-- solution:8.8 -->
   <details>
@@ -822,7 +737,11 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **8.9** Rename the EmployeeArchive table to FormerEmployee. Then delete (drop) the FormerEmployee table. Write the DROP statement so that it does not cause an error if you run it a second time. Also answer this: why would `DROP TABLE Song` fail right now?
+- **8.9** This exercise uses the EmployeeArchive table from 8.8. If you skipped 8.8, do its CREATE TABLE step first.
+  - Rename the EmployeeArchive table to FormerEmployee. Run `SHOW TABLES` to check the new name.
+  - Delete (drop) the FormerEmployee table.
+  - Write a DROP statement that does not cause an error when the table is already gone. Run it to check.
+  - Why would `DROP TABLE Song` fail right now?
 
   <!-- solution:8.9 -->
   <details>
@@ -853,13 +772,18 @@ CREATE TABLE Guest (
 
 ### LessonSchedule
 
-- **9.1** Create a view named **LessonDetail** with the columns LessonDateTime, Horse (the horse's RegisteredName), FirstName, and LastName. The view must include lesson times that have no student assigned. Then use the view to find the lessons that have no student. *(2 rows)*
+- **9.1** Create a view named **LessonDetail** with these four columns, in this order:
+  - `LessonDateTime` from LessonSchedule
+  - `Horse`: the horse's RegisteredName
+  - `FirstName` and `LastName`: the student's first and last name
+
+  The view must include every lesson, even a lesson that has no student assigned. Then select from the view to find the lessons that have no student. *(2 rows)*
 
   <!-- solution:9.1 -->
   <details>
   <summary>Hint</summary>
 
-  - `CREATE VIEW name AS SELECT ...`. The SELECT needs a LEFT JOIN to Student, like 5.10.
+  - `CREATE VIEW name AS SELECT ...`. The SELECT needs a LEFT JOIN to Student, like 5.9.
   - Rename the RegisteredName column with `AS Horse`.
 
   </details>
@@ -880,7 +804,7 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **9.2** Change the LessonDetail view so it also shows each horse's **Breed**, right after the Horse column. Use `ALTER VIEW`.
+- **9.2** Use `ALTER VIEW` to change the LessonDetail view so it also shows each horse's **Breed**, right after the Horse column. Then do these steps:
   - Count the rows in LessonDetail.
   - Add this lesson to the **LessonSchedule table** (not to the view):
 
@@ -892,7 +816,7 @@ CREATE TABLE Guest (
   - Delete that lesson from LessonSchedule, and count the rows in the view once more.
   - Finally, try `ALTER VIEW NoSuchView AS SELECT 1;` and read the error.
 
-  Why did the view change when you changed the table? *(check: the view has 9 lessons, then 10, then 9)*
+  You never changed the view itself. Why did its rows change when you changed the table? *(check: the view has 9 lessons, then 10, then 9)*
 
   <!-- solution:9.2 -->
   <details>
@@ -933,7 +857,12 @@ CREATE TABLE Guest (
 
 ### Employee and Department
 
-- **9.3** Create a view named **DeptSummary** with the columns DeptID, DeptName, Headcount (the number of employees), and AvgSalary. The view must include every department, even one with no employees. Then use the view to show the departments that have 3 or more employees. *(3 rows)*
+- **9.3** Create a view named **DeptSummary** with one row per department and these four columns:
+  - `DeptID` and `DeptName` from Department
+  - `Headcount`: the number of employees in the department
+  - `AvgSalary`: the department's average salary, rounded to 2 decimal places
+
+  The view must include every department, even one with no employees (its Headcount is 0). Then select from the view to show the departments that have 3 or more employees, sorted by AvgSalary from highest to lowest. *(3 rows)*
 
   <!-- solution:9.3 -->
   <details>
@@ -961,10 +890,9 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **9.4** Management wants DeptSummary to show only departments that **have** employees. Change the view with `CREATE OR REPLACE VIEW` this time, then select everything from it. Legal should be gone.
-  - What's the difference between `CREATE OR REPLACE VIEW` and `ALTER VIEW`? When would you choose one over the other?
+- **9.4** Management wants DeptSummary to show only departments that **have** employees. Change the view with `CREATE OR REPLACE VIEW` this time, and keep the same four columns. Then select everything from it, sorted by DeptID. Legal should be gone. *(5 rows)*
 
-  *(5 rows)*
+  Then answer this: what's the difference between `CREATE OR REPLACE VIEW` and `ALTER VIEW`? When would you choose one over the other?
 
   <!-- solution:9.4 -->
   <details>
@@ -997,44 +925,12 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **9.5** This exercise shows how `WITH CHECK OPTION` protects a view:
-  - Create a view named **SupportStaff** that shows only the employees in DeptID 30. Add `WITH CHECK OPTION` to the view.
-  - Through the view, give employee 12 (EmpID 12) a raise of 1,000.
-  - Then, through the view, try to move employee 12 to DeptID 20. Read the error message.
-  - Finally, answer this: can you UPDATE rows through the DeptSummary view from 9.3? Why or why not?
+- **9.5** Work with an index on the Employee table:
+  - Create an index named `idx_employee_lastname` on the LastName column.
+  - Use `SHOW INDEX FROM Employee` to see it.
+  - Use `EXPLAIN` on a search by last name, such as `WHERE LastName = 'Knuth'`. Check that MySQL uses your index.
 
   <!-- solution:9.5 -->
-  <details>
-  <summary>Hint</summary>
-
-  - `WITH CHECK OPTION` goes at the very end of CREATE VIEW.
-  - MySQL refuses any change through the view that would move a row out of the view (here, a DeptID that isn't 30).
-
-  </details>
-
-  <details>
-  <summary>Solution</summary>
-
-  ```sql
-  CREATE VIEW SupportStaff AS
-  SELECT EmpID, FirstName, LastName, Salary, DeptID
-  FROM Employee
-  WHERE DeptID = 30
-  WITH CHECK OPTION;
-  UPDATE SupportStaff SET Salary = Salary + 1000 WHERE EmpID = 12;   -- allowed: simple view
-  SELECT EmpID, Salary FROM Employee WHERE EmpID = 12;
-  -- Expected to FAIL (row would fall outside the view):
-  --   UPDATE SupportStaff SET DeptID = 20 WHERE EmpID = 12;
-  --   ERROR 1369: CHECK OPTION failed
-  -- DeptSummary is NOT updatable at all because it uses GROUP BY / aggregates.
-  ```
-
-  </details>
-  <!-- /solution -->
-
-- **9.6** Create an index on the LastName column of the Employee table. Use `SHOW INDEX` to see the index. Then use `EXPLAIN` to check that a search by last name uses your index.
-
-  <!-- solution:9.6 -->
   <details>
   <summary>Hint</summary>
 
@@ -1057,9 +953,11 @@ CREATE TABLE Guest (
 
 ### Movie
 
-- **9.7** Create one index that covers two columns of the Movie table: Genre and ReleaseYear, in that order (a composite index). Use `EXPLAIN` on a query that filters on both columns. Then answer this: would a query that filters **only** on ReleaseYear be able to use this index well? Why or why not?
+- **9.6** *(Optional: goes beyond what the D427 practice tests ask.)* Create one index named `idx_movie_genre_year` that covers two columns of the Movie table: Genre first, then ReleaseYear (a composite index).
+  - Use `EXPLAIN` on a query that filters on both columns, such as the Titles of Sci-Fi movies released in 2015 or later.
+  - Would a query that filters **only** on ReleaseYear be able to use this index well? Why or why not?
 
-  <!-- solution:9.7 -->
+  <!-- solution:9.6 -->
   <details>
   <summary>Hint</summary>
 
@@ -1082,13 +980,13 @@ CREATE TABLE Guest (
 
 ### Cleaning up
 
-- **9.8** Delete (drop) the index you made in 9.7 and the SupportStaff view.
+- **9.7** Delete (drop) the `idx_movie_genre_year` index you made in 9.6. Run `SHOW INDEX FROM Movie` to check that it's gone.
 
-  <!-- solution:9.8 -->
+  <!-- solution:9.7 -->
   <details>
   <summary>Hint</summary>
 
-  - `DROP INDEX name ON Movie;` and `DROP VIEW name;`
+  - `DROP INDEX name ON Movie;`
 
   </details>
 
@@ -1097,7 +995,6 @@ CREATE TABLE Guest (
 
   ```sql
   DROP INDEX idx_movie_genre_year ON Movie;
-  DROP VIEW SupportStaff;
   SHOW INDEX FROM Movie;
   ```
 
@@ -1114,29 +1011,45 @@ CREATE TABLE Guest (
   - An order can contain many **Products**, and a product can appear on many orders. Each product has a name and a unit price. The unit price must be 0 or more.
   - Each time a product appears on an order, it has a quantity. The quantity must be greater than 0.
 
-  You decide the primary keys, the foreign keys, and what should happen when a row is deleted. Then add this data. The column names below are the ones the solution uses; use your own if you named your columns differently.
+  Use these column types:
+  - Customer name and product name: text up to 50 characters, required
+  - Email: text up to 60 characters
+  - Order date: a date, required
+  - Unit price: DECIMAL(8,2), required
+  - Quantity: a whole number, required
+  - ID columns: whole numbers. Customer, order, and product IDs are auto-increment.
+
+  You decide the primary keys, the foreign keys, and what should happen when a row is deleted. Don't name a table `Order`: ORDER is a reserved word in SQL. The solution names the tables Customer, Product, CustOrder, and OrderLine.
+
+  Then add this data. The column names below are the ones the solution uses. Use your own if you named your columns differently.
 
   One customer:
 
-  | Name | Email |
-  |---|---|
-  | Pat Lee | pat@example.com |
+  | CustomerID | Name | Email |
+  |---|---|---|
+  | *(leave out)* | Pat Lee | pat@example.com |
 
   Two products:
 
-  | Name | UnitPrice |
-  |---|---|
-  | Widget | 2.50 |
-  | Gadget | 10.00 |
+  | ProductID | Name | UnitPrice |
+  |---|---|---|
+  | *(leave out)* | Widget | 2.50 |
+  | *(leave out)* | Gadget | 10.00 |
 
-  One order for Pat Lee, placed on 2026-10-01, with both products on it:
+  One order for Pat Lee (CustomerID 1):
 
-  | Product | Quantity |
-  |---|---|
-  | Widget | 4 |
-  | Gadget | 1 |
+  | OrderID | CustomerID | OrderDate |
+  |---|---|---|
+  | *(leave out)* | 1 | 2026-10-01 |
 
-  Finally, write a query that calculates the total cost of the order. *(1 row: 20.00)*
+  Both products on that order (OrderID 1). Widget is ProductID 1 and Gadget is ProductID 2:
+
+  | OrderID | ProductID | Quantity |
+  |---|---|---|
+  | 1 | 1 | 4 |
+  | 1 | 2 | 1 |
+
+  Finally, write a query that shows three columns: the OrderID, the customer's Name, and the order's total cost as `OrderTotal` (each Quantity times its product's UnitPrice, added up). *(1 row: OrderTotal 20.00)*
 
   <!-- solution:10.1 -->
   <details>
@@ -1195,7 +1108,15 @@ CREATE TABLE Guest (
 
   `Enrollment(StudentID, StudentName, CourseID, CourseTitle, InstructorID, InstructorName, InstructorOffice, Grade)`
 
-  Its primary key is StudentID and CourseID together. Split it into tables that are in third normal form (3NF), and create those tables. Start each table's name with `NF_` (for example, `NF_Student`). Also list the partial dependencies and the transitive dependencies that you removed. *(4 tables)*
+  Its primary key is StudentID and CourseID together. Each course has exactly one instructor, and a student gets one Grade per course. Split it into tables that are in third normal form (3NF), and create those tables. Start each table's name with `NF_` (for example, `NF_Student`). Use these column types:
+  - StudentID and InstructorID: whole numbers
+  - CourseID: a 6-character code, like `D427`
+  - StudentName and InstructorName: text up to 50 characters, required
+  - CourseTitle: text up to 60 characters, required
+  - InstructorOffice: text up to 10 characters
+  - Grade: 2 characters, like `A-`
+
+  Give every new table a primary key, and add a foreign key wherever one table refers to another. Also list the partial dependencies and the transitive dependencies that you removed. *(4 tables)*
 
   <!-- solution:10.2 -->
   <details>

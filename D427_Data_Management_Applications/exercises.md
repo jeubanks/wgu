@@ -1,6 +1,6 @@
 # D427 Data Management – Applications: MySQL Practice
 
-162 exercises that cover the D427 topics: writing queries, using built-in functions, grouping and totals, joins, subqueries, changing data, creating and changing tables, constraints, views, indexes, and turning a database design into tables.
+149 exercises that cover the D427 topics: writing queries, using built-in functions, grouping and totals, joins, subqueries, changing data, creating and changing tables, constraints, views, indexes, and turning a database design into tables.
 
 Parts 3 and 4 are built from the D427 practice tests and the D427 Challenge. Part 5 is a mock assessment that uses the same kind of tables as the lab questions on the real assessment (Horse, Student, and LessonSchedule).
 
@@ -21,10 +21,12 @@ Parts 3 and 4 are built from the D427 practice tests and the D427 Challenge. Par
 - **[Part 3: Assessment drills](03-assessment-drills.md)**: can be done at any time
   - [11. Writing tables from a specification](03-assessment-drills.md#11-writing-tables-from-a-specification)
   - [12. Assessment-style queries](03-assessment-drills.md#12-assessment-style-queries)
-- **[Part 4: Concepts check](04-concepts-check.md)**: multiple choice, answers included
+- **[Part 4: Concepts check](04-concepts-check.md)**: multiple choice, true/false, and short-answer questions, answers included
   - [13. Concepts check](04-concepts-check.md#13-concepts-check)
 - **[Part 5: Mock assessment](05-mock-assessment.md)**: do this last
   - [14. Mock assessment](05-mock-assessment.md#14-mock-assessment)
+
+**Not part of D427:** [Beyond D427: transactions and more advanced SQL](later-advanced-sql.md), saved for a later SQL course.
 
 ## The files
 
@@ -45,7 +47,7 @@ SOURCE /work/setup.sql;
 
 > [!IMPORTANT]
 > - **Do Sections 1 to 10 in order.** Sections 1 to 6 only read data, so they never change anything. Sections 7 to 10 change the data and the tables, and later exercises expect that you already did the earlier ones.
-> - **Sections 11 to 13 stand alone.** Section 11 builds its own tables in a separate database named `d427_drills`. Section 12 uses its own tables in `d427`, which no other section changes. Section 13 needs no SQL at all.
+> - **Sections 11 to 13 stand alone.** Section 11 builds its own tables in a separate database named `d427_drills`. Section 12 uses its own tables in `d427`, which no other section changes. Exercises 12.20 to 12.22 change those tables, so run `setup.sql` again before you redo Section 12. Section 13 needs no SQL at all.
 > - **Run `setup.sql` again before Section 14**, so you begin with fresh data.
 
 ### How to read each exercise
@@ -75,18 +77,25 @@ Here is a short summary of the main tables in the database. These short labels a
 | **DEFAULT** | the value used when you don't give one |
 
 ```
-Department(DeptID PK, DeptName UNIQUE, Budget, Location)
-Employee(EmpID PK AI, FirstName, LastName, Email UNIQUE, Salary, HireDate,
-         DeptID FK->Department ON DELETE SET NULL, ManagerID FK->Employee)
+Department(DeptID INT PK, DeptName VARCHAR(40) NOT NULL UNIQUE, Budget DECIMAL(12,2),
+           Location VARCHAR(40))
+Employee(EmpID INT PK AI, FirstName VARCHAR(30) NOT NULL, LastName VARCHAR(30) NOT NULL,
+         Email VARCHAR(60) UNIQUE, Salary DECIMAL(10,2) NOT NULL, HireDate DATE NOT NULL,
+         DeptID INT FK->Department ON DELETE SET NULL, ManagerID INT FK->Employee)
 
-Horse(ID PK AI, RegisteredName, Breed CHECK, Height CHECK, BirthDate CHECK)
-Student(ID PK AI, FirstName, LastName, Street, City, State DEFAULT 'TX', Zip, Phone, Email UNIQUE)
-LessonSchedule(HorseID FK->Horse ON DELETE CASCADE,
-               StudentID FK->Student ON DELETE SET NULL,
-               LessonDateTime,  PK(HorseID, LessonDateTime))
+Horse(ID SMALLINT UNSIGNED PK AI, RegisteredName VARCHAR(15) NOT NULL,
+      Breed VARCHAR(20) CHECK (one of 5 breeds), Height DECIMAL(3,1) CHECK (10.0 to 20.0),
+      BirthDate DATE CHECK (2015-01-01 or later))
+Student(ID SMALLINT UNSIGNED PK AI, FirstName VARCHAR(20) NOT NULL, LastName VARCHAR(30) NOT NULL,
+        Street VARCHAR(50), City VARCHAR(20), State CHAR(2) DEFAULT 'TX', Zip MEDIUMINT UNSIGNED,
+        Phone CHAR(10), Email VARCHAR(30) UNIQUE)
+LessonSchedule(HorseID SMALLINT UNSIGNED NOT NULL FK->Horse ON DELETE CASCADE,
+               StudentID SMALLINT UNSIGNED FK->Student ON DELETE SET NULL,
+               LessonDateTime DATETIME NOT NULL,  PK(HorseID, LessonDateTime))
 
-Rating(RatingCode PK, RatingDescription)
-Movie(ID PK AI, Title, Genre, RatingCode FK->Rating, ReleaseYear, Minutes, Gross)
+Rating(RatingCode CHAR(5) PK, RatingDescription VARCHAR(40) NOT NULL)
+Movie(ID SMALLINT UNSIGNED PK AI, Title VARCHAR(60) NOT NULL, Genre VARCHAR(20),
+      RatingCode CHAR(5) FK->Rating, ReleaseYear SMALLINT, Minutes SMALLINT, Gross DECIMAL(12,2))
 ```
 
 Section 12 also uses six smaller tables (Book, YearSales, Passport, Visa, Compensation, and student_grades). They are described at the start of [that section](03-assessment-drills.md#12-assessment-style-queries).

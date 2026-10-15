@@ -21,7 +21,7 @@ USE d427_drills;
 Run `USE d427;` when you finish the section. You can redo the section at any time by running the three lines above again.
 
 > [!TIP]
-> Every exercise here also includes a statement that **should fail**. Run it, read the error, and make sure you understand which rule stopped it.
+> Most exercises here also include a statement that **should fail**. Run it, read the error, and make sure you understand which rule stopped it.
 
 - **11.1** Create the **Horse** table:
   - ID — integer with range 0 to 65 thousand, auto increment, primary key
@@ -139,7 +139,7 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   - If a row is deleted from Horse, the rows with the same horse ID should be deleted from LessonSchedule automatically.
   - If a row is deleted from Student, the same student IDs should be set to NULL in LessonSchedule automatically.
 
-  Then answer: why must StudentID allow NULL? Try declaring it `NOT NULL` and read the error.
+  Before you create the real table, try it once with StudentID declared `NOT NULL`. It fails. Read the error, then create the table as described above. Why must StudentID allow NULL?
 
   <!-- solution:11.3 -->
   <details>
@@ -259,19 +259,21 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
   Add these three countries. Canada's population has no value.
 
-  | CountryName | Continent | PopulationMillions | IndependenceDate |
-  |---|---|---|---|
-  | Canada | North America | *NULL* | 1867-07-01 |
-  | Brazil | South America | 214.3 | 1822-09-07 |
-  | Germany | Europe | 83.2 | 1871-01-18 |
+  | ID | CountryName | Continent | PopulationMillions | IndependenceDate |
+  |---|---|---|---|---|
+  | *(leave out)* | Canada | North America | *NULL* | 1867-07-01 |
+  | *(leave out)* | Brazil | South America | 214.3 | 1822-09-07 |
+  | *(leave out)* | Germany | Europe | 83.2 | 1871-01-18 |
 
   Then try to add this country, which should fail:
 
-  | CountryName | Continent |
-  |---|---|
-  | Atlantis | Atlantic |
+  | ID | CountryName | Continent | PopulationMillions | IndependenceDate |
+  |---|---|---|---|---|
+  | *(leave out)* | Atlantis | Atlantic | *(leave out)* | *(leave out)* |
 
-  Why did Canada's missing population **not** break the BETWEEN check? *(3 rows)*
+  Select everything from Country. *(3 rows)*
+
+  Why did Canada's missing population **not** break the BETWEEN check?
 
   <!-- solution:11.6 -->
   <details>
@@ -333,7 +335,7 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   |---|---|
   | Dune | SCI |
 
-  *(1 row)*
+  Select everything from Book. *(1 row)*
 
   <!-- solution:11.7 -->
   <details>
@@ -382,7 +384,12 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   | 2 | Bella | Poodle | 2021-07-12 |
   | 2 | Milo | Pug | 2022-02-20 |
 
-  Now write a statement that modifies the Pet table to make PetID the primary key. It fails. Why? Fix the data so Milo has PetID 3, then add the primary key. *(check: `DESCRIBE Pet` shows PRI on PetID)*
+  Then:
+  - Write a statement that modifies the Pet table to make PetID the primary key. It fails. Why?
+  - Change Milo's PetID to 3.
+  - Add the primary key again.
+
+  *(check: `DESCRIBE Pet;` shows PRI on PetID)*
 
   <!-- solution:11.8 -->
   <details>
@@ -418,10 +425,21 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   <!-- /solution -->
 
 - **11.9** Create these two tables exactly as described. Notice that breedID is **not** a primary key in Breed.
-  - **Breed**: breedID — integer; breedDescription — variable-length string, max 40
-  - **Dog**: dogID — integer, primary key; name — variable-length string, max 30; breedID — integer; birthdate — date
+  - **Breed**:
+    - breedID — integer
+    - breedDescription — variable-length string, max 40
+  - **Dog**:
+    - dogID — integer, primary key
+    - name — variable-length string, max 30
+    - breedID — integer
+    - birthdate — date
 
-  Write a statement to make the breedID column in Dog a foreign key to the breedID column in Breed. It fails. Read the error, fix Breed, and try again. This time, give the foreign key the name `fk_dog_breed`.
+  Then:
+  - Write a statement to make the breedID column in Dog a foreign key to the breedID column in Breed. It fails. Read the error.
+  - Fix Breed so its breedID column can be referenced.
+  - Add the foreign key again. This time, name it `fk_dog_breed`.
+
+  *(check: `SHOW CREATE TABLE Dog;` shows CONSTRAINT `fk_dog_breed`)*
 
   <!-- solution:11.9 -->
   <details>
@@ -448,7 +466,8 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   );
   -- Expected to FAIL (Breed.breedID is not a primary key or unique):
   --   ALTER TABLE Dog ADD FOREIGN KEY (breedID) REFERENCES Breed(breedID);
-  --   ERROR 6125: Failed to add the foreign key constraint. Missing unique key ...
+  --   MySQL 8.0:  ERROR 1822: Failed to add the foreign key constraint. Missing index for constraint ...
+  --   MySQL 8.4+: ERROR 6125: Failed to add the foreign key constraint. Missing unique key ...
   ALTER TABLE Breed ADD PRIMARY KEY (breedID);
   ALTER TABLE Dog ADD CONSTRAINT fk_dog_breed FOREIGN KEY (breedID) REFERENCES Breed(breedID);
   SHOW CREATE TABLE Dog;
@@ -457,7 +476,12 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.10** Create the **Department** table: DeptID — integer, primary key; DeptName — variable-length string, max 50; ManagerID — integer. Add these departments:
+- **11.10** Create the **Department** table:
+  - DeptID — integer, primary key
+  - DeptName — variable-length string, max 50
+  - ManagerID — integer
+
+  Add these departments:
 
   | DeptID | DeptName | ManagerID |
   |---|---|---|
@@ -473,6 +497,7 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
     | 3 | Finance | 1999 |
 
   - Remove the MgrIDCheck constraint by name, then add Finance again.
+  - Select everything from Department.
 
   *(3 rows)*
 
@@ -512,18 +537,31 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.11** Create the **Automobile** table: ID — integer, primary key; Make — variable-length string, max 30; Model — variable-length string, max 30; Year — integer. Then add two columns, each with its own ALTER TABLE statement:
+- **11.11** Create the **Automobile** table:
+  - ID — integer, primary key
+  - Make — variable-length string, max 30
+  - Model — variable-length string, max 30
+  - Year — integer
+
+  Then add two columns, each with its own ALTER TABLE statement:
   - SafetyRating — a positive number that is less than 80 with 1 decimal place
   - EngineSize — a positive decimal value less than or equal to 7.9 with one decimal place
 
-  Add the first car, then try to add the second, which should fail:
+  Add this car:
 
   | ID | Make | Model | Year | SafetyRating | EngineSize |
   |---|---|---|---|---|---|
   | 1 | Toyota | Camry | 2024 | 79.9 | 2.5 |
+
+  Then try to add this one, which should fail:
+
+  | ID | Make | Model | Year | SafetyRating | EngineSize |
+  |---|---|---|---|---|---|
   | 2 | Honda | Civic | 2024 | 80.0 | 2.0 |
 
-  If the data type already limits the size, why do you still need a CHECK? *(1 row)*
+  Select everything from Automobile. *(1 row)*
+
+  If the data type already limits the size, why do you still need a CHECK?
 
   <!-- solution:11.11 -->
   <details>
@@ -572,7 +610,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
   - Change the MovieName column so it can hold up to 50 characters. **Keep the name MovieName, and keep it NOT NULL.**
   - Then rename the column to CanadianMovieName, keeping VARCHAR(50) and NOT NULL.
-  - Run `DESCRIBE Movie;`. Is the column still NOT NULL? (If not, you lost it in the first step. MODIFY and CHANGE replace the whole column definition.)
+  - Run `DESCRIBE Movie;`. Is CanadianMovieName still NOT NULL? If not, you left NOT NULL out of one of the two statements. MODIFY and CHANGE replace the whole column definition.
+
+  *(check: CanadianMovieName is varchar(50) with Null = NO)*
 
   <!-- solution:11.12 -->
   <details>
@@ -604,9 +644,17 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.13** Create the **Patient** table: patient_id — integer, primary key; first_name — variable-length string, max 20; last_name — variable-length string, max 30; birthdate — date.
+- **11.13** Create the **Patient** table:
+  - patient_id — integer, primary key
+  - first_name — variable-length string, max 20
+  - last_name — variable-length string, max 30
+  - birthdate — date
 
-  Create the **Exam** table: exam_id — integer, auto increment, primary key; exam_date — date, not NULL; exam_reason — variable-length string with 250 characters; patient_id — integer, not NULL, foreign key to Patient. Name the foreign key `fk_exam_patient`. **A patient who still has exams must not be deletable.**
+  Create the **Exam** table:
+  - exam_id — integer, auto increment, primary key
+  - exam_date — date, not NULL
+  - exam_reason — variable-length string, max 250
+  - patient_id — integer, not NULL, foreign key to Patient(patient_id). Name the foreign key `fk_exam_patient`. **A patient who still has exams must not be deletable.**
 
   Add these two patients to **Patient**:
 
@@ -621,7 +669,7 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   |---|---|---|---|
   | *(leave out)* | 2026-09-30 | Annual physical | 1 |
 
-  Then try to delete each patient. *(check: patient 1's delete fails; patient 2's delete works; 1 patient left)*
+  Then try to delete patient 1, then patient 2. *(check: patient 1's delete fails; patient 2's delete works; 1 patient left)*
 
   <!-- solution:11.13 -->
   <details>
@@ -662,7 +710,13 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.14** The clinic changes its rule: when a patient is deleted, their exams should stay, but with no patient (NULL). Change the Exam table to follow this new rule, then delete patient 1. There is no statement that edits a foreign key in place, so think about what you have to remove and add, and what has to change about the patient_id column first. *(check: 1 exam left, with a NULL patient_id)*
+- **11.14** The clinic changes its rule: when a patient is deleted, their exams should stay, but with no patient (NULL). There is no statement that edits a foreign key in place.
+  - Remove the foreign key `fk_exam_patient`.
+  - Change the patient_id column so the new rule can work. What has to change about it?
+  - Add the foreign key again with the same name, `fk_exam_patient`, and the new delete rule.
+  - Delete patient 1, then look at Exam.
+
+  *(check: 1 exam left, with a NULL patient_id)*
 
   <!-- solution:11.14 -->
   <details>
@@ -701,12 +755,14 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   - Create a **unique index** named `idx_student_phone` on the Phone column.
   - Try to add this student, who has Jamal's phone number. It should fail:
 
-    | FirstName | LastName | Street | City | Zip | Phone |
-    |---|---|---|---|---|---|
-    | Noah | Kim | 12 Maple Dr | Round Rock | 78665 | 5125550102 |
+    | ID | FirstName | LastName | Street | City | State | Zip | Phone | Email |
+    |---|---|---|---|---|---|---|---|---|
+    | *(leave out)* | Noah | Kim | 12 Maple Dr | Round Rock | *(leave out)* | 78665 | 5125550102 | *(leave out)* |
 
   - Run `SHOW INDEX FROM Student;`. Which index did MySQL create for you because Email is UNIQUE?
   - Drop `idx_student_phone`.
+
+  *(check: Student has 2 rows; `SHOW INDEX FROM Student;` now lists only PRIMARY and Email)*
 
   <!-- solution:11.15 -->
   <details>
@@ -738,7 +794,11 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.16** Create a view named **StudentContact** with the columns FirstName, LastName, and Phone from Student. Then **change** the view with ALTER VIEW so it also includes Email. Select everything from the view, sorted by LastName. Finally, delete (drop) the view, and write the DROP statement so it does not cause an error if you run it a second time. *(2 rows, 4 columns)*
+- **11.16** Working with a view:
+  - Create a view named **StudentContact** with the columns FirstName, LastName, and Phone from Student.
+  - **Change** the view with ALTER VIEW so it also includes Email.
+  - Select everything from the view, sorted by LastName. *(2 rows, 4 columns)*
+  - Delete (drop) the view. Write the DROP statement so it does not cause an error if you run it a second time, then run it twice.
 
   <!-- solution:11.16 -->
   <details>
@@ -769,7 +829,10 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   <!-- /solution -->
 
 - **11.17** Changing a primary key:
-  - Create the **CourseSection** table: CourseCode — fixed-length string of 6 chars, primary key; Section — integer from 0 to 255, not NULL; Room — variable-length string, max 10.
+  - Create the **CourseSection** table:
+    - CourseCode — fixed-length string of 6 chars, primary key
+    - Section — integer from 0 to 255, not NULL
+    - Room — variable-length string, max 10
   - Add these sections:
 
     | CourseCode | Section | Room |
@@ -784,9 +847,8 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
     | D427 | 2 | A102 |
 
   - The primary key is wrong: a course can have many sections, so the key should be CourseCode **and** Section together. Change the primary key in **one** ALTER TABLE statement, then add the second D427 section again.
+  - Select everything from CourseSection, sorted by CourseCode and then Section. *(3 rows)*
   - Finally, try `ALTER TABLE Horse DROP PRIMARY KEY;` and read the error. What is different about Horse's primary key?
-
-  *(3 rows)*
 
   <!-- solution:11.17 -->
   <details>
@@ -828,9 +890,14 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
 - **11.18** Adding and removing a UNIQUE constraint:
   - Using ALTER TABLE, add a UNIQUE constraint named `uq_country_name` to the CountryName column of the Country table (from 11.6).
-  - Try to add another country named Brazil. It should fail.
+  - Try to add this country. It should fail:
+
+    | ID | CountryName | Continent | PopulationMillions | IndependenceDate |
+    |---|---|---|---|---|
+    | *(leave out)* | Brazil | South America | *(leave out)* | *(leave out)* |
+
   - Run `SHOW INDEX FROM Country;`. What did MySQL create for the constraint?
-  - Remove the constraint by name.
+  - Remove the constraint by name. *(check: `SHOW INDEX FROM Country;` now lists only PRIMARY)*
   - How is a UNIQUE constraint different from a primary key? (Think about NULLs, and how many of each a table can have.)
 
   <!-- solution:11.18 -->
@@ -896,8 +963,13 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   <!-- /solution -->
 
 - **11.20** ON UPDATE CASCADE:
-  - Create **Team**: TeamCode — fixed-length string of 3 chars, primary key; TeamName — variable-length string, max 30, not NULL.
-  - Create **Player**: PlayerID — integer, primary key; Name — variable-length string, max 30, not NULL; TeamCode — fixed-length string of 3 chars, foreign key to Team. **If a team's code changes, its players' TeamCode should change automatically.**
+  - Create **Team**:
+    - TeamCode — fixed-length string of 3 chars, primary key
+    - TeamName — variable-length string, max 30, not NULL
+  - Create **Player**:
+    - PlayerID — integer, primary key
+    - Name — variable-length string, max 30, not NULL
+    - TeamCode — fixed-length string of 3 chars, foreign key to Team(TeamCode). **If a team's code changes, its players' TeamCode should change automatically.** Don't give it a delete rule.
   - Add this team to **Team** and these players to **Player**:
 
     | TeamCode | TeamName |
@@ -966,12 +1038,15 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 These exercises use the Book, YearSales, Passport, Visa, Compensation, and student_grades tables in `d427`. If `SHOW TABLES;` doesn't list them, your copy of the database is older than these exercises, so run `setup.sql` again.
 
 ```
-YearSales(Year PK, TotalSales, Releases)
-Book(ID PK AI, Title, Genre, Year, Cost)          -- Year is NOT a foreign key
-Passport(PassportID PK, PassportHolderName, Nationality, IssueDate, ExpiryDate)
-Visa(VisaID PK, PassportID FK->Passport, Country, VisaType, IssueDate, ExpiryDate)
-Compensation(ID PK, Name, Salary, Bonus)
-student_grades(studentID PK, lastName, grade)
+YearSales(Year SMALLINT PK, TotalSales BIGINT UNSIGNED, Releases INT)
+Book(ID INT PK AI, Title VARCHAR(60), Genre VARCHAR(20), Year SMALLINT, Cost DECIMAL(6,2))
+                                  -- Year is NOT a foreign key
+Passport(PassportID INT PK, PassportHolderName VARCHAR(100), Nationality VARCHAR(50),
+         IssueDate DATE, ExpiryDate DATE)
+Visa(VisaID INT PK, PassportID INT FK->Passport (can be NULL), Country VARCHAR(50),
+     VisaType VARCHAR(50), IssueDate DATE, ExpiryDate DATE)
+Compensation(ID INT PK, Name VARCHAR(40), Salary DECIMAL(10,2), Bonus DECIMAL(10,2))
+student_grades(studentID CHAR(5) PK, lastName VARCHAR(30), grade CHAR(1))
 ```
 
 The data has these unusual rows on purpose:
@@ -987,7 +1062,7 @@ The data has these unusual rows on purpose:
 > The wording in this section copies the assessment on purpose. Pay attention to phrases like **"if available"** and **"regardless of whether"**. They tell you which table is optional, so they decide which kind of join you need. When a question has neither phrase, the assessment expects an **inner join**, even if it says "for all books."
 
 > [!IMPORTANT]
-> Exercises 12.1 to 12.19 only read data (12.16 creates a view). Exercises 12.20 to 12.22 change data, so do them last.
+> Exercises 12.1 to 12.19 only read data (12.16 creates a view). Exercises 12.20 to 12.22 change data, so do them last, and run each one only once. To start over, run `setup.sql` again.
 
 ### Book and YearSales
 
@@ -1107,7 +1182,10 @@ The data has these unusual rows on purpose:
   </details>
   <!-- /solution -->
 
-- **12.6** Write a query to pull all data for books that cost more than the average cost. Then do the same for books that cost less than the average. Also try `WHERE Cost > AVG(Cost)` and read the error. Why doesn't it work? *(1 row, then 12 rows)*
+- **12.6** Compare each book's cost with the average cost of all books:
+  - a) Write a query to pull all data for books that cost more than the average cost. *(1 row)*
+  - b) Write a query to pull all data for books that cost less than the average cost. *(12 rows)*
+  - c) Try `WHERE Cost > AVG(Cost)` and read the error. Why doesn't it work?
 
   <!-- solution:12.6 -->
   <details>
@@ -1336,7 +1414,7 @@ The data has these unusual rows on purpose:
   </details>
   <!-- /solution -->
 
-- **12.15** Write a query to display each unique VisaType along with the number of visas issued under that type. *(3 rows)*
+- **12.15** Write a query to display each unique VisaType along with the number of visas issued under that type as VisaCount. *(3 rows)*
 
   <!-- solution:12.15 -->
   <details>
@@ -1385,7 +1463,7 @@ The data has these unusual rows on purpose:
   </details>
   <!-- /solution -->
 
-- **12.17** Show the passports that have no visas. *(1 row)*
+- **12.17** Show the PassportID and PassportHolderName of the passports that have no visas. *(1 row)*
 
   <!-- solution:12.17 -->
   <details>

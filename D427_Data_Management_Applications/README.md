@@ -2,7 +2,7 @@
 
 Hands-on SQL practice for WGU **D427 Data Management – Applications**, run against a real MySQL 8.4 server in a container.
 
-162 exercises cover the D427 skills: querying, built-in functions, aggregation, joins, subqueries, inserting/updating/deleting data, creating and altering tables with constraints, views, indexes, and turning a design into tables.
+149 exercises cover the D427 skills: querying, built-in functions, aggregation, joins, subqueries, inserting/updating/deleting data, creating and altering tables with constraints, views, indexes, and turning a design into tables.
 
 Sections 11–13 are built from the two D427 practice tests and the D427 Challenge. They cover writing tables from the OA's column descriptions, the OA's join wording ("if available", "regardless of"), and a multiple-choice concepts check. The final section is a 12-task mock assessment written in the style of the OA's lab items (Horse / Student / LessonSchedule).
 
@@ -13,8 +13,10 @@ Sections 11–13 are built from the two D427 practice tests and the D427 Challen
 | `README.md` | This file: setup, how to work through the exercises, troubleshooting. |
 | `setup.sql` | Builds the `d427` database and loads the sample data. Re-run it any time to reset. |
 | `exercises.md` | Start here: the table of contents, the order to work in, and a summary of the tables. |
-| `01-queries.md` … `05-mock-assessment.md` | The exercises, in five parts. Each one lists the expected row count so you can check yourself. Part 4 (concepts check) has its answers folded under each question. |
-| `solutions.sql` | One worked answer per exercise, labeled `-- [1.1]`, `-- [5.3]`, etc., with notes on the common traps. |
+| `01-queries.md` … `05-mock-assessment.md` | The exercises, in five parts. Most exercises list the expected row count so you can check yourself. Part 4 (concepts check) has its answers folded under each question. |
+| `D427 Course Guide v3.docx`, `D427 Practice Test 1 with ANSWER KEY.pdf`, `D427 Practice Test 2 with ANSWER KEY.pdf`, `JOINS & Aggregate Functions.pdf` | Course reference material that Sections 11–13 are built from. |
+| `solutions.sql` | One worked answer per SQL exercise, labeled `-- [1.1]`, `-- [5.3]`, etc., with notes on the common traps. Section 13 has only its hints here. |
+| `later-advanced-sql.md` | Exercises that go beyond D427: transactions, plus a few more advanced queries and views. Kept for a later SQL course. |
 | `build_solutions.py` | Copies each hint and answer from `solutions.sql` into the exercise files as folded **Hint** and **Solution** blocks. Run `python3 build_solutions.py` after changing `solutions.sql`. |
 
 ## Requirements
@@ -116,7 +118,7 @@ Every command above works with `podman` in place of `docker`. On SELinux systems
 
 ## The practice database
 
-`setup.sql` creates three small schemas in one database, plus six drill tables for Section 12:
+`setup.sql` creates three small schemas in one database, plus six drill tables for Section 12. Run `DESCRIBE TableName;` or read `setup.sql` for each column's type and size.
 
 ```
 Department(DeptID PK, DeptName UNIQUE, Budget, Location)
@@ -157,9 +159,9 @@ Start with [`exercises.md`](exercises.md), which links to every section.
 | 2 | [`01-queries.md`](01-queries.md) | WHERE: BETWEEN, IN, LIKE, NULL, AND/OR | No |
 | 3 | [`01-queries.md`](01-queries.md) | Built-in string, date, and numeric functions; CASE | No |
 | 4 | [`01-queries.md`](01-queries.md) | Aggregates, GROUP BY, HAVING | No |
-| 5 | [`01-queries.md`](01-queries.md) | Joins: inner, outer, self, anti-join, full outer emulation | No |
-| 6 | [`01-queries.md`](01-queries.md) | Subqueries: scalar, IN, correlated, EXISTS, derived tables | No |
-| 7 | [`02-changing-data.md`](02-changing-data.md) | INSERT, UPDATE, DELETE, transactions, FK actions | Yes |
+| 5 | [`01-queries.md`](01-queries.md) | Joins: inner, outer, self, anti-join, cross | No |
+| 6 | [`01-queries.md`](01-queries.md) | Subqueries: scalar, IN, NOT IN, correlated, EXISTS | No |
+| 7 | [`02-changing-data.md`](02-changing-data.md) | INSERT, UPDATE, DELETE, FK actions, DELETE vs TRUNCATE | Yes |
 | 8 | [`02-changing-data.md`](02-changing-data.md) | CREATE / ALTER / DROP TABLE, constraints | Yes |
 | 9 | [`02-changing-data.md`](02-changing-data.md) | Views and indexes | Yes |
 | 10 | [`02-changing-data.md`](02-changing-data.md) | Design and normalization to tables | Yes |
@@ -171,7 +173,7 @@ Start with [`exercises.md`](exercises.md), which links to every section.
 A few rules keep the expected row counts accurate:
 
 1. **Work sections 1–10 in order.** Sections 7–10 change data and schema, and later exercises assume the earlier ones were done.
-2. **Sections 11–13 stand alone.** Do them whenever you like. Section 11 works in its own `d427_drills` database, and the tables Section 12 uses aren't touched by any other section.
+2. **Sections 11–13 stand alone.** Do them whenever you like. Section 11 works in its own `d427_drills` database, and the tables Section 12 uses aren't touched by any other section. Exercises 12.20–12.22 change Book and Compensation, so reload `setup.sql` before you redo Section 12.
 3. **Reload `setup.sql` before Section 14.** The mock assessment starts from fresh data.
 4. **If you get lost, reset.** Re-running `setup.sql` rebuilds everything from scratch. To pick up in the middle of Section 7–10, reset and then run the earlier solutions from `solutions.sql` to bring the data back to that point.
 5. **Check your row count before looking at the answer.** A wrong count usually means a NULL or join issue; the hint in the exercise often points at which one.

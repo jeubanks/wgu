@@ -7,14 +7,17 @@ Do this part last, as a timed practice run.
 ## 14. Mock assessment
 
 > [!IMPORTANT]
-> **Run `setup.sql` again before you start this section.** Try to answer these questions without looking at the solutions. Give yourself about 60 minutes.
+> **Run `setup.sql` again before you start this section.** Do the tasks in order, because each one builds on the ones before it. Try to answer them without looking at the solutions. Give yourself about 60 minutes.
 
 - **14.1** Create a table named **Instructor** with these columns:
-  - `ID`: a small, unsigned whole number (SMALLINT UNSIGNED) that MySQL fills in automatically. It is the primary key.
-  - `FirstName`: text up to 20 characters. It is required.
-  - `LastName`: text up to 30 characters. It is required.
-  - `HireDate`: a date. It is required.
-  - `Rate`: a decimal number, DECIMAL(5,2). It is required. If no rate is given, it should be 45.00. It must be between 20 and 150.
+
+  | Column | Type | Rules |
+  |---|---|---|
+  | `ID` | SMALLINT UNSIGNED | Auto increment, primary key |
+  | `FirstName` | VARCHAR(20) | NOT NULL |
+  | `LastName` | VARCHAR(30) | NOT NULL |
+  | `HireDate` | DATE | NOT NULL |
+  | `Rate` | DECIMAL(5,2) | NOT NULL, default 45.00, must be from 20 to 150 (inclusive) |
 
   <!-- solution:14.1 -->
   <details>
@@ -41,7 +44,7 @@ Do this part last, as a timed practice run.
   </details>
   <!-- /solution -->
 
-- **14.2** Add a column named `InstructorID` to the LessonSchedule table, with a foreign key that points to the Instructor table. Its type must be the same as Instructor's `ID` column. If an instructor is deleted, their lessons should stay in the table, but with no instructor (NULL).
+- **14.2** Add a column named `InstructorID` to the LessonSchedule table, with a foreign key that points to the Instructor table. Its type must be the same as Instructor's `ID` column. If an instructor is deleted, their lessons should stay in the table, but with no instructor (NULL). *(check: `DESCRIBE LessonSchedule;` shows InstructorID, and every lesson's InstructorID is NULL)*
 
   <!-- solution:14.2 -->
   <details>
@@ -64,13 +67,15 @@ Do this part last, as a timed practice run.
   </details>
   <!-- /solution -->
 
-- **14.3** Add these three instructors to the **Instructor** table. Dale and Roy use the default rate:
+- **14.3** Add these three instructors to the **Instructor** table, in this order. Dale gets ID 1, Roy gets ID 2, and Annie gets ID 3. Dale and Roy use the default rate.
 
   | ID | FirstName | LastName | HireDate | Rate |
   |---|---|---|---|---|
   | *(leave out)* | Dale | Evans | 2020-04-01 | *(leave out)* |
   | *(leave out)* | Roy | Rogers | 2022-09-15 | *(leave out)* |
   | *(leave out)* | Annie | Oakley | 2024-06-03 | 60.00 |
+
+  *(check: 3 rows; Dale and Roy have a Rate of 45.00)*
 
   <!-- solution:14.3 -->
   <details>
@@ -99,7 +104,7 @@ Do this part last, as a timed practice run.
   - Roy teaches every lesson on horses 4, 5, and 6.
   - Annie teaches every lesson that still has no instructor.
 
-  Then show how many lessons each instructor has. *(3 rows)*
+  Then show each InstructorID and its number of lessons, named `Lessons`. *(3 rows)*
 
   <!-- solution:14.4 -->
   <details>
@@ -123,7 +128,7 @@ Do this part last, as a timed practice run.
   </details>
   <!-- /solution -->
 
-- **14.5** Show every lesson with these columns: the date and time, the horse's name, the student's full name, and the instructor's full name. If a lesson has no student, the student name should be NULL. Sort the lessons from earliest to latest. *(12 rows)*
+- **14.5** Show every lesson with these columns: LessonDateTime, RegisteredName, `Student` (the student's full name), and `Instructor` (the instructor's full name). A full name is the first name, a space, and the last name. If a lesson has no student, Student should be NULL. Sort the lessons from earliest to latest. *(12 rows)*
 
   <!-- solution:14.5 -->
   <details>
@@ -150,7 +155,7 @@ Do this part last, as a timed practice run.
   </details>
   <!-- /solution -->
 
-- **14.6** For each instructor, show their full name, how many lessons they teach, and how much they earn (the number of lessons multiplied by their rate). Sort the list so the instructor who earns the most is first. If two instructors earn the same amount, sort them by name. *(3 rows)*
+- **14.6** For each instructor, show these columns: `Instructor` (first name, a space, and last name), `Lessons` (how many lessons they teach), and `Earnings` (the number of lessons multiplied by their rate). Sort the list so the instructor who earns the most is first. If two instructors earn the same amount, sort them by the Instructor column. *(3 rows)*
 
   <!-- solution:14.6 -->
   <details>
@@ -177,7 +182,7 @@ Do this part last, as a timed practice run.
   </details>
   <!-- /solution -->
 
-- **14.7** For each breed that has more than one horse, show the breed, the number of horses, and the average height (rounded to 2 decimal places). Leave out horses whose breed is unknown (NULL). Sort the list so the breed with the tallest average height is first. *(4 rows)*
+- **14.7** For each breed that has more than one horse, show these columns: Breed, `Horses` (the number of horses), and `AvgHeight` (the average height, rounded to 2 decimal places). Leave out horses whose breed is unknown (NULL). Sort the list so the breed with the tallest average height is first. *(4 rows)*
 
   <!-- solution:14.7 -->
   <details>
@@ -203,7 +208,7 @@ Do this part last, as a timed practice run.
   </details>
   <!-- /solution -->
 
-- **14.8** Show the horses that are taller than the average height of all horses. Sort the list so the tallest horse is first. *(4 rows)*
+- **14.8** Show the ID, RegisteredName, and Height of the horses that are taller than the average height of all horses. Sort the list so the tallest horse is first. *(4 rows)*
 
   <!-- solution:14.8 -->
   <details>
@@ -253,7 +258,7 @@ Do this part last, as a timed practice run.
   </details>
   <!-- /solution -->
 
-- **14.10** Create an index that makes it faster to find all the lessons for a given student.
+- **14.10** Create an index named `idx_lesson_student` that makes it faster to find all the lessons for a given student. *(check: `SHOW INDEX FROM LessonSchedule;` lists idx_lesson_student)*
 
   <!-- solution:14.10 -->
   <details>
@@ -304,7 +309,7 @@ Do this part last, as a timed practice run.
   <summary>Hint</summary>
 
   - Delete the horses whose ID is NOT IN the list of HorseIDs in LessonSchedule.
-  - NOT IN is safe here because HorseID can never be NULL. Compare this with 6.8.
+  - NOT IN is safe here because HorseID can never be NULL. Compare this with 6.6.
 
   </details>
 
