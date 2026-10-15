@@ -315,33 +315,62 @@
     return expectedCache[label];
   }
 
+  function ordinal(n) { return n + (n % 10 === 1 && n % 100 !== 11 ? "st" : n % 10 === 2 && n % 100 !== 12 ? "nd" : n % 10 === 3 && n % 100 !== 13 ? "rd" : "th"); }
+
   function check(engine, label, mine) {
     var expected = expectedFor(engine, label);
-    var verdicts = expected.map(function (exp) {
-      var best = null;
-      mine.forEach(function (m) {
-        var v = compare(m, exp);
-        if (v === "match" || (v === "order" && best !== "match") || best === null) best = v;
+    // Pair each expected result with a different one of yours: exact matches first,
+    // then "right rows, wrong order". One result of yours can't count twice.
+    var pairedWith = expected.map(function () { return -1; });
+    var used = mine.map(function () { return false; });
+    var verdicts = expected.map(function () { return null; });
+    ["match", "order"].forEach(function (want) {
+      expected.forEach(function (exp, i) {
+        if (pairedWith[i] >= 0) return;
+        for (var j = 0; j < mine.length; j++) {
+          if (!used[j] && compare(mine[j], exp) === want) {
+            pairedWith[i] = j; used[j] = true; verdicts[i] = want;
+            return;
+          }
+        }
       });
-      return best || "Run a SELECT first.";
     });
+    // What's left: the reason the closest unused result of yours doesn't match.
+    expected.forEach(function (exp, i) {
+      if (verdicts[i]) return;
+      var free = mine.filter(function (_, j) { return !used[j]; });
+      verdicts[i] = free.length ? compare(free[0], exp) : (mine.length ? null : "Run a SELECT first.");
+    });
+    var unused = mine.filter(function (_, j) { return !used[j]; });
+    var diff = bestDiff(unused, expected, verdicts);
     var matched = verdicts.filter(function (v) { return v === "match"; }).length;
+
     if (matched === expected.length) {
       return { ok: true, text: expected.length > 1
         ? "Matches all " + expected.length + " of the solution's results."
         : "Matches the solution's result." };
     }
-    var diff = bestDiff(mine, expected, verdicts);
     if (expected.length === 1) {
       return { ok: false, diff: diff, text: verdicts[0] === "order"
         ? "Right rows, but in a different order. Check your ORDER BY."
-        : verdicts[0] };
+        : verdicts[0] || "Run a SELECT first." };
     }
-    var missing = expected.filter(function (_, i) { return verdicts[i] !== "match"; }).map(function (r) {
-      return plural(r.rows.length, "row") + " × " + plural(r.columns.length, "column");
+    var parts = [];
+    expected.forEach(function (exp, i) {
+      if (pairedWith[i] < 0) return;
+      parts.push("your result " + (pairedWith[i] + 1) + (verdicts[i] === "order"
+        ? " has the solution's " + ordinal(i + 1) + " rows, but in a different order"
+        : " matches the solution's " + ordinal(i + 1)));
     });
-    return { ok: false, diff: diff, text: "This exercise has " + expected.length + " queries to write. " + matched +
-      (matched === 1 ? " of yours matches" : " of yours match") + " so far. Still missing a result with " + missing.join(", and one with ") + "." };
+    var missing = [];
+    expected.forEach(function (exp, i) {
+      if (pairedWith[i] < 0) missing.push("its " + ordinal(i + 1) + " (" + plural(exp.rows.length, "row") + " × " +
+        plural(exp.columns.length, "column") + ")");
+    });
+    var text = "This exercise has " + expected.length + " queries to write. ";
+    if (parts.length) text += parts.join("; ").replace(/^y/, "Y") + ". ";
+    if (missing.length) text += "Still missing a result like " + missing.join(", and one like ") + ".";
+    return { ok: false, diff: diff, text: text.trim() };
   }
 
   /* ---------- UI ---------- */
