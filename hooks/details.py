@@ -8,6 +8,8 @@
 - GitHub lets a list start on the line right after a paragraph; Python-Markdown
   needs a blank line first, or the items run together as one paragraph.
 - GitHub alerts (`> [!NOTE]`, `> [!TIP]`, ...) become Material admonitions.
+- `<a href="file" download>` becomes a Markdown link with a download attribute,
+  because MkDocs only adjusts Markdown link paths for each page's URL.
 """
 import re
 
@@ -83,5 +85,18 @@ def _alerts(markdown):
     return "\n".join(out)
 
 
+DOWNLOAD = re.compile(r'<a href="(?P<href>[^"]+)" download>(?P<text>.*?)</a>')
+
+
+def _download_link(match):
+    href = match["href"]
+    # The download attribute's value is the saved filename.
+    return f'[{match["text"]}]({href}){{: download="{href.rsplit("/", 1)[-1]}" }}'
+
+
+def _downloads(markdown):
+    return DOWNLOAD.sub(_download_link, markdown)
+
+
 def on_page_markdown(markdown, **kwargs):
-    return BLOCK.sub(_convert, _gfm_fixes(_alerts(markdown)))
+    return BLOCK.sub(_convert, _gfm_fixes(_alerts(_downloads(markdown))))
