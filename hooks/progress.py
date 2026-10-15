@@ -1,17 +1,20 @@
-"""MkDocs hook: data for D427 exercise progress tracking (docs/javascripts/progress.js).
+"""MkDocs hook: data for exercise progress tracking (docs/javascripts/progress.js).
 
-Every D427 page gets a small JSON blob listing each part's title, page URL, and
-exercise labels (1.1, 1.2, ...), read from the 0N-*.md files at build time so the
-totals always match the pages. progress.js adds a "Done" checkbox to each
-exercise and draws a progress bar per part on the overview page (exercises.md),
-under its "## Contents" heading. Progress is saved in the browser only.
+Courses turn it on in mkdocs.yml (extra.courses: progress), naming an overview
+page and a glob of exercise pages. Every page of such a course gets a small JSON
+blob listing each part's title, page URL, and exercise labels (1.1, 1.2, ...),
+read from those pages at build time so the totals always match. progress.js adds
+a "Done" checkbox to each exercise and draws a progress bar per part on the
+overview page, under its "## Contents" heading. Progress is saved in the browser
+only, under "<course>-progress".
 """
 import json
 import re
+import sys
 from pathlib import Path
 
-COURSE = Path(__file__).resolve().parent.parent / "D427_Data_Management_Applications"
-OVERVIEW = "d427/exercises.md"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import courses  # noqa: E402  (course settings from mkdocs.yml: extra.courses)
 ITEM = re.compile(r"^- \*\*(\d+\.\d+)\*\*", re.M)
 TITLE = re.compile(r"^# (.+)$", re.M)
 
@@ -23,9 +26,18 @@ A passing <strong>Check</strong> in a Try it box ticks it for you. Progress is s
 """
 
 
-def _parts():
+def on_config(config, **kwargs):
+    courses.load(config)
+
+
+def _tracked(src_uri):
+    course, name = courses.for_page(src_uri)
+    return (course, name) if course is not None and course.progress_overview else (None, None)
+
+
+def _parts(course):
     parts = []
-    for path in sorted(COURSE.glob("0[0-9]-*.md")):
+    for path in sorted(course.folder.glob(course.progress_pages)):
         text = path.read_text()
         labels = ITEM.findall(text)
         if not labels:
@@ -39,7 +51,8 @@ def _parts():
 
 
 def on_page_markdown(markdown, page, **kwargs):
-    if page.file.src_uri != OVERVIEW:
+    course, name = _tracked(page.file.src_uri)
+    if course is None or name != course.progress_overview:
         return markdown
     heading = re.search(r"^## Contents\s*$", markdown, re.M)
     if not heading:
@@ -49,8 +62,10 @@ def on_page_markdown(markdown, page, **kwargs):
 
 
 def on_page_content(html, page, **kwargs):
-    if not page.file.src_uri.startswith("d427/"):
+    course, name = _tracked(page.file.src_uri)
+    if course is None:
         return html
-    data = {"overview": page.file.src_uri == OVERVIEW, "parts": _parts()}
+    data = {"key": f"{course.slug}-progress", "overview": name == course.progress_overview,
+            "parts": _parts(course)}
     blob = json.dumps(data).replace("</", "<\\/")
     return html + f'\n<script type="application/json" id="ex-progress-data">{blob}</script>\n'

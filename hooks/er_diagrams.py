@@ -1,11 +1,14 @@
-"""MkDocs hook: a folded "Show tables" ER diagram for D427 exercises.
+"""MkDocs hook: a folded "Show tables" ER diagram for course exercises.
+
+Which courses and pages get them is set in mkdocs.yml (extra.courses: er_diagrams).
 
 The exercise files stay unchanged. At build time, under each exercise whose
 `**Uses:**` line names tables "from `setup.sql`", this adds a collapsed block
 with an ER diagram (inline SVG from hooks/er_svg.py) of those tables plus the
 tables one foreign key away, shown compact and in gray. When none of them are
 linked by a foreign key, there's no diagram: a lone box adds nothing.
-The schema comes from setup.sql via D427_Data_Management_Applications/build_diagrams.py.
+The schema comes from the course's setup.sql via its build_diagrams.py (D427's is
+D427_Data_Management_Applications/build_diagrams.py).
 
 On the Setup page (README.md) the Mermaid diagram, which is there for GitHub,
 is swapped for the same tables drawn as SVG.
@@ -20,11 +23,12 @@ learner is asked to create or design.
 """
 import importlib.util
 import re
+import sys
 from pathlib import Path
 
-COURSE = Path(__file__).resolve().parent.parent / "D427_Data_Management_Applications"
-PAGES = {"d427/01-queries.md", "d427/02-changing-data.md",
-         "d427/03-assessment-drills.md", "d427/05-mock-assessment.md"}
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import courses  # noqa: E402  (course settings from mkdocs.yml: extra.courses)
+
 
 ITEM = re.compile(r"^- \*\*(\d+\.\d+)\*\*")
 HEADING = re.compile(r"^### (.+)$")
@@ -45,8 +49,8 @@ def _load(name, path):
 _er_svg = _load("er_svg", Path(__file__).resolve().parent / "er_svg.py")
 
 
-def _load_builder():
-    return _load("build_diagrams", COURSE / "build_diagrams.py")
+def _load_builder(course):
+    return _load(f"build_diagrams_{course.slug}", course.folder / "build_diagrams.py")
 
 
 def _names(text, schema):
@@ -167,7 +171,6 @@ def _add_diagrams(markdown, builder, schema, diagrams):
     return "\n".join(out)
 
 
-README = "d427/README.md"
 README_BLOCK = re.compile(r"<!-- er-diagram -->\n```mermaid\n.*?```\n<!-- /er-diagram -->", re.S)
 PLACEHOLDER = re.compile(r'<div class="er-diagram" data-er="(\d+)"></div>')
 _pages = {}  # page src_uri -> list of (wide, stacked) SVGs, from on_page_markdown to on_page_content
@@ -177,16 +180,21 @@ SVG_WIDTH = re.compile(r'<svg [^>]*\bwidth="(\d+)"')
 NARROW = 600
 
 
+def on_config(config, **kwargs):
+    courses.load(config)
+
+
 def on_page_markdown(markdown, page, **kwargs):
     uri = page.file.src_uri
-    if uri not in PAGES and uri != README:
+    course, name = courses.for_page(uri)
+    if course is None or (name not in course.er_pages and name != course.er_readme):
         return markdown
-    builder = _load_builder()
+    builder = _load_builder(course)
     schema = builder.read_schema()
     diagrams = _pages[uri] = []
-    if uri == README:
+    if name == course.er_readme:
         # GitHub shows the Mermaid version; the site shows the same tables as SVG.
-        diagrams.append(_svg(builder, schema, "The d427 practice database"))
+        diagrams.append(_svg(builder, schema, f"The {course.slug} practice database"))
         return README_BLOCK.sub('<div class="er-diagram" data-er="0"></div>', markdown)
     return _add_diagrams(markdown, builder, schema, diagrams)
 

@@ -1,4 +1,6 @@
-"""MkDocs hook: answer keys for the interactive quiz on D427 Part 4 (concepts check).
+"""MkDocs hook: answer keys for interactive quiz pages (D427's is Part 4, the concepts check).
+
+Each course names its quiz page in mkdocs.yml (extra.courses: quiz).
 
 The Markdown keeps its Hint and Answer blocks. Each question part also has a
 hidden HTML comment, right after the part, with a machine-readable key:
@@ -24,11 +26,13 @@ docs/javascripts/quiz.js finds each comment in the page and adds the controls.
 """
 import json
 import re
+import sys
+from pathlib import Path
 
 from mkdocs.exceptions import PluginError
 
-PAGE = "d427/04-concepts-check.md"
-STORAGE = "d427-quiz:04"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import courses  # noqa: E402  (course settings from mkdocs.yml: extra.courses)
 
 KEY = re.compile(r"^[ \t]*<!-- answer:(?P<id>\S+) (?P<spec>.*?) -->[ \t]*$", re.M)
 SPEC = re.compile(r"^(?P<kind>choice|blanks|table|written)(?P<groups>(?:\s*\[[^\]]*\])*)\s*(?::\s*(?P<body>.*))?$")
@@ -122,8 +126,19 @@ def _parse(pid, spec, region):
     return part
 
 
+def on_config(config, **kwargs):
+    courses.load(config)
+
+
+def _quiz(src_uri):
+    """The course whose quiz page this is, or None."""
+    course, name = courses.for_page(src_uri)
+    return course if course is not None and name == course.quiz else None
+
+
 def on_page_markdown(markdown, page, **kwargs):
-    if page.file.src_uri != PAGE:
+    PAGE = page.file.src_uri
+    if _quiz(PAGE) is None:
         return markdown
     parts, start = [], 0
     for m in KEY.finditer(markdown):
@@ -147,7 +162,11 @@ def on_page_markdown(markdown, page, **kwargs):
 
 
 def on_page_content(html, page, **kwargs):
-    if page.file.src_uri != PAGE:
+    PAGE = page.file.src_uri
+    course = _quiz(PAGE)
+    if course is None:
         return html
-    blob = json.dumps({"storage": STORAGE, "parts": _parts[PAGE]}).replace("</", "<\\/")
+    # Saved answers live under "<course>-quiz:<page number>", e.g. d427-quiz:04.
+    storage = f"{course.slug}-quiz:{Path(course.quiz).stem[:2]}"
+    blob = json.dumps({"storage": storage, "parts": _parts[PAGE]}).replace("</", "<\\/")
     return html + f'\n<script type="application/json" id="quiz-data">{blob}</script>\n'

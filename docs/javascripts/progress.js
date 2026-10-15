@@ -1,4 +1,4 @@
-/* D427 exercise progress: a "Done" checkbox on each exercise, and a progress bar
+/* Exercise progress: a "Done" checkbox on each exercise, and a progress bar
    per part on the overview page. The list of parts and exercises comes from
    hooks/progress.py (#ex-progress-data). Progress lives in localStorage only.
    sql-runner.js sends a "d427:solved" event when a Check passes; that ticks the box. */
@@ -6,7 +6,7 @@
   var el = document.getElementById("ex-progress-data");
   if (!el) return;
   var DATA = JSON.parse(el.textContent);
-  var KEY = "d427-progress";
+  var KEY = DATA.key || "d427-progress";
 
   function load() {
     try { return JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { return {}; }
@@ -90,7 +90,7 @@
       reset.className = "md-button ex-progress-reset";
       reset.textContent = "Reset progress";
       reset.addEventListener("click", function () {
-        if (!window.confirm("Clear the Done marks on every D427 exercise in this browser?")) return;
+        if (!window.confirm("Clear the Done marks on every exercise in this course, in this browser?")) return;
         done = {};
         save(done);
         render();

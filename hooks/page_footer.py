@@ -3,30 +3,34 @@
 - "Last updated": the date of the last commit that changed the page's source
   file (needs the full git history: the workflows check out with fetch-depth: 0).
   Left out when git can't say (a shallow clone, or a file that isn't committed).
-- "View source": the page's file on GitHub. docs/d427 and docs/d949 are symlinks,
-  so the link points at the real course folder, not the symlink.
+- "View source": the page's file on GitHub. Course folders are symlinked into
+  docs/ (mkdocs.yml: extra.courses), so the link points at the real folder.
 - "Report a problem": a new GitHub issue with the page's title and URL filled in.
 """
 import subprocess
+import sys
 from datetime import date
 from html import escape
 from pathlib import Path
 from urllib.parse import quote
 
-ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import courses  # noqa: E402  (course settings from mkdocs.yml: extra.courses)
+
+ROOT = courses.ROOT
 REPO = "https://github.com/jeubanks/wgu"
-LINKS = {  # docs/ symlink -> real folder in the repo
-    "d427/": "D427_Data_Management_Applications/",
-    "d949/": "D949_Data_Structures_And_Algorithms_I/",
-}
 
 _dates = {}
 
 
+def on_config(config, **kwargs):
+    courses.load(config)
+
+
 def _source(src_uri):
-    for link, real in LINKS.items():
-        if src_uri.startswith(link):
-            return real + src_uri[len(link):]
+    course, page = courses.for_page(src_uri)
+    if course is not None:
+        return course.folder.relative_to(ROOT).as_posix() + "/" + page
     return "docs/" + src_uri
 
 
