@@ -1,0 +1,63 @@
+/* WGU web palette (brand.wgu.edu/web-color-palette):
+   Midnight #001731, Blue Midnight #002855, Medium Blue #0070F0,
+   Sky Blue #46B1EF, Lime Green #97E152, Light Blue #EEF6F9. */
+
+[data-md-color-primary="custom"] {
+  --md-primary-fg-color: #002855;
+  --md-primary-fg-color--light: #0070f0;
+  --md-primary-fg-color--dark: #001731;
+  --md-primary-bg-color: #ffffff;
+  --md-primary-bg-color--light: #ffffffb3;
+}
+
+[data-md-color-accent="custom"] {
+  --md-accent-fg-color: #0070f0;
+  --md-accent-fg-color--transparent: #0070f01a;
+}
+
+[data-md-color-scheme="default"] {
+  --md-typeset-a-color: #0070f0;
+  --md-code-bg-color: #eef6f9;
+}
+
+/* Dark mode: Midnight backgrounds, Sky Blue links, Lime Green accent. */
+[data-md-color-scheme="slate"] {
+  --md-hue: 212;
+  --md-default-bg-color: #001731;
+  --md-code-bg-color: #002855;
+  --md-typeset-a-color: #46b1ef;
+  --md-accent-fg-color: #97e152;
+  --md-accent-fg-color--transparent: #97e1521a;
+}
+
+[data-md-color-scheme="slate"] .md-header,
+[data-md-color-scheme="slate"] .md-tabs {
+  background-color: #001731;
+}
+
+/* Hint boxes in Sky Blue; Solution/Answer boxes in Lime Green. */
+.md-typeset .admonition.tip,
+.md-typeset details.tip {
+  border-color: #46b1ef;
+}
+.md-typeset .tip > .admonition-title,
+.md-typeset .tip > summary {
+  background-color: #46b1ef1a;
+}
+.md-typeset .tip > .admonition-title::before,
+.md-typeset .tip > summary::before {
+  background-color: #46b1ef;
+}
+
+.md-typeset .admonition.success,
+.md-typeset details.success {
+  border-color: #6fbf2a;
+}
+.md-typeset .success > .admonition-title,
+.md-typeset .success > summary {
+  background-color: #97e1521f;
+}
+.md-typeset .success > .admonition-title::before,
+.md-typeset .success > summary::before {
+  background-color: #6fbf2a;
+}

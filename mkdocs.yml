@@ -13,6 +13,9 @@ exclude_docs: |
   .pytest_cache/
   __pycache__/
 
+extra_css:
+  - stylesheets/wgu.css
+
 hooks:
   - hooks/details.py
 
@@ -31,15 +34,15 @@ theme:
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: indigo
-      accent: amber
+      primary: custom
+      accent: custom
       toggle:
         icon: material/weather-night
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: indigo
-      accent: amber
+      primary: custom
+      accent: custom
       toggle:
         icon: material/weather-sunny
         name: Switch to light mode
