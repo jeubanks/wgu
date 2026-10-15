@@ -6,8 +6,9 @@ setup.sql is the source of truth. After changing a CREATE TABLE there, run:
     python3 build_diagrams.py
 
 This rewrites the diagram between the `<!-- er-diagram -->` markers in
-README.md, so it also renders on GitHub. hooks/er_diagrams.py imports this
-file to draw the small per-exercise "Show tables" diagrams at build time.
+README.md, so it renders on GitHub. On the site, hooks/er_diagrams.py uses
+read_schema() here and hooks/er_svg.py to draw the same diagram (and the small
+per-exercise "Show tables" diagrams) as styled SVG instead.
 
 The diagrams show columns, keys (PK, FK, UK = unique) and relationships.
 Types are general (int, decimal, string, date, datetime) on purpose:
@@ -144,7 +145,10 @@ def _attribute(table, col):
         keys.append("FK")
     if col.name in table.unique:
         keys.append("UK")
-    return f"    {col.type} {col.name}" + (f" {', '.join(keys)}" if keys else "")
+    # Mermaid always draws an attribute as `type name keys`, in that order. Put the
+    # column name in the type slot and the type in the name slot, so the boxes read
+    # Name | Type | Keys like CREATE TABLE, MySQL Workbench and dbdiagram.io.
+    return f"    {col.name} {col.type}" + (f" {', '.join(keys)}" if keys else "")
 
 
 def _relationships(tables):
@@ -160,7 +164,8 @@ def _relationships(tables):
             # Solid line: the FK is part of the child's primary key (identifying).
             line = "--" if fk.column in child.primary_key else ".."
             out.append((fk.parent, child.name, fk,
-                        f"  {fk.parent} {parent_end}{line}{child_end} {child.name} : {fk.column}"))
+                        f'  {fk.parent} {parent_end}{line}{child_end} {child.name} : '
+                        f'"{child.name}.{fk.column} = {fk.parent}.{fk.parent_column}"'))
     return out
 
 
@@ -177,6 +182,11 @@ def _description(tables, relationships):
     if not relationships and len(names) > 1:
         parts.append("No foreign keys connect them.")
     return " ".join(parts)
+
+
+def describe(tables):
+    """Alt text for a diagram of {name: Table}: the tables and each foreign key."""
+    return _description(tables, _relationships(tables))
 
 
 def er_diagram(tables, title, by_schema=False):

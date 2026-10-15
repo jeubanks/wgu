@@ -2,8 +2,13 @@
 
 The exercise files stay unchanged. At build time, under each exercise whose
 `**Uses:**` line names tables "from `setup.sql`", this adds a collapsed block
-with a Mermaid erDiagram of just those tables and the foreign keys between them
-(drawn by D427_Data_Management_Applications/build_diagrams.py from setup.sql).
+with an ER diagram (inline SVG from hooks/er_svg.py) of those tables plus the
+tables one foreign key away, shown compact and in gray. When none of them are
+linked by a foreign key, there's no diagram: a lone box adds nothing.
+The schema comes from setup.sql via D427_Data_Management_Applications/build_diagrams.py.
+
+On the Setup page (README.md) the Mermaid diagram, which is there for GitHub,
+is swapped for the same tables drawn as SVG.
 
 Part 1 and Section 12 have no Uses lines; there each `### Movie and Rating`
 style heading names the tables, so the block goes under the heading instead.
@@ -30,11 +35,18 @@ NOTE = re.compile(r"\*\([^*]*\)\*")  # *(from `setup.sql`)*
 FENCE = re.compile(r"^\s*(```|~~~)")
 
 
-def _load_builder():
-    spec = importlib.util.spec_from_file_location("build_diagrams", COURSE / "build_diagrams.py")
+def _load(name, path):
+    spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+_er_svg = _load("er_svg", Path(__file__).resolve().parent / "er_svg.py")
+
+
+def _load_builder():
+    return _load("build_diagrams", COURSE / "build_diagrams.py")
 
 
 def _names(text, schema):
@@ -58,17 +70,41 @@ def _from_setup(uses, schema):
     return tables
 
 
-def _block(builder, schema, names, indent):
-    tables = {n: schema[n] for n in schema if n in names}  # setup.sql order
-    title = "Tables used: " + ", ".join(tables)
-    diagram = builder.er_diagram(tables, title)
-    body = [f"{indent}    ```mermaid"]
-    body += [f"{indent}    {line}" if line else "" for line in diagram.split("\n")]
-    body += [f"{indent}    ```"]
+def _neighbors(schema, names):
+    """setup.sql tables one foreign key away from any of names (either direction)."""
+    out = set()
+    for t in schema.values():
+        for fk in t.foreign_keys:
+            if t.name in names and fk.parent not in names:
+                out.add(fk.parent)
+            if fk.parent in names and t.name not in names:
+                out.add(t.name)
+    return out
+
+
+def _has_links(tables):
+    return any(fk.parent in tables for t in tables.values() for fk in t.foreign_keys)
+
+
+def _block(builder, schema, names, indent, diagrams, excluded=()):
+    """A folded "Show tables" block, or [] when the tables have no relationships."""
+    neighbors = _neighbors(schema, names) - set(excluded)
+    tables = {n: schema[n] for n in schema if n in names or n in neighbors}  # setup.sql order
+    if not _has_links(tables):
+        return []
+    used = [n for n in tables if n in names]
+    title = "Tables used: " + ", ".join(used)
+    diagrams.append(_svg(builder, tables, title, compact=neighbors))
     head = f'{indent}??? tables "Show tables"'
-    caption = (f"{indent}    The {'table' if len(tables) == 1 else 'tables'} as `setup.sql` "
-               "builds them. [How to read the diagram](README.md#the-practice-database)")
-    return ["", head, "", caption, ""] + body + [""]
+    caption = f"{indent}    The {'table' if len(used) == 1 else 'tables'} as `setup.sql` builds them"
+    if neighbors:
+        caption += ", with the tables they're linked to in gray (key columns only)"
+    caption += ". [How to read the diagram](README.md#the-practice-database)"
+    return ["", head, "", caption, "", f'{indent}    <div class="er-diagram" data-er="{len(diagrams) - 1}"></div>', ""]
+
+
+def _svg(builder, tables, title, compact=()):
+    return _er_svg.er_svg(tables, title, builder.describe(tables), compact=compact)
 
 
 def _exercises(lines):
@@ -83,7 +119,7 @@ def _exercises(lines):
         yield start, end
 
 
-def _add_diagrams(markdown, builder, schema):
+def _add_diagrams(markdown, builder, schema, diagrams):
     lines = markdown.split("\n")
     inserts = {}  # line index -> lines to insert after it
 
@@ -99,14 +135,14 @@ def _add_diagrams(markdown, builder, schema):
             continue
         j, match = uses
         names = _from_setup(match["text"], schema)
-        if creates:
-            names = [n for n in names if n not in _names(creates["text"], schema)]
+        created = _names(creates["text"], schema) if creates else []
+        names = [n for n in names if n not in created]
         if not names:
             continue
         # After the paragraph that holds the Uses (and Creates) line.
         while j + 1 < end and lines[j + 1].strip():
             j += 1
-        inserts[j] = _block(builder, schema, names, match["indent"])
+        inserts[j] = _block(builder, schema, names, match["indent"], diagrams, created)
 
     # Per heading, where none of the heading's exercises has a Uses line.
     for i, line in enumerate(lines):
@@ -119,7 +155,7 @@ def _add_diagrams(markdown, builder, schema):
             continue
         names = _names(heading[1], schema)
         if names:
-            inserts[i] = _block(builder, schema, names, "")
+            inserts[i] = _block(builder, schema, names, "", diagrams)
 
     out = []
     for i, line in enumerate(lines):
@@ -128,8 +164,29 @@ def _add_diagrams(markdown, builder, schema):
     return "\n".join(out)
 
 
+README = "d427/README.md"
+README_BLOCK = re.compile(r"<!-- er-diagram -->\n```mermaid\n.*?```\n<!-- /er-diagram -->", re.S)
+PLACEHOLDER = re.compile(r'<div class="er-diagram" data-er="(\d+)"></div>')
+_pages = {}  # page src_uri -> list of SVGs, from on_page_markdown to on_page_content
+
+
 def on_page_markdown(markdown, page, **kwargs):
-    if page.file.src_uri not in PAGES:
+    uri = page.file.src_uri
+    if uri not in PAGES and uri != README:
         return markdown
     builder = _load_builder()
-    return _add_diagrams(markdown, builder, builder.read_schema())
+    schema = builder.read_schema()
+    diagrams = _pages[uri] = []
+    if uri == README:
+        # GitHub shows the Mermaid version; the site shows the same tables as SVG.
+        diagrams.append(_svg(builder, schema, "The d427 practice database"))
+        return README_BLOCK.sub('<div class="er-diagram" data-er="0"></div>', markdown)
+    return _add_diagrams(markdown, builder, schema, diagrams)
+
+
+def on_page_content(html, page, **kwargs):
+    diagrams = _pages.pop(page.file.src_uri, None)
+    if not diagrams:
+        return html
+    return PLACEHOLDER.sub(lambda m: f'<div class="er-diagram">'
+                           f'{diagrams[int(m[1])].replace("{id}", f"er{m[1]}")}</div>', html)
