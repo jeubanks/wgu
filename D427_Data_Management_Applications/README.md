@@ -150,111 +150,111 @@ erDiagram
 
   %% Company schema
   Department {
-    int DeptID PK
-    string DeptName UK
-    decimal Budget
-    string Location
+    DeptID int PK
+    DeptName string UK
+    Budget decimal
+    Location string
   }
   Employee {
-    int EmpID PK
-    string FirstName
-    string LastName
-    string Email UK
-    decimal Salary
-    date HireDate
-    int DeptID FK
-    int ManagerID FK
+    EmpID int PK
+    FirstName string
+    LastName string
+    Email string UK
+    Salary decimal
+    HireDate date
+    DeptID int FK
+    ManagerID int FK
   }
-  Department |o..o{ Employee : DeptID
-  Employee |o..o{ Employee : ManagerID
+  Department |o..o{ Employee : "Employee.DeptID = Department.DeptID"
+  Employee |o..o{ Employee : "Employee.ManagerID = Employee.EmpID"
 
   %% Riding stable schema
   Horse {
-    int ID PK
-    string RegisteredName
-    string Breed
-    decimal Height
-    date BirthDate
+    ID int PK
+    RegisteredName string
+    Breed string
+    Height decimal
+    BirthDate date
   }
   Student {
-    int ID PK
-    string FirstName
-    string LastName
-    string Street
-    string City
-    string State
-    int Zip
-    string Phone
-    string Email UK
+    ID int PK
+    FirstName string
+    LastName string
+    Street string
+    City string
+    State string
+    Zip int
+    Phone string
+    Email string UK
   }
   LessonSchedule {
-    int HorseID PK, FK
-    int StudentID FK
-    datetime LessonDateTime PK
+    HorseID int PK, FK
+    StudentID int FK
+    LessonDateTime datetime PK
   }
-  Horse ||--o{ LessonSchedule : HorseID
-  Student |o..o{ LessonSchedule : StudentID
+  Horse ||--o{ LessonSchedule : "LessonSchedule.HorseID = Horse.ID"
+  Student |o..o{ LessonSchedule : "LessonSchedule.StudentID = Student.ID"
 
   %% Movie schema
   Rating {
-    string RatingCode PK
-    string RatingDescription
+    RatingCode string PK
+    RatingDescription string
   }
   Movie {
-    int ID PK
-    string Title
-    string Genre
-    string RatingCode FK
-    int ReleaseYear
-    int Minutes
-    decimal Gross
+    ID int PK
+    Title string
+    Genre string
+    RatingCode string FK
+    ReleaseYear int
+    Minutes int
+    Gross decimal
   }
-  Rating |o..o{ Movie : RatingCode
+  Rating |o..o{ Movie : "Movie.RatingCode = Rating.RatingCode"
 
   %% OA-style query drills
   YearSales {
-    int Year PK
-    int TotalSales
-    int Releases
+    Year int PK
+    TotalSales int
+    Releases int
   }
   Book {
-    int ID PK
-    string Title
-    string Genre
-    int Year
-    decimal Cost
+    ID int PK
+    Title string
+    Genre string
+    Year int
+    Cost decimal
   }
   Passport {
-    int PassportID PK
-    string PassportHolderName
-    string Nationality
-    date IssueDate
-    date ExpiryDate
+    PassportID int PK
+    PassportHolderName string
+    Nationality string
+    IssueDate date
+    ExpiryDate date
   }
   Visa {
-    int VisaID PK
-    int PassportID FK
-    string Country
-    string VisaType
-    date IssueDate
-    date ExpiryDate
+    VisaID int PK
+    PassportID int FK
+    Country string
+    VisaType string
+    IssueDate date
+    ExpiryDate date
   }
-  Passport |o..o{ Visa : PassportID
+  Passport |o..o{ Visa : "Visa.PassportID = Passport.PassportID"
   Compensation {
-    int ID PK
-    string Name
-    decimal Salary
-    decimal Bonus
+    ID int PK
+    Name string
+    Salary decimal
+    Bonus decimal
   }
   student_grades {
-    string studentID PK
-    string lastName
-    string grade
+    studentID string PK
+    lastName string
+    grade string
   }
 ```
 <!-- /er-diagram -->
 
-How to read the diagram: **PK** is the primary key, **FK** a foreign key, and **UK** a unique column. The column types are general on purpose (Section 11 has you pick the exact MySQL types). Each line joins a foreign key to the table it references, and the line's label is the foreign-key column. At the referenced table, `||` means exactly one row and `|o` means zero or one (the foreign key can be NULL). At the other end, `o{` means zero or more rows. A solid line means the foreign key is part of that table's primary key; a dashed line means it isn't. A table with no line has no foreign keys: Book.Year, for example, is not a foreign key to YearSales.
+How to read the diagram: each box is a table, with one row per column: its name, a general type, and its keys. **PK** is the primary key, **FK** a foreign key, and **UK** a unique column. The types are general on purpose (Section 11 has you pick the exact MySQL types). Each line joins a foreign key to the column it references, so it shows how you would join the two tables. The ends of a line use crow's-foot notation. At the referenced table, two bars mean exactly one row, and a bar with a circle means zero or one row (the foreign key can be NULL). At the other end, a crow's foot with a circle means zero or more rows. A solid line means the foreign key is part of that table's primary key; a dashed line means it isn't. A table with no line has no foreign keys: Book.Year, for example, is not a foreign key to YearSales.
 
 The same tables as text, with their delete rules, defaults, and CHECKs:
 

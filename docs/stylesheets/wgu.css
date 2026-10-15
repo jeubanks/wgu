@@ -488,7 +488,7 @@
   font-size: 0.65rem;
 }
 
-/* "Show tables" ER diagrams from hooks/er_diagrams.py, in Blue Midnight
+/* "Show tables" blocks from hooks/er_diagrams.py, in Blue Midnight
    (Sky Blue in dark mode) with a table icon. */
 :root {
   --md-admonition-icon--tables: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2m0 4v4h6V8zm8 0v4h6V8zm-8 6v4h6v-4zm8 0v4h6v-4z"/></svg>');
@@ -512,14 +512,72 @@
   mask-image: var(--md-admonition-icon--tables);
 }
 
-/* Diagram boxes in Sky Blue in dark mode (Material would use the Lime Green accent). */
+/* ER diagrams drawn by hooks/er_svg.py: navy header bars, PK / FK / UK chips,
+   muted types. Scroll sideways inside the diagram on narrow screens. */
+:root {
+  --er-head: #002855;
+  --er-head-fg: #ffffff;
+  --er-neighbor-head: #5b6b80;
+  --er-box: #ffffff;
+  --er-stripe: #eef6f9;
+  --er-border: #b9c6d3;
+  --er-fg: #001731;
+  --er-muted: #6b7a8c;
+  --er-line: #5b6b80;
+  --er-label: #002855;
+  --er-pk: #f2c94c;
+  --er-pk-fg: #3a2c00;
+  --er-fk: #0070f0;
+  --er-fk-fg: #ffffff;
+  --er-uk: #dfe6ee;
+  --er-uk-fg: #33475b;
+}
 [data-md-color-scheme="slate"] {
-  --md-mermaid-node-fg-color: #46b1ef;
-  --md-mermaid-node-bg-color: #46b1ef1a;
+  --er-head: #002855;
+  --er-neighbor-head: #3b4252;
+  --er-box: #282c36;
+  --er-stripe: #23262e;
+  --er-border: #46b1ef55;
+  --er-fg: #e2e4e9;
+  --er-muted: #9aa4b2;
+  --er-line: #a3adb9;
+  --er-label: #6cc4f5;
+  --er-pk: #f2c94c;
+  --er-fk: #46b1ef;
+  --er-fk-fg: #001731;
+  --er-uk: #3b4252;
+  --er-uk-fg: #dfe6ee;
 }
-
-/* ER diagrams: scroll sideways inside the diagram on narrow screens,
-   never the page. */
-.md-typeset .mermaid {
+.md-typeset .er-diagram {
   overflow-x: auto;
+  margin: 1em 0;
 }
+.md-typeset .er-diagram .er-svg {
+  display: block;
+  max-width: none;
+  height: auto;
+  font-family: var(--md-text-font-family), sans-serif;
+}
+.er-box { fill: var(--er-box); }
+.er-border { fill: none; stroke: var(--er-border); }
+.er-neighbor .er-border { stroke-dasharray: 4 3; }
+.er-head { fill: var(--er-head); }
+.er-neighbor .er-head { fill: var(--er-neighbor-head); }
+.er-neighbor { opacity: 0.85; }
+.er-stripe { fill: var(--er-stripe); }
+.er-title { fill: var(--er-head-fg); font-size: 14px; font-weight: 700; }
+.er-col { fill: var(--er-fg); font-family: var(--md-code-font-family), monospace; font-size: 13px; }
+.er-col.er-key { font-weight: 700; }
+.er-type, .er-more { fill: var(--er-muted); font-size: 12px; }
+.er-more { font-style: italic; }
+.er-chip.er-pk { fill: var(--er-pk); }
+.er-chip.er-fk { fill: var(--er-fk); }
+.er-chip.er-uk { fill: var(--er-uk); }
+.er-chip-text { font-size: 10px; font-weight: 700; }
+.er-chip-text.er-pk { fill: var(--er-pk-fg); }
+.er-chip-text.er-fk { fill: var(--er-fk-fg); }
+.er-chip-text.er-uk { fill: var(--er-uk-fg); }
+.er-line, .er-mark { fill: none; stroke: var(--er-line); stroke-width: 1.5; }
+.er-line.er-dashed { stroke-dasharray: 5 4; }
+.er-ring { fill: var(--md-default-bg-color); stroke: var(--er-line); stroke-width: 1.5; }
+.er-label { fill: var(--er-label); font-family: var(--md-code-font-family), monospace; font-size: 11px; }
