@@ -971,22 +971,24 @@ These sections only read data, so you can redo any exercise at any time. Every e
 
 ## 5. Joins
 
-A join puts rows from two tables side by side, wherever the ON condition matches. The kind of join decides what happens to a row that has **no** match. Here it is with a few real rows from `setup.sql`: visa 107 isn't assigned to a passport, and Sara Lindqvist's passport has no visas. (These tables come back in Section 12.)
+A join puts rows from two tables side by side, wherever the ON condition matches. The kind of join decides what happens to a row that has **no** match. Here it is with two small made-up tables (they aren't in `setup.sql`): each driver's BusID points at a bus. Dana has no bus, and nobody drives the Green line.
 
 <!-- join-diagram
-from: Visa v | VisaID, PassportID | VisaID IN (101, 102, 106, 107)
-join: Passport p | PassportID, PassportHolderName | PassportID IN (1, 4, 5)
-on: v.PassportID = p.PassportID
-select: v.VisaID, p.PassportHolderName
-INNER: `Visa INNER JOIN Passport` keeps only rows that have a match in both tables. A question with no "if available" or "regardless of whether" wording wants this one.
-LEFT: "Show every visa and the passport holder's name **(if available)**." The passport is optional, so every row of the left table stays: `Visa LEFT JOIN Passport`. Visa 107 gets NULL for the name.
-RIGHT: "Show every passport holder, **regardless of whether** they have a visa." Every row of the right table stays: `Visa RIGHT JOIN Passport`. Sara gets NULL for VisaID.
+table: Driver(DriverID, Name, BusID) = 1, Ana, 10; 2, Ben, 10; 3, Cruz, 20; 4, Dana, NULL
+table: Bus(BusID, Route) = 10, Red line; 20, Blue line; 30, Green line
+from: Driver d | DriverID, Name, BusID
+join: Bus b | BusID, Route
+on: d.BusID = b.BusID
+select: d.Name, b.Route
+INNER: "Show each driver's Name and Route." Neither phrase, so an **inner join**: only rows that have a match in both tables. Dana and the Green line are left out.
+LEFT: "Show each driver's Name and Route **(if available)**." The route is optional, so every driver stays: `Driver LEFT JOIN Bus`. Dana's Route is NULL.
+RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it." Every bus stays: `Driver RIGHT JOIN Bus`. The Green line's Name is NULL.
 -->
 | Join | Rows it keeps |
 |---|---|
-| `Visa INNER JOIN Passport` | only visas and passports that match |
-| `Visa LEFT JOIN Passport` | every visa; visa 107 (no passport) gets NULL for PassportHolderName |
-| `Visa RIGHT JOIN Passport` | every passport; Sara Lindqvist (no visas) gets NULL for VisaID |
+| `Driver INNER JOIN Bus` | only drivers and buses that match |
+| `Driver LEFT JOIN Bus` | every driver; Dana (no bus) gets NULL for Route |
+| `Driver RIGHT JOIN Bus` | every bus; the Green line (no driver) gets NULL for Name |
 <!-- /join-diagram -->
 
 ### Employee and Department

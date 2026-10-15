@@ -1240,22 +1240,24 @@ The data has these unusual rows on purpose:
 > [!TIP]
 > The wording in this section copies the assessment on purpose. Pay attention to phrases like **"if available"** and **"regardless of whether"**. They tell you which table is optional, so they decide which kind of join you need. When a question has neither phrase, the assessment expects an **inner join**, even if it says "for all books."
 
-Here is what each join keeps, drawn with a few real rows from `setup.sql`. Hedy Lamarr has no department, and Legal has no employees:
+Here is what each kind of join keeps, drawn with two small made-up tables (they aren't in `setup.sql`). Each driver's BusID points at a bus. Dana has no bus, and nobody drives the Green line:
 
 <!-- join-diagram
-from: Employee e | EmpID, FirstName, DeptID | EmpID IN (7, 8, 10, 15)
-join: Department d | DeptID, DeptName | DeptID IN (20, 30, 60)
-on: e.DeptID = d.DeptID
-select: e.FirstName, d.DeptName
-INNER: "Show each employee's FirstName and DeptName." Neither phrase, so an **inner join**: only rows that have a match in both tables. Hedy and Legal are left out.
-LEFT: "Show each employee's FirstName and DeptName **(if available)**." The department is optional, so every employee stays: `Employee LEFT JOIN Department`. Hedy's DeptName is NULL.
-RIGHT: "Show every DeptName, **regardless of whether** it has employees." Every department stays: `Employee RIGHT JOIN Department`. Legal's FirstName is NULL.
+table: Driver(DriverID, Name, BusID) = 1, Ana, 10; 2, Ben, 10; 3, Cruz, 20; 4, Dana, NULL
+table: Bus(BusID, Route) = 10, Red line; 20, Blue line; 30, Green line
+from: Driver d | DriverID, Name, BusID
+join: Bus b | BusID, Route
+on: d.BusID = b.BusID
+select: d.Name, b.Route
+INNER: "Show each driver's Name and Route." Neither phrase, so an **inner join**: only rows that have a match in both tables. Dana and the Green line are left out.
+LEFT: "Show each driver's Name and Route **(if available)**." The route is optional, so every driver stays: `Driver LEFT JOIN Bus`. Dana's Route is NULL.
+RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it." Every bus stays: `Driver RIGHT JOIN Bus`. The Green line's Name is NULL.
 -->
 | Join | Rows it keeps |
 |---|---|
-| `Employee INNER JOIN Department` | only employees and departments that match |
-| `Employee LEFT JOIN Department` | every employee; Hedy Lamarr (no department) gets NULL for DeptName |
-| `Employee RIGHT JOIN Department` | every department; Legal (no employees) gets NULL for FirstName |
+| `Driver INNER JOIN Bus` | only drivers and buses that match |
+| `Driver LEFT JOIN Bus` | every driver; Dana (no bus) gets NULL for Route |
+| `Driver RIGHT JOIN Bus` | every bus; the Green line (no driver) gets NULL for Name |
 <!-- /join-diagram -->
 
 > [!IMPORTANT]

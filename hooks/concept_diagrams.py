@@ -29,11 +29,20 @@ condition). Each INNER / LEFT / RIGHT line adds a tab with that join.
     -->
 
 Each rule line adds a tab: the rows before and after `DELETE FROM parent WHERE delete`.
-Optional for both: `fold: Title` puts the tabs in a folded tip box.
 
 On the site the whole block, fallback text included, becomes the tabs. The rows
 come from setup.sql (loaded into SQLite with hooks/sql_runner.py's converter),
 so the pictures stay true to the data. The SVG is drawn by hooks/concept_svg.py.
+
+Optional lines, for both kinds:
+
+- `table: Bus(BusID, Route) = 10, Red; 20, Blue` makes up a table for this
+  picture only (an illustration that no exercise uses). The which-rows part of
+  `from:` / `parent:` can then be left out.
+- `fold: Title` puts the tabs in a folded tip box.
+- `in: solution` moves the picture into the exercise's Solution box, the next
+  one after the comment. Use it when the picture is the answer. Leave the
+  fallback text empty: GitHub readers have the solution's SQL comments.
 """
 import importlib.util
 import re
@@ -89,17 +98,47 @@ def _rows(db, table, cols, where):
 
 
 def _spec(text):
-    """'key: value' lines -> dict, keeping the order of the tab lines."""
-    spec = {}
+    """'key: value' lines -> dict, keeping the order of the tab lines. `table:` lines -> a list."""
+    spec = {"table": []}
     for line in text.strip().splitlines():
         key, _, value = line.strip().partition(":")
-        spec[key.strip()] = value.strip()
+        if key.strip() == "table":
+            spec["table"].append(value.strip())
+        else:
+            spec[key.strip()] = value.strip()
     return spec
+
+
+MADE_UP = re.compile(r"^(\w+)\(([^)]*)\)\s*=\s*(.+)$")
+
+
+def _value(text):
+    text = text.strip()
+    if text == "NULL":
+        return None
+    return int(text) if re.fullmatch(r"-?\d+", text) else text
+
+
+def _make_tables(db, tables):
+    """Create the made-up `table:` tables, for this picture only."""
+    for line in tables:
+        m = MADE_UP.match(line)
+        if not m:
+            raise ValueError(f"table: expects Name(col, ...) = v, v; v, v: {line}")
+        name, cols = m[1], [c.strip() for c in m[2].split(",")]
+        rows = [[_value(v) for v in row.split(",")] for row in m[3].split(";")]
+        if any(len(r) != len(cols) for r in rows):
+            raise ValueError(f"table {name}: each row needs {len(cols)} values")
+        db.execute(f"DROP TABLE IF EXISTS temp.{name}")
+        db.execute(f"CREATE TEMP TABLE {name} ({', '.join(cols)})")
+        db.executemany(f"INSERT INTO temp.{name} VALUES ({', '.join('?' * len(cols))})", rows)
 
 
 def _source(value):
     """'Employee e | FirstName, DeptID | EmpID IN (...)' -> (table, alias, cols, where)."""
-    name, cols, where = (p.strip() for p in value.split("|"))
+    parts = [p.strip() for p in value.split("|")]
+    name, cols = parts[0], parts[1]
+    where = parts[2] if len(parts) > 2 else "1 = 1"
     table, _, alias = name.partition(" ")
     return table, alias.strip() or table, [c.strip() for c in cols.split(",")], where
 
@@ -230,8 +269,9 @@ class DeleteCase:
                 f"Statement: {self.statement} {effect}")
 
 
-def _expand(match, db, diagrams):
+def _expand(match, db, diagrams, pending):
     indent, kind, spec = match["indent"], match["kind"], _spec(match["spec"])
+    _make_tables(db, spec["table"])
     tabs = [k for k in spec if k in (JOINS if kind == "join" else RULES)]
     if not tabs:
         raise ValueError(f"{kind}-diagram has no tabs: {spec}")
@@ -245,25 +285,54 @@ def _expand(match, db, diagrams):
             case = Join(db, spec, tab)
             label = f"{tab} JOIN"
             title = f"{tab} JOIN of {case.left_title} and {case.right_title}"
+            if spec["table"]:
+                title += " (made-up tables)"
             diagrams.append(concept_svg.join_svg(case, title, case.describe()))
         else:
             case = DeleteCase(db, spec, tab)
             label = f"ON DELETE {tab}"
-            fk = f"{case.child_title}.{case.child_cols[case.child_key]}"
-            title = f"If {fk} said ON DELETE {tab}: deleting a {case.parent_title} row that has {case.child_title} rows"
+            title = ("Made-up tables: " if spec["table"] else "") + f"ON DELETE {tab}: deleting a {case.parent_title} row that has {case.child_title} rows"
             diagrams.append(concept_svg.delete_svg(case, title, case.describe()))
         out += [f'{pad}=== "{label}"', "", f"{pad}    {spec[tab]}", "",
                 f'{pad}    <div class="cd-diagram" data-cd="{len(diagrams) - 1}"></div>', ""]
     legend = "".join(f'<span class="cd-key-{k}">{text}</span>' for k, text in LEGENDS[kind])
+    if spec["table"]:
+        legend += '<span class="cd-made-up">Made-up tables for illustration, not in <code>setup.sql</code></span>'
+
     out.append(f'{pad}<p class="cd-legend">{legend}</p>')
+    if spec.get("in") == "solution":
+        pending.append(out)
+        return f"{indent}<!-- cd-pending {len(pending) - 1} -->"
     return "\n".join(out)
+
+
+PENDING = re.compile(r"^(?P<indent>[ \t]*)<!-- cd-pending (?P<n>\d+) -->$")
+
+
+def _into_solutions(markdown, pending):
+    """Move each `in: solution` picture to the end of the next Solution box."""
+    lines = markdown.split("\n")
+    for i in range(len(lines) - 1, -1, -1):  # backwards, so earlier indexes stay put
+        m = PENDING.match(lines[i])
+        if not m:
+            continue
+        indent = m["indent"]
+        start = next((k for k in range(i, len(lines))
+                      if lines[k].strip() == "<summary>Solution</summary>"), None)
+        if start is None:
+            raise ValueError("in: solution, but no Solution box after the picture")
+        end = next(k for k in range(start, len(lines)) if lines[k] == f"{indent}</details>")
+        lines[end:end] = ["", f"{indent}**The foreign key at work:**", ""] + pending[int(m["n"])] + [""]
+        del lines[i]
+    return "\n".join(lines)
 
 
 def on_page_markdown(markdown, page, **kwargs):
     if not page.file.src_uri.startswith("d427/") or not BLOCK.search(markdown):
         return markdown
-    db, diagrams = _db(), []
-    markdown = BLOCK.sub(lambda m: _expand(m, db, diagrams), markdown)
+    db, diagrams, pending = _db(), [], []
+    markdown = BLOCK.sub(lambda m: _expand(m, db, diagrams, pending), markdown)
+    markdown = _into_solutions(markdown, pending)
     _pages[page.file.src_uri] = diagrams
     return markdown
 

@@ -662,3 +662,5 @@
 .md-typeset .cd-legend .cd-key-kept::before { background: var(--cd-kept); outline: 1px solid var(--cd-kept-edge); }
 .md-typeset .cd-legend .cd-key-dropped::before { background: linear-gradient(var(--cd-drop), var(--cd-drop)) center / 100% 1.5px no-repeat, var(--cd-drop-bg); }
 .md-typeset .cd-legend .cd-key-changed::before { background: color-mix(in srgb, var(--cd-changed) 35%, transparent); outline: 1px solid var(--cd-changed); }
+.md-typeset .cd-legend .cd-made-up { font-style: italic; }
+.md-typeset .cd-legend .cd-made-up::before { display: none; }

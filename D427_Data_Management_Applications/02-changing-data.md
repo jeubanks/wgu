@@ -193,16 +193,18 @@ These sections change the data and the tables. Do them in order: later exercises
   </details>
   <!-- /solution -->
 
-**What ON DELETE does.** When a parent row is deleted, the foreign key's ON DELETE rule decides what happens to its child rows. Exercises 7.7 and 7.8 let you find out which rule two of the `setup.sql` foreign keys use. Here are the three rules side by side, as if `LessonSchedule.StudentID` used each one, with the student Rosie Hewitt (ID 1) and her lessons:
+**What ON DELETE does.** When a parent row is deleted, the foreign key's ON DELETE rule decides what happens to its child rows. Exercises 7.7 and 7.8 let you find out which rule two of the `setup.sql` foreign keys use. Here are the three rules on two small made-up tables (they aren't in `setup.sql`): each Ride's BusID points at a Bus, and the Red line bus is deleted.
 
 <!-- delete-diagram
-parent: Student | ID, FirstName | ID IN (1, 3)
-child: LessonSchedule | StudentID, LessonDateTime | StudentID = 1 OR LessonDateTime = '2026-02-02 13:00:00'
-fk: StudentID -> ID
-delete: ID = 1
-CASCADE: The delete is passed on: Rosie's lessons are deleted with her.
-SET NULL: Rosie's lessons stay, but their StudentID becomes NULL. (The column must allow NULL.)
-RESTRICT: The delete is refused while any lesson points at Rosie. A foreign key with no ON DELETE clause works the same way (MySQL's default, NO ACTION).
+table: Bus(BusID, Route) = 10, Red line; 20, Blue line
+table: Ride(RideID, BusID, Departs) = 1, 10, 08:00; 2, 10, 12:30; 3, 10, 17:15; 4, 20, 09:00
+parent: Bus | BusID, Route
+child: Ride | RideID, BusID, Departs
+fk: BusID -> BusID
+delete: BusID = 10
+CASCADE: `FOREIGN KEY (BusID) REFERENCES Bus(BusID) ON DELETE CASCADE`: the delete is passed on, and the Red line's rides are deleted with it.
+SET NULL: `... ON DELETE SET NULL`: the rides stay, but their BusID becomes NULL. (The column must allow NULL.)
+RESTRICT: `... ON DELETE RESTRICT`: the delete is refused while any ride points at the bus. A foreign key with no ON DELETE clause works the same way (MySQL's default, NO ACTION).
 -->
 - `ON DELETE CASCADE`: deleting the parent deletes its child rows too.
 - `ON DELETE SET NULL`: the child rows stay, and their foreign key becomes NULL.
@@ -218,6 +220,16 @@ RESTRICT: The delete is refused while any lesson points at Rosie. A foreign key 
   - Count Midnight's lessons again.
 
   What happened to the lessons? Which foreign key action caused this? *(check: 1 lesson before, 0 after)*
+
+  <!-- delete-diagram
+  parent: Horse | ID, RegisteredName | ID IN (8, 9)
+  child: LessonSchedule | HorseID, LessonDateTime | HorseID IN (8, 9)
+  fk: HorseID -> ID
+  delete: ID = 9
+  in: solution
+  CASCADE: `LessonSchedule.HorseID` is `ON DELETE CASCADE`, so deleting Midnight deleted her lesson too.
+  -->
+  <!-- /delete-diagram -->
 
   <!-- solution:7.7 -->
   <details>
@@ -243,6 +255,16 @@ RESTRICT: The delete is refused while any lesson points at Rosie. A foreign key 
   **Uses:** Student, LessonSchedule *(already in the database, from `setup.sql`)*
 
   Delete the student Jamal Carter (ID 2). Then look at the LessonSchedule table. What happened to his lesson? Which foreign key action caused this? *(check: 2 lessons should now have a NULL StudentID)*
+
+  <!-- delete-diagram
+  parent: Student | ID, FirstName | ID IN (2, 3)
+  child: LessonSchedule | StudentID, LessonDateTime | LessonDateTime >= '2026-02-02' AND (StudentID IN (2, 3) OR StudentID IS NULL)
+  fk: StudentID -> ID
+  delete: ID = 2
+  in: solution
+  SET NULL: `LessonSchedule.StudentID` is `ON DELETE SET NULL`, so Jamal's lesson stays with a NULL StudentID, next to the open slot that already had none. (The lessons left after 7.6.)
+  -->
+  <!-- /delete-diagram -->
 
   <!-- solution:7.8 -->
   <details>
