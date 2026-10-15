@@ -909,3 +909,59 @@
   .md-typeset .cheatsheet pre > code { padding: 0.4em 0.7em; }
   .md-typeset .cheatsheet .md-typeset__table { margin: 0.3em 0; }
 }
+
+/* Continue button on the overview's progress panel (javascripts/progress.js). */
+.md-typeset .ex-progress-next { margin: 0.2rem 0.6rem 0.2rem 0; font-size: 0.7rem; }
+.md-typeset a.ex-progress-next { text-decoration: none; }
+
+/* Exercise anchors (hooks/anchors.py): land below the header, and mark the
+   exercise a link jumped to. */
+.md-typeset li[id^="ex-"] { scroll-margin-top: 4rem; }
+.md-typeset li[id^="ex-"]:target {
+  border-radius: 6px;
+  box-shadow: -0.5rem 0 0 0 var(--md-accent-fg-color--transparent), 0 0 0 0.25rem var(--md-accent-fg-color--transparent);
+  background: var(--md-accent-fg-color--transparent);
+}
+
+/* Spec-to-type drill (javascripts/drill.js). */
+.md-typeset .drill-card {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 8px;
+  padding: 0.9rem 1.1rem;
+  margin: 1rem 0;
+}
+.md-typeset .drill-prompt { font-size: 0.9rem; margin: 0 0 0.7rem; }
+.md-typeset .drill-label { display: block; font-size: 0.7rem; font-weight: 700; margin-bottom: 0.2rem; }
+.md-typeset .drill-input {
+  width: 100%;
+  max-width: 22rem;
+  padding: 0.4rem 0.6rem;
+  font-family: var(--md-code-font-family);
+  font-size: 0.8rem;
+  color: var(--md-default-fg-color);
+  background: var(--md-code-bg-color);
+  border: 1px solid var(--md-default-fg-color--lighter);
+  border-radius: 4px;
+}
+.md-typeset .drill-input:focus { outline: 2px solid var(--md-accent-fg-color); outline-offset: 1px; }
+.md-typeset .drill-buttons { margin: 0.6rem 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.md-typeset .drill-buttons .md-button { margin: 0; font-size: 0.7rem; padding: 0.4em 1.1em; }
+.md-typeset .drill-feedback { min-height: 1.4em; margin: 0.4rem 0; }
+.md-typeset .drill-feedback--ok { color: var(--sql-ok, #3d8a12); }
+.md-typeset .drill-feedback--bad { color: var(--sql-bad, #c62828); }
+.md-typeset .drill-score { font-size: 0.7rem; color: var(--md-default-fg-color--light); margin: 0.2rem 0; }
+.md-typeset .drill-reset {
+  font-size: 0.65rem;
+  color: var(--md-typeset-a-color);
+  background: none;
+  border: 0;
+  padding: 0;
+  text-decoration: underline;
+  cursor: pointer;
+}
+@media print { .md-typeset .drill-card { display: none; } }
+.md-typeset .drill-buttons .md-button:not(.md-button--primary) {
+  color: var(--md-typeset-a-color);
+  border-color: var(--md-typeset-a-color);
+}
+.md-typeset .drill-buttons .md-button:disabled { opacity: 0.45; cursor: default; }

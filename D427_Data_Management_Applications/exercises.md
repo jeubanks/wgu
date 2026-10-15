@@ -28,7 +28,7 @@ Parts 3 and 4 are built from the D427 practice tests and the D427 Challenge. Par
 
 **Not part of D427:** [Beyond D427: transactions and more advanced SQL](later-advanced-sql.md), saved for a later SQL course.
 
-**Quick reference:** the [exam-day cheat sheet](cheatsheet.md) (types, constraints, ALTER TABLE, joins, and GROUP BY rules on one printable page) and the [MySQL error decoder](errors.md) (what each error the exercises show means, and the usual fix).
+**Quick reference:** the [exam-day cheat sheet](cheatsheet.md) (types, constraints, ALTER TABLE, joins, and GROUP BY rules on one printable page) the [MySQL error decoder](errors.md) (what each error the exercises show means, and the usual fix), and the [spec-to-type drill](drill.md) (endless random column specs to turn into MySQL types).
 
 ## The files
 

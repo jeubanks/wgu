@@ -59,7 +59,7 @@
 
   function render() {
     done = load();
-    panel.querySelectorAll(".ex-progress-row, .ex-progress-total, .ex-progress-reset").forEach(function (n) { n.remove(); });
+    panel.querySelectorAll(".ex-progress-row, .ex-progress-total, .ex-progress-reset, .ex-progress-next").forEach(function (n) { n.remove(); });
     var all = 0, finished = 0;
     DATA.parts.forEach(function (p) {
       var n = p.labels.filter(function (l) { return done[l]; }).length;
@@ -84,6 +84,26 @@
     total.className = "ex-progress-total";
     total.textContent = finished + " of " + all + " exercises done.";
     panel.appendChild(total);
+
+    // Continue: the first exercise not marked Done, in page order.
+    var next = null;
+    DATA.parts.some(function (p) {
+      var label = p.labels.filter(function (l) { return !done[l]; })[0];
+      if (label) next = { part: p, label: label };
+      return !!label;
+    });
+    var go = document.createElement(next ? "a" : "p");
+    go.className = "ex-progress-next" + (next ? " md-button md-button--primary" : "");
+    if (next) {
+      // Anchors come from hooks/anchors.py: 7.3 -> #ex-7-3.
+      go.href = "../" + next.part.url + "#ex-" + next.label.toLowerCase().replace(".", "-");
+      go.textContent = (finished ? "Continue with " : "Start with ") + next.label + " →";
+      go.setAttribute("aria-label", (finished ? "Continue with exercise " : "Start with exercise ") +
+        next.label + ", in " + next.part.title);
+    } else {
+      go.textContent = "Every exercise is marked Done.";
+    }
+    panel.appendChild(go);
     if (finished) {
       var reset = document.createElement("button");
       reset.type = "button";

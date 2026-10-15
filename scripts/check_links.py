@@ -2,7 +2,9 @@
 """Fail if any page in the built site links to a relative path that doesn't exist.
 
 mkdocs --strict checks Markdown links, but not links written as raw HTML,
-so one of those once 404'd on the live site. Run this after `mkdocs build`:
+so one of those once 404'd on the live site. Links to an exercise anchor
+(`#ex-7-3`, from hooks/anchors.py) must also find that anchor on the page.
+Run this after `mkdocs build`:
 
     python3 scripts/check_links.py [site]
 """
@@ -32,13 +34,27 @@ def is_relative(url):
 
 
 def target_exists(page, url):
-    path = unquote(urlsplit(url).path)
+    parts = urlsplit(url)
+    path = unquote(parts.path)
     if not path:  # just a query string, e.g. "?x=1"
         return True
     target = (page.parent / path).resolve()
     if target.is_dir():
         target = target / "index.html"
-    return target.is_file()
+    if not target.is_file():
+        return False
+    if parts.fragment.startswith("ex-"):  # an exercise anchor must exist on that page
+        return f'id="{parts.fragment}"' in _text(target)
+    return True
+
+
+_cache = {}
+
+
+def _text(path):
+    if path not in _cache:
+        _cache[path] = path.read_text(encoding="utf-8")
+    return _cache[path]
 
 
 def main():

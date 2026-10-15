@@ -35,7 +35,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** Filter on aggregates with HAVING, or compare with a subquery: `WHERE Cost > (SELECT AVG(Cost) FROM Book)`.
 
-**Comes up in:** [3.10](01-queries.md), [4.8](01-queries.md), [12.6](03-assessment-drills.md)
+**Comes up in:** [3.10](01-queries.md#ex-3-10), [4.8](01-queries.md#ex-4-8), [12.6](03-assessment-drills.md#ex-12-6)
 
 ### ERROR 1146
 
@@ -45,7 +45,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** Check the spelling and the database (`USE d427;`), and that the table or view was created (or not dropped).
 
-**Comes up in:** [9.2](02-changing-data.md), [9.4](02-changing-data.md)
+**Comes up in:** [9.2](02-changing-data.md#ex-9-2), [9.4](02-changing-data.md#ex-9-4)
 
 ### ERROR 1222
 
@@ -55,7 +55,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** Make every SELECT in the UNION return the same columns, in the same order.
 
-**Comes up in:** [T.7](later-advanced-sql.md)
+**Comes up in:** [T.7](later-advanced-sql.md#ex-t-7)
 
 ## Changing data
 
@@ -67,7 +67,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** With no column list, give a value for every column in table order. Better: list the columns you're filling in.
 
-**Comes up in:** [7.9](02-changing-data.md)
+**Comes up in:** [7.9](02-changing-data.md#ex-7-9)
 
 ### ERROR 1364
 
@@ -77,7 +77,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** Give the column a value, or give it a DEFAULT in the table definition.
 
-**Comes up in:** [7.9](02-changing-data.md)
+**Comes up in:** [7.9](02-changing-data.md#ex-7-9)
 
 ## Keys and constraints
 
@@ -89,7 +89,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** Use a value that isn't taken. When adding a key to existing rows, fix the duplicates first.
 
-**Comes up in:** [11.8](03-assessment-drills.md), [11.15](03-assessment-drills.md), [11.17](03-assessment-drills.md), [11.18](03-assessment-drills.md)
+**Comes up in:** [11.8](03-assessment-drills.md#ex-11-8), [11.15](03-assessment-drills.md#ex-11-15), [11.17](03-assessment-drills.md#ex-11-17), [11.18](03-assessment-drills.md#ex-11-18)
 
 ### ERROR 1075
 
@@ -99,7 +99,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** Make the AUTO_INCREMENT column the primary key (or part of one). Remove AUTO_INCREMENT before changing that key.
 
-**Comes up in:** [11.17](03-assessment-drills.md)
+**Comes up in:** [11.17](03-assessment-drills.md#ex-11-17)
 
 ### ERROR 1264
 
@@ -109,7 +109,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** Pick the smallest type whose range covers every allowed value, signed if it can go below 0.
 
-**Comes up in:** [11.21](03-assessment-drills.md), [11.22](03-assessment-drills.md)
+**Comes up in:** [11.21](03-assessment-drills.md#ex-11-21), [11.22](03-assessment-drills.md#ex-11-22)
 
 ### ERROR 3819
 
@@ -119,7 +119,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** Fix the value, or the rows that break the rule before adding it. Name constraints (`CONSTRAINT name CHECK (...)`) so they're easy to drop.
 
-**Comes up in:** [11.1](03-assessment-drills.md), [11.6](03-assessment-drills.md), [11.10](03-assessment-drills.md), [11.11](03-assessment-drills.md)
+**Comes up in:** [11.1](03-assessment-drills.md#ex-11-1), [11.6](03-assessment-drills.md#ex-11-6), [11.10](03-assessment-drills.md#ex-11-10), [11.11](03-assessment-drills.md#ex-11-11)
 
 ### ERROR 3959
 
@@ -129,7 +129,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** Drop the CHECK first (`DROP CHECK name`; `SHOW CREATE TABLE` shows its name), change the column, then add the CHECK back.
 
-**Comes up in:** [8.4](02-changing-data.md)
+**Comes up in:** [8.4](02-changing-data.md#ex-8-4)
 
 ## Foreign keys
 
@@ -141,7 +141,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** Delete or change the child rows first, or give the foreign key ON DELETE CASCADE / SET NULL if that's what should happen.
 
-**Comes up in:** [7.3](02-changing-data.md), [7.6](02-changing-data.md), [11.13](03-assessment-drills.md), [11.20](03-assessment-drills.md)
+**Comes up in:** [7.3](02-changing-data.md#ex-7-3), [7.6](02-changing-data.md#ex-7-6), [11.13](03-assessment-drills.md#ex-11-13), [11.20](03-assessment-drills.md#ex-11-20)
 
 ### ERROR 1452
 
@@ -151,7 +151,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** Add the parent row first, or use a value that exists. NULL is allowed if the column allows it.
 
-**Comes up in:** [7.3](02-changing-data.md), [11.7](03-assessment-drills.md)
+**Comes up in:** [7.3](02-changing-data.md#ex-7-3), [11.7](03-assessment-drills.md#ex-11-7)
 
 ### ERROR 1822
 
@@ -161,7 +161,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** Point the foreign key at the parent's primary key, or add a PRIMARY KEY or UNIQUE to that column first.
 
-**Comes up in:** [11.9](03-assessment-drills.md)
+**Comes up in:** [11.9](03-assessment-drills.md#ex-11-9)
 
 ### ERROR 1830
 
@@ -171,7 +171,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** Remove NOT NULL from the foreign key column (`MODIFY col type`), then add the foreign key.
 
-**Comes up in:** [11.3](03-assessment-drills.md)
+**Comes up in:** [11.3](03-assessment-drills.md#ex-11-3)
 
 ### ERROR 3780
 
@@ -181,7 +181,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** Give the foreign key column exactly the referenced column's type (for example both `SMALLINT UNSIGNED`).
 
-**Comes up in:** [8.6](02-changing-data.md)
+**Comes up in:** [8.6](02-changing-data.md#ex-8-6)
 
 ### ERROR 6125
 
@@ -191,7 +191,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** Point the foreign key at the parent's primary key, or add a PRIMARY KEY or UNIQUE to that column first.
 
-**Comes up in:** [11.9](03-assessment-drills.md)
+**Comes up in:** [11.9](03-assessment-drills.md#ex-11-9)
 
 ## Views
 
@@ -203,7 +203,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** Change the row so it still matches the view's WHERE, or change the base table directly.
 
-**Comes up in:** [T.7](later-advanced-sql.md)
+**Comes up in:** [T.7](later-advanced-sql.md#ex-t-7)
 
 ## Connection
 

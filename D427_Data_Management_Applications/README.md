@@ -19,6 +19,7 @@ Sections 11–13 are built from the two D427 practice tests and the D427 Challen
 | `solutions.sql` | One worked answer per SQL exercise, labeled `-- [1.1]`, `-- [5.3]`, etc., with notes on the common traps. Section 13 has only its hints here. |
 | `later-advanced-sql.md` | Exercises that go beyond D427: transactions, plus a few more advanced queries and views. Kept for a later SQL course. |
 | `cheatsheet.md` | The exam-day cheat sheet: column specs, constraints, ALTER TABLE, joins, GROUP BY, views, and indexes on one printable page. |
+| `drill.md` | The spec-to-type drill: random column specs to turn into MySQL types (interactive on the website; `docs/javascripts/drill.js`). |
 | `errors.md`, `build_errors.py` | The MySQL error decoder. `build_errors.py` writes its entries from every `ERROR nnnn` in `solutions.sql` and the exercises; run it after adding one. |
 | `build_solutions.py` | Copies each hint and answer from `solutions.sql` into the exercise files as folded **Hint** and **Solution** blocks. Run `python3 build_solutions.py` after changing `solutions.sql`. |
 | `build_diagrams.py` | Draws the diagram of the practice database below from `setup.sql`. Run `python3 build_diagrams.py` after changing a table in `setup.sql`. |
