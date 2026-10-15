@@ -238,6 +238,41 @@
 
   function plural(n, word) { return n + " " + word + (n === 1 ? "" : "s"); }
 
+  // Rows in one result and not the other, counting repeats (a multiset difference).
+  function diffRows(mine, expected) {
+    var left = {};
+    expected.rows.forEach(function (r) { var k = rowKey(r); left[k] = (left[k] || 0) + 1; });
+    var extra = mine.rows.filter(function (r) {
+      var k = rowKey(r);
+      if (left[k]) { left[k] -= 1; return false; }
+      return true;
+    });
+    var still = {};
+    Object.keys(left).forEach(function (k) { still[k] = left[k]; });
+    var missing = expected.rows.filter(function (r) {
+      var k = rowKey(r);
+      if (still[k]) { still[k] -= 1; return true; }
+      return false;
+    });
+    return { columns: mine.columns, expColumns: expected.columns, missing: missing, extra: extra };
+  }
+
+  // The closest pair of (your result, an unmatched expected result) with the same
+  // number of columns: the one with the fewest differing rows. Null if none line up.
+  function bestDiff(mine, expected, verdicts) {
+    var best = null;
+    expected.forEach(function (exp, i) {
+      if (verdicts[i] === "match" || verdicts[i] === "order") return;
+      mine.forEach(function (m) {
+        if (m.columns.length !== exp.columns.length) return;
+        var d = diffRows(m, exp);
+        if (!d.missing.length && !d.extra.length) return;
+        if (!best || d.missing.length + d.extra.length < best.missing.length + best.extra.length) best = d;
+      });
+    });
+    return best;
+  }
+
   var expectedCache = {};
 
   function expectedFor(engine, label) {
@@ -271,15 +306,16 @@
         ? "Matches all " + expected.length + " of the solution's results."
         : "Matches the solution's result." };
     }
+    var diff = bestDiff(mine, expected, verdicts);
     if (expected.length === 1) {
-      return { ok: false, text: verdicts[0] === "order"
+      return { ok: false, diff: diff, text: verdicts[0] === "order"
         ? "Right rows, but in a different order. Check your ORDER BY."
         : verdicts[0] };
     }
     var missing = expected.filter(function (_, i) { return verdicts[i] !== "match"; }).map(function (r) {
       return plural(r.rows.length, "row") + " × " + plural(r.columns.length, "column");
     });
-    return { ok: false, text: "This exercise has " + expected.length + " queries to write. " + matched +
+    return { ok: false, diff: diff, text: "This exercise has " + expected.length + " queries to write. " + matched +
       (matched === 1 ? " of yours matches" : " of yours match") + " so far. Still missing a result with " + missing.join(", and one with ") + "." };
   }
 
@@ -314,6 +350,31 @@
     wrap.appendChild(scroll);
     if (result.rows.length > 500) wrap.appendChild(el("div", "sql-result__caption", "Showing the first 500 rows."));
     return wrap;
+  }
+
+  var DIFF_ROWS = 20;
+
+  // What to fix, after a failed Check. Your extra rows come from your own result,
+  // so they're shown. The missing rows are part of the answer, so they're folded.
+  function renderDiff(diff) {
+    var nodes = [];
+    if (diff.extra.length) {
+      var extra = el("div", "sql-diff sql-diff--extra");
+      extra.appendChild(el("p", "sql-diff__title",
+        plural(diff.extra.length, "row") + " in yours that the answer doesn't have:"));
+      extra.appendChild(renderTable({ columns: diff.columns, rows: diff.extra.slice(0, DIFF_ROWS) }, 0, 1));
+      if (diff.extra.length > DIFF_ROWS) extra.appendChild(el("p", "sql-result__caption", "Showing the first " + DIFF_ROWS + "."));
+      nodes.push(extra);
+    }
+    if (diff.missing.length) {
+      var missing = el("details", "sql-diff sql-diff--missing");
+      missing.appendChild(el("summary", null,
+        plural(diff.missing.length, "row") + " the answer has that yours doesn't (shows part of the answer)"));
+      missing.appendChild(renderTable({ columns: diff.expColumns, rows: diff.missing.slice(0, DIFF_ROWS) }, 0, 1));
+      if (diff.missing.length > DIFF_ROWS) missing.appendChild(el("p", "sql-result__caption", "Showing the first " + DIFF_ROWS + "."));
+      nodes.push(missing);
+    }
+    return nodes;
   }
 
   function message(kind, text) {
@@ -367,6 +428,7 @@
         if (withCheck && !out.error) {
           var verdict = check(engine, label, out.results);
           nodes.push(message(verdict.ok ? "ok" : "bad", (verdict.ok ? "✓ " : "✗ ") + verdict.text));
+          if (!verdict.ok && verdict.diff) nodes = nodes.concat(renderDiff(verdict.diff));
           if (verdict.ok) {
             // progress.js ticks this exercise's Done box.
             document.dispatchEvent(new CustomEvent("d427:solved", { detail: { label: label } }));
