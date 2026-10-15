@@ -1,6 +1,8 @@
-# WGU C949 Data Structures and Algorithms I: Study Kit
+# WGU C949 Data Structures and Algorithms I: Practice Kit
 
-A study guide, a plain-English Big-O primer, and hands-on Python practice for WGU's **C949 Data Structures and Algorithms I**. It's built around the course's Objective Assessment (OA): what the exam weights, how it asks questions, and the skills that trip people up, especially Big-O and tracing pseudocode by hand.
+Hands-on Python practice for WGU's **C949 Data Structures and Algorithms I**. It's built around the course's Objective Assessment (OA): what the exam weights, how it asks questions, and the skills that trip people up, especially Big-O and tracing pseudocode by hand.
+
+Read it online at **[jeubanks.github.io/wgu](https://jeubanks.github.io/wgu/d949/)**.
 
 > Unofficial. Not affiliated with or endorsed by Western Governors University. Always check your zyBooks chapters and course materials. Where this kit and the course disagree, the course wins on exam day.
 
@@ -9,9 +11,6 @@ A study guide, a plain-English Big-O primer, and hands-on Python practice for WG
 ```
 .
 ├── README.md
-├── C949 Study Guide.pdf             # Main guide: exam blueprint, every topic, exam traps
-├── C949 Big-O Made Easy.pdf         # Big-O decoder, 15 worked examples, sort reference table
-├── C949 Python Practice.pdf         # 7 lessons with exercises and full solutions
 └── c949-practice/
     ├── lesson1.py … lesson7.py      # Your work: lesson code + empty exercise stubs + checks
     ├── solutions/                   # Finished versions of every lesson file
@@ -21,25 +20,17 @@ A study guide, a plain-English Big-O primer, and hands-on Python practice for WG
     └── README.md                    # Practice-specific instructions
 ```
 
-### The guides (PDFs)
-
-| File | What it covers | Start here if… |
-| --- | --- | --- |
-| **C949 Study Guide** | Exam blueprint and competency weights, programming basics, Big-O, tracing pseudocode, recursion, searching and sorting, lists/stacks/queues/ADTs, hash tables, trees and heaps, graphs, common exam traps | You want the whole course in one place |
-| **Big-O Made Easy** | A five-step method for finding the Big-O of any code, a loop-counting cheat sheet, 15 worked examples, the class Big-O worksheet decoded, best/average/worst tables for every sort, 12 practice problems | Big-O is the part that isn't clicking |
-| **Python Practice** | Build each data structure yourself, then practice: Big-O experiments, linked lists, stacks, queues, hash tables, BSTs, heaps, sorts, graphs, and pseudocode tracing drills | You learn by doing |
-
 ### The practice code (`c949-practice/`)
 
-Each lesson file contains working lesson code at the top and exercises below it. Code exercises start as functions that raise `NotImplementedError`; paper-trace exercises are variables set to `None` that you fill in with your answer.
+Build each data structure yourself, then practice: Big-O experiments, linked lists, stacks, queues, hash tables, BSTs, heaps, sorts, graphs, and pseudocode tracing drills. Each lesson file contains working lesson code at the top and exercises below it. Code exercises start as functions that raise `NotImplementedError`; paper-trace exercises are variables set to `None` that you fill in with your answer.
 
 ## Getting started
 
 Requires **Python 3.10+**.
 
 ```bash
-git clone <this-repo-url>
-cd <repo>/c949-practice
+git clone https://github.com/jeubanks/wgu.git
+cd wgu/D949_Data_Structures_And_Algorithms_I/c949-practice
 python lesson1.py          # check your progress on Lesson 1
 python lesson1.py --demo   # also run the lesson's example code
 ```
@@ -68,9 +59,9 @@ pytest --solutions            # run the same checks against the answer key
 
 | Priority | Material | Why |
 | --- | --- | --- |
-| 1 | Study Guide: *Exam blueprint* | See what the exam weights before you study |
+| 1 | [Exam blueprint](#exam-blueprint-at-a-glance) | See what the exam weights before you study |
 | 2 | Take the course pre-assessment | Use its coaching report to find your weak areas |
-| 3 | Big-O Made Easy, plus Lessons 7 and 1 | Big-O and tracing feed into most exam questions |
+| 3 | Lessons 7 and 1, plus the course Big-O worksheet | Big-O and tracing feed into most exam questions |
 | 4 | Lessons 2 and 5 | Stacks, queues, lists, searching, and sorting |
 | 5 | Lessons 3 and 4 | Hash tables, trees, and heaps |
 | 6 | Lesson 6 (optional) | Graph algorithms are mostly beyond this exam |
@@ -85,7 +76,7 @@ Retake the pre-assessment once you can trace code on paper without guessing.
 | Determines Data Structure Impact | 31% |
 | Explains Algorithms | 29% |
 
-The exam shows code as pseudocode or Python. The full topic list and zyBooks chapter map are in the Study Guide.
+The exam shows code as pseudocode or Python. The full topic list and zyBooks chapter map are in the course study guide in your WGU course resources.
 
 ## Recommended reading
 
@@ -104,7 +95,7 @@ The exam shows code as pseudocode or Python. The full topic list and zyBooks cha
 
 - **Exam conventions:** following the class Big-O worksheet, the sort tables use O(n) for radix sort and O(n) for bucket sort's average case. Textbooks often write O(nk) and O(n + k).
 - **Verified code:** every lesson example and solution in `c949-practice/` was run against its checks (43 passing in `pytest --solutions`).
-- **Course materials not included:** the official WGU course study guide and Big-O worksheet belong to WGU and are not redistributed here; get them from your course resources.
+- **Course materials not included:** the WGU course study guide, Big-O worksheet, and other course PDFs belong to WGU and are not redistributed here. Get them from your course resources.
 
 ## Contributing
 

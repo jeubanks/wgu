@@ -2,9 +2,11 @@
 
 Hands-on SQL practice for WGU **D427 Data Management – Applications**, run against a real MySQL 8.4 server in a container.
 
+Read the exercises online at **[jeubanks.github.io/wgu](https://jeubanks.github.io/wgu/d427/exercises/)**.
+
 149 exercises cover the D427 skills: querying, built-in functions, aggregation, joins, subqueries, inserting/updating/deleting data, creating and altering tables with constraints, views, indexes, and turning a design into tables.
 
-Sections 11–13 are built from the two D427 practice tests and the D427 Challenge. They cover writing tables from the OA's column descriptions, the OA's join wording ("if available", "regardless of"), and a multiple-choice concepts check. The final section is a 12-task mock assessment written in the style of the OA's lab items (Horse / Student / LessonSchedule).
+Sections 11–13 are built from the two D427 practice tests and the D427 Challenge (in your WGU course resources; not included here). They cover writing tables from the OA's column descriptions, the OA's join wording ("if available", "regardless of"), and a multiple-choice concepts check. The final section is a 12-task mock assessment written in the style of the OA's lab items (Horse / Student / LessonSchedule).
 
 ## What's in this folder
 
@@ -14,7 +16,6 @@ Sections 11–13 are built from the two D427 practice tests and the D427 Challen
 | `setup.sql` | Builds the `d427` database and loads the sample data. Re-run it any time to reset. |
 | `exercises.md` | Start here: the table of contents, the order to work in, and a summary of the tables. |
 | `01-queries.md` … `05-mock-assessment.md` | The exercises, in five parts. Most exercises list the expected row count so you can check yourself. Part 4 (concepts check) has its answers folded under each question. |
-| `D427 Course Guide v3.docx`, `D427 Practice Test 1 with ANSWER KEY.pdf`, `D427 Practice Test 2 with ANSWER KEY.pdf`, `JOINS & Aggregate Functions.pdf` | Course reference material that Sections 11–13 are built from. |
 | `solutions.sql` | One worked answer per SQL exercise, labeled `-- [1.1]`, `-- [5.3]`, etc., with notes on the common traps. Section 13 has only its hints here. |
 | `later-advanced-sql.md` | Exercises that go beyond D427: transactions, plus a few more advanced queries and views. Kept for a later SQL course. |
 | `build_solutions.py` | Copies each hint and answer from `solutions.sql` into the exercise files as folded **Hint** and **Solution** blocks. Run `python3 build_solutions.py` after changing `solutions.sql`. |
