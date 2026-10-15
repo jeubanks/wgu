@@ -33,7 +33,7 @@ Every pull request runs these checks (`.github/workflows/checks.yml`), and `main
 |---|---|
 | Site builds, links resolve | `mkdocs build --strict`, `scripts/check_links.py site`, and `scripts/check_sql_runner.py` (every Try it solution runs in SQLite) |
 | setup.sql + solutions.sql run on MySQL 8.4 | D427's `setup.sql`, then all of its `solutions.sql` (add steps for each new SQL course) |
-| Exercise files match solutions.sql | `build_solutions.py` and `build_diagrams.py` leave no changes |
+| Exercise files match solutions.sql | `build_solutions.py`, `build_diagrams.py`, and `build_errors.py` leave no changes |
 
 Run the same things locally before pushing. If you edit `solutions.sql` or a `CREATE TABLE` in `setup.sql`, run `python3 build_solutions.py` / `python3 build_diagrams.py` in the course folder and commit what they change.
 
@@ -119,6 +119,7 @@ CREATE TABLE Guest (
 ```
 
 - `-- [N.M]` starts an exercise's block. Each `-- Hint:` line becomes one hint bullet. The rest is the solution.
+- **Errors:** when an exercise shows a new MySQL error number, add it to `ERRORS` in `build_errors.py` (its message, what it means, and the usual fix) and run the script. It fails if an error has no entry. The concepts check isn't listed under "Comes up in", since naming the error would hint at the answer.
 - **Every solution must run on MySQL 8.4**, from start to finish, after `setup.sql`. CI runs the whole file. Statements meant to fail are commented out, with the error MySQL gives (copy it from a real run).
 - A label with only hints (like the concepts check) gets just a Hint block, above the exercise's own `<details><summary>Answer</summary>` block.
 - In the `.md` files, the blocks sit between `<!-- solution:N.M -->` and `<!-- /solution -->`. Don't edit them by hand: run `build_solutions.py`.
