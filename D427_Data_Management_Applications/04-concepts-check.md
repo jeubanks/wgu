@@ -2,7 +2,7 @@
 
 [← Exercise index](exercises.md)
 
-About half of the assessment is multiple choice. These questions cover the concepts the practice tests ask about.
+These questions cover the concepts the D427 practice tests ask about, as multiple choice, true/false, and short answers.
 
 > [!TIP]
 > Write down your answer before you open the **Answer** under a question. You don't need to run any SQL for this part. Most of the tables in these questions are not in the `d427` database.

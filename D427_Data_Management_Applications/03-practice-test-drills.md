@@ -1,14 +1,14 @@
-# Part 3: Assessment drills
+# Part 3: Practice-test drills
 
 [← Exercise index](exercises.md) · Solutions: [`solutions.sql`](solutions.sql)
 
 Built from the D427 practice tests and the D427 Challenge. These sections don't depend on Parts 1 and 2, so you can do them at any time.
 
-**In this part:** [11. Writing tables from a specification](#11-writing-tables-from-a-specification) · [12. Assessment-style queries](#12-assessment-style-queries)
+**In this part:** [11. Writing tables from a specification](#11-writing-tables-from-a-specification) · [12. Practice-test-style queries](#12-practice-test-style-queries)
 
 ## 11. Writing tables from a specification
 
-On the assessment, the table-building questions describe each column in words, like *"integer with range 0 to 65 thousand, auto increment, primary key"*. You have to turn that wording into the right data type and constraints. This section practices exactly that.
+The D427 practice tests describe each column of a table in words, like *"integer with range 0 to 65 thousand, auto increment, primary key"*, and you turn that wording into the right data type and constraints. This section practices exactly that.
 
 > [!TIP]
 > **Reading integer specs**
@@ -29,7 +29,7 @@ On the assessment, the table-building questions describe each column in words, l
 >
 > For more practice turning specs into types, try the [spec-to-type drill](drill.md).
 
-These exercises use the same table names as the assessment (Horse, Student, Customer, and so on), so they run in a separate database to keep them away from the `d427` tables. Start the section with:
+These exercises use the same table names as the practice tests (Horse, Student, Customer, and so on), so they run in a separate database to keep them away from the `d427` tables. Start the section with:
 
 ```sql
 DROP DATABASE IF EXISTS d427_drills;
@@ -1214,7 +1214,7 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-## 12. Assessment-style queries
+## 12. Practice-test-style queries
 
 These exercises use the existing Book, YearSales, Passport, Visa, Compensation, and student_grades tables that `setup.sql` created in `d427`. You don't create any tables in this section. If `SHOW TABLES;` doesn't list them, your copy of the database is older than these exercises, so run `setup.sql` again.
 
@@ -1240,7 +1240,7 @@ The data has these unusual rows on purpose:
 - salaries and bonuses that are NULL
 
 > [!TIP]
-> The wording in this section copies the assessment on purpose. Pay attention to phrases like **"if available"** and **"regardless of whether"**. They tell you which table is optional, so they decide which kind of join you need. When a question has neither phrase, the assessment expects an **inner join**, even if it says "for all books."
+> The wording in this section follows the practice tests on purpose. Pay attention to phrases like **"if available"** and **"regardless of whether"**. They tell you which table is optional, so they decide which kind of join you need. When a question has neither phrase, the practice tests expect an **inner join**, even if it says "for all books."
 
 Here is what each kind of join keeps, drawn with two small made-up tables (they aren't in `setup.sql`). Each driver's BusID points at a bus. Dana has no bus, and nobody drives the Green line:
 
@@ -1445,7 +1445,7 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
   <details>
   <summary>Hint</summary>
 
-  - There's no "if available" or "regardless of" wording, so the assessment expects an INNER JOIN.
+  - There's no "if available" or "regardless of" wording, so the practice tests expect an INNER JOIN.
 
   </details>
 
@@ -1453,7 +1453,7 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
   <summary>Solution</summary>
 
   ```sql
-  -- No "if available" / "regardless" wording, so the OA expects an INNER JOIN.
+  -- No "if available" / "regardless" wording, so the practice tests expect an INNER JOIN.
   SELECT Book.Title, YearSales.TotalSales
   FROM Book
   INNER JOIN YearSales ON Book.Year = YearSales.Year;

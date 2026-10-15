@@ -55,7 +55,7 @@ INSERT INTO Employee (EmpID, FirstName, LastName, Email, Salary, HireDate, DeptI
  (15, 'Hedy',    'Lamarr',   'hlamarr@corp.example',    88000, '2025-02-10', NULL, 1); -- no department
 
 -- ---------------------------------------------------------------------
--- Riding stable schema (mirrors the style of D427 lab/assessment items)
+-- Riding stable schema (used by the lab-style exercises and the final practice)
 -- ---------------------------------------------------------------------
 CREATE TABLE Horse (
   ID              SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -163,7 +163,7 @@ INSERT INTO Movie (ID, Title, Genre, RatingCode, ReleaseYear, Minutes, Gross) VA
  (12, 'Untitled Indie Project', NULL,        NULL,    NULL,  NULL, NULL);
 
 -- ---------------------------------------------------------------------
--- OA-style query drills (Section 12): Book / YearSales, Passport / Visa,
+-- Practice-test query drills (Section 12): Book / YearSales, Passport / Visa,
 -- Compensation, student_grades. Names and wording mirror the practice tests.
 -- ---------------------------------------------------------------------
 CREATE TABLE YearSales (

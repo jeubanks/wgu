@@ -6,7 +6,7 @@ Read the exercises online at **[jeubanks.github.io/wgu](https://jeubanks.github.
 
 151 exercises cover the D427 skills: querying, built-in functions, aggregation, joins, subqueries, inserting/updating/deleting data, creating and altering tables with constraints, views, indexes, and turning a design into tables.
 
-Sections 11–13 are built from the two D427 practice tests and the D427 Challenge (in your WGU course resources; not included here). They cover writing tables from the OA's column descriptions, the OA's join wording ("if available", "regardless of"), and a multiple-choice concepts check. The final section is a 12-task mock assessment written in the style of the OA's lab items (Horse / Student / LessonSchedule).
+Sections 11–13 are built from the two D427 practice tests and the D427 Challenge (in your WGU course resources; not included here). They cover writing tables from the practice tests' column descriptions, their join wording ("if available", "regardless of"), and a multiple-choice concepts check. The final section is a 12-task practice set on the riding-stable tables (Horse / Student / LessonSchedule).
 
 ## What's in this folder
 
@@ -15,10 +15,10 @@ Sections 11–13 are built from the two D427 practice tests and the D427 Challen
 | `README.md` | This file (the **Setup** page on the website): setup, how to work through the exercises, troubleshooting. |
 | <a href="setup.sql" download>`setup.sql`</a> | Builds the `d427` database and loads the sample data. Re-run it any time to reset. |
 | `exercises.md` | Start here: the table of contents, the order to work in, and a summary of the tables. |
-| `01-queries.md` … `05-mock-assessment.md` | The exercises, in five parts. Most exercises list the expected row count so you can check yourself. Part 4 (concepts check) has its answers folded under each question. |
+| `01-queries.md` … `05-final-practice.md` | The exercises, in five parts. Most exercises list the expected row count so you can check yourself. Part 4 (concepts check) has its answers folded under each question. |
 | `solutions.sql` | One worked answer per SQL exercise, labeled `-- [1.1]`, `-- [5.3]`, etc., with notes on the common traps. Section 13 has only its hints here. |
 | `later-advanced-sql.md` | Exercises that go beyond D427: transactions, plus a few more advanced queries and views. Kept for a later SQL course. |
-| `cheatsheet.md` | The exam-day cheat sheet: column specs, constraints, ALTER TABLE, joins, GROUP BY, views, and indexes on one printable page. |
+| `quick-reference.md` | The SQL quick reference: column specs, constraints, ALTER TABLE, joins, GROUP BY, views, and indexes on one printable page. |
 | `drill.md` | The spec-to-type drill: random column specs to turn into MySQL types (interactive on the website; `docs/javascripts/drill.js`). |
 | `errors.md`, `build_errors.py` | The MySQL error decoder. `build_errors.py` writes its entries from every `ERROR nnnn` in `solutions.sql` and the exercises; run it after adding one. |
 | `build_solutions.py` | Copies each hint and answer from `solutions.sql` into the exercise files as folded **Hint** and **Solution** blocks. Run `python3 build_solutions.py` after changing `solutions.sql`. |
@@ -214,7 +214,7 @@ erDiagram
   }
   Rating |o..o{ Movie : "Movie.RatingCode = Rating.RatingCode"
 
-  %% OA-style query drills
+  %% Practice-test query drills
   YearSales {
     Year int PK
     TotalSales int
@@ -306,16 +306,16 @@ Start with [`exercises.md`](exercises.md), which links to every section.
 | 8 | [`02-changing-data.md`](02-changing-data.md) | CREATE / ALTER / DROP TABLE, constraints | Yes |
 | 9 | [`02-changing-data.md`](02-changing-data.md) | Views and indexes | Yes |
 | 10 | [`02-changing-data.md`](02-changing-data.md) | Design and normalization to tables | Yes |
-| 11 | [`03-assessment-drills.md`](03-assessment-drills.md) | Writing tables from OA-style column descriptions; ADD PRIMARY KEY / FOREIGN KEY / CHECK; ON DELETE RESTRICT; unique indexes; ALTER VIEW | Yes (in `d427_drills`) |
-| 12 | [`03-assessment-drills.md`](03-assessment-drills.md) | OA-style queries: "if available" / "regardless of" joins, GROUP BY, row vs table subqueries, NULL traps | 12.20–12.22 only |
+| 11 | [`03-practice-test-drills.md`](03-practice-test-drills.md) | Writing tables from practice-test-style column descriptions; ADD PRIMARY KEY / FOREIGN KEY / CHECK; ON DELETE RESTRICT; unique indexes; ALTER VIEW | Yes (in `d427_drills`) |
+| 12 | [`03-practice-test-drills.md`](03-practice-test-drills.md) | Practice-test-style queries: "if available" / "regardless of" joins, GROUP BY, row vs table subqueries, NULL traps | 12.20–12.22 only |
 | 13 | [`04-concepts-check.md`](04-concepts-check.md) | Concepts check: DDL/DML, data types, keys, FK actions, joins, views, indexes, ER modeling | No (no SQL) |
-| 14 | [`05-mock-assessment.md`](05-mock-assessment.md) | Mock assessment (12 tasks, about 60 minutes) | Yes |
+| 14 | [`05-final-practice.md`](05-final-practice.md) | Final practice (12 tasks, about 60 minutes) | Yes |
 
 A few rules keep the expected row counts accurate:
 
 1. **Work sections 1–10 in order.** Sections 7–10 change data and schema, and later exercises assume the earlier ones were done.
 2. **Sections 11–13 stand alone.** Do them whenever you like. Section 11 works in its own `d427_drills` database, and the tables Section 12 uses aren't touched by any other section. Exercises 12.20–12.22 change Book and Compensation, so reload `setup.sql` before you redo Section 12.
-3. **Reload `setup.sql` before Section 14.** The mock assessment starts from fresh data.
+3. **Reload `setup.sql` before Section 14.** The final practice starts from fresh data.
 4. **If you get lost, reset.** Re-running `setup.sql` rebuilds everything from scratch. To pick up in the middle of Section 7–10, reset and then run the earlier solutions from `solutions.sql` to bring the data back to that point.
 5. **Check your row count before looking at the answer.** A wrong count usually means a NULL or join issue; the hint in the exercise often points at which one.
 

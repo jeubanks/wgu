@@ -1,5 +1,5 @@
 /* Spec-to-type drill (D427 drill.md): endless random column specs, in the
-   assessment's wording, to turn into a MySQL type. Mounts on #spec-drill.
+   D427 practice tests' wording, to turn into a MySQL type. Mounts on #spec-drill.
    Everything runs in the browser; the score is saved per browser only. */
 (function () {
   var root = document.getElementById("spec-drill");
@@ -96,7 +96,7 @@
       ]);
     },
   ];
-  var WEIGHTS = [5, 3, 1, 2, 2, 2, 1]; // integers matter most on the assessment
+  var WEIGHTS = [5, 3, 1, 2, 2, 2, 1]; // integers come up most in the practice tests
 
   function next() {
     var bag = [];
@@ -108,7 +108,7 @@
 
   /* ---------- Constraint wording: pick the SQL that matches a phrase ---------- */
 
-  // [category, assessment-style phrase, the SQL it means, why]
+  // [category, practice-test-style phrase, the SQL it means, why]
   var CONSTRAINTS = [
     ["value", "State — fixed-length string of 2 chars, not NULL", "NOT NULL", "\"Not NULL\" (required) is NOT NULL."],
     ["value", "State — fixed-length string of 2 chars, default \"TX\"", "DEFAULT 'TX'", "\"Default v\" is DEFAULT v: the value a row gets when the INSERT leaves the column out."],

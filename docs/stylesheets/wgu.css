@@ -894,20 +894,20 @@
 }
 .md-typeset .sql-diff .sql-result { margin-top: 0.2rem; }
 
-/* The D427 cheat sheet (cheatsheet.md): compact when printed, so it fits on a
+/* The D427 SQL quick reference (quick-reference.md): compact when printed, so it fits on a
    few sheets. Its tables may split across pages, unlike elsewhere. */
 @media print {
-  .md-typeset .cheatsheet { font-size: 0.56rem; line-height: 1.35; }
-  .md-typeset .cheatsheet h2 { margin: 0.7em 0 0.3em; font-size: 1.15em; }
-  .md-typeset .cheatsheet p,
-  .md-typeset .cheatsheet ul { margin: 0.3em 0; }
-  .md-typeset .cheatsheet li { margin-bottom: 0.1em; }
-  .md-typeset .cheatsheet table:not([class]) { font-size: 1em; break-inside: auto; }
-  .md-typeset .cheatsheet table:not([class]) th,
-  .md-typeset .cheatsheet table:not([class]) td { padding: 0.25em 0.6em; }
-  .md-typeset .cheatsheet pre { font-size: 0.95em; break-inside: avoid; }
-  .md-typeset .cheatsheet pre > code { padding: 0.4em 0.7em; }
-  .md-typeset .cheatsheet .md-typeset__table { margin: 0.3em 0; }
+  .md-typeset .quick-reference { font-size: 0.56rem; line-height: 1.35; }
+  .md-typeset .quick-reference h2 { margin: 0.7em 0 0.3em; font-size: 1.15em; }
+  .md-typeset .quick-reference p,
+  .md-typeset .quick-reference ul { margin: 0.3em 0; }
+  .md-typeset .quick-reference li { margin-bottom: 0.1em; }
+  .md-typeset .quick-reference table:not([class]) { font-size: 1em; break-inside: auto; }
+  .md-typeset .quick-reference table:not([class]) th,
+  .md-typeset .quick-reference table:not([class]) td { padding: 0.25em 0.6em; }
+  .md-typeset .quick-reference pre { font-size: 0.95em; break-inside: avoid; }
+  .md-typeset .quick-reference pre > code { padding: 0.4em 0.7em; }
+  .md-typeset .quick-reference .md-typeset__table { margin: 0.3em 0; }
 }
 
 /* Continue button on the overview's progress panel (javascripts/progress.js). */

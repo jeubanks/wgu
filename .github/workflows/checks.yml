@@ -73,12 +73,12 @@ jobs:
       # No --force: the first error stops the client and fails the step.
       - run: mysql -h 127.0.0.1 -uroot < setup.sql
       - run: mysql -h 127.0.0.1 -uroot < solutions.sql > /dev/null
-      # Every full statement on the cheat sheet, taken from the page itself.
-      - name: Cheat sheet statements run on MySQL 8.4
+      # Every full statement on the SQL quick reference, taken from the page itself.
+      - name: Quick reference statements run on MySQL 8.4
         shell: bash
         run: |
           set -o pipefail
-          python3 ../scripts/check_cheatsheet.py | mysql -h 127.0.0.1 -uroot > /dev/null
+          python3 ../scripts/check_quick_reference.py | mysql -h 127.0.0.1 -uroot > /dev/null
 
   solutions-fresh:
     name: Exercise files match solutions.sql
