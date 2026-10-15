@@ -1,10 +1,10 @@
 # WGU C949 Data Structures and Algorithms I: Practice Kit
 
-Hands-on Python practice for WGU's **C949 Data Structures and Algorithms I**. It's built around the course's Objective Assessment (OA): what the exam weights, how it asks questions, and the skills that trip people up, especially Big-O and tracing pseudocode by hand.
+Hands-on Python practice for WGU's **C949 Data Structures and Algorithms I**. It's built around the course's competencies and study materials, with extra practice on the skills that trip people up, especially Big-O and tracing pseudocode by hand.
 
 Read it online at **[jeubanks.github.io/wgu](https://jeubanks.github.io/wgu/d949/)**.
 
-> Unofficial. Not affiliated with or endorsed by Western Governors University. Always check your zyBooks chapters and course materials. Where this kit and the course disagree, the course wins on exam day.
+> Unofficial. Not affiliated with or endorsed by Western Governors University. Always check your zyBooks chapters and course materials. Where this kit and the course disagree, the course wins.
 
 ## What's inside
 
@@ -59,24 +59,24 @@ pytest --solutions            # run the same checks against the answer key
 
 | Priority | Material | Why |
 | --- | --- | --- |
-| 1 | [Exam blueprint](#exam-blueprint-at-a-glance) | See what the exam weights before you study |
+| 1 | [Course competencies](#course-competencies) | See what the course covers before you study |
 | 2 | Take the course pre-assessment | Use its coaching report to find your weak areas |
-| 3 | Lessons 7 and 1, plus the course Big-O worksheet | Big-O and tracing feed into most exam questions |
+| 3 | Lessons 7 and 1, plus the course Big-O worksheet | Big-O and tracing come up throughout the course |
 | 4 | Lessons 2 and 5 | Stacks, queues, lists, searching, and sorting |
 | 5 | Lessons 3 and 4 | Hash tables, trees, and heaps |
-| 6 | Lesson 6 (optional) | Graph algorithms are mostly beyond this exam |
+| 6 | Lesson 6 (optional) | Graph algorithms are mostly beyond this course |
 
 Retake the pre-assessment once you can trace code on paper without guessing.
 
-## Exam blueprint at a glance
+## Course competencies
 
-| Competency | Weight |
-| --- | --- |
-| Applies Algorithms | 40% |
-| Determines Data Structure Impact | 31% |
-| Explains Algorithms | 29% |
+The course is organized around three competencies:
 
-The exam shows code as pseudocode or Python. The full topic list and zyBooks chapter map are in the course study guide in your WGU course resources.
+- Applies Algorithms
+- Determines Data Structure Impact
+- Explains Algorithms
+
+The course materials show code as pseudocode or Python. The full topic list and zyBooks chapter map are in the course study guide in your WGU course resources.
 
 ## Recommended reading
 
@@ -93,7 +93,7 @@ The exam shows code as pseudocode or Python. The full topic list and zyBooks cha
 
 ## Notes
 
-- **Exam conventions:** following the class Big-O worksheet, the sort tables use O(n) for radix sort and O(n) for bucket sort's average case. Textbooks often write O(nk) and O(n + k).
+- **Course conventions:** following the class Big-O worksheet, the sort tables use O(n) for radix sort and O(n) for bucket sort's average case. Textbooks often write O(nk) and O(n + k).
 - **Verified code:** every lesson example and solution in `c949-practice/` was run against its checks (43 passing in `pytest --solutions`).
 - **Course materials not included:** the WGU course study guide, Big-O worksheet, and other course PDFs belong to WGU and are not redistributed here. Get them from your course resources.
 

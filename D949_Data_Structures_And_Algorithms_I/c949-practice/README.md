@@ -2,7 +2,7 @@
 
 Starter files for the seven lessons in the *Python Practice* tab of your WGU C949 study guide. Requires Python 3.10+.
 
-Suggested order: 7 (pseudocode tracing), 1, 2, 5, then 3 and 4. Lesson 6 (graph algorithms) is optional; it's mostly beyond this exam.
+Suggested order: 7 (pseudocode tracing), 1, 2, 5, then 3 and 4. Lesson 6 (graph algorithms) is optional; it's mostly beyond this course.
 
 ## Layout
 
