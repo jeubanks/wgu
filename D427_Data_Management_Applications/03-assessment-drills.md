@@ -10,6 +10,23 @@ Built from the D427 practice tests and the D427 Challenge. These sections don't 
 
 On the assessment, the table-building questions describe each column in words, like *"integer with range 0 to 65 thousand, auto increment, primary key"*. You have to turn that wording into the right data type and constraints. This section practices exactly that.
 
+> [!TIP]
+> **Reading integer specs**
+>
+> | Type | Signed range | UNSIGNED range |
+> |---|---|---|
+> | `TINYINT` | -128 to 127 | 0 to 255 |
+> | `SMALLINT` | -32,768 to 32,767 | 0 to 65,535 |
+> | `MEDIUMINT` | -8,388,608 to 8,388,607 | 0 to 16,777,215 |
+> | `INT` | about -2.1 billion to 2.1 billion | 0 to 4,294,967,295 |
+> | `BIGINT` | about -9.2 × 10¹⁸ to 9.2 × 10¹⁸ | 0 to about 1.8 × 10¹⁹ |
+>
+> - **"Integer with range 0 to N"** means the smallest UNSIGNED type whose range reaches N. Check the edges: 0 to 300 doesn't fit TINYINT UNSIGNED, which stops at 255.
+> - **A range that goes below 0** means a signed type (no UNSIGNED), again the smallest that fits both ends.
+> - **Plain "integer"** with no range means `INT`.
+> - **"Positive integer"** means `INT UNSIGNED`. UNSIGNED still allows 0, so add `CHECK (col > 0)` when 0 isn't allowed.
+> - **A foreign key column** has exactly the same type as the column it references, UNSIGNED included.
+
 These exercises use the same table names as the assessment (Horse, Student, Customer, and so on), so they run in a separate database to keep them away from the `d427` tables. Start the section with:
 
 ```sql
@@ -1090,7 +1107,6 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   --   ERROR 1451: Cannot delete or update a parent row: a foreign key constraint fails
   -- ON UPDATE and ON DELETE are separate rules. You can give a foreign key both, e.g.
   --   FOREIGN KEY (TeamCode) REFERENCES Team(TeamCode) ON UPDATE CASCADE ON DELETE SET NULL
-  USE d427;
   ```
 
   </details>
@@ -1100,6 +1116,101 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 > When you are done, run `USE d427;`.
 
 ---
+
+- **11.21** *(in `d427_drills`)*\
+  **Creates:** WeatherReading
+
+  Signed ranges. Create **WeatherReading**:
+  - ReadingID — integer with range 0 to 16 million, auto increment, primary key
+  - TempC — integer with range -128 to 127, not NULL
+  - ElevationM — integer with range -32 thousand to 32 thousand
+
+  Add these readings:
+
+  | ReadingID | TempC | ElevationM |
+  |---|---|---|
+  | *(leave out)* | -40 | -86 |
+  | *(leave out)* | 35 | 4421 |
+
+  - Then try to add a reading with a TempC of 200. What error do you get?
+  - If you had made TempC `TINYINT UNSIGNED`, which of the two readings above would have failed?
+
+  *(2 rows)*
+
+  <!-- solution:11.21 -->
+  <details>
+  <summary>Hint</summary>
+
+  - A range that goes below 0 needs a signed type, so leave out UNSIGNED.
+  - -128 to 127 is exactly TINYINT. -32 thousand to 32 thousand fits SMALLINT (-32,768 to 32,767).
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  CREATE TABLE WeatherReading (
+    ReadingID   MEDIUMINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,   -- 0..16,777,215
+    TempC       TINYINT NOT NULL,                                -- -128..127
+    ElevationM  SMALLINT                                         -- -32,768..32,767
+  );
+  INSERT INTO WeatherReading (TempC, ElevationM) VALUES (-40, -86), (35, 4421);
+  SELECT * FROM WeatherReading;
+  -- Expected to FAIL (200 is past TINYINT's 127):
+  --   INSERT INTO WeatherReading (TempC) VALUES (200);
+  --   ERROR 1264: Out of range value for column 'TempC' at row 1
+  -- With TempC TINYINT UNSIGNED, the -40 reading fails the same way: UNSIGNED can't hold negatives.
+  ```
+
+  </details>
+  <!-- /solution -->
+
+- **11.22** *(in `d427_drills`)*\
+  **Creates:** Bin
+
+  Watch the edges of each range. Create **Bin**:
+  - BinID — integer with range 0 to 300, primary key
+  - Quantity — integer with range 0 to 70 thousand, not NULL
+  - LifetimeScans — integer with range 0 to 5 billion, not NULL
+
+  Add this bin:
+
+  | BinID | Quantity | LifetimeScans |
+  |---|---|---|
+  | 300 | 70000 | 5000000000 |
+
+  For each column, which type looks right at first glance but is one size too small? What happens to this INSERT if you use those types?
+
+  *(1 row)*
+
+  <!-- solution:11.22 -->
+  <details>
+  <summary>Hint</summary>
+
+  - Compare each range's top with the type limits: 255, 65,535, 16,777,215, and about 4.29 billion for UNSIGNED.
+  - 0 to 5 billion is past INT UNSIGNED, so it needs BIGINT UNSIGNED.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  CREATE TABLE Bin (
+    BinID          SMALLINT UNSIGNED PRIMARY KEY,     -- 300 is past TINYINT UNSIGNED's 255
+    Quantity       MEDIUMINT UNSIGNED NOT NULL,       -- 70,000 is past SMALLINT UNSIGNED's 65,535
+    LifetimeScans  BIGINT UNSIGNED NOT NULL           -- 5 billion is past INT UNSIGNED's ~4.29 billion
+  );
+  INSERT INTO Bin VALUES (300, 70000, 5000000000);
+  SELECT * FROM Bin;
+  -- With TINYINT UNSIGNED, SMALLINT UNSIGNED, and INT UNSIGNED instead, the INSERT fails on the first column that
+  -- doesn't fit:  ERROR 1264: Out of range value for column 'BinID' at row 1
+  USE d427;
+  ```
+
+  </details>
+  <!-- /solution -->
 
 ## 12. Assessment-style queries
 

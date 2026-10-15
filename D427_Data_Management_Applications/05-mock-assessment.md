@@ -12,22 +12,19 @@ Do this part last, as a timed practice run.
 - **14.1**\
   **Creates:** Instructor
 
-  Create a table named **Instructor** with these columns:
-
-  | Column | Type | Rules |
-  |---|---|---|
-  | `ID` | SMALLINT UNSIGNED | Auto increment, primary key |
-  | `FirstName` | VARCHAR(20) | NOT NULL |
-  | `LastName` | VARCHAR(30) | NOT NULL |
-  | `HireDate` | DATE | NOT NULL |
-  | `Rate` | DECIMAL(5,2) | NOT NULL, default 45.00, must be from 20 to 150 (inclusive) |
+  Create the **Instructor** table:
+  - ID — integer with range 0 to 65 thousand, auto increment, primary key
+  - FirstName — variable-length string with max 20 chars, not NULL
+  - LastName — variable-length string with max 30 chars, not NULL
+  - HireDate — date, not NULL
+  - Rate — decimal number with 5 digits total and 2 decimal places, not NULL, default 45.00, must be from 20 to 150 (inclusive)
 
   <!-- solution:14.1 -->
   <details>
   <summary>Hint</summary>
 
-  - ID is `SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY`.
-  - Rate needs `NOT NULL`, `DEFAULT 45.00`, and `CHECK (... BETWEEN 20 AND 150)`.
+  - Turn each description into a type the same way as in Section 11. For ID, which integer type is the smallest one that reaches 65 thousand?
+  - "5 digits total and 2 decimal places" is DECIMAL(5,2). Rate also needs NOT NULL, a DEFAULT, and a CHECK with BETWEEN.
 
   </details>
 
@@ -58,7 +55,7 @@ Do this part last, as a timed practice run.
   <details>
   <summary>Hint</summary>
 
-  - Instructor.ID is SMALLINT UNSIGNED, so InstructorID must be SMALLINT UNSIGNED too.
+  - Use exactly the type you gave Instructor.ID in 14.1, UNSIGNED included.
   - One ALTER TABLE can ADD COLUMN and ADD FOREIGN KEY, separated by a comma. The rule is ON DELETE SET NULL.
 
   </details>

@@ -1,6 +1,6 @@
 # D427 Data Management – Applications: MySQL Practice
 
-149 exercises that cover the D427 topics: writing queries, using built-in functions, grouping and totals, joins, subqueries, changing data, creating and changing tables, constraints, views, indexes, and turning a database design into tables.
+151 exercises that cover the D427 topics: writing queries, using built-in functions, grouping and totals, joins, subqueries, changing data, creating and changing tables, constraints, views, indexes, and turning a database design into tables.
 
 Parts 3 and 4 are built from the D427 practice tests and the D427 Challenge. Part 5 is a mock assessment that uses the same kind of tables as the lab questions on the real assessment (Horse, Student, and LessonSchedule).
 
