@@ -22,8 +22,13 @@ exclude_docs: |
 extra_css:
   - stylesheets/wgu.css
 
+# The SQL runner on D427 Part 1 (hooks/sql_runner.py adds its data to that page).
+extra_javascript:
+  - javascripts/sql-runner.js
+
 hooks:
   - hooks/details.py
+  - hooks/sql_runner.py
 
 theme:
   name: material
