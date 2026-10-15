@@ -1,0 +1,91 @@
+site_name: WGU Study Kits
+site_url: https://jeubanks.github.io/wgu/
+repo_url: https://github.com/jeubanks/wgu
+edit_uri: edit/main/
+
+# docs/d427 and docs/d949 are symlinks to the course folders,
+# so the exercise files stay where the scripts and Docker setup expect them.
+docs_dir: docs
+
+exclude_docs: |
+  *.py
+  *.ini
+  .pytest_cache/
+  __pycache__/
+
+extra_css:
+  - stylesheets/wgu.css
+
+hooks:
+  - hooks/details.py
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - toc.follow
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+    - content.tabs.link
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  # The exercise files indent list content by 2 spaces (GitHub style).
+  - mdx_truly_sane_lists:
+      nested_indent: 2
+      truly_sane: true
+  - toc:
+      permalink: true
+      # Match GitHub's heading anchors so in-page links work in both places.
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+nav:
+  - Home: index.md
+  - D427 Data Management:
+      - Overview: d427/exercises.md
+      - Setup: d427/README.md
+      - Part 1 – Querying data: d427/01-queries.md
+      - Part 2 – Changing data: d427/02-changing-data.md
+      - Part 3 – Assessment drills: d427/03-assessment-drills.md
+      - Part 4 – Concepts check: d427/04-concepts-check.md
+      - Part 5 – Mock assessment: d427/05-mock-assessment.md
+      - Beyond D427: d427/later-advanced-sql.md
+  - D949 Data Structures:
+      - Overview: d949/README.md
+      - Python practice: d949/c949-practice/README.md
