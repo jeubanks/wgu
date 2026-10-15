@@ -29,7 +29,7 @@ D427 is the model course. Once its patterns are settled, other courses reuse the
 
 ## Done
 
-- Search finds exercises by number (one search entry per exercise); a To review list on the Overview of missed exercises (#PR)
+- Search finds exercises by number (one search entry per exercise); a To review list on the Overview of missed exercises (#26)
 - Dependabot's first updates merged: GitHub Actions to new majors, Playwright 1.63, newer MkDocs/Material minimums (#23, #24)
 - Drill: a constraint-wording mode (multiple choice, its own score); Check pairs each of your results with a different expected one on multi-query exercises (#25)
 - sql.js pinned by hash (SRI on the script, a SHA-256 check on the .wasm, both verified in CI), and Dependabot for Actions and Python packages (#22)
