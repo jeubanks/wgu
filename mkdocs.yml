@@ -114,6 +114,39 @@ markdown_extensions:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
+# Courses: each is a folder symlinked into docs/ under its slug (docs/d427 ->
+# D427_Data_Management_Applications). The build hooks read these settings to
+# decide which pages get which features; see AUTHORING.md for each one.
+extra:
+  courses:
+    d427:
+      folder: D427_Data_Management_Applications
+      # Done boxes on every exercise, and a bar per part on the overview page.
+      progress:
+        overview: exercises.md
+        pages: "0[0-9]-*.md"
+      # Sample data for the ER diagrams, concept diagrams, and SQL runner.
+      setup_sql: setup.sql
+      # "Show tables" diagrams; the full diagram replaces the Mermaid block in readme.
+      er_diagrams:
+        readme: README.md
+        pages: [01-queries.md, 02-changing-data.md, 03-assessment-drills.md, 05-mock-assessment.md]
+      # join-diagram / delete-diagram / tree-diagram blocks.
+      concept_diagrams: true
+      # Try it boxes: page -> sections. Only read-only queries.
+      sql_runner:
+        pages:
+          01-queries.md: [1, 2, 3, 4, 5, 6]
+          03-assessment-drills.md: [12]
+        skip:
+          "12.20": This one changes data, so do it on MySQL.
+          "12.21": This one changes data, so do it on MySQL.
+          "12.22": This one changes data, so do it on MySQL.
+      # Interactive answer keys (<!-- answer:... --> comments).
+      quiz: 04-concepts-check.md
+    d949:
+      folder: D949_Data_Structures_And_Algorithms_I
+
 nav:
   - Home: index.md
   - D427 Data Management:

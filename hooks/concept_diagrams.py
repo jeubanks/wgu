@@ -1,4 +1,6 @@
-"""MkDocs hook: join and ON DELETE pictures for D427, drawn from setup.sql's rows.
+"""MkDocs hook: join, ON DELETE, and self-join pictures, drawn from a course's setup.sql rows.
+
+Courses turn it on with `concept_diagrams: true` in mkdocs.yml (extra.courses).
 
 An exercise file describes a picture in an HTML comment, which GitHub hides,
 and keeps plain text for GitHub readers up to the closing comment:
@@ -41,7 +43,7 @@ A table whose foreign key points at its own primary key (the setup for a
 self-join), drawn as an org chart next to its rows. No tabs.
 
 On the site the whole block, fallback text included, becomes the tabs. The rows
-come from setup.sql (loaded into SQLite with hooks/sql_runner.py's converter),
+come from setup.sql (loaded into SQLite with hooks/sqlite_setup.py),
 so the pictures stay true to the data. The SVG is drawn by hooks/concept_svg.py.
 
 Optional lines, for both kinds:
@@ -62,12 +64,13 @@ import sys
 from pathlib import Path
 
 HOOKS = Path(__file__).resolve().parent
-COURSE = HOOKS.parent / "D427_Data_Management_Applications"
 sys.path.insert(0, str(HOOKS))  # concept_svg imports er_svg
-for _name in ("er_svg", "concept_svg"):  # mkdocs serve reloads this hook; pick up edits
+for _name in ("er_svg", "concept_svg", "sqlite_setup"):  # mkdocs serve reloads this hook; pick up edits
     sys.modules.pop(_name, None)
 
 import concept_svg  # noqa: E402
+import courses  # noqa: E402  (course settings from mkdocs.yml: extra.courses)
+import sqlite_setup  # noqa: E402
 
 BLOCK = re.compile(r"^(?P<indent>[ \t]*)<!-- (?P<kind>join|delete|tree)-diagram\n(?P<spec>.*?)^[ \t]*-->\n"
                    r".*?^[ \t]*<!-- /(?P=kind)-diagram -->[ \t]*$", re.M | re.S)
@@ -86,12 +89,9 @@ LEGENDS = {
 _pages = {}  # page src_uri -> list of (wide, narrow) SVGs
 
 
-def _db():
-    spec = importlib.util.spec_from_file_location("sql_runner", HOOKS / "sql_runner.py")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+def _db(course):
     db = sqlite3.connect(":memory:")
-    db.executescript(module._to_sqlite((COURSE / "setup.sql").read_text()))
+    db.executescript(sqlite_setup.to_sqlite(course.setup_sql.read_text()))
     return db
 
 
@@ -405,10 +405,15 @@ def _into_solutions(markdown, pending):
     return "\n".join(lines)
 
 
+def on_config(config, **kwargs):
+    courses.load(config)
+
+
 def on_page_markdown(markdown, page, **kwargs):
-    if not page.file.src_uri.startswith("d427/") or not BLOCK.search(markdown):
+    course, _name = courses.for_page(page.file.src_uri)
+    if course is None or not course.concept_diagrams or not BLOCK.search(markdown):
         return markdown
-    db, diagrams, pending = _db(), [], []
+    db, diagrams, pending = _db(course), [], []
     markdown = BLOCK.sub(lambda m: _expand(m, db, diagrams, pending), markdown)
     markdown = _into_solutions(markdown, pending)
     _pages[page.file.src_uri] = diagrams

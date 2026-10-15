@@ -1,32 +1,29 @@
-"""MkDocs hook: an in-browser SQL runner (SQLite via sql.js) for D427's read-only queries.
+"""MkDocs hook: an in-browser SQL runner (SQLite via sql.js) for read-only query exercises.
 
-The exercise files stay plain Markdown. On each page in PAGES this hook adds:
+Courses turn it on in mkdocs.yml (extra.courses: sql_runner), listing which
+sections of which pages get it, and which exercises to leave out (`skip`, with
+the reason shown in place of the box). The exercise files stay plain Markdown.
+On each listed page this hook adds:
 
-- a note near the top saying the runner is SQLite, not MySQL, and how they differ;
-- a JSON blob with the sample data (setup.sql, translated to SQLite) and the
-  solution query for each exercise (from solutions.sql, via build_solutions.py).
+- a note saying the runner is SQLite, not MySQL: the full note (how they differ)
+  on the course's first runner page, a short one under each section on the others;
+- a JSON blob with the sample data (setup.sql, translated to SQLite by
+  hooks/sqlite_setup.py) and the solution query for each exercise (from
+  solutions.sql, via the course's build_solutions.py).
 
 docs/javascripts/sql-runner.js finds each exercise on the page and adds the editor.
-Only read-only queries get it: Part 1 (sections 1-6) and Section 12 in Part 3.
-Changing data and tables should be practiced on real MySQL, so Part 2, Section 11,
-and 12.20-12.22 don't. SKIP lists the exercises that are left out, with the reason
-shown in place of the box.
+Only read-only queries should get it: changing data and tables should be practiced
+on real MySQL. scripts/check_sql_runner.py checks every runner solution in CI.
 """
 import importlib.util
 import json
 import re
+import sys
 from pathlib import Path
 
-COURSE = Path(__file__).resolve().parent.parent / "D427_Data_Management_Applications"
-PAGES = {
-    "d427/01-queries.md": range(1, 7),        # Part 1 = sections 1-6
-    "d427/03-assessment-drills.md": (12,),    # Section 12 only; Section 11 builds tables
-}
-SKIP = {
-    "12.20": "This one changes data, so do it on MySQL.",
-    "12.21": "This one changes data, so do it on MySQL.",
-    "12.22": "This one changes data, so do it on MySQL.",
-}
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import courses  # noqa: E402  (course settings from mkdocs.yml: extra.courses)
+import sqlite_setup  # noqa: E402
 
 NOTE = """
 !!! info "Try the queries in your browser (SQLite)"
@@ -36,7 +33,7 @@ NOTE = """
     fresh copy of the `setup.sql` data, so nothing you run can break it.
 
     The box runs **SQLite**, not MySQL, so use it for practice only. The exam uses
-    **MySQL 8.4**, and Part 2 (changing data and tables) should be done there.
+    **MySQL 8.4**, and the exercises that change data and tables should be done there.
     Text comparisons ignore case, like MySQL, and common MySQL functions are added
     (`CONCAT`, `DATEDIFF`, `TIMESTAMPDIFF`, `YEAR`, `MONTH`, `DAYNAME`, `IF`, `LEFT`, ...).
     Where they still differ:
@@ -55,58 +52,50 @@ NOTE = """
 SECTION_NOTE = """
 !!! info "Try the queries in your browser (SQLite)"
 
-    Exercises 12.1 to 12.19 have a **Try it** box, like Part 1's. It runs **SQLite**
+    The read-only exercises in this section have a **Try it** box. It runs **SQLite**
     on a fresh copy of the `setup.sql` data, so use it for practice only: the exam uses
-    MySQL 8.4. See Part 1's note for where SQLite and MySQL differ. Exercises 12.20 to
-    12.22 change data, so do those on MySQL.
+    MySQL 8.4. The first page with Try it boxes explains where SQLite and MySQL differ.
+    Exercises that change data say so instead of having a box; do those on MySQL.
 """
 
 
-def _read_solutions(sections):
-    spec = importlib.util.spec_from_file_location("build_solutions", COURSE / "build_solutions.py")
+def on_config(config, **kwargs):
+    courses.load(config)
+
+
+def _section(label):
+    return int(label.split(".")[0])
+
+
+def read_solutions(course, sections):
+    """{label: solution SQL} for the runner exercises in these sections (also used by CI)."""
+    spec = importlib.util.spec_from_file_location(f"build_solutions_{course.slug}",
+                                                  course.folder / "build_solutions.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return {
         label: sql
         for label, (_hints, sql) in module.read_solutions().items()
-        if int(label.split(".")[0]) in sections and sql.strip() and label not in SKIP
+        if _section(label) in sections and sql.strip() and label not in course.runner_skip
     }
 
 
-TYPES = [
-    (re.compile(r"\bAUTO_INCREMENT\b", re.I), ""),
-    (re.compile(r"\b(?:TINY|SMALL|MEDIUM|BIG)?INT(?:\(\d+\))?(?:\s+UNSIGNED)?\b", re.I), "INTEGER"),
-    # REAL, not NUMERIC: with NUMERIC, 158000 is stored as a whole number and
-    # Salary / 12 does integer division.
-    (re.compile(r"\b(?:DECIMAL|NUMERIC|FLOAT|DOUBLE)(?:\(\d+(?:,\s*\d+)?\))?(?:\s+UNSIGNED)?", re.I), "REAL"),
-    # MySQL's default collation ignores case when comparing text; NOCASE does the same.
-    (re.compile(r"\b(?:VAR)?CHAR\(\d+\)", re.I), "TEXT COLLATE NOCASE"),
-    (re.compile(r"\b(?:DATETIME|DATE|TIMESTAMP)\b"), "TEXT"),
-    (re.compile(r"\)\s*ENGINE\s*=\s*\w+[^;]*;", re.I), ");"),
-]
-CREATE_TABLE = re.compile(r"^CREATE TABLE .*?^\);", re.M | re.S | re.I)
-DATABASE_LINE = re.compile(r"^(?:DROP DATABASE|CREATE DATABASE|USE)\b.*$", re.M | re.I)
-
-
-def _to_sqlite(sql):
-    def table(match):
-        text = match[0]
-        for pattern, repl in TYPES:
-            text = pattern.sub(repl, text)
-        return text
-
-    return CREATE_TABLE.sub(table, DATABASE_LINE.sub("", sql))
+def _runner(src_uri):
+    course, page = courses.for_page(src_uri)
+    if course is None or page not in course.runner_pages:
+        return None, None, None
+    return course, page, course.runner_pages[page]
 
 
 def on_page_markdown(markdown, page, **kwargs):
-    sections = PAGES.get(page.file.src_uri)
-    if sections is None:
+    course, name, sections = _runner(page.file.src_uri)
+    if course is None:
         return markdown
-    if 1 in sections:
-        # After the "In this part:" line, so the note sits right above section 1.
+    if name == next(iter(course.runner_pages)):
+        # The course's first runner page: the full note, right above its first section.
         head, sep, rest = markdown.partition("\n## ")
         return head.rstrip("\n") + "\n" + NOTE + "\n" + sep + rest
-    # Right under each section's heading.
+    # Other pages: a short note right under each runner section's heading.
     for n in sections:
         heading = re.search(rf"^## {n}\..*$", markdown, re.M)
         if heading:
@@ -116,13 +105,13 @@ def on_page_markdown(markdown, page, **kwargs):
 
 
 def on_page_content(html, page, **kwargs):
-    sections = PAGES.get(page.file.src_uri)
-    if sections is None:
+    course, _name, sections = _runner(page.file.src_uri)
+    if course is None:
         return html
     data = {
-        "setup": _to_sqlite((COURSE / "setup.sql").read_text()),
-        "solutions": _read_solutions(sections),
-        "skip": {label: why for label, why in SKIP.items() if int(label.split(".")[0]) in sections},
+        "setup": sqlite_setup.to_sqlite(course.setup_sql.read_text()),
+        "solutions": read_solutions(course, sections),
+        "skip": {label: why for label, why in course.runner_skip.items() if _section(label) in sections},
     }
     blob = json.dumps(data).replace("</", "<\\/")
     return html + f'\n<script type="application/json" id="sql-runner-data">{blob}</script>\n'
