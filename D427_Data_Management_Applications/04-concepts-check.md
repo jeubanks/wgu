@@ -68,7 +68,7 @@ About half of the assessment is multiple choice. These questions cover the conce
 
 - **13.2** Pick the best MySQL data type for each column. Write the full type with its size, like `VARCHAR(10)` or `DECIMAL(4,1)`.
 
-  | | Column | Your type |
+  | Part | Column | Your type |
   |---|---|---|
   | **a)** | Country names, like "Canada" or "Germany". The longest country name has 56 characters. Choose TEXT, CHAR(60), VARCHAR(56), or CHAR(255). | |
   | **b)** | A two-letter state code, like "TX" | |
@@ -112,7 +112,7 @@ About half of the assessment is multiple choice. These questions cover the conce
   <details>
   <summary>Answer</summary>
 
-  | | Type | Why |
+  | Part | Type | Why |
   |---|---|---|
   | a | `VARCHAR(56)` | Variable length, sized to the data. CHAR pads every value to full length; TEXT is for long documents. |
   | b | `CHAR(2)` | Always exactly 2 characters. |
@@ -461,7 +461,7 @@ About half of the assessment is multiple choice. These questions cover the conce
 
 - **13.10** Indexes. Mark each statement **True** or **False**.
 
-  | | Statement | True or False |
+  | Part | Statement | True or False |
   |---|---|---|
   | **a)** | An index on a column in Table B must be updated when a new row is added to Table B. | |
   | **b)** | An index on Table B's LastName column must be updated when a different column in Table B is updated. | |
@@ -489,7 +489,7 @@ About half of the assessment is multiple choice. These questions cover the conce
   <details>
   <summary>Answer</summary>
 
-  | | Answer | Why |
+  | Part | Answer | Why |
   |---|---|---|
   | a | True | Every new row needs an index entry (so does every deleted row). |
   | b | False | Only changes to the indexed column touch that index. |
