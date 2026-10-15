@@ -106,8 +106,60 @@
 
   function norm(s) { return String(s).toUpperCase().replace(/\s+/g, " ").replace(/\s*([(),])\s*/g, "$1").trim(); }
 
-  var stats = { right: 0, total: 0, streak: 0, best: 0 };
-  try { var saved = JSON.parse(localStorage.getItem(KEY) || "null"); if (saved) stats = saved; } catch (e) { /* storage blocked */ }
+  /* ---------- Constraint wording: pick the SQL that matches a phrase ---------- */
+
+  // [category, assessment-style phrase, the SQL it means, why]
+  var CONSTRAINTS = [
+    ["value", "State — fixed-length string of 2 chars, not NULL", "NOT NULL", "\"Not NULL\" (required) is NOT NULL."],
+    ["value", "State — fixed-length string of 2 chars, default \"TX\"", "DEFAULT 'TX'", "\"Default v\" is DEFAULT v: the value a row gets when the INSERT leaves the column out."],
+    ["value", "Rate — DECIMAL(5,2), default 45.00", "DEFAULT 45.00", "\"Default v\" is DEFAULT v."],
+    ["value", "Breed — must be one of the following: Paint, Saddlebred", "CHECK (Breed IN ('Paint', 'Saddlebred'))", "\"Must be one of\" is a CHECK with IN and the allowed values."],
+    ["value", "Height — must be ≥ 10.0 and ≤ 20.0", "CHECK (Height BETWEEN 10.0 AND 20.0)", "A range rule is a CHECK; BETWEEN includes both ends."],
+    ["value", "Rate — must be from 20 to 150 (inclusive)", "CHECK (Rate BETWEEN 20 AND 150)", "\"From a to b (inclusive)\" is CHECK (... BETWEEN a AND b)."],
+    ["value", "Quantity — must be greater than 0", "CHECK (Quantity > 0)", "A rule on the value is a CHECK. UNSIGNED alone still allows 0."],
+    ["value", "BirthDate — date, must be ≥ Jan 1, 2015", "CHECK (BirthDate >= '2015-01-01')", "A rule on the value is a CHECK; write the date as a string."],
+    ["value", "Email — no two students can have the same email", "UNIQUE", "\"No two rows can share a value\" is UNIQUE (NULLs are still allowed)."],
+    ["key", "ID — integer, auto increment, primary key", "AUTO_INCREMENT PRIMARY KEY", "MySQL numbers the rows (AUTO_INCREMENT), and the column identifies each row (PRIMARY KEY)."],
+    ["key", "CourseCode and Section together identify each row", "PRIMARY KEY (CourseCode, Section)", "Two columns that identify a row together are a composite primary key, written on its own line."],
+    ["key", "HorseID — foreign key that references Horse(ID)", "FOREIGN KEY (HorseID) REFERENCES Horse(ID)", "A column that holds another table's key is a FOREIGN KEY ... REFERENCES."],
+    ["action", "If a horse is deleted, its lessons are deleted too", "ON DELETE CASCADE", "Passing the delete on to the child rows is ON DELETE CASCADE."],
+    ["action", "If a student is deleted, their lessons stay, with no student", "ON DELETE SET NULL", "Keeping the child rows but clearing the link is ON DELETE SET NULL (the column must allow NULL)."],
+    ["action", "A patient who still has exams must not be deletable", "ON DELETE RESTRICT", "Refusing the delete is ON DELETE RESTRICT (also what happens with no rule)."],
+    ["action", "If a team's code changes, its players' TeamCode should change automatically", "ON UPDATE CASCADE", "Following a change to the parent's key is ON UPDATE CASCADE."],
+  ];
+
+  function constraintPrompt() {
+    var item = pick(CONSTRAINTS);
+    var same = CONSTRAINTS.filter(function (c) { return c[0] === item[0] && c[2] !== item[2]; });
+    var other = CONSTRAINTS.filter(function (c) { return c[0] !== item[0]; });
+    var options = [item[2]];
+    function add(from) {
+      from = from.slice();
+      while (options.length < 4 && from.length) {
+        var c = from.splice(Math.floor(Math.random() * from.length), 1)[0];
+        if (options.indexOf(c[2]) < 0) options.push(c[2]);
+      }
+    }
+    add(same);
+    add(other);
+    options.sort(function () { return Math.random() - 0.5; });
+    return { spec: item[1], answer: item[2], options: options, why: item[3] };
+  }
+
+  /* ---------- Saved score, one per mode ---------- */
+
+  var MODES = {
+    types: { label: "Column types", intro: "Type the MySQL type for this column spec." },
+    constraints: { label: "Constraint wording", intro: "Pick the SQL this part of a spec turns into." },
+  };
+  var empty = function () { return { right: 0, total: 0, streak: 0, best: 0 }; };
+  var stats = { mode: "types", types: empty(), constraints: empty() };
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY) || "null");
+    if (saved && saved.types) stats = saved;
+    else if (saved && typeof saved.total === "number") stats.types = saved;  // the single-mode format
+  } catch (e) { /* storage blocked */ }
+  if (!MODES[stats.mode]) stats.mode = "types";
   function save() { try { localStorage.setItem(KEY, JSON.stringify(stats)); } catch (e) { /* storage blocked */ } }
 
   function el(tag, cls, text) {
@@ -117,8 +169,23 @@
     return e;
   }
 
+  /* ---------- UI ---------- */
+
   root.textContent = "";
+  var modes = el("div", "drill-modes");
+  modes.setAttribute("role", "group");
+  modes.setAttribute("aria-label", "Drill");
+  var modeButtons = {};
+  Object.keys(MODES).forEach(function (m) {
+    var b = el("button", "drill-mode", MODES[m].label);
+    b.type = "button";
+    b.addEventListener("click", function () { setMode(m); });
+    modeButtons[m] = b;
+    modes.appendChild(b);
+  });
+
   var card = el("div", "drill-card");
+  var intro = el("p", "drill-intro");
   var prompt = el("p", "drill-prompt");
   var label = el("label", "drill-label", "MySQL type");
   var input = el("input", "drill-input");
@@ -129,6 +196,9 @@
   input.setAttribute("autocapitalize", "characters");
   input.placeholder = "e.g. SMALLINT UNSIGNED";
   label.htmlFor = input.id;
+  var choices = el("div", "drill-choices");
+  choices.setAttribute("role", "group");
+  choices.setAttribute("aria-label", "Choices");
   var buttons = el("div", "drill-buttons");
   var checkBtn = el("button", "md-button md-button--primary", "Check");
   var nextBtn = el("button", "md-button", "Next");
@@ -140,30 +210,25 @@
   var score = el("p", "drill-score");
   var reset = el("button", "drill-reset", "Reset score");
   reset.type = "button";
-  card.append(prompt, label, input, buttons, feedback, score, reset);
-  root.appendChild(card);
+  card.append(intro, prompt, label, input, choices, buttons, feedback, score, reset);
+  root.append(modes, card);
 
   var current = null, answered = false;
 
+  function mine() { return stats[stats.mode]; }
+
   function showScore() {
-    score.textContent = stats.total
-      ? stats.right + " of " + stats.total + " right · streak " + stats.streak + " · best streak " + stats.best
+    var s = mine();
+    score.textContent = s.total
+      ? s.right + " of " + s.total + " right · streak " + s.streak + " · best streak " + s.best
       : "Answer to start a streak.";
   }
 
-  function load() {
-    current = next();
-    answered = false;
-    prompt.textContent = "";
-    prompt.append("Column spec: ");
-    prompt.appendChild(el("strong", null, "“" + current.spec + "”"));
-    input.value = "";
-    input.disabled = false;
-    feedback.textContent = "";
-    feedback.className = "drill-feedback";
-    checkBtn.disabled = false;
-    showBtn.disabled = false;
-    input.focus({ preventScroll: true });
+  function record(ok) {
+    var s = mine();
+    s.total += 1;
+    if (ok) { s.right += 1; s.streak += 1; s.best = Math.max(s.best, s.streak); }
+    else s.streak = 0;
   }
 
   function finish(ok, text) {
@@ -173,13 +238,60 @@
     checkBtn.disabled = true;
     showBtn.disabled = true;
     input.disabled = true;
+    choices.querySelectorAll("button").forEach(function (b) {
+      b.disabled = true;
+      if (b.dataset.answer === "1") b.classList.add("drill-choice--answer");
+    });
     nextBtn.focus({ preventScroll: true });
     showScore();
     save();
   }
 
+  function load() {
+    var types = stats.mode === "types";
+    current = types ? next() : constraintPrompt();
+    answered = false;
+    intro.textContent = MODES[stats.mode].intro;
+    prompt.textContent = "";
+    prompt.append(types ? "Column spec: " : "The spec says: ");
+    prompt.appendChild(el("strong", null, "“" + current.spec + "”"));
+    label.hidden = input.hidden = checkBtn.hidden = !types;
+    choices.hidden = types;
+    input.value = "";
+    input.disabled = false;
+    choices.textContent = "";
+    if (!types) {
+      current.options.forEach(function (opt) {
+        var b = el("button", "drill-choice", opt);
+        b.type = "button";
+        if (opt === current.answer) b.dataset.answer = "1";
+        b.addEventListener("click", function () {
+          if (answered) return;
+          var ok = opt === current.answer;
+          if (!ok) b.classList.add("drill-choice--wrong");
+          record(ok);
+          finish(ok, (ok ? "Right. " : "It's " + current.answer + ". ") + current.why);
+        });
+        choices.appendChild(b);
+      });
+    }
+    feedback.textContent = "";
+    feedback.className = "drill-feedback";
+    checkBtn.disabled = false;
+    showBtn.disabled = false;
+    showScore();
+    (types ? input : choices.querySelector("button")).focus({ preventScroll: true });
+  }
+
+  function setMode(m) {
+    stats.mode = m;
+    Object.keys(modeButtons).forEach(function (k) { modeButtons[k].setAttribute("aria-pressed", String(k === m)); });
+    save();
+    load();
+  }
+
   checkBtn.addEventListener("click", function () {
-    if (answered) return;
+    if (answered || stats.mode !== "types") return;
     if (!input.value.trim()) {
       feedback.textContent = "Type a MySQL type first.";
       feedback.className = "drill-feedback drill-feedback--bad";
@@ -187,30 +299,23 @@
       return;
     }
     var ok = current.answers.some(function (a) { return norm(a) === norm(input.value); });
-    stats.total += 1;
-    if (ok) { stats.right += 1; stats.streak += 1; stats.best = Math.max(stats.best, stats.streak); }
-    else stats.streak = 0;
+    record(ok);
     finish(ok, (ok ? "Right. " : "The answer is " + current.answers[0] + ". ") + current.why);
   });
   showBtn.addEventListener("click", function () {
     if (answered) return;
-    stats.total += 1;
-    stats.streak = 0;
-    finish(false, "The answer is " + current.answers[0] + ". " + current.why);
+    record(false);
+    finish(false, "The answer is " + (current.answers ? current.answers[0] : current.answer) + ". " + current.why);
   });
   nextBtn.addEventListener("click", load);
   input.addEventListener("keydown", function (e) {
     if (e.key === "Enter") { e.preventDefault(); (answered ? nextBtn : checkBtn).click(); }
   });
-  card.addEventListener("keydown", function (e) {
-    if (e.key === "Enter" && answered && e.target !== input && e.target.tagName !== "BUTTON") { e.preventDefault(); load(); }
-  });
   reset.addEventListener("click", function () {
-    stats = { right: 0, total: 0, streak: 0, best: 0 };
+    stats[stats.mode] = empty();
     save();
     showScore();
   });
 
-  showScore();
-  load();
+  setMode(stats.mode);
 })();
