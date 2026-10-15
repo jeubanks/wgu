@@ -12,6 +12,7 @@ watch:
   - D427_Data_Management_Applications
   - D949_Data_Structures_And_Algorithms_I
   - hooks
+  - includes
 
 exclude_docs: |
   *.py
@@ -22,13 +23,16 @@ exclude_docs: |
 extra_css:
   - stylesheets/wgu.css
 
-# The SQL runner on D427 Part 1 (hooks/sql_runner.py adds its data to that page).
+# The SQL runner on D427 Part 1 and the quiz on Part 4
+# (hooks/sql_runner.py and hooks/quiz.py add their data to those pages).
 extra_javascript:
   - javascripts/sql-runner.js
+  - javascripts/quiz.js
 
 hooks:
   - hooks/details.py
   - hooks/sql_runner.py
+  - hooks/quiz.py
 
 theme:
   name: material
@@ -41,6 +45,7 @@ theme:
     - search.highlight
     - search.suggest
     - content.code.copy
+    - content.tooltips
     - content.tabs.link
   palette:
     - media: "(prefers-color-scheme: light)"
@@ -59,6 +64,7 @@ theme:
         name: Switch to light mode
 
 markdown_extensions:
+  - abbr
   - admonition
   - attr_list
   - md_in_html
@@ -75,6 +81,13 @@ markdown_extensions:
           case: lower
   - pymdownx.details
   - pymdownx.superfences
+  # Glossary tooltips: includes/glossary.md (outside docs/, so it isn't a page)
+  # is added to the end of every page, and its *[TERM]: definitions underline
+  # each TERM in the text with a tooltip. Terms are case-sensitive.
+  - pymdownx.snippets:
+      auto_append:
+        - includes/glossary.md
+      check_paths: true
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite

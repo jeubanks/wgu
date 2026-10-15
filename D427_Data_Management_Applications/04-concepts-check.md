@@ -26,9 +26,15 @@ About half of the assessment is multiple choice. These questions cover the conce
   | `TRUNCATE TABLE` | |
   | `SELECT` | |
 
+  <!-- answer:13.1a table [DDL, DML, other]: DDL; DML; DDL; DML; DDL; DML; DDL; DDL; DDL; DML | other -->
+
   **b)** Which one statement in the table changes the values in rows that already exist?
 
+  <!-- answer:13.1b blanks: UPDATE -->
+
   **c)** Which one statement in the table changes the structure of a table that already exists?
+
+  <!-- answer:13.1c blanks: ALTER TABLE | ALTER -->
 
   **d)** Which sentence describes the difference between DDL and DML?
 
@@ -37,6 +43,8 @@ About half of the assessment is multiple choice. These questions cover the conce
   B. DDL manipulates the data, and DML defines the schema.
 
   C. DDL and DML are the same thing.
+
+  <!-- answer:13.1d choice: A -->
 
   <!-- solution:13.1 -->
   <details>
@@ -73,6 +81,8 @@ About half of the assessment is multiple choice. These questions cover the conce
   | **i)** | "number with 3 significant digits and 1 decimal place" | |
   | **j)** | A 10-digit phone number stored with no symbols. Also say why INT is a bad choice. | |
 
+  <!-- answer:13.2a-j table: VARCHAR(56); CHAR(2); DECIMAL(6,2) | NUMERIC(6,2); TINYINT UNSIGNED; SMALLINT UNSIGNED; MEDIUMINT UNSIGNED; DATE; DATETIME | TIMESTAMP; DECIMAL(3,1) | NUMERIC(3,1); CHAR(10) -->
+
   **k)** Which data type represents numbers with fractional values?
 
   A. Integer
@@ -82,7 +92,8 @@ About half of the assessment is multiple choice. These questions cover the conce
   C. Character
 
   D. Binary
-  - k) Which data type represents numbers with fractional values: Integer, Decimal, Character, or Binary?
+
+  <!-- answer:13.2k choice: B -->
 
   <!-- solution:13.2 -->
   <details>
@@ -117,9 +128,15 @@ About half of the assessment is multiple choice. These questions cover the conce
 
   **a)** The Book table has the columns genre VARCHAR(20), pages INT, author_id CHAR(3), and isbn_number VARCHAR(20). Which column should be the primary key? Which column should be the foreign key?
 
+  <!-- answer:13.3a blanks: Primary key [genre, pages, author_id, isbn_number] => isbn_number; Foreign key [genre, pages, author_id, isbn_number] => author_id -->
+
   **b)** The Exam table has the columns exam_id, exam_date, exam_reason, and patient_id. Which column is the primary key? Which column is the foreign key?
 
+  <!-- answer:13.3b blanks: Primary key [exam_id, exam_date, exam_reason, patient_id] => exam_id; Foreign key [exam_id, exam_date, exam_reason, patient_id] => patient_id -->
+
   **c)** Why is a column like first_name or birthdate a poor primary key?
+
+  <!-- answer:13.3c written -->
 
   <!-- solution:13.3 -->
   <details>
@@ -143,15 +160,27 @@ About half of the assessment is multiple choice. These questions cover the conce
 
   **a)** `ON DELETE CASCADE`
 
+  <!-- answer:13.4a blanks: [The invoices are deleted too, The invoices stay with customer_id set to NULL, The DELETE is refused] => The invoices are deleted too -->
+
   **b)** `ON DELETE SET NULL`
+
+  <!-- answer:13.4b blanks: [The invoices are deleted too, The invoices stay with customer_id set to NULL, The DELETE is refused] => The invoices stay with customer_id set to NULL -->
 
   **c)** `ON DELETE RESTRICT`
 
+  <!-- answer:13.4c blanks: [The invoices are deleted too, The invoices stay with customer_id set to NULL, The DELETE is refused] => The DELETE is refused -->
+
   **d)** nothing at all (no ON DELETE clause)
+
+  <!-- answer:13.4d blanks: [The invoices are deleted too, The invoices stay with customer_id set to NULL, The DELETE is refused] => The DELETE is refused -->
 
   **e)** One practice test writes `ON DELETE SET TO NULL`. What does MySQL do with that?
 
+  <!-- answer:13.4e written -->
+
   **f)** One practice test declares the Invoice table's column as `customer_id INT NOT NULL UNIQUE`. What does the UNIQUE say about how many invoices a customer can have?
+
+  <!-- answer:13.4f blanks: [Any number, At most one, Exactly one] => At most one -->
 
   <!-- solution:13.4 -->
   <details>
@@ -178,13 +207,23 @@ About half of the assessment is multiple choice. These questions cover the conce
 
   **a)** A INNER JOIN B
 
+  <!-- answer:13.5a blanks: [Only the matching rows, Every row of A, Every row of B, Every row of both tables] => Only the matching rows -->
+
   **b)** A LEFT JOIN B
+
+  <!-- answer:13.5b blanks: [Only the matching rows, Every row of A, Every row of B, Every row of both tables] => Every row of A -->
 
   **c)** A RIGHT JOIN B
 
+  <!-- answer:13.5c blanks: [Only the matching rows, Every row of A, Every row of B, Every row of both tables] => Every row of B -->
+
   **d)** A FULL OUTER JOIN B. Does MySQL support FULL OUTER JOIN directly?
 
+  <!-- answer:13.5d blanks: Rows [Only the matching rows, Every row of A, Every row of B, Every row of both tables] => Every row of both tables; Supported directly in MySQL? [Yes, No] => No -->
+
   **e)** A CROSS JOIN B, when A has 5 rows and B has 4 rows. How many rows does it return?
+
+  <!-- answer:13.5e blanks: Rows => 20 -->
 
   <!-- solution:13.5 -->
   <details>
@@ -256,7 +295,11 @@ About half of the assessment is multiple choice. These questions cover the conce
 
   E. CROSS
 
+  <!-- answer:13.6a choice: C -->
+
   **b)** How many rows would each of the other four joins return?
+
+  <!-- answer:13.6b blanks: INNER => 3; RIGHT => 5; FULL => 8; CROSS => 25 -->
 
   <!-- solution:13.6 -->
   <details>
@@ -292,6 +335,8 @@ About half of the assessment is multiple choice. These questions cover the conce
 
   D. `SELECT B.Title, A.Name FROM Book B INNER JOIN Author A ON B.AuthorID = A.ID;`
 
+  <!-- answer:13.7a choice: C -->
+
   **b)** Which query performs an **outer self-join** on the Employee table?
 
   A. `SELECT E.LastName, M.LastName FROM Employee E LEFT JOIN Employee M ON E.ManagerID = M.EmpID;`
@@ -299,6 +344,8 @@ About half of the assessment is multiple choice. These questions cover the conce
   B. `SELECT E.LastName, M.LastName FROM Employee E INNER JOIN Employee M ON E.ManagerID = M.EmpID;`
 
   C. `SELECT E.LastName, D.DeptName FROM Employee E LEFT JOIN Department D ON E.DeptID = D.DeptID;`
+
+  <!-- answer:13.7b choice: A -->
 
   <!-- solution:13.7 -->
   <details>
@@ -326,11 +373,19 @@ About half of the assessment is multiple choice. These questions cover the conce
 
   **a)** "List all patients, regardless of whether they had an exam": `FROM Patient ___ JOIN Exam ON ...`
 
+  <!-- answer:13.8a blanks: [LEFT, RIGHT, INNER] => LEFT -->
+
   **b)** "List all model types, regardless of whether a model was assigned to that type": `FROM Models ___ JOIN Model_Type ON ...`
+
+  <!-- answer:13.8b blanks: [LEFT, RIGHT, INNER] => RIGHT -->
 
   **c)** "Display the Title (if available) and TotalSales for all YearSales": `FROM Book ___ JOIN YearSales ON ...`
 
+  <!-- answer:13.8c blanks: [LEFT, RIGHT, INNER] => RIGHT -->
+
   **d)** "List all model IDs, the model type they are assigned, and their hourly fees": `FROM Models ___ JOIN Model_Type ON ...`
+
+  <!-- answer:13.8d blanks: [LEFT, RIGHT, INNER] => INNER -->
 
   <!-- solution:13.8 -->
   <details>
@@ -364,11 +419,19 @@ About half of the assessment is multiple choice. These questions cover the conce
 
   D. Its results are stored as a temporary table.
 
+  <!-- answer:13.9a choice: B C -->
+
   **b)** Is a regular (non-materialized) view's data stored on disk? What happens each time you select from it?
+
+  <!-- answer:13.9b written -->
 
   **c)** Does MySQL support materialized views?
 
+  <!-- answer:13.9c blanks: [Yes, No] => No -->
+
   **d)** Why can't you UPDATE rows through a view that uses GROUP BY?
+
+  <!-- answer:13.9d written -->
 
   <!-- solution:13.9 -->
   <details>
@@ -404,6 +467,8 @@ About half of the assessment is multiple choice. These questions cover the conce
   | **i)** | When a query returns most of the rows in a table, a full table scan can be faster than using an index. | |
   | **j)** | In MySQL, `CREATE INDEX` is a DML statement. | |
 
+  <!-- answer:13.10a-j table [True, False]: True; False; False; True; False; True; True; False; True; False -->
+
   <!-- solution:13.10 -->
   <details>
   <summary>Hint</summary>
@@ -436,7 +501,11 @@ About half of the assessment is multiple choice. These questions cover the conce
 
   **a)** "Children living within the boundaries of two school districts will be attending one of four different schools." How many entities are in this sentence? Name them.
 
+  <!-- answer:13.11a blanks: Number of entities => 3 | three -->
+
   **b)** "A person can have many skills." What is the cardinality of the relationship between Person and Skill? What extra fact would you need before you could be sure? How would you build a many-to-many relationship as tables?
+
+  <!-- answer:13.11b written -->
 
   **c)** "Each patient in a hospital is prescribed a unique treatment plan composed of medications sourced from various pharmaceutical companies. Doctors create each treatment plan." Which entity has a direct relationship with Patient?
 
@@ -448,6 +517,8 @@ About half of the assessment is multiple choice. These questions cover the conce
 
   D. Doctor
 
+  <!-- answer:13.11c choice: A -->
+
   **d)** Fill in the **degree** (unary, binary, or ternary) and the **cardinality** (one-to-one, one-to-many, or many-to-many) of each relationship.
 
   | Relationship | Degree | Cardinality |
@@ -458,6 +529,8 @@ About half of the assessment is multiple choice. These questions cover the conce
   | A student enrolls in many courses, and a course has many students. | | |
   | A supplier supplies a part to a project. | | *(not asked)* |
 
+  <!-- answer:13.11d table [Unary, Binary, Ternary] [One-to-one, One-to-many, Many-to-many]: Unary; One-to-many; Unary; One-to-one; Unary; Many-to-many; Binary; Many-to-many; Ternary -->
+
   **e)** When an ER diagram becomes tables, what does each item become?
 
   | ER diagram item | Becomes |
@@ -466,6 +539,8 @@ About half of the assessment is multiple choice. These questions cover the conce
   | An attribute | |
   | A one-to-many relationship | |
   | A many-to-many relationship | |
+
+  <!-- answer:13.11e written -->
 
   <!-- solution:13.11 -->
   <details>
@@ -509,11 +584,19 @@ About half of the assessment is multiple choice. These questions cover the conce
 
   **a)** What do `NULL = NULL`, `NULL <> 5`, and `5 + NULL` return?
 
+  <!-- answer:13.12a blanks: `NULL = NULL` => NULL | unknown; `NULL <> 5` => NULL | unknown; `5 + NULL` => NULL | unknown -->
+
   **b)** A table has 3 rows. One column holds the values 10, NULL, and 20. What do COUNT(*), COUNT(column), SUM(column), and AVG(column) return?
+
+  <!-- answer:13.12b blanks: COUNT(*) => 3; COUNT(column) => 2; SUM(column) => 30; AVG(column) => 15 -->
 
   **c)** Which aggregate function gives the number of rows that have a non-NULL value in a given column?
 
+  <!-- answer:13.12c blanks: COUNT(column) | COUNT(column_name) | COUNT(col) -->
+
   **d)** Why can't an aggregate function appear in a WHERE clause? What do you use instead?
+
+  <!-- answer:13.12d written -->
 
   <!-- solution:13.12 -->
   <details>
@@ -539,19 +622,35 @@ About half of the assessment is multiple choice. These questions cover the conce
 
   **a)** A(n) _____ is a query that is nested inside another query.
 
+  <!-- answer:13.13a blanks: subquery | sub-query | nested query | inner query -->
+
   **b)** The _____ condition of a JOIN usually compares a foreign key with the primary key it references.
+
+  <!-- answer:13.13b blanks: ON -->
 
   **c)** The _____ function combines two columns (or strings) into one.
 
+  <!-- answer:13.13c blanks: CONCAT() | CONCAT -->
+
   **d)** The _____ keyword removes duplicate rows from a result.
+
+  <!-- answer:13.13d blanks: DISTINCT -->
 
   **e)** The _____ clause filters groups after GROUP BY.
 
+  <!-- answer:13.13e blanks: HAVING -->
+
   **f)** If ORDER BY doesn't say ASC or DESC, the sort order is _____.
+
+  <!-- answer:13.13f blanks: ascending | ASC | ascending (ASC) -->
 
   **g)** In MySQL, NULLs sort _____ in ascending order.
 
+  <!-- answer:13.13g blanks: first | at the top | top -->
+
   **h)** `DELETE FROM t;` and `TRUNCATE TABLE t;` both remove every row. After _____, the next AUTO_INCREMENT value starts over at 1.
+
+  <!-- answer:13.13h blanks: TRUNCATE | TRUNCATE TABLE -->
 
   <!-- solution:13.13 -->
   <details>

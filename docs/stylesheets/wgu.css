@@ -195,3 +195,295 @@
   color: var(--md-default-fg-color--lighter);
   font-style: italic;
 }
+
+/* Quiz on D427 Part 4, from javascripts/quiz.js. Same colors as the SQL runner. */
+.md-typeset .quiz-part {
+  margin: 0.6em 0 1.2em;
+}
+.md-typeset .quiz-options {
+  display: grid;
+  gap: 0.4rem;
+}
+.md-typeset .quiz-option {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.5em 0.8em;
+  border: 1px solid var(--md-default-fg-color--lighter);
+  border-radius: 0.2rem;
+  background: transparent;
+  color: var(--md-typeset-color);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.md-typeset .quiz-option:hover:not([aria-disabled="true"]) {
+  border-color: var(--sql-color);
+  background-color: color-mix(in srgb, var(--sql-color) 8%, transparent);
+}
+.md-typeset .quiz-option[aria-disabled="true"] {
+  cursor: default;
+}
+.md-typeset .quiz-option__letter {
+  flex: none;
+  min-width: 1.6em;
+  padding: 0.05em 0;
+  border: 1px solid currentcolor;
+  border-radius: 1em;
+  font-size: 0.75em;
+  font-weight: 700;
+  text-align: center;
+}
+.md-typeset .quiz-option__text code {
+  overflow-wrap: anywhere;
+}
+.md-typeset .quiz-option.is-chosen {
+  border-color: var(--sql-color);
+  background-color: color-mix(in srgb, var(--sql-color) 12%, transparent);
+}
+.md-typeset .quiz-option.is-chosen .quiz-option__letter {
+  border-color: var(--sql-color);
+  background: var(--sql-color);
+  color: var(--sql-on-color);
+}
+.md-typeset .quiz-option.is-correct {
+  border: 2px solid var(--sql-ok);
+  background-color: color-mix(in srgb, var(--sql-ok) 12%, transparent);
+}
+.md-typeset .quiz-option.is-correct .quiz-option__letter {
+  border-color: var(--sql-ok);
+  background: var(--sql-ok);
+  color: var(--md-default-bg-color);
+}
+.md-typeset .quiz-option.is-wrong {
+  border: 2px solid var(--sql-bad);
+  background-color: color-mix(in srgb, var(--sql-bad) 10%, transparent);
+}
+.md-typeset .quiz-option.is-wrong .quiz-option__letter {
+  border-color: var(--sql-bad);
+  background: var(--sql-bad);
+  color: var(--md-default-bg-color);
+}
+
+.md-typeset .quiz-blanks {
+  display: grid;
+  gap: 0.5rem;
+}
+.md-typeset .quiz-blank {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.6rem;
+}
+.md-typeset .quiz-blank__label {
+  min-width: 8rem;
+  font-weight: 700;
+}
+.md-typeset .quiz-slot {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem 0.5rem;
+  max-width: 100%;
+}
+.md-typeset .quiz-select,
+.md-typeset .quiz-input,
+.md-typeset .quiz-written {
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 0.35em 0.6em;
+  border: 1px solid var(--md-default-fg-color--lighter);
+  border-radius: 0.2rem;
+  background: var(--md-default-bg-color);
+  color: var(--md-typeset-color);
+  font: inherit;
+  font-size: 0.75rem;
+}
+.md-typeset .quiz-input {
+  width: 14rem;
+  font-family: var(--md-code-font-family);
+}
+.md-typeset .quiz-cell .quiz-input {
+  width: 100%;
+  min-width: 8rem;
+}
+.md-typeset .quiz-written {
+  display: block;
+  width: 100%;
+  resize: vertical;
+}
+.md-typeset .quiz-select:focus,
+.md-typeset .quiz-input:focus,
+.md-typeset .quiz-written:focus,
+.md-typeset .quiz-option:focus-visible,
+.md-typeset .quiz-summary:focus-visible {
+  outline: 2px solid var(--sql-color);
+  outline-offset: 1px;
+}
+.md-typeset .quiz-select:disabled,
+.md-typeset .quiz-input:disabled {
+  opacity: 1;
+  color: var(--md-typeset-color);
+}
+.md-typeset .quiz-slot.is-correct .quiz-select,
+.md-typeset .quiz-slot.is-correct .quiz-input {
+  border: 2px solid var(--sql-ok);
+}
+.md-typeset .quiz-slot.is-wrong .quiz-select,
+.md-typeset .quiz-slot.is-wrong .quiz-input {
+  border: 2px solid var(--sql-bad);
+  text-decoration: line-through;
+}
+.md-typeset .quiz-mark {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.md-typeset .quiz-mark:empty {
+  display: none;
+}
+.md-typeset .is-correct > .quiz-mark {
+  color: var(--sql-ok);
+}
+.md-typeset .is-wrong > .quiz-mark {
+  color: var(--sql-bad);
+}
+/* Keep the mark under the control so narrow tables don't squeeze the text column. */
+.md-typeset td.quiz-cell .quiz-slot {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.md-typeset .quiz-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.6rem;
+  margin-top: 0.5rem;
+}
+.md-typeset .quiz-actions[hidden] {
+  display: none;
+}
+.md-typeset .quiz-part .md-button,
+.md-typeset .quiz-summary .md-button {
+  margin: 0;
+  padding: 0.3em 1.2em;
+  font-size: 0.75rem;
+  cursor: pointer;
+  border-color: var(--sql-color);
+  color: var(--sql-color);
+}
+.md-typeset .quiz-part .md-button--primary,
+.md-typeset .quiz-summary .md-button--primary {
+  background-color: var(--sql-color);
+  color: var(--sql-on-color);
+}
+.md-typeset .quiz-part .md-button:focus,
+.md-typeset .quiz-part .md-button:hover,
+.md-typeset .quiz-summary .md-button:focus:not(:disabled),
+.md-typeset .quiz-summary .md-button:hover:not(:disabled) {
+  border-color: var(--sql-color);
+  background-color: var(--sql-color);
+  color: var(--sql-on-color);
+}
+.md-typeset .quiz-summary .md-button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.md-typeset .quiz-part .md-button[hidden] {
+  display: none;
+}
+.md-typeset .quiz-self[aria-pressed="true"].quiz-self--ok {
+  border-color: var(--sql-ok);
+  background-color: var(--sql-ok);
+  color: var(--md-default-bg-color);
+}
+.md-typeset .quiz-self[aria-pressed="true"].quiz-self--bad {
+  border-color: var(--sql-bad);
+  background-color: var(--sql-bad);
+  color: var(--md-default-bg-color);
+}
+.md-typeset .quiz-part .quiz-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--md-typeset-a-color);
+  font-weight: 400;
+  text-decoration: underline;
+}
+.md-typeset .quiz-part .quiz-link:focus,
+.md-typeset .quiz-part .quiz-link:hover {
+  background: none;
+  color: var(--md-accent-fg-color);
+}
+.md-typeset .quiz-hint {
+  color: var(--md-default-fg-color--light);
+  font-size: 0.75rem;
+}
+.md-typeset .quiz-feedback {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+}
+.md-typeset .quiz-feedback:empty {
+  display: none;
+}
+.md-typeset .quiz-feedback--ok,
+.md-typeset .quiz-feedback--bad {
+  padding: 0.4em 0.7em;
+  border-left: 0.2rem solid var(--sql-ok);
+}
+.md-typeset .quiz-feedback--ok > span {
+  color: var(--sql-ok);
+  font-weight: 700;
+}
+.md-typeset .quiz-feedback--bad {
+  border-color: var(--sql-bad);
+}
+.md-typeset .quiz-feedback--bad > span {
+  color: var(--sql-bad);
+}
+.md-typeset .quiz-feedback:focus {
+  outline: none;
+}
+
+.md-typeset .quiz-summary {
+  margin: 1em 0;
+  padding: 0.6em 1em 0.7em;
+  border: 1px solid var(--sql-color);
+  border-left-width: 0.2rem;
+  border-radius: 0.2rem;
+  background: var(--md-default-bg-color);
+  box-shadow: var(--md-shadow-z1);
+}
+.md-typeset .quiz-summary p {
+  margin: 0;
+}
+.md-typeset .quiz-summary__title {
+  color: var(--sql-color);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.md-typeset .quiz-summary__score {
+  font-size: 0.85rem;
+}
+.md-typeset .quiz-summary__bar {
+  display: flex;
+  height: 0.35rem;
+  margin: 0.4rem 0 0;
+  overflow: hidden;
+  border-radius: 0.2rem;
+  background: var(--md-default-fg-color--lightest);
+}
+.md-typeset .quiz-summary__ok {
+  background: var(--sql-ok);
+}
+.md-typeset .quiz-summary__bad {
+  background: var(--sql-bad);
+}
+.md-typeset .quiz-summary__note {
+  margin-top: 0.4rem !important;
+  color: var(--md-default-fg-color--light);
+  font-size: 0.65rem;
+}
