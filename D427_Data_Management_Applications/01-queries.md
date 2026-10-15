@@ -971,6 +971,26 @@ These sections only read data, so you can redo any exercise at any time. Every e
 
 ## 5. Joins
 
+A join puts rows from two tables side by side, wherever the ON condition matches. The kind of join decides what happens to a row that has **no** match. Here it is with two small made-up tables (they aren't in `setup.sql`): each driver's BusID points at a bus. Dana has no bus, and nobody drives the Green line.
+
+<!-- join-diagram
+table: Driver(DriverID, Name, BusID) = 1, Ana, 10; 2, Ben, 10; 3, Cruz, 20; 4, Dana, NULL
+table: Bus(BusID, Route) = 10, Red line; 20, Blue line; 30, Green line
+from: Driver d | DriverID, Name, BusID
+join: Bus b | BusID, Route
+on: d.BusID = b.BusID
+select: d.Name, b.Route
+INNER: "Show each driver's Name and Route." Neither phrase, so an **inner join**: only rows that have a match in both tables. Dana and the Green line are left out.
+LEFT: "Show each driver's Name and Route **(if available)**." The route is optional, so every driver stays: `Driver LEFT JOIN Bus`. Dana's Route is NULL.
+RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it." Every bus stays: `Driver RIGHT JOIN Bus`. The Green line's Name is NULL.
+-->
+| Join | Rows it keeps |
+|---|---|
+| `Driver INNER JOIN Bus` | only drivers and buses that match |
+| `Driver LEFT JOIN Bus` | every driver; Dana (no bus) gets NULL for Route |
+| `Driver RIGHT JOIN Bus` | every bus; the Green line (no driver) gets NULL for Name |
+<!-- /join-diagram -->
+
 ### Employee and Department
 
 - **5.1** Show each employee's FirstName and LastName next to the DeptName of their department. Use an inner join. One employee is missing from the result. Who is it, and why are they missing? *(14 rows)*
@@ -1050,6 +1070,18 @@ These sections only read data, so you can redo any exercise at any time. Every e
   - `Manager`: the manager's FirstName and LastName joined the same way
 
   Include employees who do not have a manager. Their Manager shows NULL. Sort by the employee's EmpID. *(15 rows)*
+
+  <!-- join-diagram
+  from: Employee e | EmpID, FirstName, ManagerID | EmpID IN (7, 8, 10, 11)
+  join: Employee m | EmpID, FirstName | EmpID IN (7, 8, 10, 11)
+  on: e.ManagerID = m.EmpID
+  select: e.FirstName, m.FirstName
+  fold: Picture it: the Employee table joined to itself
+  INNER: The same four rows play two parts: `e` is the employee and `m` is the manager. Each employee's ManagerID points at the manager's EmpID.
+  LEFT: The `e` side is kept whole, so an employee with no manager stays, with NULL for the manager's name.
+  -->
+  *(On the site, a picture of the Employee table joined to itself goes here: each employee's ManagerID points at another employee's EmpID.)*
+  <!-- /join-diagram -->
 
   <!-- solution:5.4 -->
   <details>

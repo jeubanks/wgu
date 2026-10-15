@@ -590,3 +590,77 @@
 .er-line.er-dashed { stroke-dasharray: 5 4; }
 .er-ring { fill: var(--md-default-bg-color); stroke: var(--er-line); stroke-width: 1.5; }
 .er-label { fill: var(--er-label); font-family: var(--md-code-font-family), monospace; font-size: 11px; }
+
+/* Join and ON DELETE pictures from hooks/concept_diagrams.py. The tables reuse
+   the ER diagram classes above; these add the sample-row states:
+   matched (a blue line between the rows), kept with no match (lime tint, NULLs
+   in the result), and dropped or deleted (faded and struck out in red). */
+:root {
+  --cd-link: #0070f0;
+  --cd-kept: #97e15259;
+  --cd-kept-edge: #3d8a12;
+  --cd-drop: #c62828;
+  --cd-drop-bg: #c628280f;
+  --cd-null: #6b7a8c;
+  --cd-changed: #f2c94c;
+}
+[data-md-color-scheme="slate"] {
+  --cd-link: #46b1ef;
+  --cd-kept: #97e15233;
+  --cd-kept-edge: #97e152;
+  --cd-drop: #ff8a80;
+  --cd-drop-bg: #ff8a8014;
+  --cd-null: #9aa4b2;
+  --cd-changed: #f2c94c;
+}
+.md-typeset .cd-diagram {
+  container-type: inline-size;
+  margin: 0.6em 0 0.4em;
+}
+/* Small enough to fit a phone after a light squeeze, so let them shrink. */
+.md-typeset .cd-diagram .er-svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  font-family: var(--md-text-font-family), sans-serif;
+}
+.cd-colhead { fill: var(--er-muted); font-size: 11px; font-weight: 700; }
+.cd-cell { fill: var(--er-fg); font-family: var(--md-code-font-family), monospace; font-size: 12.5px; }
+.cd-cell.cd-key { font-weight: 700; fill: var(--er-label); }
+.cd-null { fill: none; stroke: var(--cd-null); stroke-dasharray: 3 2; }
+.cd-null.cd-changed { fill: color-mix(in srgb, var(--cd-changed) 35%, transparent); stroke: var(--cd-changed); stroke-dasharray: none; }
+.cd-null-text { fill: var(--cd-null); font-style: italic; }
+.cd-row-kept { fill: var(--cd-kept); }
+.cd-row-dropped, .cd-row-deleted { fill: var(--cd-drop-bg); }
+.cd-faded { opacity: 0.45; }
+.cd-strike { stroke: var(--cd-drop); stroke-width: 1.5; }
+.cd-link { fill: none; stroke: var(--cd-link); stroke-width: 1.75; }
+.cd-dot { fill: var(--cd-link); }
+.cd-arrow { fill: none; stroke: var(--er-line); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.cd-label { fill: var(--er-muted); font-size: 12px; font-weight: 700; }
+.cd-step { fill: var(--er-fg); font-size: 13px; font-weight: 700; }
+.cd-step.cd-error { fill: var(--cd-drop); }
+.cd-sql { fill: var(--er-label); font-family: var(--md-code-font-family), monospace; font-size: 12px; }
+.md-typeset .cd-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em 1.2em;
+  margin-top: 0.2em;
+  color: var(--md-default-fg-color--light);
+  font-size: 0.7rem;
+}
+.md-typeset .cd-legend span::before {
+  content: "";
+  display: inline-block;
+  width: 1.1em;
+  height: 0.8em;
+  margin-right: 0.4em;
+  vertical-align: -0.05em;
+  border-radius: 2px;
+}
+.md-typeset .cd-legend .cd-key-match::before { height: 0; border-top: 2px solid var(--cd-link); vertical-align: 0.25em; }
+.md-typeset .cd-legend .cd-key-kept::before { background: var(--cd-kept); outline: 1px solid var(--cd-kept-edge); }
+.md-typeset .cd-legend .cd-key-dropped::before { background: linear-gradient(var(--cd-drop), var(--cd-drop)) center / 100% 1.5px no-repeat, var(--cd-drop-bg); }
+.md-typeset .cd-legend .cd-key-changed::before { background: color-mix(in srgb, var(--cd-changed) 35%, transparent); outline: 1px solid var(--cd-changed); }
+.md-typeset .cd-legend .cd-made-up { font-style: italic; }
+.md-typeset .cd-legend .cd-made-up::before { display: none; }

@@ -1240,6 +1240,26 @@ The data has these unusual rows on purpose:
 > [!TIP]
 > The wording in this section copies the assessment on purpose. Pay attention to phrases like **"if available"** and **"regardless of whether"**. They tell you which table is optional, so they decide which kind of join you need. When a question has neither phrase, the assessment expects an **inner join**, even if it says "for all books."
 
+Here is what each kind of join keeps, drawn with two small made-up tables (they aren't in `setup.sql`). Each driver's BusID points at a bus. Dana has no bus, and nobody drives the Green line:
+
+<!-- join-diagram
+table: Driver(DriverID, Name, BusID) = 1, Ana, 10; 2, Ben, 10; 3, Cruz, 20; 4, Dana, NULL
+table: Bus(BusID, Route) = 10, Red line; 20, Blue line; 30, Green line
+from: Driver d | DriverID, Name, BusID
+join: Bus b | BusID, Route
+on: d.BusID = b.BusID
+select: d.Name, b.Route
+INNER: "Show each driver's Name and Route." Neither phrase, so an **inner join**: only rows that have a match in both tables. Dana and the Green line are left out.
+LEFT: "Show each driver's Name and Route **(if available)**." The route is optional, so every driver stays: `Driver LEFT JOIN Bus`. Dana's Route is NULL.
+RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it." Every bus stays: `Driver RIGHT JOIN Bus`. The Green line's Name is NULL.
+-->
+| Join | Rows it keeps |
+|---|---|
+| `Driver INNER JOIN Bus` | only drivers and buses that match |
+| `Driver LEFT JOIN Bus` | every driver; Dana (no bus) gets NULL for Route |
+| `Driver RIGHT JOIN Bus` | every bus; the Green line (no driver) gets NULL for Name |
+<!-- /join-diagram -->
+
 > [!IMPORTANT]
 > Exercises 12.1 to 12.19 only read data (12.16 creates a view). Exercises 12.20 to 12.22 change data, so do them last, and run each one only once. To start over, run `setup.sql` again.
 
