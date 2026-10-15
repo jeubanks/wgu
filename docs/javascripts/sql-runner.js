@@ -483,10 +483,9 @@
           var verdict = check(engine, label, out.results);
           nodes.push(message(verdict.ok ? "ok" : "bad", (verdict.ok ? "✓ " : "✗ ") + verdict.text));
           if (!verdict.ok && verdict.diff) nodes = nodes.concat(renderDiff(verdict.diff));
-          if (verdict.ok) {
-            // progress.js ticks this exercise's Done box.
-            document.dispatchEvent(new CustomEvent("d427:solved", { detail: { label: label } }));
-          }
+          // progress.js ticks this exercise's Done box on a pass, and puts it on the
+          // review list on a fail (until a later pass).
+          document.dispatchEvent(new CustomEvent(verdict.ok ? "d427:solved" : "d427:missed", { detail: { label: label } }));
         }
         out.results.forEach(function (r, i) { nodes.push(renderTable(r, i, out.results.length)); });
         if (out.error) {

@@ -6,18 +6,18 @@ D427 is the model course. Once its patterns are settled, other courses reuse the
 
 ## Up next
 
-- [ ] **Search by exercise number**: typing "7.3" in the site search finds that exercise (its anchor) first.
-- [ ] **Review list**: the Overview lists exercises whose Check failed or quiz parts you missed, to come back to.
+- [ ] **Self-host sql.js**: serve its two files from the site, so the SQL runner still works if cdnjs is down.
+- [ ] **Drill: whole-table specs**: a multi-column spec (types and constraints) to write as one CREATE TABLE, checked column by column.
 
 ## Backlog
 
 ### Studying
 
-- [ ] **Drill: whole-table specs**: a multi-column spec (types and constraints) to write as one CREATE TABLE, checked column by column.
+- [ ] **Review list on each page**: show the To review exercises on their own page too (a marker next to the label), not only on the Overview.
 
 ### Keep it working
 
-- [ ] **Self-host sql.js**: serve its two files from the site, so the SQL runner still works if cdnjs is down.
+- [ ] **Quiet MkDocs' anchor notices**: MkDocs reports the `#ex-` links in errors.md as missing anchors (INFO), because it checks Markdown headings and the anchors are added to the HTML later. Our link check covers them; teach MkDocs about them or filter the notices.
 
 ### Waiting on a decision
 
@@ -29,6 +29,8 @@ D427 is the model course. Once its patterns are settled, other courses reuse the
 
 ## Done
 
+- Search finds exercises by number (one search entry per exercise); a To review list on the Overview of missed exercises (#PR)
+- Dependabot's first updates merged: GitHub Actions to new majors, Playwright 1.63, newer MkDocs/Material minimums (#23, #24)
 - Drill: a constraint-wording mode (multiple choice, its own score); Check pairs each of your results with a different expected one on multi-query exercises (#25)
 - sql.js pinned by hash (SRI on the script, a SHA-256 check on the .wasm, both verified in CI), and Dependabot for Actions and Python packages (#22)
 - CI runs every cheat-sheet statement on MySQL 8.4, and an axe-core accessibility scan of every page in light and dark mode (#21)

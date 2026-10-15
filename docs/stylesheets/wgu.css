@@ -995,3 +995,13 @@
 .md-typeset .drill-choice--answer { border-color: var(--sql-ok); box-shadow: inset 0.25em 0 0 var(--sql-ok); }
 .md-typeset .drill-choice--wrong { border-color: var(--sql-bad); box-shadow: inset 0.25em 0 0 var(--sql-bad); }
 .md-typeset .drill-card [hidden] { display: none !important; }
+
+/* To review list on the overview's progress panel (javascripts/progress.js). */
+.md-typeset .ex-review {
+  margin-top: 0.7rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--md-default-fg-color--lightest);
+}
+.md-typeset .ex-review__title { margin: 0 0 0.2rem; font-size: 0.75rem; font-weight: 700; }
+.md-typeset .ex-review__title a { font-weight: 400; }
+.md-typeset .ex-review__note { margin: 0 0 0.2rem; font-size: 0.65rem; color: var(--md-default-fg-color--light); }
