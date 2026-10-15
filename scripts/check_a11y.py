@@ -9,7 +9,7 @@ reports colors that never really show. Fails if any page has a violation.
 
 axe-core comes from cdnjs at a pinned version, checked against its SHA-256.
 
-    pip install playwright==1.49.1 && python3 -m playwright install --with-deps chromium
+    pip install -r requirements-ci.txt && python3 -m playwright install --with-deps chromium
     python3 scripts/check_a11y.py site            # add --channel chrome to use an installed Chrome
 """
 import argparse

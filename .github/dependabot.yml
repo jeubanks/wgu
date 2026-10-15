@@ -1,0 +1,18 @@
+# Weekly update PRs for the pinned GitHub Actions and Python packages.
+# Each one runs the required checks; review and merge it like any other PR.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      python:
+        patterns: ["*"]
