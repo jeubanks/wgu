@@ -1,0 +1,83 @@
+name: Checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  site:
+    name: Site builds, links resolve
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-docs.txt
+      - run: pip install -r requirements-docs.txt
+      - run: mkdocs build --strict
+      - run: python3 scripts/check_links.py site
+
+  solutions:
+    name: setup.sql + solutions.sql run on MySQL 8.4
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          # Throwaway password for the CI-only container.
+          MYSQL_ROOT_PASSWORD: ci-root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -pci-root"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=30
+    env:
+      MYSQL_PWD: ci-root
+    defaults:
+      run:
+        working-directory: D427_Data_Management_Applications
+    steps:
+      - uses: actions/checkout@v5
+      - name: Wait for MySQL
+        run: |
+          for i in $(seq 60); do
+            mysql -h 127.0.0.1 -uroot -e "SELECT VERSION()" && exit 0
+            sleep 2
+          done
+          echo "MySQL did not come up" >&2
+          exit 1
+      # No --force: the first error stops the client and fails the step.
+      - run: mysql -h 127.0.0.1 -uroot < setup.sql
+      - run: mysql -h 127.0.0.1 -uroot < solutions.sql > /dev/null
+
+  solutions-fresh:
+    name: Exercise files match solutions.sql
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python3 D427_Data_Management_Applications/build_solutions.py
+      - name: Fail if build_solutions.py changed anything
+        run: |
+          if ! git diff --exit-code; then
+            echo "::error::Exercise .md files are out of date. Run python3 D427_Data_Management_Applications/build_solutions.py and commit the result."
+            exit 1
+          fi
