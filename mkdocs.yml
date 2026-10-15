@@ -31,6 +31,7 @@ extra_javascript:
 
 hooks:
   - hooks/er_diagrams.py
+  - hooks/concept_diagrams.py
   - hooks/details.py
   - hooks/sql_runner.py
   - hooks/quiz.py

@@ -1240,6 +1240,24 @@ The data has these unusual rows on purpose:
 > [!TIP]
 > The wording in this section copies the assessment on purpose. Pay attention to phrases like **"if available"** and **"regardless of whether"**. They tell you which table is optional, so they decide which kind of join you need. When a question has neither phrase, the assessment expects an **inner join**, even if it says "for all books."
 
+Here is what each join keeps, drawn with a few real rows from `setup.sql`. Hedy Lamarr has no department, and Legal has no employees:
+
+<!-- join-diagram
+from: Employee e | EmpID, FirstName, DeptID | EmpID IN (7, 8, 10, 15)
+join: Department d | DeptID, DeptName | DeptID IN (20, 30, 60)
+on: e.DeptID = d.DeptID
+select: e.FirstName, d.DeptName
+INNER: "Show each employee's FirstName and DeptName." Neither phrase, so an **inner join**: only rows that have a match in both tables. Hedy and Legal are left out.
+LEFT: "Show each employee's FirstName and DeptName **(if available)**." The department is optional, so every employee stays: `Employee LEFT JOIN Department`. Hedy's DeptName is NULL.
+RIGHT: "Show every DeptName, **regardless of whether** it has employees." Every department stays: `Employee RIGHT JOIN Department`. Legal's FirstName is NULL.
+-->
+| Join | Rows it keeps |
+|---|---|
+| `Employee INNER JOIN Department` | only employees and departments that match |
+| `Employee LEFT JOIN Department` | every employee; Hedy Lamarr (no department) gets NULL for DeptName |
+| `Employee RIGHT JOIN Department` | every department; Legal (no employees) gets NULL for FirstName |
+<!-- /join-diagram -->
+
 > [!IMPORTANT]
 > Exercises 12.1 to 12.19 only read data (12.16 creates a view). Exercises 12.20 to 12.22 change data, so do them last, and run each one only once. To start over, run `setup.sql` again.
 

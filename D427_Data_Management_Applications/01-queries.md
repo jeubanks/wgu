@@ -971,6 +971,24 @@ These sections only read data, so you can redo any exercise at any time. Every e
 
 ## 5. Joins
 
+A join puts rows from two tables side by side, wherever the ON condition matches. The kind of join decides what happens to a row that has **no** match. Here it is with a few real rows from `setup.sql`: visa 107 isn't assigned to a passport, and Sara Lindqvist's passport has no visas. (These tables come back in Section 12.)
+
+<!-- join-diagram
+from: Visa v | VisaID, PassportID | VisaID IN (101, 102, 106, 107)
+join: Passport p | PassportID, PassportHolderName | PassportID IN (1, 4, 5)
+on: v.PassportID = p.PassportID
+select: v.VisaID, p.PassportHolderName
+INNER: `Visa INNER JOIN Passport` keeps only rows that have a match in both tables. A question with no "if available" or "regardless of whether" wording wants this one.
+LEFT: "Show every visa and the passport holder's name **(if available)**." The passport is optional, so every row of the left table stays: `Visa LEFT JOIN Passport`. Visa 107 gets NULL for the name.
+RIGHT: "Show every passport holder, **regardless of whether** they have a visa." Every row of the right table stays: `Visa RIGHT JOIN Passport`. Sara gets NULL for VisaID.
+-->
+| Join | Rows it keeps |
+|---|---|
+| `Visa INNER JOIN Passport` | only visas and passports that match |
+| `Visa LEFT JOIN Passport` | every visa; visa 107 (no passport) gets NULL for PassportHolderName |
+| `Visa RIGHT JOIN Passport` | every passport; Sara Lindqvist (no visas) gets NULL for VisaID |
+<!-- /join-diagram -->
+
 ### Employee and Department
 
 - **5.1** Show each employee's FirstName and LastName next to the DeptName of their department. Use an inner join. One employee is missing from the result. Who is it, and why are they missing? *(14 rows)*
@@ -1050,6 +1068,18 @@ These sections only read data, so you can redo any exercise at any time. Every e
   - `Manager`: the manager's FirstName and LastName joined the same way
 
   Include employees who do not have a manager. Their Manager shows NULL. Sort by the employee's EmpID. *(15 rows)*
+
+  <!-- join-diagram
+  from: Employee e | EmpID, FirstName, ManagerID | EmpID IN (7, 8, 10, 11)
+  join: Employee m | EmpID, FirstName | EmpID IN (7, 8, 10, 11)
+  on: e.ManagerID = m.EmpID
+  select: e.FirstName, m.FirstName
+  fold: Picture it: the Employee table joined to itself
+  INNER: The same four rows play two parts: `e` is the employee and `m` is the manager. Each employee's ManagerID points at the manager's EmpID.
+  LEFT: The `e` side is kept whole, so an employee with no manager stays, with NULL for the manager's name.
+  -->
+  *(On the site, a picture of the Employee table joined to itself goes here: each employee's ManagerID points at another employee's EmpID.)*
+  <!-- /join-diagram -->
 
   <!-- solution:5.4 -->
   <details>

@@ -193,6 +193,22 @@ These sections change the data and the tables. Do them in order: later exercises
   </details>
   <!-- /solution -->
 
+**What ON DELETE does.** When a parent row is deleted, the foreign key's ON DELETE rule decides what happens to its child rows. Exercises 7.7 and 7.8 let you find out which rule two of the `setup.sql` foreign keys use. Here are the three rules side by side, as if `LessonSchedule.StudentID` used each one, with the student Rosie Hewitt (ID 1) and her lessons:
+
+<!-- delete-diagram
+parent: Student | ID, FirstName | ID IN (1, 3)
+child: LessonSchedule | StudentID, LessonDateTime | StudentID = 1 OR LessonDateTime = '2026-02-02 13:00:00'
+fk: StudentID -> ID
+delete: ID = 1
+CASCADE: The delete is passed on: Rosie's lessons are deleted with her.
+SET NULL: Rosie's lessons stay, but their StudentID becomes NULL. (The column must allow NULL.)
+RESTRICT: The delete is refused while any lesson points at Rosie. A foreign key with no ON DELETE clause works the same way (MySQL's default, NO ACTION).
+-->
+- `ON DELETE CASCADE`: deleting the parent deletes its child rows too.
+- `ON DELETE SET NULL`: the child rows stay, and their foreign key becomes NULL.
+- `ON DELETE RESTRICT` (or no ON DELETE clause): the DELETE fails with ERROR 1451 while child rows point at the parent.
+<!-- /delete-diagram -->
+
 - **7.7**\
   **Uses:** Horse, LessonSchedule *(already in the database, from `setup.sql`)*
 
