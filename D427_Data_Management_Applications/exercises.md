@@ -54,6 +54,15 @@ SOURCE /work/setup.sql;
 
 In Sections 1 to 9 and 12, the exercises are grouped by the table they use, under small headings like **Movie** or **Employee and Department**, so you can stay with one table for a while before moving to the next.
 
+In Sections 7 to 11 and 14, each exercise starts with a **Tables:** line, like this:
+
+> **Tables:** existing **Movie** (from `setup.sql`) · new **Director**
+
+- **existing** means the table is already there. It comes from `setup.sql` or from the earlier exercise named in parentheses. Don't create it again.
+- **new** means you create it in this exercise.
+
+Sections 1 to 6 and 12 only use the existing tables from `setup.sql`, so they don't need this line.
+
 The note in parentheses at the end of an exercise tells you how many rows your query should return. For example, *(12 rows)* means your result should have 12 rows. If you get a different number, look at your query again before you check the solution.
 
 Some exercises change data instead of returning rows. For those, the note in parentheses tells you what to check afterward.

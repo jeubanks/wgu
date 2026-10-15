@@ -10,7 +10,9 @@ These sections change the data and the tables. Do them in order: later exercises
 
 ### Movie and Rating
 
-- **7.1** Add this movie to the **Movie** table:
+- **7.1** **Tables:** existing **Movie** (from `setup.sql`)
+
+  Add this movie to the **Movie** table:
 
   | ID | Title | Genre | RatingCode | ReleaseYear | Minutes | Gross |
   |---|---|---|---|---|---|---|
@@ -38,7 +40,9 @@ These sections change the data and the tables. Do them in order: later exercises
   </details>
   <!-- /solution -->
 
-- **7.2** For any movie whose Genre is NULL, set the Genre to 'Indie' and the ReleaseYear to 2026. *(check: 1 row changed)*
+- **7.2** **Tables:** existing **Movie** (from `setup.sql`)
+
+  For any movie whose Genre is NULL, set the Genre to 'Indie' and the ReleaseYear to 2026. *(check: 1 row changed)*
 
   <!-- solution:7.2 -->
   <details>
@@ -61,7 +65,9 @@ These sections change the data and the tables. Do them in order: later exercises
   </details>
   <!-- /solution -->
 
-- **7.3** Both of these statements will fail. Run each one and read the error message:
+- **7.3** **Tables:** existing **Rating**, **Movie** (from `setup.sql`)
+
+  Both of these statements will fail. Run each one and read the error message:
   - Try to delete the 'PG' rating from the Rating table.
   - Try to add a movie with the Title 'Bad' and the RatingCode 'XX' (a rating that does not exist). Leave out every other column.
 
@@ -94,7 +100,9 @@ These sections change the data and the tables. Do them in order: later exercises
 
 ### Student
 
-- **7.4** Add these two students to the **Student** table using a single INSERT statement:
+- **7.4** **Tables:** existing **Student** (from `setup.sql`)
+
+  Add these two students to the **Student** table using a single INSERT statement:
 
   | FirstName | LastName | City | Email |
   |---|---|---|---|
@@ -127,7 +135,9 @@ These sections change the data and the tables. Do them in order: later exercises
 
 ### Employee and Department
 
-- **7.5** Give everyone in the Support department a 5% raise. In your WHERE clause, find the department by its **name** ("Support"). Do not type the DeptID number 30 directly. *(check: 3 rows changed)*
+- **7.5** **Tables:** existing **Employee**, **Department** (from `setup.sql`)
+
+  Give everyone in the Support department a 5% raise. In your WHERE clause, find the department by its **name** ("Support"). Do not type the DeptID number 30 directly. *(check: 3 rows changed)*
 
   <!-- solution:7.5 -->
   <details>
@@ -153,7 +163,9 @@ These sections change the data and the tables. Do them in order: later exercises
 
 ### Horse, Student, and LessonSchedule
 
-- **7.6** Delete all lessons that are scheduled before 2026-02-02. *(check: 10 lessons should be left)*
+- **7.6** **Tables:** existing **LessonSchedule** (from `setup.sql`)
+
+  Delete all lessons that are scheduled before 2026-02-02. *(check: 10 lessons should be left)*
 
   <!-- solution:7.6 -->
   <details>
@@ -175,7 +187,9 @@ These sections change the data and the tables. Do them in order: later exercises
   </details>
   <!-- /solution -->
 
-- **7.7** This exercise shows what a foreign key does when you delete a row:
+- **7.7** **Tables:** existing **Horse**, **LessonSchedule** (from `setup.sql`)
+
+  This exercise shows what a foreign key does when you delete a row:
   - Count how many lessons the horse Midnight (ID 9) has.
   - Delete the horse Midnight.
   - Count Midnight's lessons again.
@@ -202,7 +216,9 @@ These sections change the data and the tables. Do them in order: later exercises
   </details>
   <!-- /solution -->
 
-- **7.8** Delete the student Jamal Carter (ID 2). Then look at the LessonSchedule table. What happened to his lesson? Which foreign key action caused this? *(check: 2 lessons should now have a NULL StudentID)*
+- **7.8** **Tables:** existing **Student**, **LessonSchedule** (from `setup.sql`)
+
+  Delete the student Jamal Carter (ID 2). Then look at the LessonSchedule table. What happened to his lesson? Which foreign key action caused this? *(check: 2 lessons should now have a NULL StudentID)*
 
   <!-- solution:7.8 -->
   <details>
@@ -237,7 +253,9 @@ CREATE TABLE Guest (
 );
 ```
 
-- **7.9** Two ways to write an INSERT. Add these two guests to the **Guest** table:
+- **7.9** **Tables:** existing **Guest** (you created it with the statement above)
+
+  Two ways to write an INSERT. Add these two guests to the **Guest** table:
 
   | GuestID | FullName | City | Visits |
   |---|---|---|---|
@@ -285,7 +303,9 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **7.10** Choosing your own AUTO_INCREMENT value. Add these two guests, one at a time:
+- **7.10** **Tables:** existing **Guest** (from the top of this group)
+
+  Choosing your own AUTO_INCREMENT value. Add these two guests, one at a time:
 
   | GuestID | FullName | City | Visits |
   |---|---|---|---|
@@ -317,7 +337,9 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **7.11** Check before you delete. You want to remove every guest who has never visited (Visits is 0).
+- **7.11** **Tables:** existing **Guest** (from the top of this group)
+
+  Check before you delete. You want to remove every guest who has never visited (Visits is 0).
   - First write a **SELECT** with the WHERE clause you plan to use, and look at which rows it returns.
   - When the rows look right, change `SELECT *` to `DELETE` and keep the same WHERE.
 
@@ -344,7 +366,9 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **7.12** UPDATE with no WHERE. Run `UPDATE Guest SET Visits = Visits + 1;` with **no** WHERE clause. How many rows did MySQL say it changed? Look at the table.
+- **7.12** **Tables:** existing **Guest** (from the top of this group)
+
+  UPDATE with no WHERE. Run `UPDATE Guest SET Visits = Visits + 1;` with **no** WHERE clause. How many rows did MySQL say it changed? Look at the table.
 
   There's no undo for this: every guest's Visits went up. Why do people say to always write the WHERE (or the SELECT from 7.11) first? *(check: 2 rows changed; Ana Ruiz now has 4 visits and Cara Lin 6)*
 
@@ -370,7 +394,9 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **7.13** DELETE versus TRUNCATE. Both remove every row from a table, but they aren't the same:
+- **7.13** **Tables:** existing **Guest** (from the top of this group)
+
+  DELETE versus TRUNCATE. Both remove every row from a table, but they aren't the same:
   - Run `DELETE FROM Guest;` with **no** WHERE, and count the rows.
   - Add this guest, then look at the table. What GuestID did he get?
 
@@ -421,7 +447,9 @@ CREATE TABLE Guest (
 
 ### Song and Playlist
 
-- **8.1** Create a table named **Song** with these columns:
+- **8.1** **Tables:** new **Song**
+
+  Create a table named **Song** with these columns:
   - `ID`: a whole number that MySQL fills in automatically (auto-increment). It is the primary key.
   - `Title`: text up to 60 characters. It is required (cannot be NULL).
   - `Artist`: text up to 60 characters. It is required (cannot be NULL).
@@ -472,7 +500,9 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **8.2** Add a new column named `Album` to the Song table. It should hold text up to 60 characters, and it should appear right after the `Artist` column.
+- **8.2** **Tables:** existing **Song** (from 8.1)
+
+  Add a new column named `Album` to the Song table. It should hold text up to 60 characters, and it should appear right after the `Artist` column.
 
   <!-- solution:8.2 -->
   <details>
@@ -492,7 +522,9 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **8.3** Change the `Genre` column so it can hold up to 30 characters instead of 20. **Make sure it still uses 'Pop' as the default.** Afterward, run `DESCRIBE Song` and check that Genre shows `varchar(30)` with the default `Pop`. It is easy to lose the default by mistake.
+- **8.3** **Tables:** existing **Song** (from 8.1)
+
+  Change the `Genre` column so it can hold up to 30 characters instead of 20. **Make sure it still uses 'Pop' as the default.** Afterward, run `DESCRIBE Song` and check that Genre shows `varchar(30)` with the default `Pop`. It is easy to lose the default by mistake.
 
   <!-- solution:8.3 -->
   <details>
@@ -513,7 +545,9 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **8.4** Rename the `DurationSec` column to `Seconds`.
+- **8.4** **Tables:** existing **Song** (from 8.1)
+
+  Rename the `DurationSec` column to `Seconds`.
   - Try a plain rename first. It fails because of the CHECK you added in 8.1. Read the error. It gives the check's name, `Song_chk_1`.
   - Then do the rename so the rule still holds: `Seconds` must be greater than 0. Give the check the same name, `Song_chk_1`.
   - Run `SHOW CREATE TABLE Song` and check that the CHECK now uses `Seconds`.
@@ -545,7 +579,9 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **8.5** Remove the `Album` column. Then run `DESCRIBE Song` to see the table's columns. *(6 columns)*
+- **8.5** **Tables:** existing **Song** (from 8.1)
+
+  Remove the `Album` column. Then run `DESCRIBE Song` to see the table's columns. *(6 columns)*
 
   <!-- solution:8.5 -->
   <details>
@@ -566,7 +602,9 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **8.6** A playlist holds many songs, and a song can be on many playlists. You'll build this with two new tables: **Playlist**, and a linking table **PlaylistSong** that connects playlists to the songs from 8.1.
+- **8.6** **Tables:** existing **Song** (from 8.1) · new **Playlist**, **PlaylistSong**
+
+  A playlist holds many songs, and a song can be on many playlists. You'll build this with two new tables: **Playlist**, and a linking table **PlaylistSong** that connects playlists to the songs from 8.1.
 
   **a)** Create the **Playlist** table:
   - `ID`: a whole number that MySQL fills in automatically (auto-increment). It is the primary key.
@@ -641,7 +679,9 @@ CREATE TABLE Guest (
 
 ### Movie and Director
 
-- **8.7** Each movie can have a director. You'll add a **Director** table and link the Movie table to it.
+- **8.7** **Tables:** existing **Movie** (from `setup.sql`) · new **Director**
+
+  Each movie can have a director. You'll create a new **Director** table and link the existing **Movie** table (the one `setup.sql` built) to it. You don't create Movie here.
 
   **a)** Create the **Director** table:
   - `ID`: a whole number that MySQL fills in automatically (auto-increment). It is the primary key.
@@ -695,7 +735,9 @@ CREATE TABLE Guest (
 
 ### EmployeeArchive
 
-- **8.8** *(Optional: goes beyond what the D427 practice tests ask.)* Create a table named **EmployeeArchive**:
+- **8.8** **Tables:** existing **Employee** (from `setup.sql`) · new **EmployeeArchive**
+
+  *(Optional: goes beyond what the D427 practice tests ask.)* Create a table named **EmployeeArchive**:
   - `EmpID`: a whole number. It is the primary key. (Not auto-increment: you'll copy each employee's existing EmpID.)
   - `FullName`: text up to 70 characters. It is required.
   - `Salary`: a decimal number, DECIMAL(10,2), like the Employee table's Salary.
@@ -737,7 +779,9 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **8.9** This exercise uses the EmployeeArchive table from 8.8. If you skipped 8.8, do its CREATE TABLE step first.
+- **8.9** **Tables:** existing **EmployeeArchive** (from 8.8); **Song** (from 8.1)
+
+  This exercise uses the EmployeeArchive table from 8.8. If you skipped 8.8, do its CREATE TABLE step first.
   - Rename the EmployeeArchive table to FormerEmployee. Run `SHOW TABLES` to check the new name.
   - Delete (drop) the FormerEmployee table.
   - Write a DROP statement that does not cause an error when the table is already gone. Run it to check.
@@ -772,7 +816,9 @@ CREATE TABLE Guest (
 
 ### LessonSchedule
 
-- **9.1** Create a view named **LessonDetail** with these four columns, in this order:
+- **9.1** **Tables:** existing **LessonSchedule**, **Horse**, **Student** (from `setup.sql`) · new view **LessonDetail**
+
+  Create a view named **LessonDetail** with these four columns, in this order:
   - `LessonDateTime` from LessonSchedule
   - `Horse`: the horse's RegisteredName
   - `FirstName` and `LastName`: the student's first and last name
@@ -804,7 +850,9 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **9.2** Use `ALTER VIEW` to change the LessonDetail view so it also shows each horse's **Breed**, right after the Horse column. Then do these steps:
+- **9.2** **Tables:** existing view **LessonDetail** (from 9.1); **LessonSchedule** (from `setup.sql`)
+
+  Use `ALTER VIEW` to change the LessonDetail view so it also shows each horse's **Breed**, right after the Horse column. Then do these steps:
   - Count the rows in LessonDetail.
   - Add this lesson to the **LessonSchedule table** (not to the view):
 
@@ -857,7 +905,9 @@ CREATE TABLE Guest (
 
 ### Employee and Department
 
-- **9.3** Create a view named **DeptSummary** with one row per department and these four columns:
+- **9.3** **Tables:** existing **Department**, **Employee** (from `setup.sql`) · new view **DeptSummary**
+
+  Create a view named **DeptSummary** with one row per department and these four columns:
   - `DeptID` and `DeptName` from Department
   - `Headcount`: the number of employees in the department
   - `AvgSalary`: the department's average salary, rounded to 2 decimal places
@@ -890,7 +940,9 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **9.4** Management wants DeptSummary to show only departments that **have** employees. Change the view with `CREATE OR REPLACE VIEW` this time, and keep the same four columns. Then select everything from it, sorted by DeptID. Legal should be gone. *(5 rows)*
+- **9.4** **Tables:** existing view **DeptSummary** (from 9.3)
+
+  Management wants DeptSummary to show only departments that **have** employees. Change the view with `CREATE OR REPLACE VIEW` this time, and keep the same four columns. Then select everything from it, sorted by DeptID. Legal should be gone. *(5 rows)*
 
   Then answer this: what's the difference between `CREATE OR REPLACE VIEW` and `ALTER VIEW`? When would you choose one over the other?
 
@@ -925,7 +977,9 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **9.5** Work with an index on the Employee table:
+- **9.5** **Tables:** existing **Employee** (from `setup.sql`) · new index **idx_employee_lastname**
+
+  Work with an index on the Employee table:
   - Create an index named `idx_employee_lastname` on the LastName column.
   - Use `SHOW INDEX FROM Employee` to see it.
   - Use `EXPLAIN` on a search by last name, such as `WHERE LastName = 'Knuth'`. Check that MySQL uses your index.
@@ -953,7 +1007,9 @@ CREATE TABLE Guest (
 
 ### Movie
 
-- **9.6** *(Optional: goes beyond what the D427 practice tests ask.)* Create one index named `idx_movie_genre_year` that covers two columns of the Movie table: Genre first, then ReleaseYear (a composite index).
+- **9.6** **Tables:** existing **Movie** (from `setup.sql`) · new index **idx_movie_genre_year**
+
+  *(Optional: goes beyond what the D427 practice tests ask.)* Create one index named `idx_movie_genre_year` that covers two columns of the Movie table: Genre first, then ReleaseYear (a composite index).
   - Use `EXPLAIN` on a query that filters on both columns, such as the Titles of Sci-Fi movies released in 2015 or later.
   - Would a query that filters **only** on ReleaseYear be able to use this index well? Why or why not?
 
@@ -980,7 +1036,9 @@ CREATE TABLE Guest (
 
 ### Cleaning up
 
-- **9.7** Delete (drop) the `idx_movie_genre_year` index you made in 9.6. Run `SHOW INDEX FROM Movie` to check that it's gone.
+- **9.7** **Tables:** existing **Movie** (from `setup.sql`) and its index **idx_movie_genre_year** (from 9.6)
+
+  Delete (drop) the `idx_movie_genre_year` index you made in 9.6. Run `SHOW INDEX FROM Movie` to check that it's gone.
 
   <!-- solution:9.7 -->
   <details>
@@ -1005,7 +1063,9 @@ CREATE TABLE Guest (
 
 ## 10. From design to tables
 
-- **10.1** Create tables for this design:
+- **10.1** **Tables:** new **Customer**, **Product**, an orders table, an order-lines table
+
+  Create tables for this design:
   - A **Customer** has a name and an email. The email is required, and no two customers can have the same email.
   - A customer can place many **Orders**. Each order has an order date.
   - An order can contain many **Products**, and a product can appear on many orders. Each product has a name and a unit price. The unit price must be 0 or more.
@@ -1104,7 +1164,9 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **10.2** Here is a table that is not normalized:
+- **10.2** **Tables:** new **NF_Student**, **NF_Instructor**, **NF_Course**, **NF_Enrollment**
+
+  Here is a table that is not normalized:
 
   `Enrollment(StudentID, StudentName, CourseID, CourseTitle, InstructorID, InstructorName, InstructorOffice, Grade)`
 

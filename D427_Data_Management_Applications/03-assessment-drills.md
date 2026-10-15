@@ -23,7 +23,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 > [!TIP]
 > Most exercises here also include a statement that **should fail**. Run it, read the error, and make sure you understand which rule stopped it.
 
-- **11.1** Create the **Horse** table:
+- **11.1** **Tables (in `d427_drills`):** new **Horse**. Compare it with the `d427` database's Horse table at the end.
+
+  Create the **Horse** table:
   - ID — integer with range 0 to 65 thousand, auto increment, primary key
   - RegisteredName — variable-length string with max 15 chars, not NULL
   - Breed — variable-length string with max 20 chars, must be one of the following: Egyptian Arab, Holsteiner, Quarter Horse, Paint, Saddlebred
@@ -79,7 +81,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.2** Create the **Student** table:
+- **11.2** **Tables (in `d427_drills`):** new **Student**
+
+  Create the **Student** table:
   - ID — integer with range 0 to 65 thousand, auto increment, primary key
   - FirstName — variable-length string with max 20 chars, not NULL
   - LastName — variable-length string with max 30 chars, not NULL
@@ -131,7 +135,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.3** Create the **LessonSchedule** table:
+- **11.3** **Tables (in `d427_drills`):** existing **Horse** (from 11.1); **Student** (from 11.2) · new **LessonSchedule**
+
+  Create the **LessonSchedule** table:
   - HorseID — integer with range 0 to 65 thousand, not NULL, foreign key references Horse(ID)
   - StudentID — integer with range 0 to 65 thousand, foreign key references Student(ID)
   - LessonDateTime — date/time, not NULL
@@ -170,7 +176,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.4** Test the two foreign key rules from 11.3:
+- **11.4** **Tables (in `d427_drills`):** existing **Horse** (from 11.1); **Student** (from 11.2); **LessonSchedule** (from 11.3)
+
+  Test the two foreign key rules from 11.3:
   - Add these two lessons for Babe (horse 1) and Rosie (student 1):
 
     | HorseID | StudentID | LessonDateTime |
@@ -207,7 +215,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.5** Create the **Customer** table. Do not add any constraints beyond what is stated.
+- **11.5** **Tables (in `d427_drills`):** new **Customer**
+
+  Create the **Customer** table. Do not add any constraints beyond what is stated.
   - CustomerID — positive integer
   - FirstName — variable-length string with up to 50 characters
   - MiddleInitial — fixed-length string with 1 character
@@ -250,7 +260,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.6** Create the **Country** table:
+- **11.6** **Tables (in `d427_drills`):** new **Country**
+
+  Create the **Country** table:
   - ID — primary key, auto increment, integer ranging from 0 to 255
   - CountryName — variable-length string with max 100 characters
   - Continent — variable-length string with max 50 characters; must be one of: 'Africa', 'Asia', 'Europe', 'North America', 'South America', 'Oceania', 'Antarctica'
@@ -311,7 +323,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.7** The **Genre** table has these columns:
+- **11.7** **Tables (in `d427_drills`):** new **Genre**, **Book**
+
+  The **Genre** table has these columns:
   - GenreCode — variable-length string with max 5 characters, primary key
   - GenreDescription — variable-length string with max 40 characters
 
@@ -370,7 +384,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.8** Create the **Pet** table with no primary key:
+- **11.8** **Tables (in `d427_drills`):** new **Pet**
+
+  Create the **Pet** table with no primary key:
   - PetID — integer
   - Name — variable-length string, max 30
   - Breed — variable-length string, max 30
@@ -424,7 +440,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.9** Create these two tables exactly as described. Notice that breedID is **not** a primary key in Breed.
+- **11.9** **Tables (in `d427_drills`):** new **Breed**, **Dog**
+
+  Create these two tables exactly as described. Notice that breedID is **not** a primary key in Breed.
   - **Breed**:
     - breedID — integer
     - breedDescription — variable-length string, max 40
@@ -476,7 +494,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.10** Create the **Department** table:
+- **11.10** **Tables (in `d427_drills`):** new **Department**
+
+  Create the **Department** table:
   - DeptID — integer, primary key
   - DeptName — variable-length string, max 50
   - ManagerID — integer
@@ -537,7 +557,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.11** Create the **Automobile** table:
+- **11.11** **Tables (in `d427_drills`):** new **Automobile**
+
+  Create the **Automobile** table:
   - ID — integer, primary key
   - Make — variable-length string, max 30
   - Model — variable-length string, max 30
@@ -598,7 +620,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.12** Create this table:
+- **11.12** **Tables (in `d427_drills`):** new **Movie**. This is a separate Movie table, not the one in `d427`.
+
+  Create this table:
 
   ```sql
   CREATE TABLE Movie (
@@ -644,7 +668,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.13** Create the **Patient** table:
+- **11.13** **Tables (in `d427_drills`):** new **Patient**, **Exam**
+
+  Create the **Patient** table:
   - patient_id — integer, primary key
   - first_name — variable-length string, max 20
   - last_name — variable-length string, max 30
@@ -710,7 +736,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.14** The clinic changes its rule: when a patient is deleted, their exams should stay, but with no patient (NULL). There is no statement that edits a foreign key in place.
+- **11.14** **Tables (in `d427_drills`):** existing **Patient**, **Exam** (from 11.13)
+
+  The clinic changes its rule: when a patient is deleted, their exams should stay, but with no patient (NULL). There is no statement that edits a foreign key in place.
   - Remove the foreign key `fk_exam_patient`.
   - Change the patient_id column so the new rule can work. What has to change about it?
   - Add the foreign key again with the same name, `fk_exam_patient`, and the new delete rule.
@@ -744,7 +772,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.15** Add two more students:
+- **11.15** **Tables (in `d427_drills`):** existing **Student** (from 11.2)
+
+  Add two more students:
 
   | ID | FirstName | LastName | Street | City | State | Zip | Phone | Email |
   |---|---|---|---|---|---|---|---|---|
@@ -794,7 +824,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.16** Working with a view:
+- **11.16** **Tables (in `d427_drills`):** existing **Student** (from 11.2) · new view **StudentContact**
+
+  Working with a view:
   - Create a view named **StudentContact** with the columns FirstName, LastName, and Phone from Student.
   - **Change** the view with ALTER VIEW so it also includes Email.
   - Select everything from the view, sorted by LastName. *(2 rows, 4 columns)*
@@ -828,7 +860,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.17** Changing a primary key:
+- **11.17** **Tables (in `d427_drills`):** existing **Horse** (from 11.1) · new **CourseSection**
+
+  Changing a primary key:
   - Create the **CourseSection** table:
     - CourseCode — fixed-length string of 6 chars, primary key
     - Section — integer from 0 to 255, not NULL
@@ -888,7 +922,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.18** Adding and removing a UNIQUE constraint:
+- **11.18** **Tables (in `d427_drills`):** existing **Country** (from 11.6)
+
+  Adding and removing a UNIQUE constraint:
   - Using ALTER TABLE, add a UNIQUE constraint named `uq_country_name` to the CountryName column of the Country table (from 11.6).
   - Try to add this country. It should fail:
 
@@ -927,7 +963,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.19** Removing a relationship: the shelter has stopped tracking breeds, so the Dog table no longer needs its foreign key to Breed (from 11.9).
+- **11.19** **Tables (in `d427_drills`):** existing **Dog**, **Breed** (from 11.9)
+
+  Removing a relationship: the shelter has stopped tracking breeds, so the Dog table no longer needs its foreign key to Breed (from 11.9).
   - Drop the foreign key `fk_dog_breed`. Then run `SHOW CREATE TABLE Dog;`. Something named fk_dog_breed is still there. What is it?
   - Add this dog. There is no breed 99. Why does this work now?
 
@@ -962,7 +1000,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.20** ON UPDATE CASCADE:
+- **11.20** **Tables (in `d427_drills`):** existing **Genre** (from 11.7) · new **Team**, **Player**
+
+  ON UPDATE CASCADE:
   - Create **Team**:
     - TeamCode — fixed-length string of 3 chars, primary key
     - TeamName — variable-length string, max 30, not NULL
@@ -1035,7 +1075,7 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 
 ## 12. Assessment-style queries
 
-These exercises use the Book, YearSales, Passport, Visa, Compensation, and student_grades tables in `d427`. If `SHOW TABLES;` doesn't list them, your copy of the database is older than these exercises, so run `setup.sql` again.
+These exercises use the existing Book, YearSales, Passport, Visa, Compensation, and student_grades tables that `setup.sql` created in `d427`. You don't create any tables in this section. If `SHOW TABLES;` doesn't list them, your copy of the database is older than these exercises, so run `setup.sql` again.
 
 ```
 YearSales(Year SMALLINT PK, TotalSales BIGINT UNSIGNED, Releases INT)
