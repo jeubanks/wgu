@@ -6,7 +6,7 @@ D427 is the model course. Once its patterns are settled, other courses reuse the
 
 ## Up next
 
-- [ ] **Drill: whole-table specs**: a multi-column spec (types and constraints) to write as one CREATE TABLE, checked column by column.
+Nothing queued. Pick from the backlog.
 
 ## Backlog
 
@@ -17,6 +17,10 @@ D427 is the model course. Once its patterns are settled, other courses reuse the
 ### Keep it working
 
 - [ ] **Quiet MkDocs' anchor notices**: MkDocs reports the `#ex-` links in errors.md as missing anchors (INFO), because it checks Markdown headings and the anchors are added to the HTML later. Our link check covers them; teach MkDocs about them or filter the notices.
+
+### Future additions
+
+- [ ] **Drill: whole-table specs**: a third drill mode. A made-up multi-column table spec (types and constraints) to write as one CREATE TABLE. The checker splits the statement into columns and table-level clauses and judges each one: types, NOT NULL / DEFAULT / AUTO_INCREMENT / keys, CHECKs in their common equivalent forms, and foreign keys with their ON DELETE / ON UPDATE rules. Anything it can't verify says so and shows a model answer. A big item: most of the work is a lenient parser, tested with a few hundred generated specs answered in varied styles.
 
 ### Waiting on a decision
 
