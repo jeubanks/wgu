@@ -2,7 +2,7 @@
 
 151 exercises that cover the D427 topics: writing queries, using built-in functions, grouping and totals, joins, subqueries, changing data, creating and changing tables, constraints, views, indexes, and turning a database design into tables.
 
-Parts 3 and 4 are built from the D427 practice tests and the D427 Challenge. Part 5 is a mock assessment that uses the same kind of tables as the lab questions on the real assessment (Horse, Student, and LessonSchedule).
+Parts 3 and 4 are built from the D427 practice tests and the D427 Challenge in your course resources. Part 5 is a final practice set that brings the earlier parts together on the riding-stable tables (Horse, Student, and LessonSchedule).
 
 ## Contents
 
@@ -18,17 +18,17 @@ Parts 3 and 4 are built from the D427 practice tests and the D427 Challenge. Par
   - [8. CREATE / ALTER / DROP](02-changing-data.md#8-create--alter--drop)
   - [9. Views and indexes](02-changing-data.md#9-views-and-indexes)
   - [10. From design to tables](02-changing-data.md#10-from-design-to-tables)
-- **[Part 3: Assessment drills](03-assessment-drills.md)**: can be done at any time
-  - [11. Writing tables from a specification](03-assessment-drills.md#11-writing-tables-from-a-specification)
-  - [12. Assessment-style queries](03-assessment-drills.md#12-assessment-style-queries)
+- **[Part 3: Practice-test drills](03-practice-test-drills.md)**: can be done at any time
+  - [11. Writing tables from a specification](03-practice-test-drills.md#11-writing-tables-from-a-specification)
+  - [12. Practice-test-style queries](03-practice-test-drills.md#12-practice-test-style-queries)
 - **[Part 4: Concepts check](04-concepts-check.md)**: multiple choice, true/false, and short-answer questions, answers included
   - [13. Concepts check](04-concepts-check.md#13-concepts-check)
-- **[Part 5: Mock assessment](05-mock-assessment.md)**: do this last
-  - [14. Mock assessment](05-mock-assessment.md#14-mock-assessment)
+- **[Part 5: Final practice](05-final-practice.md)**: do this last
+  - [14. Final practice](05-final-practice.md#14-final-practice)
 
 **Not part of D427:** [Beyond D427: transactions and more advanced SQL](later-advanced-sql.md), saved for a later SQL course.
 
-**Quick reference:** the [exam-day cheat sheet](cheatsheet.md) (types, constraints, ALTER TABLE, joins, and GROUP BY rules on one printable page) the [MySQL error decoder](errors.md) (what each error the exercises show means, and the usual fix), and the [spec-to-type drill](drill.md) (endless random column specs to turn into MySQL types).
+**Quick reference:** the [SQL quick reference](quick-reference.md) (types, constraints, ALTER TABLE, joins, and GROUP BY rules on one printable page), the [MySQL error decoder](errors.md) (what each error the exercises show means, and the usual fix), and the [spec-to-type drill](drill.md) (endless random column specs to turn into MySQL types).
 
 ## The files
 
@@ -36,7 +36,7 @@ Parts 3 and 4 are built from the D427 practice tests and the D427 Challenge. Par
 |---|---|
 | `setup.sql` | Creates a database named `d427` and fills it with sample data. You can run it again at any time to reset everything back to the start. |
 | `exercises.md` | This page. |
-| `01-queries.md` … `05-mock-assessment.md` | The exercises. Most of them tell you how many rows your answer should return, so you can check your own work. |
+| `01-queries.md` … `05-final-practice.md` | The exercises. Most of them tell you how many rows your answer should return, so you can check your own work. |
 | `solutions.sql` | One worked answer for each SQL exercise. Each answer is labeled with its number, like `-- [1.1]`. Many answers include notes about common mistakes. The Part 4 answers aren't here: they're in `04-concepts-check.md`, folded under each question. |
 
 ## Getting started
@@ -113,7 +113,7 @@ Movie(ID SMALLINT UNSIGNED PK AI, Title VARCHAR(60) NOT NULL, Genre VARCHAR(20),
       RatingCode CHAR(5) FK->Rating, ReleaseYear SMALLINT, Minutes SMALLINT, Gross DECIMAL(12,2))
 ```
 
-Section 12 also uses six smaller tables (Book, YearSales, Passport, Visa, Compensation, and student_grades). They are described at the start of [that section](03-assessment-drills.md#12-assessment-style-queries).
+Section 12 also uses six smaller tables (Book, YearSales, Passport, Visa, Compensation, and student_grades). They are described at the start of [that section](03-practice-test-drills.md#12-practice-test-style-queries).
 
 The sample data includes some unusual rows on purpose:
 

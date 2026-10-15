@@ -1,10 +1,10 @@
-# Part 5: Mock assessment
+# Part 5: Final practice
 
 [← Exercise index](exercises.md) · Solutions: [`solutions.sql`](solutions.sql)
 
 Do this part last, as a timed practice run.
 
-## 14. Mock assessment
+## 14. Final practice
 
 > [!IMPORTANT]
 > **Run `setup.sql` again before you start this section.** Do the tasks in order, because each one builds on the ones before it. Try to answer them without looking at the solutions. Give yourself about 60 minutes.

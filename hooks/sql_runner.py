@@ -32,8 +32,8 @@ NOTE = """
     and **Check** compares your result with the solution's. Every run starts from a
     fresh copy of the `setup.sql` data, so nothing you run can break it.
 
-    The box runs **SQLite**, not MySQL, so use it for practice only. The exam uses
-    **MySQL 8.4**, and the exercises that change data and tables should be done there.
+    The box runs **SQLite**, not MySQL, so use it for practice only. This kit is written
+    for **MySQL 8.4**, and the exercises that change data and tables should be done there.
     Text comparisons ignore case, like MySQL, and common MySQL functions are added
     (`CONCAT`, `DATEDIFF`, `TIMESTAMPDIFF`, `YEAR`, `MONTH`, `DAYNAME`, `IF`, `LEFT`, ...).
     Where they still differ:
@@ -53,8 +53,8 @@ SECTION_NOTE = """
 !!! info "Try the queries in your browser (SQLite)"
 
     The read-only exercises in this section have a **Try it** box. It runs **SQLite**
-    on a fresh copy of the `setup.sql` data, so use it for practice only: the exam uses
-    MySQL 8.4. The first page with Try it boxes explains where SQLite and MySQL differ.
+    on a fresh copy of the `setup.sql` data, so use it for practice only: this kit is written
+    for MySQL 8.4. The first page with Try it boxes explains where SQLite and MySQL differ.
     Exercises that change data say so instead of having a box; do those on MySQL.
 """
 

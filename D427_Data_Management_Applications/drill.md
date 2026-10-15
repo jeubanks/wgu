@@ -1,8 +1,8 @@
 # Spec-to-type drill
 
-[← Exercise index](exercises.md) · [Cheat sheet](cheatsheet.md)
+[← Exercise index](exercises.md) · [SQL quick reference](quick-reference.md)
 
-The assessment describes each column in words, like *"integer with range 0 to 65 thousand, not NULL, default 0"*, and you turn that into SQL. This drill gives you endless random practice in that wording, in two modes:
+The D427 practice tests describe each column in words, like *"integer with range 0 to 65 thousand, not NULL, default 0"*, and you turn that into SQL. This drill gives you endless random practice in that wording, in two modes:
 
 - **Column types:** integer ranges near each type's limits (signed and unsigned), decimals, fixed- and variable-length strings, and dates. Type the type, press **Check** (or Enter), and read why.
 - **Constraint wording:** phrases like *"must be one of ..."*, *"default 'TX'"*, or *"must not be deletable"*. Pick the SQL they turn into.
@@ -21,4 +21,4 @@ The assessment describes each column in words, like *"integer with range 0 to 65
 
 </div>
 
-Answers are matched the way you'd write them: case and spaces don't matter, and `INTEGER` / `NUMERIC` count the same as `INT` / `DECIMAL`. Each mode keeps its own score and streak, saved in this browser only. For the rules behind each answer, see [Reading a column spec](cheatsheet.md#reading-a-column-spec) on the cheat sheet.
+Answers are matched the way you'd write them: case and spaces don't matter, and `INTEGER` / `NUMERIC` count the same as `INT` / `DECIMAL`. Each mode keeps its own score and streak, saved in this browser only. For the rules behind each answer, see [Reading a column spec](quick-reference.md#reading-a-column-spec) in the SQL quick reference.

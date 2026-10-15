@@ -4,7 +4,7 @@ Unofficial practice material for WGU courses, published at **[jeubanks.github.io
 
 | Course | What's there |
 |---|---|
-| [D427 Data Management – Applications](D427_Data_Management_Applications/) | 151 MySQL exercises with hints and solutions, a concepts-check quiz, a mock assessment, ER and join diagrams, and SQL you can run in the browser. [Setup](D427_Data_Management_Applications/README.md) · [Start here](D427_Data_Management_Applications/exercises.md) |
+| [D427 Data Management – Applications](D427_Data_Management_Applications/) | 151 MySQL exercises with hints and solutions, a concepts-check quiz, a final practice set, ER and join diagrams, and SQL you can run in the browser. [Setup](D427_Data_Management_Applications/README.md) · [Start here](D427_Data_Management_Applications/exercises.md) |
 | [D949 Data Structures and Algorithms I](D949_Data_Structures_And_Algorithms_I/) | Python lessons with pytest checks. [Start here](D949_Data_Structures_And_Algorithms_I/README.md) |
 
 ## Layout

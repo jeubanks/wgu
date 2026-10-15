@@ -4,7 +4,7 @@
 -- `setup.sql` load (sections 7-10 change data/schema that later ones see).
 -- Sections 11-13 stand alone: 11 builds its own `d427_drills` database,
 -- 12 uses tables no other section touches, and 13 has no SQL (its answers are in 04-concepts-check.md).
--- Section 14 (mock assessment) starts from a FRESH setup.sql load again.
+-- Section 14 (final practice) starts from a FRESH setup.sql load again.
 -- Statements marked "Expected to FAIL" are commented out; the error they raise is shown.
 -- This file is the source of truth for the folded Hint and Solution blocks in
 -- the 0N-*.md exercise files. Lines starting with "-- Hint:" become the hint.
@@ -831,8 +831,8 @@ CREATE TABLE NF_Enrollment (StudentID MEDIUMINT UNSIGNED, CourseID CHAR(6), Grad
 SHOW TABLES LIKE 'NF\_%';
 
 -- =====================================================================
--- 11. Writing tables from a specification (OA style)
---     Runs in its own database so it can reuse the OA's table names.
+-- 11. Writing tables from a specification (practice-test style)
+--     Runs in its own database so it can reuse the practice tests' table names.
 -- =====================================================================
 DROP DATABASE IF EXISTS d427_drills;
 CREATE DATABASE d427_drills;
@@ -1232,7 +1232,7 @@ SELECT * FROM Bin;
 USE d427;
 
 -- =====================================================================
--- 12. OA-style query drills  (Book / YearSales, Passport / Visa, Compensation, student_grades)
+-- 12. Practice-test query drills  (Book / YearSales, Passport / Visa, Compensation, student_grades)
 -- =====================================================================
 -- [12.1]
 -- Hint: "Without directly referencing any column names" means `*`.
@@ -1289,8 +1289,8 @@ FROM Book
 RIGHT JOIN YearSales ON Book.Year = YearSales.Year;
 
 -- [12.8]
--- Hint: There's no "if available" or "regardless of" wording, so the assessment expects an INNER JOIN.
--- No "if available" / "regardless" wording, so the OA expects an INNER JOIN.
+-- Hint: There's no "if available" or "regardless of" wording, so the practice tests expect an INNER JOIN.
+-- No "if available" / "regardless" wording, so the practice tests expect an INNER JOIN.
 SELECT Book.Title, YearSales.TotalSales
 FROM Book
 INNER JOIN YearSales ON Book.Year = YearSales.Year;
@@ -1468,7 +1468,7 @@ SELECT Title, Cost FROM Book ORDER BY Cost DESC LIMIT 3;
 
 
 -- =====================================================================
--- 14. Mock assessment  (start from a FRESH load:  SOURCE /work/setup.sql;  or re-run it)
+-- 14. Final practice  (start from a FRESH load:  SOURCE /work/setup.sql;  or re-run it)
 -- =====================================================================
 -- [14.1]
 -- Hint: Turn each description into a type the same way as in Section 11. For ID, which integer type is the smallest one that reaches 65 thousand?
