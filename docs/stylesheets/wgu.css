@@ -20,19 +20,16 @@
   --md-code-bg-color: #eef6f9;
 }
 
-/* Dark mode: Midnight backgrounds, Sky Blue links, Lime Green accent. */
+/* Dark mode: Material's neutral charcoal page (easier to read than Midnight),
+   Blue Midnight header, a lighter Sky Blue for links, Lime Green accent. */
 [data-md-color-scheme="slate"] {
-  --md-hue: 212;
-  --md-default-bg-color: #001731;
-  --md-code-bg-color: #002855;
-  --md-typeset-a-color: #46b1ef;
+  --md-default-bg-color: #1e2129;
+  --md-code-bg-color: #282c36;
+  --md-typeset-a-color: #6cc4f5;
   --md-accent-fg-color: #97e152;
   --md-accent-fg-color--transparent: #97e1521a;
-}
-
-[data-md-color-scheme="slate"] .md-header,
-[data-md-color-scheme="slate"] .md-tabs {
-  background-color: #001731;
+  /* The solutions explain traps in SQL comments, so keep them readable. */
+  --md-code-hl-comment-color: #a3adb9;
 }
 
 /* Hint boxes in Sky Blue; Solution/Answer boxes in Lime Green. */
