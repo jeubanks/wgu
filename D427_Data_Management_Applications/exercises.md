@@ -39,11 +39,13 @@ Parts 3 and 4 are built from the D427 practice tests and the D427 Challenge. Par
 
 ## Getting started
 
-See [`README.md`](README.md) for how to set up the container and load the data. After you are connected to MySQL, you can reset the database at any time by running this command inside the MySQL client:
+See [Setup](README.md#setup) for how to install MySQL (with Docker or directly on your computer) and load the data from <a href="setup.sql" download>`setup.sql`</a>. After you are connected to MySQL, you can reset the database at any time by running this command inside the MySQL client:
 
 ```sql
 SOURCE /work/setup.sql;
 ```
+
+That path is for the Docker setup. If MySQL is installed on your computer, use the full path to wherever you saved `setup.sql`, for example `SOURCE ~/Downloads/setup.sql;`.
 
 > [!IMPORTANT]
 > - **Do Sections 1 to 10 in order.** Sections 1 to 6 only read data, so they never change anything. Sections 7 to 10 change the data and the tables, and later exercises expect that you already did the earlier ones.

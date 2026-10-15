@@ -7,6 +7,12 @@ edit_uri: edit/main/
 # so the exercise files stay where the scripts and Docker setup expect them.
 docs_dir: docs
 
+# mkdocs serve doesn't follow the symlinks when watching for changes.
+watch:
+  - D427_Data_Management_Applications
+  - D949_Data_Structures_And_Algorithms_I
+  - hooks
+
 exclude_docs: |
   *.py
   *.ini
