@@ -1,6 +1,6 @@
 # D427 Data Management – Applications: MySQL Practice Kit
 
-Hands-on SQL practice for WGU **D427 Data Management – Applications**, run against a real MySQL 8.4 server in a container.
+Hands-on SQL practice for WGU **D427 Data Management – Applications**, run against a real MySQL 8.4 server, either in a Docker container or installed on your computer.
 
 Read the exercises online at **[jeubanks.github.io/wgu](https://jeubanks.github.io/wgu/d427/exercises/)**.
 
@@ -12,33 +12,38 @@ Sections 11–13 are built from the two D427 practice tests and the D427 Challen
 
 | File | Purpose |
 |---|---|
-| `README.md` | This file: setup, how to work through the exercises, troubleshooting. |
-| `setup.sql` | Builds the `d427` database and loads the sample data. Re-run it any time to reset. |
+| `README.md` | This file (the **Setup** page on the website): setup, how to work through the exercises, troubleshooting. |
+| <a href="setup.sql" download>`setup.sql`</a> | Builds the `d427` database and loads the sample data. Re-run it any time to reset. |
 | `exercises.md` | Start here: the table of contents, the order to work in, and a summary of the tables. |
 | `01-queries.md` … `05-mock-assessment.md` | The exercises, in five parts. Most exercises list the expected row count so you can check yourself. Part 4 (concepts check) has its answers folded under each question. |
 | `solutions.sql` | One worked answer per SQL exercise, labeled `-- [1.1]`, `-- [5.3]`, etc., with notes on the common traps. Section 13 has only its hints here. |
 | `later-advanced-sql.md` | Exercises that go beyond D427: transactions, plus a few more advanced queries and views. Kept for a later SQL course. |
 | `build_solutions.py` | Copies each hint and answer from `solutions.sql` into the exercise files as folded **Hint** and **Solution** blocks. Run `python3 build_solutions.py` after changing `solutions.sql`. |
 
-## Requirements
+## Setup
+
+You need a MySQL 8.4 server and the <a href="setup.sql" download>`setup.sql`</a> file, which builds the practice database. There are two ways to get a server:
+
+- **[Docker](#option-a-docker)** (recommended): nothing is installed on your computer except Docker, and you can remove it all with one command. The rest of this page uses this setup.
+- **[MySQL on your computer](#option-b-mysql-installed-on-your-computer)**: install MySQL yourself if you already have it or prefer not to use Docker.
+
+### Option A: Docker
+
+Requirements:
 
 - Docker (Docker Desktop, Docker Engine, or Podman; see the Podman note below)
 - About 600 MB of disk for the MySQL image
 - Port 3306 free on your machine (only needed if you want to connect from a GUI tool)
 
-The `mysql:8.4` image runs on both x86_64 and ARM64 (Apple Silicon).
+The `mysql:8.4` image runs on both x86_64 and ARM64 (Apple Silicon). Run these commands from inside this folder.
 
-## Setup
-
-Run these commands from inside this folder.
-
-### 1. Pull the MySQL image
+#### 1. Pull the MySQL image
 
 ```bash
 docker pull mysql:8.4
 ```
 
-### 2. Start the container
+#### 2. Start the container
 
 ```bash
 docker run -d --name d427 \
@@ -53,7 +58,7 @@ docker run -d --name d427 \
 - `-p 3306:3306` exposes MySQL to your machine for GUI clients.
 - `-v "$PWD":/work` mounts this folder inside the container at `/work`, so the client can read `setup.sql` directly.
 
-### 3. Wait for MySQL to finish initializing
+#### 3. Wait for MySQL to finish initializing
 
 The first start takes 15–60 seconds. MySQL starts a temporary server during initialization, then restarts, so wait for the real one (the line that reports `port: 3306`):
 
@@ -61,7 +66,7 @@ The first start takes 15–60 seconds. MySQL starts a temporary server during in
 until docker logs d427 2>&1 | grep -q "ready for connections.*port: 3306"; do sleep 2; done; echo "MySQL is ready"
 ```
 
-### 4. Load the practice database
+#### 4. Load the practice database
 
 ```bash
 docker exec -i -e MYSQL_PWD=d427pass d427 mysql -uroot < setup.sql
@@ -69,7 +74,7 @@ docker exec -i -e MYSQL_PWD=d427pass d427 mysql -uroot < setup.sql
 
 Passing the password through `MYSQL_PWD` avoids the "using a password on the command line is insecure" warning.
 
-### 5. Connect and check
+#### 5. Connect and check
 
 ```bash
 docker exec -it -e MYSQL_PWD=d427pass d427 mysql -uroot d427
@@ -83,6 +88,20 @@ SELECT COUNT(*) FROM Employee;   -- should return 15
 ```
 
 You should see thirteen tables: `Book`, `Compensation`, `Department`, `Employee`, `Horse`, `LessonSchedule`, `Movie`, `Passport`, `Rating`, `Student`, `student_grades`, `Visa`, `YearSales`.
+
+### Option B: MySQL installed on your computer
+
+1. Download and install **MySQL Community Server 8.4 LTS** from [dev.mysql.com/downloads/mysql](https://dev.mysql.com/downloads/mysql/). On macOS you can also use `brew install mysql@8.4`. Remember the root password you set during install.
+2. Optionally install [MySQL Workbench](https://dev.mysql.com/downloads/workbench/) if you'd rather work in a GUI than the command line.
+3. Download <a href="setup.sql" download>`setup.sql`</a> and load it (Workbench: **File → Open SQL Script**, then run it):
+
+    ```bash
+    mysql -u root -p < setup.sql
+    ```
+
+4. Connect with `mysql -u root -p d427` and run the checks from step 5 above.
+
+The commands in the rest of this page are for Docker. With a local install, use `mysql -u root -p` in place of `docker exec ... mysql -uroot`, and `SOURCE` the full path to your copy of `setup.sql`.
 
 ## Day-to-day use
 
