@@ -6,7 +6,6 @@ D427 is the model course. Once its patterns are settled, other courses reuse the
 
 ## Up next
 
-- [ ] **Self-host sql.js**: serve its two files from the site, so the SQL runner still works if cdnjs is down.
 - [ ] **Drill: whole-table specs**: a multi-column spec (types and constraints) to write as one CREATE TABLE, checked column by column.
 
 ## Backlog
@@ -22,6 +21,10 @@ D427 is the model course. Once its patterns are settled, other courses reuse the
 ### Waiting on a decision
 
 - [ ] **Timed mode for the mock assessment**: a 60-minute timer, hints and solutions locked until you finish, then a self-scored result.
+
+### Decided against
+
+- **Self-host sql.js**: not needed. The runner loads it from cdnjs, pinned by hash and checked in CI.
 
 ### Parked
 
