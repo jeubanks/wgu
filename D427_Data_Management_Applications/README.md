@@ -19,6 +19,7 @@ Sections 11–13 are built from the two D427 practice tests and the D427 Challen
 | `solutions.sql` | One worked answer per SQL exercise, labeled `-- [1.1]`, `-- [5.3]`, etc., with notes on the common traps. Section 13 has only its hints here. |
 | `later-advanced-sql.md` | Exercises that go beyond D427: transactions, plus a few more advanced queries and views. Kept for a later SQL course. |
 | `build_solutions.py` | Copies each hint and answer from `solutions.sql` into the exercise files as folded **Hint** and **Solution** blocks. Run `python3 build_solutions.py` after changing `solutions.sql`. |
+| `build_diagrams.py` | Draws the diagram of the practice database below from `setup.sql`. Run `python3 build_diagrams.py` after changing a table in `setup.sql`. |
 
 ## Setup
 
@@ -139,6 +140,123 @@ Every command above works with `podman` in place of `docker`. On SELinux systems
 ## The practice database
 
 `setup.sql` creates three small schemas in one database, plus six drill tables for Section 12. Run `DESCRIBE TableName;` or read `setup.sql` for each column's type and size.
+
+<!-- er-diagram -->
+```mermaid
+erDiagram
+  accTitle: The d427 practice database
+  accDescr: Entity-relationship diagram of the Department, Employee, Horse, Student, LessonSchedule, Rating, Movie, YearSales, Book, Passport, Visa, Compensation and student_grades tables from setup.sql, with each column's general type and its keys. DeptID in Employee refers to at most one Department row. ManagerID in Employee refers to at most one other Employee row. HorseID in LessonSchedule refers to exactly one Horse row. StudentID in LessonSchedule refers to at most one Student row. RatingCode in Movie refers to at most one Rating row. PassportID in Visa refers to at most one Passport row.
+  direction LR
+
+  %% Company schema
+  Department {
+    int DeptID PK
+    string DeptName UK
+    decimal Budget
+    string Location
+  }
+  Employee {
+    int EmpID PK
+    string FirstName
+    string LastName
+    string Email UK
+    decimal Salary
+    date HireDate
+    int DeptID FK
+    int ManagerID FK
+  }
+  Department |o..o{ Employee : DeptID
+  Employee |o..o{ Employee : ManagerID
+
+  %% Riding stable schema
+  Horse {
+    int ID PK
+    string RegisteredName
+    string Breed
+    decimal Height
+    date BirthDate
+  }
+  Student {
+    int ID PK
+    string FirstName
+    string LastName
+    string Street
+    string City
+    string State
+    int Zip
+    string Phone
+    string Email UK
+  }
+  LessonSchedule {
+    int HorseID PK, FK
+    int StudentID FK
+    datetime LessonDateTime PK
+  }
+  Horse ||--o{ LessonSchedule : HorseID
+  Student |o..o{ LessonSchedule : StudentID
+
+  %% Movie schema
+  Rating {
+    string RatingCode PK
+    string RatingDescription
+  }
+  Movie {
+    int ID PK
+    string Title
+    string Genre
+    string RatingCode FK
+    int ReleaseYear
+    int Minutes
+    decimal Gross
+  }
+  Rating |o..o{ Movie : RatingCode
+
+  %% OA-style query drills
+  YearSales {
+    int Year PK
+    int TotalSales
+    int Releases
+  }
+  Book {
+    int ID PK
+    string Title
+    string Genre
+    int Year
+    decimal Cost
+  }
+  Passport {
+    int PassportID PK
+    string PassportHolderName
+    string Nationality
+    date IssueDate
+    date ExpiryDate
+  }
+  Visa {
+    int VisaID PK
+    int PassportID FK
+    string Country
+    string VisaType
+    date IssueDate
+    date ExpiryDate
+  }
+  Passport |o..o{ Visa : PassportID
+  Compensation {
+    int ID PK
+    string Name
+    decimal Salary
+    decimal Bonus
+  }
+  student_grades {
+    string studentID PK
+    string lastName
+    string grade
+  }
+```
+<!-- /er-diagram -->
+
+How to read the diagram: **PK** is the primary key, **FK** a foreign key, and **UK** a unique column. The column types are general on purpose (Section 11 has you pick the exact MySQL types). Each line joins a foreign key to the table it references, and the line's label is the foreign-key column. At the referenced table, `||` means exactly one row and `|o` means zero or one (the foreign key can be NULL). At the other end, `o{` means zero or more rows. A solid line means the foreign key is part of that table's primary key; a dashed line means it isn't. A table with no line has no foreign keys: Book.Year, for example, is not a foreign key to YearSales.
+
+The same tables as text, with their delete rules, defaults, and CHECKs:
 
 ```
 Department(DeptID PK, DeptName UNIQUE, Budget, Location)

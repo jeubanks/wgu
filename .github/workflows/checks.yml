@@ -81,3 +81,10 @@ jobs:
             echo "::error::Exercise .md files are out of date. Run python3 D427_Data_Management_Applications/build_solutions.py and commit the result."
             exit 1
           fi
+      - run: python3 D427_Data_Management_Applications/build_diagrams.py
+      - name: Fail if build_diagrams.py changed anything
+        run: |
+          if ! git diff --exit-code; then
+            echo "::error::The README diagram is out of date with setup.sql. Run python3 D427_Data_Management_Applications/build_diagrams.py and commit the result."
+            exit 1
+          fi

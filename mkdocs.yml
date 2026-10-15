@@ -30,6 +30,7 @@ extra_javascript:
   - javascripts/quiz.js
 
 hooks:
+  - hooks/er_diagrams.py
   - hooks/details.py
   - hooks/sql_runner.py
   - hooks/quiz.py
@@ -80,7 +81,12 @@ markdown_extensions:
         kwds:
           case: lower
   - pymdownx.details
-  - pymdownx.superfences
+  # ```mermaid blocks become diagrams (Material themes them for light and dark).
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   # Glossary tooltips: includes/glossary.md (outside docs/, so it isn't a page)
   # is added to the end of every page, and its *[TERM]: definitions underline
   # each TERM in the text with a tooltip. Terms are case-sensitive.
