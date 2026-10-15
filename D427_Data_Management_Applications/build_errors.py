@@ -146,6 +146,9 @@ def find():
 
 
 def _link(label, page):
+    """A link to the exercise itself (hooks/anchors.py adds #ex-7-3), or to a page."""
+    if ITEM.match(f"- **{label}**"):
+        return f"[{label}]({page}#ex-{label.lower().replace('.', '-')})"
     return f"[{label}]({page})"
 
 

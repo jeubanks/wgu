@@ -26,6 +26,8 @@ On the assessment, the table-building questions describe each column in words, l
 > - **Plain "integer"** with no range means `INT`.
 > - **"Positive integer"** means `INT UNSIGNED`. UNSIGNED still allows 0, so add `CHECK (col > 0)` when 0 isn't allowed.
 > - **A foreign key column** has exactly the same type as the column it references, UNSIGNED included.
+>
+> For more practice turning specs into types, try the [spec-to-type drill](drill.md).
 
 These exercises use the same table names as the assessment (Horse, Student, Customer, and so on), so they run in a separate database to keep them away from the `d427` tables. Start the section with:
 
