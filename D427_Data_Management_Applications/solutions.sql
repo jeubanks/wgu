@@ -18,7 +18,7 @@ USE d427;
 -- =====================================================================
 -- [1.1]
 -- Hint: `*` selects every column.
-SELECT * FROM Movie;
+SELEC * FROM Movie;
 
 -- [1.2]
 -- Hint: Sort on two columns, separated by a comma: `ORDER BY col1 DESC, col2 ASC`.

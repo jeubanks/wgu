@@ -21,3 +21,5 @@ Practice material I've built for WGU courses. Unofficial: not affiliated with or
     [:octicons-arrow-right-24: Start here](d949/README.md)
 
 </div>
+
+<a href="../d427/no-such-page/">broken</a>
