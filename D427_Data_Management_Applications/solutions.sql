@@ -507,14 +507,15 @@ DELETE FROM Student WHERE ID = 2;
 SELECT * FROM LessonSchedule WHERE StudentID IS NULL;    -- Jamal's 2/4 lesson now has NULL (SET NULL)
 
 -- [7.9]
--- Hint: For the table, `INT AUTO_INCREMENT PRIMARY KEY` lets MySQL number the rows, and `NOT NULL DEFAULT 0` makes Visits required but filled in when you leave it out.
+-- Hint: A range that starts at 0 means UNSIGNED. 0 to 65 thousand fits SMALLINT UNSIGNED, and 0 to 255 fits TINYINT UNSIGNED.
+-- Hint: `AUTO_INCREMENT PRIMARY KEY` lets MySQL number the rows, and `NOT NULL DEFAULT 0` makes Visits required but filled in when you leave it out.
 -- Hint: With no column list, the VALUES must cover every column, in the order the table defines them. Writing NULL (or DEFAULT) for an AUTO_INCREMENT column lets MySQL choose the number.
 -- Hint: A column you leave out of the column list gets its DEFAULT. A NOT NULL column with no DEFAULT can't be left out.
 CREATE TABLE Guest (
-  GuestID   INT AUTO_INCREMENT PRIMARY KEY,
+  GuestID   SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,   -- 0..65,535
   FullName  VARCHAR(40) NOT NULL,
   City      VARCHAR(20),
-  Visits    INT NOT NULL DEFAULT 0
+  Visits    TINYINT UNSIGNED NOT NULL DEFAULT 0            -- 0..255
 );
 INSERT INTO Guest VALUES (NULL, 'Ana Ruiz', 'Austin', 3);       -- NULL -> next AUTO_INCREMENT value
 INSERT INTO Guest (FullName, City) VALUES ('Ben Cho', 'Dallas'); -- Visits gets its DEFAULT, 0
@@ -566,15 +567,17 @@ SELECT * FROM Guest;                          -- GuestID 1: TRUNCATE reset the c
 -- 8. Defining structure: CREATE / ALTER / DROP
 -- =====================================================================
 -- [8.1]
--- Hint: `AUTO_INCREMENT`, `NOT NULL`, `DEFAULT 'Pop'`, and `CHECK (DurationSec > 0)` all go on the column definitions.
+-- Hint: 0 to 16 million fits MEDIUMINT UNSIGNED. 0 to 9,999 and 1 to 65 thousand both need SMALLINT UNSIGNED: TINYINT stops at 255.
+-- Hint: UNSIGNED still allows 0, so DurationSec also needs `CHECK (DurationSec > 0)`.
+-- Hint: `AUTO_INCREMENT`, `NOT NULL`, `DEFAULT 'Pop'`, and the CHECK all go on the column definitions.
 -- Hint: "Not the same Title and the same Artist" is one UNIQUE constraint over both columns: `UNIQUE (Title, Artist)`.
 CREATE TABLE Song (
-  ID           INT          AUTO_INCREMENT,
-  Title        VARCHAR(60)  NOT NULL,
-  Artist       VARCHAR(60)  NOT NULL,
-  ReleaseYear  SMALLINT,
-  Genre        VARCHAR(20)  DEFAULT 'Pop',
-  DurationSec  INT          CHECK (DurationSec > 0),
+  ID           MEDIUMINT UNSIGNED  AUTO_INCREMENT,               -- 0..16,777,215
+  Title        VARCHAR(60)         NOT NULL,
+  Artist       VARCHAR(60)         NOT NULL,
+  ReleaseYear  SMALLINT UNSIGNED,                                -- 0..65,535 (TINYINT stops at 255)
+  Genre        VARCHAR(20)         DEFAULT 'Pop',
+  DurationSec  SMALLINT UNSIGNED   CHECK (DurationSec > 0),      -- UNSIGNED allows 0; the CHECK doesn't
   PRIMARY KEY (ID),
   UNIQUE (Title, Artist)
 );
@@ -603,7 +606,7 @@ ALTER TABLE Song
   DROP CHECK Song_chk_1,
   RENAME COLUMN DurationSec TO Seconds,
   ADD CONSTRAINT Song_chk_1 CHECK (Seconds > 0);
--- Without a CHECK on the column, RENAME COLUMN alone (or CHANGE DurationSec Seconds INT) is enough.
+-- Without a CHECK on the column, RENAME COLUMN alone (or CHANGE DurationSec Seconds SMALLINT UNSIGNED) is enough.
 
 -- [8.5]
 -- Hint: `ALTER TABLE ... DROP COLUMN ...`
@@ -615,19 +618,20 @@ DESCRIBE Song;
 -- Hint: Write `PRIMARY KEY (PlaylistID, SongID)` on its own line. Then add one `FOREIGN KEY (...) REFERENCES ...` line for each foreign key, each ending with `ON DELETE CASCADE`.
 -- Hint: For d), join three tables: Playlist to PlaylistSong on the playlist ID, and PlaylistSong to Song on the song ID.
 CREATE TABLE Playlist (
-  ID       INT AUTO_INCREMENT PRIMARY KEY,
+  ID       TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,   -- 0..255
   Name     VARCHAR(40) NOT NULL,
   Created  DATE NOT NULL
 );
 CREATE TABLE PlaylistSong (
-  PlaylistID  INT NOT NULL,
-  SongID      INT NOT NULL,
+  PlaylistID  TINYINT UNSIGNED NOT NULL,     -- same type as Playlist.ID
+  SongID      MEDIUMINT UNSIGNED NOT NULL,   -- same type as Song.ID
   Position    TINYINT UNSIGNED NOT NULL,
   PRIMARY KEY (PlaylistID, SongID),
   FOREIGN KEY (PlaylistID) REFERENCES Playlist(ID) ON DELETE CASCADE,
   FOREIGN KEY (SongID)     REFERENCES Song(ID)     ON DELETE CASCADE
 );
--- The foreign key columns must have the same type as the columns they point to (INT here, like Song.ID).
+-- The foreign key columns must have the same type as the columns they point to. A mismatch (INT for SongID)
+-- fails with ERROR 3780: Referencing column 'SongID' and referenced column 'ID' ... are incompatible.
 INSERT INTO Playlist (Name, Created) VALUES ('Road Trip', '2026-10-01');
 INSERT INTO PlaylistSong VALUES (1, 1, 1), (1, 2, 2);
 SELECT p.Name, ps.Position, s.Title
@@ -641,12 +645,12 @@ ORDER BY ps.Position;
 -- Hint: The new DirectorID column must have the same type as Director.ID.
 -- Hint: For d), an inner join between Movie and Director keeps only the movies that have a director.
 CREATE TABLE Director (
-  ID    INT AUTO_INCREMENT PRIMARY KEY,
+  ID    SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,   -- 0..65,535
   Name  VARCHAR(50) NOT NULL
 );
 INSERT INTO Director (Name) VALUES ('Denis Villeneuve'), ('Christopher Nolan');
 ALTER TABLE Movie
-  ADD COLUMN DirectorID INT,
+  ADD COLUMN DirectorID SMALLINT UNSIGNED,          -- same type as Director.ID
   ADD CONSTRAINT fk_movie_director FOREIGN KEY (DirectorID) REFERENCES Director(ID);
 UPDATE Movie SET DirectorID = 1 WHERE Title IN ('Arrival', 'Dune');
 UPDATE Movie SET DirectorID = 2 WHERE Title = 'Interstellar';
@@ -657,7 +661,7 @@ FROM Movie m JOIN Director d ON m.DirectorID = d.ID;   -- the inner join skips m
 -- Hint: `INSERT INTO table (columns) SELECT ... FROM ... WHERE ...` has no VALUES keyword.
 -- Hint: `CURDATE()` returns today's date, and `CONCAT()` builds FullName.
 CREATE TABLE EmployeeArchive (
-  EmpID       INT PRIMARY KEY,
+  EmpID       INT PRIMARY KEY,       -- DESCRIBE Employee shows EmpID is int
   FullName    VARCHAR(70)   NOT NULL,
   Salary      DECIMAL(10,2),
   ArchivedOn  DATE          NOT NULL
@@ -770,25 +774,25 @@ SHOW INDEX FROM Movie;
 -- Hint: The linking table holds Quantity, and its primary key is (OrderID, ProductID).
 -- Hint: `ORDER` is a reserved word in SQL, so don't name a table Order.
 CREATE TABLE Customer (
-  CustomerID  INT AUTO_INCREMENT PRIMARY KEY,
+  CustomerID  MEDIUMINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,   -- 0..16,777,215
   Name        VARCHAR(50) NOT NULL,
   Email       VARCHAR(60) NOT NULL UNIQUE
 );
 CREATE TABLE Product (
-  ProductID   INT AUTO_INCREMENT PRIMARY KEY,
+  ProductID   SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,    -- 0..65,535
   Name        VARCHAR(50)   NOT NULL,
   UnitPrice   DECIMAL(8,2)  NOT NULL CHECK (UnitPrice >= 0)
 );
 CREATE TABLE CustOrder (                 -- "Order" is a reserved word
-  OrderID     INT AUTO_INCREMENT PRIMARY KEY,
-  CustomerID  INT  NOT NULL,
+  OrderID     INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,         -- 0..4,294,967,295
+  CustomerID  MEDIUMINT UNSIGNED NOT NULL,
   OrderDate   DATE NOT NULL,
   FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
 );
 CREATE TABLE OrderLine (                 -- resolves the M:N between orders and products
-  OrderID     INT NOT NULL,
-  ProductID   INT NOT NULL,
-  Quantity    INT NOT NULL CHECK (Quantity > 0),
+  OrderID     INT UNSIGNED NOT NULL,
+  ProductID   SMALLINT UNSIGNED NOT NULL,
+  Quantity    TINYINT UNSIGNED NOT NULL CHECK (Quantity > 0),
   PRIMARY KEY (OrderID, ProductID),
   FOREIGN KEY (OrderID)   REFERENCES CustOrder(OrderID) ON DELETE CASCADE,
   FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
@@ -814,13 +818,13 @@ GROUP BY o.OrderID, c.Name;     -- 4*2.50 + 1*10.00 = 20.00
 --   Partial dependencies (violate 2NF): StudentID -> StudentName ;
 --                                       CourseID  -> CourseTitle, InstructorID
 --   Transitive dependency (violates 3NF): CourseID -> InstructorID -> InstructorName, InstructorOffice
-CREATE TABLE NF_Student    (StudentID INT PRIMARY KEY, StudentName VARCHAR(50) NOT NULL);
-CREATE TABLE NF_Instructor (InstructorID INT PRIMARY KEY, InstructorName VARCHAR(50) NOT NULL,
+CREATE TABLE NF_Student    (StudentID MEDIUMINT UNSIGNED PRIMARY KEY, StudentName VARCHAR(50) NOT NULL);
+CREATE TABLE NF_Instructor (InstructorID SMALLINT UNSIGNED PRIMARY KEY, InstructorName VARCHAR(50) NOT NULL,
                             InstructorOffice VARCHAR(10));
 CREATE TABLE NF_Course     (CourseID CHAR(6) PRIMARY KEY, CourseTitle VARCHAR(60) NOT NULL,
-                            InstructorID INT,
+                            InstructorID SMALLINT UNSIGNED,
                             FOREIGN KEY (InstructorID) REFERENCES NF_Instructor(InstructorID));
-CREATE TABLE NF_Enrollment (StudentID INT, CourseID CHAR(6), Grade CHAR(2),
+CREATE TABLE NF_Enrollment (StudentID MEDIUMINT UNSIGNED, CourseID CHAR(6), Grade CHAR(2),
                             PRIMARY KEY (StudentID, CourseID),
                             FOREIGN KEY (StudentID) REFERENCES NF_Student(StudentID),
                             FOREIGN KEY (CourseID)  REFERENCES NF_Course(CourseID));
@@ -1197,6 +1201,34 @@ SELECT * FROM Player;                         -- both players now say ATX (CASCA
 --   ERROR 1451: Cannot delete or update a parent row: a foreign key constraint fails
 -- ON UPDATE and ON DELETE are separate rules. You can give a foreign key both, e.g.
 --   FOREIGN KEY (TeamCode) REFERENCES Team(TeamCode) ON UPDATE CASCADE ON DELETE SET NULL
+
+-- [11.21]
+-- Hint: A range that goes below 0 needs a signed type, so leave out UNSIGNED.
+-- Hint: -128 to 127 is exactly TINYINT. -32 thousand to 32 thousand fits SMALLINT (-32,768 to 32,767).
+CREATE TABLE WeatherReading (
+  ReadingID   MEDIUMINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,   -- 0..16,777,215
+  TempC       TINYINT NOT NULL,                                -- -128..127
+  ElevationM  SMALLINT                                         -- -32,768..32,767
+);
+INSERT INTO WeatherReading (TempC, ElevationM) VALUES (-40, -86), (35, 4421);
+SELECT * FROM WeatherReading;
+-- Expected to FAIL (200 is past TINYINT's 127):
+--   INSERT INTO WeatherReading (TempC) VALUES (200);
+--   ERROR 1264: Out of range value for column 'TempC' at row 1
+-- With TempC TINYINT UNSIGNED, the -40 reading fails the same way: UNSIGNED can't hold negatives.
+
+-- [11.22]
+-- Hint: Compare each range's top with the type limits: 255, 65,535, 16,777,215, and about 4.29 billion for UNSIGNED.
+-- Hint: 0 to 5 billion is past INT UNSIGNED, so it needs BIGINT UNSIGNED.
+CREATE TABLE Bin (
+  BinID          SMALLINT UNSIGNED PRIMARY KEY,     -- 300 is past TINYINT UNSIGNED's 255
+  Quantity       MEDIUMINT UNSIGNED NOT NULL,       -- 70,000 is past SMALLINT UNSIGNED's 65,535
+  LifetimeScans  BIGINT UNSIGNED NOT NULL           -- 5 billion is past INT UNSIGNED's ~4.29 billion
+);
+INSERT INTO Bin VALUES (300, 70000, 5000000000);
+SELECT * FROM Bin;
+-- With TINYINT UNSIGNED, SMALLINT UNSIGNED, and INT UNSIGNED instead, the INSERT fails on the first column that
+-- doesn't fit:  ERROR 1264: Out of range value for column 'BinID' at row 1
 USE d427;
 
 -- =====================================================================
@@ -1438,8 +1470,8 @@ SELECT Title, Cost FROM Book ORDER BY Cost DESC LIMIT 3;
 -- 14. Mock assessment  (start from a FRESH load:  SOURCE /work/setup.sql;  or re-run it)
 -- =====================================================================
 -- [14.1]
--- Hint: ID is `SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY`.
--- Hint: Rate needs `NOT NULL`, `DEFAULT 45.00`, and `CHECK (... BETWEEN 20 AND 150)`.
+-- Hint: Turn each description into a type the same way as in Section 11. For ID, which integer type is the smallest one that reaches 65 thousand?
+-- Hint: "5 digits total and 2 decimal places" is DECIMAL(5,2). Rate also needs NOT NULL, a DEFAULT, and a CHECK with BETWEEN.
 CREATE TABLE Instructor (
   ID         SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   FirstName  VARCHAR(20) NOT NULL,
@@ -1449,7 +1481,7 @@ CREATE TABLE Instructor (
 );
 
 -- [14.2]
--- Hint: Instructor.ID is SMALLINT UNSIGNED, so InstructorID must be SMALLINT UNSIGNED too.
+-- Hint: Use exactly the type you gave Instructor.ID in 14.1, UNSIGNED included.
 -- Hint: One ALTER TABLE can ADD COLUMN and ADD FOREIGN KEY, separated by a comma. The rule is ON DELETE SET NULL.
 ALTER TABLE LessonSchedule
   ADD COLUMN InstructorID SMALLINT UNSIGNED,

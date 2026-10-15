@@ -8,7 +8,7 @@ Practice material I've built for WGU courses. Unofficial: not affiliated with or
 
     ---
 
-    149 MySQL exercises covering queries, joins, subqueries, changing data, DDL, views, and indexes, plus a mock assessment.
+    151 MySQL exercises covering queries, joins, subqueries, changing data, DDL, views, and indexes, plus a mock assessment.
 
     [:octicons-arrow-right-24: Start here](d427/exercises.md)
 

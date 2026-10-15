@@ -256,10 +256,12 @@ These exercises use a small scratch table named Guest that no other exercise use
   **Creates:** Guest
 
   Create a table named **Guest** with these columns, in this order:
-  - `GuestID`: a whole number that MySQL fills in automatically (auto-increment). It is the primary key.
+  - `GuestID`: a whole number from 0 to 65 thousand that MySQL fills in automatically (auto-increment). It is the primary key.
   - `FullName`: text up to 40 characters. It is required (cannot be NULL).
   - `City`: text up to 20 characters.
-  - `Visits`: a whole number. It is required (cannot be NULL). If no value is given, it should be 0.
+  - `Visits`: a whole number from 0 to 255. It is required (cannot be NULL). If no value is given, it should be 0.
+
+  For each whole-number column, use the smallest integer type that holds its whole range.
 
   Then try two ways to write an INSERT. Add these two guests to the **Guest** table:
 
@@ -279,7 +281,8 @@ These exercises use a small scratch table named Guest that no other exercise use
   <details>
   <summary>Hint</summary>
 
-  - For the table, `INT AUTO_INCREMENT PRIMARY KEY` lets MySQL number the rows, and `NOT NULL DEFAULT 0` makes Visits required but filled in when you leave it out.
+  - A range that starts at 0 means UNSIGNED. 0 to 65 thousand fits SMALLINT UNSIGNED, and 0 to 255 fits TINYINT UNSIGNED.
+  - `AUTO_INCREMENT PRIMARY KEY` lets MySQL number the rows, and `NOT NULL DEFAULT 0` makes Visits required but filled in when you leave it out.
   - With no column list, the VALUES must cover every column, in the order the table defines them. Writing NULL (or DEFAULT) for an AUTO_INCREMENT column lets MySQL choose the number.
   - A column you leave out of the column list gets its DEFAULT. A NOT NULL column with no DEFAULT can't be left out.
 
@@ -290,10 +293,10 @@ These exercises use a small scratch table named Guest that no other exercise use
 
   ```sql
   CREATE TABLE Guest (
-    GuestID   INT AUTO_INCREMENT PRIMARY KEY,
+    GuestID   SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,   -- 0..65,535
     FullName  VARCHAR(40) NOT NULL,
     City      VARCHAR(20),
-    Visits    INT NOT NULL DEFAULT 0
+    Visits    TINYINT UNSIGNED NOT NULL DEFAULT 0            -- 0..255
   );
   INSERT INTO Guest VALUES (NULL, 'Ana Ruiz', 'Austin', 3);       -- NULL -> next AUTO_INCREMENT value
   INSERT INTO Guest (FullName, City) VALUES ('Ben Cho', 'Dallas'); -- Visits gets its DEFAULT, 0
@@ -464,12 +467,12 @@ These exercises use a small scratch table named Guest that no other exercise use
   **Creates:** Song
 
   Create a table named **Song** with these columns:
-  - `ID`: a whole number that MySQL fills in automatically (auto-increment). It is the primary key.
+  - `ID`: a whole number from 0 to 16 million that MySQL fills in automatically (auto-increment). It is the primary key.
   - `Title`: text up to 60 characters. It is required (cannot be NULL).
   - `Artist`: text up to 60 characters. It is required (cannot be NULL).
-  - `ReleaseYear`: a small whole number (SMALLINT).
+  - `ReleaseYear`: a whole number from 0 to 9,999.
   - `Genre`: text up to 20 characters. If no genre is given, it should be 'Pop'.
-  - `DurationSec`: a whole number. It must be greater than 0.
+  - `DurationSec`: the song's length in seconds, a whole number from 1 to 65 thousand. It must be greater than 0.
 
   Add one UNIQUE rule that covers Title and Artist together: no two songs can have both the same Title and the same Artist. The same Title by a different Artist is allowed.
 
@@ -486,7 +489,9 @@ These exercises use a small scratch table named Guest that no other exercise use
   <details>
   <summary>Hint</summary>
 
-  - `AUTO_INCREMENT`, `NOT NULL`, `DEFAULT 'Pop'`, and `CHECK (DurationSec > 0)` all go on the column definitions.
+  - 0 to 16 million fits MEDIUMINT UNSIGNED. 0 to 9,999 and 1 to 65 thousand both need SMALLINT UNSIGNED: TINYINT stops at 255.
+  - UNSIGNED still allows 0, so DurationSec also needs `CHECK (DurationSec > 0)`.
+  - `AUTO_INCREMENT`, `NOT NULL`, `DEFAULT 'Pop'`, and the CHECK all go on the column definitions.
   - "Not the same Title and the same Artist" is one UNIQUE constraint over both columns: `UNIQUE (Title, Artist)`.
 
   </details>
@@ -496,12 +501,12 @@ These exercises use a small scratch table named Guest that no other exercise use
 
   ```sql
   CREATE TABLE Song (
-    ID           INT          AUTO_INCREMENT,
-    Title        VARCHAR(60)  NOT NULL,
-    Artist       VARCHAR(60)  NOT NULL,
-    ReleaseYear  SMALLINT,
-    Genre        VARCHAR(20)  DEFAULT 'Pop',
-    DurationSec  INT          CHECK (DurationSec > 0),
+    ID           MEDIUMINT UNSIGNED  AUTO_INCREMENT,               -- 0..16,777,215
+    Title        VARCHAR(60)         NOT NULL,
+    Artist       VARCHAR(60)         NOT NULL,
+    ReleaseYear  SMALLINT UNSIGNED,                                -- 0..65,535 (TINYINT stops at 255)
+    Genre        VARCHAR(20)         DEFAULT 'Pop',
+    DurationSec  SMALLINT UNSIGNED   CHECK (DurationSec > 0),      -- UNSIGNED allows 0; the CHECK doesn't
     PRIMARY KEY (ID),
     UNIQUE (Title, Artist)
   );
@@ -596,7 +601,7 @@ These exercises use a small scratch table named Guest that no other exercise use
     DROP CHECK Song_chk_1,
     RENAME COLUMN DurationSec TO Seconds,
     ADD CONSTRAINT Song_chk_1 CHECK (Seconds > 0);
-  -- Without a CHECK on the column, RENAME COLUMN alone (or CHANGE DurationSec Seconds INT) is enough.
+  -- Without a CHECK on the column, RENAME COLUMN alone (or CHANGE DurationSec Seconds SMALLINT UNSIGNED) is enough.
   ```
 
   </details>
@@ -635,13 +640,13 @@ These exercises use a small scratch table named Guest that no other exercise use
   A playlist holds many songs, and a song can be on many playlists. You'll build this with two new tables: **Playlist**, and a linking table **PlaylistSong** that connects playlists to the songs from 8.1.
 
   **a)** Create the **Playlist** table:
-  - `ID`: a whole number that MySQL fills in automatically (auto-increment). It is the primary key.
+  - `ID`: a whole number from 0 to 255 that MySQL fills in automatically (auto-increment). It is the primary key.
   - `Name`: text up to 40 characters. It is required (cannot be NULL).
   - `Created`: a date. It is required.
 
   **b)** Create the **PlaylistSong** table. Each row puts one song on one playlist:
-  - `PlaylistID`: a whole number. It is required. It is a **foreign key** to Playlist's `ID`.
-  - `SongID`: a whole number. It is required. It is a **foreign key** to Song's `ID`.
+  - `PlaylistID`: the same type as Playlist's `ID`. It is required. It is a **foreign key** to Playlist's `ID`.
+  - `SongID`: the same type as Song's `ID`. It is required. It is a **foreign key** to Song's `ID`.
   - `Position`: the song's place in the playlist (1, 2, 3, …), a small whole number from 0 to 255. It is required.
 
   The primary key is **PlaylistID and SongID together** (a composite primary key), so the same song can't be on the same playlist twice.
@@ -680,19 +685,20 @@ These exercises use a small scratch table named Guest that no other exercise use
 
   ```sql
   CREATE TABLE Playlist (
-    ID       INT AUTO_INCREMENT PRIMARY KEY,
+    ID       TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,   -- 0..255
     Name     VARCHAR(40) NOT NULL,
     Created  DATE NOT NULL
   );
   CREATE TABLE PlaylistSong (
-    PlaylistID  INT NOT NULL,
-    SongID      INT NOT NULL,
+    PlaylistID  TINYINT UNSIGNED NOT NULL,     -- same type as Playlist.ID
+    SongID      MEDIUMINT UNSIGNED NOT NULL,   -- same type as Song.ID
     Position    TINYINT UNSIGNED NOT NULL,
     PRIMARY KEY (PlaylistID, SongID),
     FOREIGN KEY (PlaylistID) REFERENCES Playlist(ID) ON DELETE CASCADE,
     FOREIGN KEY (SongID)     REFERENCES Song(ID)     ON DELETE CASCADE
   );
-  -- The foreign key columns must have the same type as the columns they point to (INT here, like Song.ID).
+  -- The foreign key columns must have the same type as the columns they point to. A mismatch (INT for SongID)
+  -- fails with ERROR 3780: Referencing column 'SongID' and referenced column 'ID' ... are incompatible.
   INSERT INTO Playlist (Name, Created) VALUES ('Road Trip', '2026-10-01');
   INSERT INTO PlaylistSong VALUES (1, 1, 1), (1, 2, 2);
   SELECT p.Name, ps.Position, s.Title
@@ -716,7 +722,7 @@ These exercises use a small scratch table named Guest that no other exercise use
   Each movie can have a director. You'll create a new **Director** table and link the existing **Movie** table (the one `setup.sql` built) to it.
 
   **a)** Create the **Director** table:
-  - `ID`: a whole number that MySQL fills in automatically (auto-increment). It is the primary key.
+  - `ID`: a whole number from 0 to 65 thousand that MySQL fills in automatically (auto-increment). It is the primary key.
   - `Name`: text up to 50 characters. It is required (cannot be NULL).
 
   Then add these two directors:
@@ -749,12 +755,12 @@ These exercises use a small scratch table named Guest that no other exercise use
 
   ```sql
   CREATE TABLE Director (
-    ID    INT AUTO_INCREMENT PRIMARY KEY,
+    ID    SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,   -- 0..65,535
     Name  VARCHAR(50) NOT NULL
   );
   INSERT INTO Director (Name) VALUES ('Denis Villeneuve'), ('Christopher Nolan');
   ALTER TABLE Movie
-    ADD COLUMN DirectorID INT,
+    ADD COLUMN DirectorID SMALLINT UNSIGNED,          -- same type as Director.ID
     ADD CONSTRAINT fk_movie_director FOREIGN KEY (DirectorID) REFERENCES Director(ID);
   UPDATE Movie SET DirectorID = 1 WHERE Title IN ('Arrival', 'Dune');
   UPDATE Movie SET DirectorID = 2 WHERE Title = 'Interstellar';
@@ -772,7 +778,7 @@ These exercises use a small scratch table named Guest that no other exercise use
   **Creates:** EmployeeArchive
 
   *(Optional: goes beyond what the D427 practice tests ask.)* Create a table named **EmployeeArchive**:
-  - `EmpID`: a whole number. It is the primary key. (Not auto-increment: you'll copy each employee's existing EmpID.)
+  - `EmpID`: the same type as the Employee table's `EmpID` (run `DESCRIBE Employee;` to see it). It is the primary key. (Not auto-increment: you'll copy each employee's existing EmpID.)
   - `FullName`: text up to 70 characters. It is required.
   - `Salary`: a decimal number, DECIMAL(10,2), like the Employee table's Salary.
   - `ArchivedOn`: a date. It is required.
@@ -798,7 +804,7 @@ These exercises use a small scratch table named Guest that no other exercise use
 
   ```sql
   CREATE TABLE EmployeeArchive (
-    EmpID       INT PRIMARY KEY,
+    EmpID       INT PRIMARY KEY,       -- DESCRIBE Employee shows EmpID is int
     FullName    VARCHAR(70)   NOT NULL,
     Salary      DECIMAL(10,2),
     ArchivedOn  DATE          NOT NULL
@@ -1131,8 +1137,11 @@ These exercises use a small scratch table named Guest that no other exercise use
   - Email: text up to 60 characters
   - Order date: a date, required
   - Unit price: DECIMAL(8,2), required
-  - Quantity: a whole number, required
-  - ID columns: whole numbers. Customer, order, and product IDs are auto-increment.
+  - Quantity: a whole number from 1 to 255, required
+  - Customer IDs: whole numbers from 0 to 16 million, auto-increment
+  - Product IDs: whole numbers from 0 to 65 thousand, auto-increment
+  - Order IDs: whole numbers from 0 to 4 billion, auto-increment
+  - A foreign key column has the same type as the ID it points to.
 
   You decide the primary keys, the foreign keys, and what should happen when a row is deleted. Don't name a table `Order`: ORDER is a reserved word in SQL. The solution names the tables Customer, Product, CustOrder, and OrderLine.
 
@@ -1181,25 +1190,25 @@ These exercises use a small scratch table named Guest that no other exercise use
 
   ```sql
   CREATE TABLE Customer (
-    CustomerID  INT AUTO_INCREMENT PRIMARY KEY,
+    CustomerID  MEDIUMINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,   -- 0..16,777,215
     Name        VARCHAR(50) NOT NULL,
     Email       VARCHAR(60) NOT NULL UNIQUE
   );
   CREATE TABLE Product (
-    ProductID   INT AUTO_INCREMENT PRIMARY KEY,
+    ProductID   SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,    -- 0..65,535
     Name        VARCHAR(50)   NOT NULL,
     UnitPrice   DECIMAL(8,2)  NOT NULL CHECK (UnitPrice >= 0)
   );
   CREATE TABLE CustOrder (                 -- "Order" is a reserved word
-    OrderID     INT AUTO_INCREMENT PRIMARY KEY,
-    CustomerID  INT  NOT NULL,
+    OrderID     INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,         -- 0..4,294,967,295
+    CustomerID  MEDIUMINT UNSIGNED NOT NULL,
     OrderDate   DATE NOT NULL,
     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
   );
   CREATE TABLE OrderLine (                 -- resolves the M:N between orders and products
-    OrderID     INT NOT NULL,
-    ProductID   INT NOT NULL,
-    Quantity    INT NOT NULL CHECK (Quantity > 0),
+    OrderID     INT UNSIGNED NOT NULL,
+    ProductID   SMALLINT UNSIGNED NOT NULL,
+    Quantity    TINYINT UNSIGNED NOT NULL CHECK (Quantity > 0),
     PRIMARY KEY (OrderID, ProductID),
     FOREIGN KEY (OrderID)   REFERENCES CustOrder(OrderID) ON DELETE CASCADE,
     FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
@@ -1227,7 +1236,8 @@ These exercises use a small scratch table named Guest that no other exercise use
   `Enrollment(StudentID, StudentName, CourseID, CourseTitle, InstructorID, InstructorName, InstructorOffice, Grade)`
 
   Its primary key is StudentID and CourseID together. Each course has exactly one instructor, and a student gets one Grade per course. Split it into tables that are in third normal form (3NF), and create those tables. Start each table's name with `NF_` (for example, `NF_Student`). Use these column types:
-  - StudentID and InstructorID: whole numbers
+  - StudentID: a whole number from 0 to 16 million
+  - InstructorID: a whole number from 0 to 65 thousand
   - CourseID: a 6-character code, like `D427`
   - StudentName and InstructorName: text up to 50 characters, required
   - CourseTitle: text up to 60 characters, required
@@ -1256,13 +1266,13 @@ These exercises use a small scratch table named Guest that no other exercise use
   --   Partial dependencies (violate 2NF): StudentID -> StudentName ;
   --                                       CourseID  -> CourseTitle, InstructorID
   --   Transitive dependency (violates 3NF): CourseID -> InstructorID -> InstructorName, InstructorOffice
-  CREATE TABLE NF_Student    (StudentID INT PRIMARY KEY, StudentName VARCHAR(50) NOT NULL);
-  CREATE TABLE NF_Instructor (InstructorID INT PRIMARY KEY, InstructorName VARCHAR(50) NOT NULL,
+  CREATE TABLE NF_Student    (StudentID MEDIUMINT UNSIGNED PRIMARY KEY, StudentName VARCHAR(50) NOT NULL);
+  CREATE TABLE NF_Instructor (InstructorID SMALLINT UNSIGNED PRIMARY KEY, InstructorName VARCHAR(50) NOT NULL,
                               InstructorOffice VARCHAR(10));
   CREATE TABLE NF_Course     (CourseID CHAR(6) PRIMARY KEY, CourseTitle VARCHAR(60) NOT NULL,
-                              InstructorID INT,
+                              InstructorID SMALLINT UNSIGNED,
                               FOREIGN KEY (InstructorID) REFERENCES NF_Instructor(InstructorID));
-  CREATE TABLE NF_Enrollment (StudentID INT, CourseID CHAR(6), Grade CHAR(2),
+  CREATE TABLE NF_Enrollment (StudentID MEDIUMINT UNSIGNED, CourseID CHAR(6), Grade CHAR(2),
                               PRIMARY KEY (StudentID, CourseID),
                               FOREIGN KEY (StudentID) REFERENCES NF_Student(StudentID),
                               FOREIGN KEY (CourseID)  REFERENCES NF_Course(CourseID));
