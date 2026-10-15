@@ -104,7 +104,10 @@ def _block(builder, schema, names, indent, diagrams, excluded=()):
 
 
 def _svg(builder, tables, title, compact=()):
-    return _er_svg.er_svg(tables, title, builder.describe(tables), compact=compact)
+    """Both layouts: (side by side, stacked for narrow screens)."""
+    description = builder.describe(tables)
+    return (_er_svg.er_svg(tables, title, description, compact=compact),
+            _er_svg.er_svg_stacked(tables, title, description, compact=compact))
 
 
 def _exercises(lines):
@@ -167,7 +170,11 @@ def _add_diagrams(markdown, builder, schema, diagrams):
 README = "d427/README.md"
 README_BLOCK = re.compile(r"<!-- er-diagram -->\n```mermaid\n.*?```\n<!-- /er-diagram -->", re.S)
 PLACEHOLDER = re.compile(r'<div class="er-diagram" data-er="(\d+)"></div>')
-_pages = {}  # page src_uri -> list of SVGs, from on_page_markdown to on_page_content
+_pages = {}  # page src_uri -> list of (wide, stacked) SVGs, from on_page_markdown to on_page_content
+SVG_WIDTH = re.compile(r'<svg [^>]*\bwidth="(\d+)"')
+# The stacked layout takes over when the side-by-side one doesn't fit and
+# the space is phone or small-tablet width. Wider than that, it scrolls.
+NARROW = 600
 
 
 def on_page_markdown(markdown, page, **kwargs):
@@ -188,5 +195,15 @@ def on_page_content(html, page, **kwargs):
     diagrams = _pages.pop(page.file.src_uri, None)
     if not diagrams:
         return html
-    return PLACEHOLDER.sub(lambda m: f'<div class="er-diagram">'
-                           f'{diagrams[int(m[1])].replace("{id}", f"er{m[1]}")}</div>', html)
+    def diagram(match):
+        n = match[1]
+        wide, stacked = diagrams[int(n)]
+        wide, stacked = wide.replace("{id}", f"er{n}w"), stacked.replace("{id}", f"er{n}s")
+        width = min(int(SVG_WIDTH.search(wide)[1]), NARROW)
+        # A container query per diagram, since each one switches at its own width.
+        return (f'<div class="er-diagram" id="er{n}">'
+                f'<style>@container (max-width: {width - 1}px) {{ '
+                f'#er{n} .er-wide {{ display: none; }} #er{n} .er-stacked {{ display: block; }} }}</style>'
+                f'<div class="er-wide">{wide}</div><div class="er-stacked">{stacked}</div></div>')
+
+    return PLACEHOLDER.sub(diagram, html)

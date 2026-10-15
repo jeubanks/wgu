@@ -513,7 +513,7 @@
 }
 
 /* ER diagrams drawn by hooks/er_svg.py: navy header bars, PK / FK / UK chips,
-   muted types. Scroll sideways inside the diagram on narrow screens. */
+   muted types. Narrow screens get the stacked layout (see .er-stacked). */
 :root {
   --er-head: #002855;
   --er-head-fg: #ffffff;
@@ -549,8 +549,17 @@
   --er-uk-fg: #dfe6ee;
 }
 .md-typeset .er-diagram {
-  overflow-x: auto;
+  container-type: inline-size;
   margin: 1em 0;
+}
+/* Side by side by default; hooks/er_diagrams.py adds a container query per
+   diagram that swaps in the stacked layout when the space is too narrow. */
+.md-typeset .er-wide {
+  overflow-x: auto;
+}
+.md-typeset .er-stacked {
+  display: none;
+  overflow-x: auto;
 }
 .md-typeset .er-diagram .er-svg {
   display: block;
