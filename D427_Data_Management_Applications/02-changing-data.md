@@ -10,7 +10,8 @@ These sections change the data and the tables. Do them in order: later exercises
 
 ### Movie and Rating
 
-- **7.1** **Tables:** existing **Movie** (from `setup.sql`)
+- **7.1**\
+  **Uses:** Movie *(already in the database, from `setup.sql`)*
 
   Add this movie to the **Movie** table:
 
@@ -40,7 +41,8 @@ These sections change the data and the tables. Do them in order: later exercises
   </details>
   <!-- /solution -->
 
-- **7.2** **Tables:** existing **Movie** (from `setup.sql`)
+- **7.2**\
+  **Uses:** Movie *(already in the database, from `setup.sql`)*
 
   For any movie whose Genre is NULL, set the Genre to 'Indie' and the ReleaseYear to 2026. *(check: 1 row changed)*
 
@@ -65,7 +67,8 @@ These sections change the data and the tables. Do them in order: later exercises
   </details>
   <!-- /solution -->
 
-- **7.3** **Tables:** existing **Rating**, **Movie** (from `setup.sql`)
+- **7.3**\
+  **Uses:** Rating, Movie *(already in the database, from `setup.sql`)*
 
   Both of these statements will fail. Run each one and read the error message:
   - Try to delete the 'PG' rating from the Rating table.
@@ -100,7 +103,8 @@ These sections change the data and the tables. Do them in order: later exercises
 
 ### Student
 
-- **7.4** **Tables:** existing **Student** (from `setup.sql`)
+- **7.4**\
+  **Uses:** Student *(already in the database, from `setup.sql`)*
 
   Add these two students to the **Student** table using a single INSERT statement:
 
@@ -135,7 +139,8 @@ These sections change the data and the tables. Do them in order: later exercises
 
 ### Employee and Department
 
-- **7.5** **Tables:** existing **Employee**, **Department** (from `setup.sql`)
+- **7.5**\
+  **Uses:** Employee, Department *(already in the database, from `setup.sql`)*
 
   Give everyone in the Support department a 5% raise. In your WHERE clause, find the department by its **name** ("Support"). Do not type the DeptID number 30 directly. *(check: 3 rows changed)*
 
@@ -163,7 +168,8 @@ These sections change the data and the tables. Do them in order: later exercises
 
 ### Horse, Student, and LessonSchedule
 
-- **7.6** **Tables:** existing **LessonSchedule** (from `setup.sql`)
+- **7.6**\
+  **Uses:** LessonSchedule *(already in the database, from `setup.sql`)*
 
   Delete all lessons that are scheduled before 2026-02-02. *(check: 10 lessons should be left)*
 
@@ -187,7 +193,8 @@ These sections change the data and the tables. Do them in order: later exercises
   </details>
   <!-- /solution -->
 
-- **7.7** **Tables:** existing **Horse**, **LessonSchedule** (from `setup.sql`)
+- **7.7**\
+  **Uses:** Horse, LessonSchedule *(already in the database, from `setup.sql`)*
 
   This exercise shows what a foreign key does when you delete a row:
   - Count how many lessons the horse Midnight (ID 9) has.
@@ -216,7 +223,8 @@ These sections change the data and the tables. Do them in order: later exercises
   </details>
   <!-- /solution -->
 
-- **7.8** **Tables:** existing **Student**, **LessonSchedule** (from `setup.sql`)
+- **7.8**\
+  **Uses:** Student, LessonSchedule *(already in the database, from `setup.sql`)*
 
   Delete the student Jamal Carter (ID 2). Then look at the LessonSchedule table. What happened to his lesson? Which foreign key action caused this? *(check: 2 lessons should now have a NULL StudentID)*
 
@@ -253,7 +261,8 @@ CREATE TABLE Guest (
 );
 ```
 
-- **7.9** **Tables:** existing **Guest** (you created it with the statement above)
+- **7.9**\
+  **Uses:** Guest *(you created it with the statement above)*
 
   Two ways to write an INSERT. Add these two guests to the **Guest** table:
 
@@ -303,7 +312,8 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **7.10** **Tables:** existing **Guest** (from the top of this group)
+- **7.10**\
+  **Uses:** Guest *(from the top of this group)*
 
   Choosing your own AUTO_INCREMENT value. Add these two guests, one at a time:
 
@@ -337,7 +347,8 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **7.11** **Tables:** existing **Guest** (from the top of this group)
+- **7.11**\
+  **Uses:** Guest *(from the top of this group)*
 
   Check before you delete. You want to remove every guest who has never visited (Visits is 0).
   - First write a **SELECT** with the WHERE clause you plan to use, and look at which rows it returns.
@@ -366,7 +377,10 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **7.12** **Tables:** existing **Guest** (from the top of this group)
+- **7.12**\
+  **Uses:** Guest *(from the top of this group)*
+
+  > **ⓘ Note:** This changes **every row** in the existing Guest table, and there's no undo.
 
   UPDATE with no WHERE. Run `UPDATE Guest SET Visits = Visits + 1;` with **no** WHERE clause. How many rows did MySQL say it changed? Look at the table.
 
@@ -394,7 +408,8 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **7.13** **Tables:** existing **Guest** (from the top of this group)
+- **7.13**\
+  **Uses:** Guest *(from the top of this group)*
 
   DELETE versus TRUNCATE. Both remove every row from a table, but they aren't the same:
   - Run `DELETE FROM Guest;` with **no** WHERE, and count the rows.
@@ -447,7 +462,8 @@ CREATE TABLE Guest (
 
 ### Song and Playlist
 
-- **8.1** **Tables:** new **Song**
+- **8.1**\
+  **Creates:** Song
 
   Create a table named **Song** with these columns:
   - `ID`: a whole number that MySQL fills in automatically (auto-increment). It is the primary key.
@@ -500,7 +516,10 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **8.2** **Tables:** existing **Song** (from 8.1)
+- **8.2**\
+  **Uses:** Song *(from 8.1)*
+
+  > **ⓘ Note:** You **change** the Song table you made in 8.1 by adding a column. You don't create a new table.
 
   Add a new column named `Album` to the Song table. It should hold text up to 60 characters, and it should appear right after the `Artist` column.
 
@@ -522,7 +541,10 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **8.3** **Tables:** existing **Song** (from 8.1)
+- **8.3**\
+  **Uses:** Song *(from 8.1)*
+
+  > **ⓘ Note:** You **change** the Genre column of the Song table from 8.1.
 
   Change the `Genre` column so it can hold up to 30 characters instead of 20. **Make sure it still uses 'Pop' as the default.** Afterward, run `DESCRIBE Song` and check that Genre shows `varchar(30)` with the default `Pop`. It is easy to lose the default by mistake.
 
@@ -545,7 +567,10 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **8.4** **Tables:** existing **Song** (from 8.1)
+- **8.4**\
+  **Uses:** Song *(from 8.1)*
+
+  > **ⓘ Note:** You **rename** a column in the Song table from 8.1.
 
   Rename the `DurationSec` column to `Seconds`.
   - Try a plain rename first. It fails because of the CHECK you added in 8.1. Read the error. It gives the check's name, `Song_chk_1`.
@@ -579,7 +604,10 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **8.5** **Tables:** existing **Song** (from 8.1)
+- **8.5**\
+  **Uses:** Song *(from 8.1)*
+
+  > **ⓘ Note:** You **remove** a column from the Song table from 8.1.
 
   Remove the `Album` column. Then run `DESCRIBE Song` to see the table's columns. *(6 columns)*
 
@@ -602,7 +630,9 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **8.6** **Tables:** existing **Song** (from 8.1) · new **Playlist**, **PlaylistSong**
+- **8.6**\
+  **Uses:** Song *(from 8.1)*\
+  **Creates:** Playlist, PlaylistSong
 
   A playlist holds many songs, and a song can be on many playlists. You'll build this with two new tables: **Playlist**, and a linking table **PlaylistSong** that connects playlists to the songs from 8.1.
 
@@ -679,9 +709,13 @@ CREATE TABLE Guest (
 
 ### Movie and Director
 
-- **8.7** **Tables:** existing **Movie** (from `setup.sql`) · new **Director**
+- **8.7**\
+  **Uses:** Movie *(already in the database, from `setup.sql`)*\
+  **Creates:** Director
 
-  Each movie can have a director. You'll create a new **Director** table and link the existing **Movie** table (the one `setup.sql` built) to it. You don't create Movie here.
+  > **ⓘ Note:** You don't create Movie here. You **change** the existing Movie table by adding a DirectorID column that points to your new Director table.
+
+  Each movie can have a director. You'll create a new **Director** table and link the existing **Movie** table (the one `setup.sql` built) to it.
 
   **a)** Create the **Director** table:
   - `ID`: a whole number that MySQL fills in automatically (auto-increment). It is the primary key.
@@ -735,7 +769,9 @@ CREATE TABLE Guest (
 
 ### EmployeeArchive
 
-- **8.8** **Tables:** existing **Employee** (from `setup.sql`) · new **EmployeeArchive**
+- **8.8**\
+  **Uses:** Employee *(already in the database, from `setup.sql`)*\
+  **Creates:** EmployeeArchive
 
   *(Optional: goes beyond what the D427 practice tests ask.)* Create a table named **EmployeeArchive**:
   - `EmpID`: a whole number. It is the primary key. (Not auto-increment: you'll copy each employee's existing EmpID.)
@@ -779,7 +815,10 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **8.9** **Tables:** existing **EmployeeArchive** (from 8.8); **Song** (from 8.1)
+- **8.9**\
+  **Uses:** EmployeeArchive *(from 8.8)*, Song *(from 8.1)*
+
+  > **ⓘ Note:** You **rename** and then **drop** the EmployeeArchive table you made in 8.8.
 
   This exercise uses the EmployeeArchive table from 8.8. If you skipped 8.8, do its CREATE TABLE step first.
   - Rename the EmployeeArchive table to FormerEmployee. Run `SHOW TABLES` to check the new name.
@@ -816,7 +855,9 @@ CREATE TABLE Guest (
 
 ### LessonSchedule
 
-- **9.1** **Tables:** existing **LessonSchedule**, **Horse**, **Student** (from `setup.sql`) · new view **LessonDetail**
+- **9.1**\
+  **Uses:** LessonSchedule, Horse, Student *(already in the database, from `setup.sql`)*\
+  **Creates:** view LessonDetail
 
   Create a view named **LessonDetail** with these four columns, in this order:
   - `LessonDateTime` from LessonSchedule
@@ -850,7 +891,10 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **9.2** **Tables:** existing view **LessonDetail** (from 9.1); **LessonSchedule** (from `setup.sql`)
+- **9.2**\
+  **Uses:** view LessonDetail *(from 9.1)*, LessonSchedule *(from `setup.sql`)*
+
+  > **ⓘ Note:** You **change** the LessonDetail view you made in 9.1. You don't make a new view.
 
   Use `ALTER VIEW` to change the LessonDetail view so it also shows each horse's **Breed**, right after the Horse column. Then do these steps:
   - Count the rows in LessonDetail.
@@ -905,7 +949,9 @@ CREATE TABLE Guest (
 
 ### Employee and Department
 
-- **9.3** **Tables:** existing **Department**, **Employee** (from `setup.sql`) · new view **DeptSummary**
+- **9.3**\
+  **Uses:** Department, Employee *(already in the database, from `setup.sql`)*\
+  **Creates:** view DeptSummary
 
   Create a view named **DeptSummary** with one row per department and these four columns:
   - `DeptID` and `DeptName` from Department
@@ -940,7 +986,10 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **9.4** **Tables:** existing view **DeptSummary** (from 9.3)
+- **9.4**\
+  **Uses:** view DeptSummary *(from 9.3)*
+
+  > **ⓘ Note:** You **replace** the DeptSummary view you made in 9.3. You don't make a new view.
 
   Management wants DeptSummary to show only departments that **have** employees. Change the view with `CREATE OR REPLACE VIEW` this time, and keep the same four columns. Then select everything from it, sorted by DeptID. Legal should be gone. *(5 rows)*
 
@@ -977,7 +1026,9 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **9.5** **Tables:** existing **Employee** (from `setup.sql`) · new index **idx_employee_lastname**
+- **9.5**\
+  **Uses:** Employee *(already in the database, from `setup.sql`)*\
+  **Creates:** index idx_employee_lastname
 
   Work with an index on the Employee table:
   - Create an index named `idx_employee_lastname` on the LastName column.
@@ -1007,7 +1058,9 @@ CREATE TABLE Guest (
 
 ### Movie
 
-- **9.6** **Tables:** existing **Movie** (from `setup.sql`) · new index **idx_movie_genre_year**
+- **9.6**\
+  **Uses:** Movie *(already in the database, from `setup.sql`)*\
+  **Creates:** index idx_movie_genre_year
 
   *(Optional: goes beyond what the D427 practice tests ask.)* Create one index named `idx_movie_genre_year` that covers two columns of the Movie table: Genre first, then ReleaseYear (a composite index).
   - Use `EXPLAIN` on a query that filters on both columns, such as the Titles of Sci-Fi movies released in 2015 or later.
@@ -1036,7 +1089,10 @@ CREATE TABLE Guest (
 
 ### Cleaning up
 
-- **9.7** **Tables:** existing **Movie** (from `setup.sql`) and its index **idx_movie_genre_year** (from 9.6)
+- **9.7**\
+  **Uses:** Movie *(from `setup.sql`)*, index idx_movie_genre_year *(from 9.6)*
+
+  > **ⓘ Note:** You **drop** the index you made in 9.6. The Movie table itself stays.
 
   Delete (drop) the `idx_movie_genre_year` index you made in 9.6. Run `SHOW INDEX FROM Movie` to check that it's gone.
 
@@ -1063,7 +1119,8 @@ CREATE TABLE Guest (
 
 ## 10. From design to tables
 
-- **10.1** **Tables:** new **Customer**, **Product**, an orders table, an order-lines table
+- **10.1**\
+  **Creates:** Customer, Product, an orders table, and an order-lines table *(you choose the names for the last two)*
 
   Create tables for this design:
   - A **Customer** has a name and an email. The email is required, and no two customers can have the same email.
@@ -1164,7 +1221,8 @@ CREATE TABLE Guest (
   </details>
   <!-- /solution -->
 
-- **10.2** **Tables:** new **NF_Student**, **NF_Instructor**, **NF_Course**, **NF_Enrollment**
+- **10.2**\
+  **Creates:** NF_Student, NF_Instructor, NF_Course, NF_Enrollment
 
   Here is a table that is not normalized:
 

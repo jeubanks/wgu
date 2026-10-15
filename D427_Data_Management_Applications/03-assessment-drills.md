@@ -23,7 +23,8 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 > [!TIP]
 > Most exercises here also include a statement that **should fail**. Run it, read the error, and make sure you understand which rule stopped it.
 
-- **11.1** **Tables (in `d427_drills`):** new **Horse**. Compare it with the `d427` database's Horse table at the end.
+- **11.1** *(in `d427_drills`)*\
+  **Creates:** Horse
 
   Create the **Horse** table:
   - ID — integer with range 0 to 65 thousand, auto increment, primary key
@@ -81,7 +82,8 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.2** **Tables (in `d427_drills`):** new **Student**
+- **11.2** *(in `d427_drills`)*\
+  **Creates:** Student
 
   Create the **Student** table:
   - ID — integer with range 0 to 65 thousand, auto increment, primary key
@@ -135,7 +137,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.3** **Tables (in `d427_drills`):** existing **Horse** (from 11.1); **Student** (from 11.2) · new **LessonSchedule**
+- **11.3** *(in `d427_drills`)*\
+  **Uses:** Horse *(from 11.1)*, Student *(from 11.2)*\
+  **Creates:** LessonSchedule
 
   Create the **LessonSchedule** table:
   - HorseID — integer with range 0 to 65 thousand, not NULL, foreign key references Horse(ID)
@@ -176,7 +180,8 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.4** **Tables (in `d427_drills`):** existing **Horse** (from 11.1); **Student** (from 11.2); **LessonSchedule** (from 11.3)
+- **11.4** *(in `d427_drills`)*\
+  **Uses:** Horse *(from 11.1)*, Student *(from 11.2)*, LessonSchedule *(from 11.3)*
 
   Test the two foreign key rules from 11.3:
   - Add these two lessons for Babe (horse 1) and Rosie (student 1):
@@ -215,7 +220,8 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.5** **Tables (in `d427_drills`):** new **Customer**
+- **11.5** *(in `d427_drills`)*\
+  **Creates:** Customer
 
   Create the **Customer** table. Do not add any constraints beyond what is stated.
   - CustomerID — positive integer
@@ -260,7 +266,8 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.6** **Tables (in `d427_drills`):** new **Country**
+- **11.6** *(in `d427_drills`)*\
+  **Creates:** Country
 
   Create the **Country** table:
   - ID — primary key, auto increment, integer ranging from 0 to 255
@@ -323,7 +330,8 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.7** **Tables (in `d427_drills`):** new **Genre**, **Book**
+- **11.7** *(in `d427_drills`)*\
+  **Creates:** Genre, Book
 
   The **Genre** table has these columns:
   - GenreCode — variable-length string with max 5 characters, primary key
@@ -384,7 +392,8 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.8** **Tables (in `d427_drills`):** new **Pet**
+- **11.8** *(in `d427_drills`)*\
+  **Creates:** Pet
 
   Create the **Pet** table with no primary key:
   - PetID — integer
@@ -440,7 +449,8 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.9** **Tables (in `d427_drills`):** new **Breed**, **Dog**
+- **11.9** *(in `d427_drills`)*\
+  **Creates:** Breed, Dog
 
   Create these two tables exactly as described. Notice that breedID is **not** a primary key in Breed.
   - **Breed**:
@@ -494,7 +504,8 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.10** **Tables (in `d427_drills`):** new **Department**
+- **11.10** *(in `d427_drills`)*\
+  **Creates:** Department
 
   Create the **Department** table:
   - DeptID — integer, primary key
@@ -557,7 +568,8 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.11** **Tables (in `d427_drills`):** new **Automobile**
+- **11.11** *(in `d427_drills`)*\
+  **Creates:** Automobile
 
   Create the **Automobile** table:
   - ID — integer, primary key
@@ -620,7 +632,8 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.12** **Tables (in `d427_drills`):** new **Movie**. This is a separate Movie table, not the one in `d427`.
+- **11.12** *(in `d427_drills`)*\
+  **Creates:** Movie *(a separate table, not the one in `d427`)*
 
   Create this table:
 
@@ -668,7 +681,8 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.13** **Tables (in `d427_drills`):** new **Patient**, **Exam**
+- **11.13** *(in `d427_drills`)*\
+  **Creates:** Patient, Exam
 
   Create the **Patient** table:
   - patient_id — integer, primary key
@@ -736,7 +750,10 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.14** **Tables (in `d427_drills`):** existing **Patient**, **Exam** (from 11.13)
+- **11.14** *(in `d427_drills`)*\
+  **Uses:** Patient, Exam *(from 11.13)*
+
+  > **ⓘ Note:** You **change** the existing Exam table from 11.13: its patient_id column and its foreign key.
 
   The clinic changes its rule: when a patient is deleted, their exams should stay, but with no patient (NULL). There is no statement that edits a foreign key in place.
   - Remove the foreign key `fk_exam_patient`.
@@ -772,7 +789,8 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.15** **Tables (in `d427_drills`):** existing **Student** (from 11.2)
+- **11.15** *(in `d427_drills`)*\
+  **Uses:** Student *(from 11.2)*
 
   Add two more students:
 
@@ -824,7 +842,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.16** **Tables (in `d427_drills`):** existing **Student** (from 11.2) · new view **StudentContact**
+- **11.16** *(in `d427_drills`)*\
+  **Uses:** Student *(from 11.2)*\
+  **Creates:** view StudentContact
 
   Working with a view:
   - Create a view named **StudentContact** with the columns FirstName, LastName, and Phone from Student.
@@ -860,7 +880,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.17** **Tables (in `d427_drills`):** existing **Horse** (from 11.1) · new **CourseSection**
+- **11.17** *(in `d427_drills`)*\
+  **Uses:** Horse *(from 11.1)*\
+  **Creates:** CourseSection
 
   Changing a primary key:
   - Create the **CourseSection** table:
@@ -922,7 +944,10 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.18** **Tables (in `d427_drills`):** existing **Country** (from 11.6)
+- **11.18** *(in `d427_drills`)*\
+  **Uses:** Country *(from 11.6)*
+
+  > **ⓘ Note:** You **change** the existing Country table from 11.6 by adding, then removing, a UNIQUE constraint.
 
   Adding and removing a UNIQUE constraint:
   - Using ALTER TABLE, add a UNIQUE constraint named `uq_country_name` to the CountryName column of the Country table (from 11.6).
@@ -963,7 +988,10 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.19** **Tables (in `d427_drills`):** existing **Dog**, **Breed** (from 11.9)
+- **11.19** *(in `d427_drills`)*\
+  **Uses:** Dog, Breed *(from 11.9)*
+
+  > **ⓘ Note:** You **change** the existing Dog table from 11.9 by removing its foreign key and index. The Breed table stays.
 
   Removing a relationship: the shelter has stopped tracking breeds, so the Dog table no longer needs its foreign key to Breed (from 11.9).
   - Drop the foreign key `fk_dog_breed`. Then run `SHOW CREATE TABLE Dog;`. Something named fk_dog_breed is still there. What is it?
@@ -1000,7 +1028,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   </details>
   <!-- /solution -->
 
-- **11.20** **Tables (in `d427_drills`):** existing **Genre** (from 11.7) · new **Team**, **Player**
+- **11.20** *(in `d427_drills`)*\
+  **Uses:** Genre *(from 11.7)*\
+  **Creates:** Team, Player
 
   ON UPDATE CASCADE:
   - Create **Team**:

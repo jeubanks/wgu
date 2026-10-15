@@ -9,7 +9,8 @@ Do this part last, as a timed practice run.
 > [!IMPORTANT]
 > **Run `setup.sql` again before you start this section.** Do the tasks in order, because each one builds on the ones before it. Try to answer them without looking at the solutions. Give yourself about 60 minutes.
 
-- **14.1** **Tables:** new **Instructor**
+- **14.1**\
+  **Creates:** Instructor
 
   Create a table named **Instructor** with these columns:
 
@@ -46,7 +47,10 @@ Do this part last, as a timed practice run.
   </details>
   <!-- /solution -->
 
-- **14.2** **Tables:** existing **LessonSchedule** (from `setup.sql`); **Instructor** (from 14.1)
+- **14.2**\
+  **Uses:** LessonSchedule *(from `setup.sql`)*, Instructor *(from 14.1)*
+
+  > **ⓘ Note:** You **change** the existing LessonSchedule table from `setup.sql` by adding a column and a foreign key. You don't create a new table.
 
   Add a column named `InstructorID` to the LessonSchedule table, with a foreign key that points to the Instructor table. Its type must be the same as Instructor's `ID` column. If an instructor is deleted, their lessons should stay in the table, but with no instructor (NULL). *(check: `DESCRIBE LessonSchedule;` shows InstructorID, and every lesson's InstructorID is NULL)*
 
@@ -71,7 +75,8 @@ Do this part last, as a timed practice run.
   </details>
   <!-- /solution -->
 
-- **14.3** **Tables:** existing **Instructor** (from 14.1)
+- **14.3**\
+  **Uses:** Instructor *(from 14.1)*
 
   Add these three instructors to the **Instructor** table, in this order. Dale gets ID 1, Roy gets ID 2, and Annie gets ID 3. Dale and Roy use the default rate.
 
@@ -105,7 +110,8 @@ Do this part last, as a timed practice run.
   </details>
   <!-- /solution -->
 
-- **14.4** **Tables:** existing **LessonSchedule** (from `setup.sql`); **Instructor** (from 14.1)
+- **14.4**\
+  **Uses:** LessonSchedule *(from `setup.sql`)*, Instructor *(from 14.1)*
 
   Assign instructors to lessons:
   - Dale teaches every lesson on horses 1, 2, and 3.
@@ -136,7 +142,8 @@ Do this part last, as a timed practice run.
   </details>
   <!-- /solution -->
 
-- **14.5** **Tables:** existing **LessonSchedule**, **Horse**, **Student** (from `setup.sql`); **Instructor** (from 14.1)
+- **14.5**\
+  **Uses:** LessonSchedule, Horse, Student *(from `setup.sql`)*, Instructor *(from 14.1)*
 
   Show every lesson with these columns: LessonDateTime, RegisteredName, `Student` (the student's full name), and `Instructor` (the instructor's full name). A full name is the first name, a space, and the last name. If a lesson has no student, Student should be NULL. Sort the lessons from earliest to latest. *(12 rows)*
 
@@ -165,7 +172,8 @@ Do this part last, as a timed practice run.
   </details>
   <!-- /solution -->
 
-- **14.6** **Tables:** existing **Instructor** (from 14.1); **LessonSchedule** (from `setup.sql`)
+- **14.6**\
+  **Uses:** Instructor *(from 14.1)*, LessonSchedule *(from `setup.sql`)*
 
   For each instructor, show these columns: `Instructor` (first name, a space, and last name), `Lessons` (how many lessons they teach), and `Earnings` (the number of lessons multiplied by their rate). Sort the list so the instructor who earns the most is first. If two instructors earn the same amount, sort them by the Instructor column. *(3 rows)*
 
@@ -194,7 +202,8 @@ Do this part last, as a timed practice run.
   </details>
   <!-- /solution -->
 
-- **14.7** **Tables:** existing **Horse** (from `setup.sql`)
+- **14.7**\
+  **Uses:** Horse *(already in the database, from `setup.sql`)*
 
   For each breed that has more than one horse, show these columns: Breed, `Horses` (the number of horses), and `AvgHeight` (the average height, rounded to 2 decimal places). Leave out horses whose breed is unknown (NULL). Sort the list so the breed with the tallest average height is first. *(4 rows)*
 
@@ -222,7 +231,8 @@ Do this part last, as a timed practice run.
   </details>
   <!-- /solution -->
 
-- **14.8** **Tables:** existing **Horse** (from `setup.sql`)
+- **14.8**\
+  **Uses:** Horse *(already in the database, from `setup.sql`)*
 
   Show the ID, RegisteredName, and Height of the horses that are taller than the average height of all horses. Sort the list so the tallest horse is first. *(4 rows)*
 
@@ -247,7 +257,9 @@ Do this part last, as a timed practice run.
   </details>
   <!-- /solution -->
 
-- **14.9** **Tables:** existing **Student**, **LessonSchedule**, **Horse** (from `setup.sql`) · new view **AustinStudentLessons**
+- **14.9**\
+  **Uses:** Student, LessonSchedule, Horse *(already in the database, from `setup.sql`)*\
+  **Creates:** view AustinStudentLessons
 
   Create a view named **AustinStudentLessons** with the columns FirstName, LastName, LessonDateTime, and RegisteredName. The view should show only the lessons taken by students who live in Austin. Then select everything from the view, sorted from earliest to latest lesson. *(6 rows)*
 
@@ -276,7 +288,9 @@ Do this part last, as a timed practice run.
   </details>
   <!-- /solution -->
 
-- **14.10** **Tables:** existing **LessonSchedule** (from `setup.sql`) · new index **idx_lesson_student**
+- **14.10**\
+  **Uses:** LessonSchedule *(already in the database, from `setup.sql`)*\
+  **Creates:** index idx_lesson_student
 
   Create an index named `idx_lesson_student` that makes it faster to find all the lessons for a given student. *(check: `SHOW INDEX FROM LessonSchedule;` lists idx_lesson_student)*
 
@@ -299,7 +313,8 @@ Do this part last, as a timed practice run.
   </details>
   <!-- /solution -->
 
-- **14.11** **Tables:** existing **Student** (from `setup.sql`)
+- **14.11**\
+  **Uses:** Student *(already in the database, from `setup.sql`)*
 
   Some students have no email address. For each of them, set their email to their first name, a period, their last name, and then `@stable.example`, all in lowercase. For example, a student named Maria Lopez would get `maria.lopez@stable.example`. *(check: 1 row changed)*
 
@@ -324,7 +339,8 @@ Do this part last, as a timed practice run.
   </details>
   <!-- /solution -->
 
-- **14.12** **Tables:** existing **Horse**, **LessonSchedule** (from `setup.sql`)
+- **14.12**\
+  **Uses:** Horse, LessonSchedule *(already in the database, from `setup.sql`)*
 
   Delete every horse that has no lessons scheduled. Then show how many horses are left. *(1 row: 9)*
 
