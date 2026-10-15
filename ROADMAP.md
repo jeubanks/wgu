@@ -32,7 +32,7 @@ D427 is the model course. Once its patterns are settled, other courses reuse the
 
 ## Done
 
-- No references to the real assessment: wording points to the D427 practice tests; renamed the cheat sheet to SQL quick reference, Assessment drills to Practice-test drills, and Mock assessment to Final practice (pages and URLs) (#28); the same for D949's READMEs (#PR)
+- No references to the real assessment: wording points to the D427 practice tests; renamed the cheat sheet to SQL quick reference, Assessment drills to Practice-test drills, and Mock assessment to Final practice (pages and URLs) (#28); the same for D949's READMEs (#29)
 - Search finds exercises by number (one search entry per exercise); a To review list on the Overview of missed exercises (#26)
 - Dependabot's first updates merged: GitHub Actions to new majors, Playwright 1.63, newer MkDocs/Material minimums (#23, #24)
 - Drill: a constraint-wording mode (multiple choice, its own score); Check pairs each of your results with a different expected one on multi-query exercises (#25)
