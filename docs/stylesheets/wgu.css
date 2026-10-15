@@ -797,10 +797,8 @@
   /* Wide tables: no scrollbar on paper, and a slightly smaller font so they fit. */
   .md-typeset .md-typeset__scrollwrap { overflow: visible !important; }
   .md-typeset .md-typeset__table table:not([class]) { font-size: 0.62rem; }
-  .md-typeset .page-footer a[href^="http"]::after {
-    content: " (" attr(href) ")";
-    word-break: break-all;
-  }
+  /* The page footer's links don't work on paper, and it can spill onto a blank page. */
+  .md-typeset .page-footer { display: none !important; }
 }
 @media screen {
   .md-typeset .print-tab-label { display: none; }
@@ -895,3 +893,19 @@
   color: var(--md-typeset-a-color);
 }
 .md-typeset .sql-diff .sql-result { margin-top: 0.2rem; }
+
+/* The D427 cheat sheet (cheatsheet.md): compact when printed, so it fits on a
+   few sheets. Its tables may split across pages, unlike elsewhere. */
+@media print {
+  .md-typeset .cheatsheet { font-size: 0.56rem; line-height: 1.35; }
+  .md-typeset .cheatsheet h2 { margin: 0.7em 0 0.3em; font-size: 1.15em; }
+  .md-typeset .cheatsheet p,
+  .md-typeset .cheatsheet ul { margin: 0.3em 0; }
+  .md-typeset .cheatsheet li { margin-bottom: 0.1em; }
+  .md-typeset .cheatsheet table:not([class]) { font-size: 1em; break-inside: auto; }
+  .md-typeset .cheatsheet table:not([class]) th,
+  .md-typeset .cheatsheet table:not([class]) td { padding: 0.25em 0.6em; }
+  .md-typeset .cheatsheet pre { font-size: 0.95em; break-inside: avoid; }
+  .md-typeset .cheatsheet pre > code { padding: 0.4em 0.7em; }
+  .md-typeset .cheatsheet .md-typeset__table { margin: 0.3em 0; }
+}
