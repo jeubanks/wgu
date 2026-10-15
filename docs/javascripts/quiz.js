@@ -420,8 +420,13 @@
     renderSummary();
     if (part.kind !== "written" && questionDone(part.question) && part.answerBox) part.answerBox.open = true;
     if (questionDone(part.question)) {
-      // Every part answered: progress.js marks the question done.
+      // Every part answered: progress.js marks the question done, and puts it on
+      // the review list if any part was wrong (a "missed" after the "solved").
       document.dispatchEvent(new CustomEvent("d427:solved", { detail: { label: part.question } }));
+      var wrong = parts.some(function (p) {
+        return p.question === part.question && stateFor(p).r.some(function (r) { return r === false; });
+      });
+      if (wrong) document.dispatchEvent(new CustomEvent("d427:missed", { detail: { label: part.question } }));
     }
     if (part.kind !== "written") part.feedback.focus({ preventScroll: true });
   }

@@ -1,5 +1,6 @@
-/* Exercise progress: a "Done" checkbox on each exercise, and a progress bar
-   per part on the overview page. The list of parts and exercises comes from
+/* Exercise progress: a "Done" checkbox on each exercise, a progress bar per part
+   on the overview page, and a "To review" list there of exercises you missed (a
+   failed Check, or a quiz question with a wrong part) until you get them right. The list of parts and exercises comes from
    hooks/progress.py (#ex-progress-data). Progress lives in localStorage only.
    sql-runner.js sends a "d427:solved" event when a Check passes; that ticks the box. */
 (function () {
@@ -13,6 +14,13 @@
   }
   function save(done) {
     try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) { /* storage blocked */ }
+  }
+  var REVIEW = KEY + "-review";
+  function loadReview() {
+    try { return JSON.parse(localStorage.getItem(REVIEW) || "{}") || {}; } catch (e) { return {}; }
+  }
+  function saveReview(r) {
+    try { localStorage.setItem(REVIEW, JSON.stringify(r)); } catch (e) { /* storage blocked */ }
   }
   var done = load();
   var known = {};
@@ -50,7 +58,16 @@
   });
 
   document.addEventListener("d427:solved", function (e) {
-    if (e.detail && known[e.detail.label]) set(e.detail.label, true);
+    if (!e.detail || !known[e.detail.label]) return;
+    set(e.detail.label, true);
+    var review = loadReview();
+    if (review[e.detail.label]) { delete review[e.detail.label]; saveReview(review); }
+  });
+  document.addEventListener("d427:missed", function (e) {
+    if (!e.detail || !known[e.detail.label]) return;
+    var review = loadReview();
+    review[e.detail.label] = true;
+    saveReview(review);
   });
 
   if (!DATA.overview) return;
@@ -59,7 +76,7 @@
 
   function render() {
     done = load();
-    panel.querySelectorAll(".ex-progress-row, .ex-progress-total, .ex-progress-reset, .ex-progress-next").forEach(function (n) { n.remove(); });
+    panel.querySelectorAll(".ex-progress-row, .ex-progress-total, .ex-progress-reset, .ex-progress-next, .ex-review").forEach(function (n) { n.remove(); });
     var all = 0, finished = 0;
     DATA.parts.forEach(function (p) {
       var n = p.labels.filter(function (l) { return done[l]; }).length;
@@ -104,6 +121,40 @@
       go.textContent = "Every exercise is marked Done.";
     }
     panel.appendChild(go);
+
+    // To review: exercises you missed, in page order, each linked to its anchor.
+    var review = loadReview();
+    var missed = [];
+    DATA.parts.forEach(function (p) {
+      p.labels.forEach(function (l) { if (review[l]) missed.push({ part: p, label: l }); });
+    });
+    if (missed.length) {
+      var box = document.createElement("div");
+      box.className = "ex-review";
+      var title = document.createElement("p");
+      title.className = "ex-review__title";
+      title.textContent = "To review (" + missed.length + "): ";
+      box.appendChild(title);
+      missed.forEach(function (m, i) {
+        var a = document.createElement("a");
+        a.href = "../" + m.part.url + "#ex-" + m.label.toLowerCase().replace(".", "-");
+        a.textContent = m.label;
+        a.setAttribute("aria-label", "Review exercise " + m.label + ", in " + m.part.title);
+        title.appendChild(a);
+        if (i < missed.length - 1) title.appendChild(document.createTextNode(", "));
+      });
+      var note = document.createElement("p");
+      note.className = "ex-review__note";
+      note.textContent = "A failed Check or a wrong quiz answer adds an exercise here; getting it right takes it off.";
+      box.appendChild(note);
+      var clear = document.createElement("button");
+      clear.type = "button";
+      clear.className = "drill-reset";
+      clear.textContent = "Clear the list";
+      clear.addEventListener("click", function () { saveReview({}); render(); });
+      box.appendChild(clear);
+      panel.appendChild(box);
+    }
     if (finished) {
       var reset = document.createElement("button");
       reset.type = "button";
@@ -113,11 +164,12 @@
         if (!window.confirm("Clear the Done marks on every exercise in this course, in this browser?")) return;
         done = {};
         save(done);
+        saveReview({});
         render();
       });
       panel.appendChild(reset);
     }
   }
   render();
-  window.addEventListener("storage", function (e) { if (e.key === KEY) render(); });
+  window.addEventListener("storage", function (e) { if (e.key === KEY || e.key === REVIEW) render(); });
 })();

@@ -194,7 +194,7 @@ LEFT: Caption for the LEFT JOIN tab.
 
 ## Progress tracking
 
-With `progress:` set, every exercise on the `pages` glob gets a **Done** checkbox, and the `overview` page gets a progress bar per page under its `## Contents` heading, plus a **Continue with ...** button to the first exercise not marked Done. A passing Check in a Try it box, or a fully answered quiz question, ticks the box. Progress is saved in the browser under `<slug>-progress`.
+With `progress:` set, every exercise on the `pages` glob gets a **Done** checkbox, and the `overview` page gets a progress bar per page under its `## Contents` heading, plus a **Continue with ...** button to the first exercise not marked Done, and a **To review** list of exercises you missed (a failed Check, or a quiz question with a wrong part) until you get them right. `hooks/anchors.py` also adds one search entry per exercise, so searching its number finds it. A passing Check in a Try it box, or a fully answered quiz question, ticks the box. Progress is saved in the browser under `<slug>-progress`.
 
 ## Other D427 pages
 
