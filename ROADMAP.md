@@ -33,7 +33,7 @@ D427 is the model course. Once its patterns are settled, other courses reuse the
 
 ## Done
 
-- A failed Check shows extra rows, and (folded) missing rows; CI runs every SQL runner solution in SQLite (#17)
+- A failed Check shows extra rows, and (folded) missing rows; CI runs every SQL runner solution in SQLite (#18)
 - `ROADMAP.md`, `AUTHORING.md`, a root README, and per-course settings in `mkdocs.yml` (`extra.courses`) (#16)
 - Site published with MkDocs Material and GitHub Pages; WGU colors with a charcoal dark mode (#1)
 - Local MySQL setup option and `setup.sql` download links (#2, #3)
