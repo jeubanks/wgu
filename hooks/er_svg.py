@@ -9,6 +9,7 @@ classes in docs/stylesheets/wgu.css, so the diagram follows light and dark mode.
 The layout is simple on purpose (the d427 schemas are small): each group of
 connected tables is one row, the table with the most links in the middle, and
 each table is shifted up or down so the rows a line joins line up.
+er_svg_stacked() draws the same tables in one column for narrow screens.
 """
 from html import escape
 
@@ -254,6 +255,86 @@ def er_svg(tables, title, description, compact=(), max_width=720):
 
     shapes = [b.svg() for b in boxes.values()]
     m = 4  # margin so strokes aren't clipped
+    w, h = width + 2 * m, height + 2 * m
+    return (f'<svg class="er-svg" role="img" aria-labelledby="{{id}}-t {{id}}-d" '
+            f'width="{w:.0f}" height="{h:.0f}" viewBox="{-m} {-m} {w:.0f} {h:.0f}">'
+            f'<title id="{{id}}-t">{escape(title)}</title><desc id="{{id}}-d">{escape(description)}</desc>\n'
+            + "\n".join(lines + shapes) + "\n</svg>")
+
+
+STACK_GAP = 22    # between stacked tables, before any labels
+LABEL_ROW = 16    # height of one join label line
+LANE = 14         # between side-by-side lines in the right gutter
+
+
+def er_svg_stacked(tables, title, description, compact=()):
+    """Narrow-screen version: the tables in one column, the lines in a gutter on the right.
+
+    Each line leaves the referenced column's row, runs down (or up) the gutter and
+    enters the foreign key's row. Its join condition sits in the gap just above the
+    lower of its two tables (below the table, for a self-reference).
+    """
+    boxes = {n: Box(t, n in compact) for n, t in tables.items()}
+    links = [(t.name, fk) for t in tables.values() for fk in t.foreign_keys if fk.parent in tables]
+    pairs = [(c, fk.parent) for c, fk in links]
+    order = [n for g in _groups(tables) for n in _order(g, pairs)]
+    index = {n: i for i, n in enumerate(order)}
+
+    # Which gap each label goes in: gap i is the space above order[i];
+    # gap len(order) is below the last table.
+    gaps = {}
+    for child, fk in links:
+        lower = index[child] + 1 if child == fk.parent else max(index[child], index[fk.parent])
+        gaps.setdefault(lower, []).append(f"{child}.{fk.column} = {fk.parent}.{fk.parent_column}")
+
+    y, label_at = 0, []
+    for i, name in enumerate(order):
+        if i:
+            y += STACK_GAP
+        for text in gaps.get(i, []):
+            label_at.append((y + 11, text))
+            y += LABEL_ROW
+        if gaps.get(i):
+            y += 6
+        boxes[name].x, boxes[name].y = 0, y
+        y += boxes[name].h
+    if gaps.get(len(order)):
+        y += 8
+        for text in gaps[len(order)]:
+            label_at.append((y + 11, text))
+            y += LABEL_ROW
+    height = y
+
+    right = max(b.w for b in boxes.values())
+    # Lines whose vertical runs overlap get separate lanes.
+    spans, lanes = [], []
+    for child, fk in links:
+        a = boxes[fk.parent].row_y(fk.parent_column)
+        b = boxes[child].row_y(fk.column)
+        lo, hi = min(a, b), max(a, b)
+        lane = 0
+        while any(l == lane and not (hi < s_lo - 4 or lo > s_hi + 4) for (s_lo, s_hi), l in zip(spans, lanes)):
+            lane += 1
+        spans.append((lo, hi))
+        lanes.append(lane)
+
+    lines = []
+    for (child, fk), lane in zip(links, lanes):
+        cb, pb = boxes[child], boxes[fk.parent]
+        parent_kind = "one" if cb.table.column(fk.column).not_null else "zero_one"
+        dashed = "" if fk.column in cb.table.primary_key else " er-dashed"
+        py, cy = pb.row_y(fk.parent_column), cb.row_y(fk.column)
+        lx = right + END + 4 + lane * LANE
+        lines.append(f'<path class="er-line{dashed}" d="M{pb.w:.1f},{py:.1f} H{lx:.1f} '
+                     f'V{cy:.1f} H{cb.w:.1f}"/>')
+        lines += _marks(pb.w, py, 1, parent_kind) + _marks(cb.w, cy, 1, "many")
+    for ty, text in label_at:
+        lines.append(f'<text class="er-label" x="2" y="{ty:.1f}">{escape(text)}</text>')
+
+    width = max([right + END + 4 + (max(lanes, default=0)) * LANE + 4]
+                + [len(t) * LABEL_CH + 2 for _, t in label_at])
+    shapes = [b.svg() for b in boxes.values()]
+    m = 4
     w, h = width + 2 * m, height + 2 * m
     return (f'<svg class="er-svg" role="img" aria-labelledby="{{id}}-t {{id}}-d" '
             f'width="{w:.0f}" height="{h:.0f}" viewBox="{-m} {-m} {w:.0f} {h:.0f}">'
