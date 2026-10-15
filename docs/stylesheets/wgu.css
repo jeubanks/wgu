@@ -1005,3 +1005,21 @@
 .md-typeset .ex-review__title { margin: 0 0 0.2rem; font-size: 0.75rem; font-weight: 700; }
 .md-typeset .ex-review__title a { font-weight: 400; }
 .md-typeset .ex-review__note { margin: 0 0 0.2rem; font-size: 0.65rem; color: var(--md-default-fg-color--light); }
+
+/* "To review" tag next to a missed exercise's number (javascripts/progress.js). */
+.md-typeset .ex-review-mark {
+  display: inline-block;
+  margin-left: 0.5em;
+  padding: 0 0.5em;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1.6;
+  vertical-align: 0.1em;
+  border-radius: 0.8em;
+  color: #7a4d00;
+  background: #ffe8b0;
+}
+@media screen {
+  [data-md-color-scheme="slate"] .md-typeset .ex-review-mark { color: #1e2129; background: #f2c94c; }
+}
+@media print { .md-typeset .ex-review-mark { display: none; } }

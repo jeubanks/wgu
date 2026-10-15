@@ -12,11 +12,11 @@ Nothing queued. Pick from the backlog.
 
 ### Studying
 
-- [ ] **Review list on each page**: show the To review exercises on their own page too (a marker next to the label), not only on the Overview.
+Nothing here yet.
 
 ### Keep it working
 
-- [ ] **Quiet MkDocs' anchor notices**: MkDocs reports the `#ex-` links in errors.md as missing anchors (INFO), because it checks Markdown headings and the anchors are added to the HTML later. Our link check covers them; teach MkDocs about them or filter the notices.
+Nothing here yet.
 
 ### Future additions
 
@@ -36,6 +36,7 @@ Nothing queued. Pick from the backlog.
 
 ## Done
 
+- A "To review" tag next to each missed exercise on its own page; MkDocs now knows the exercise anchors, so its missing-anchor notices are gone (it still reports real broken anchors) (#31)
 - No references to the real assessment: wording points to the D427 practice tests; renamed the cheat sheet to SQL quick reference, Assessment drills to Practice-test drills, and Mock assessment to Final practice (pages and URLs) (#28); the same for D949's READMEs (#29)
 - Search finds exercises by number (one search entry per exercise); a To review list on the Overview of missed exercises (#26)
 - Dependabot's first updates merged: GitHub Actions to new majors, Playwright 1.63, newer MkDocs/Material minimums (#23, #24)
