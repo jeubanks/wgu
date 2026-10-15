@@ -6,17 +6,21 @@ course's setup.sql into SQLite with hooks/sqlite_setup.py (the same translation
 the site uses), adds the MySQL functions that docs/javascripts/sql-runner.js
 adds, applies its query rewrites, and runs the solution of every exercise that
 gets a Try it box. It fails if a solution errors or returns no result table (Check
-would have nothing to compare), if a `skip` label isn't a runner exercise, or if
-this file's function list and sql-runner.js's have drifted apart.
+would have nothing to compare), if a `skip` label isn't a runner exercise, if
+this file's function list and sql-runner.js's have drifted apart, or if the sql.js
+files on the CDN don't match the hashes pinned in sql-runner.js.
 
     python3 scripts/check_sql_runner.py
 """
+import base64
 import calendar
+import hashlib
 import importlib.util
 import math
 import re
 import sqlite3
 import sys
+import urllib.request
 from datetime import date, datetime
 from pathlib import Path
 
@@ -181,6 +185,25 @@ def _js_functions():
     return set(re.findall(r"^    ([A-Z_]+):", body, re.M))
 
 
+def _pinned_sqljs():
+    """Problems with sql.js's pinned hashes in sql-runner.js, checked against the CDN."""
+    text = RUNNER_JS.read_text()
+    base = re.search(r'var SQLJS = "([^"]+)"', text)[1]
+    sri = re.search(r'var SQLJS_SCRIPT_SRI = "sha512-([^"]+)"', text)[1]
+    wasm = re.search(r'var SQLJS_WASM_SHA256 = "([0-9a-f]{64})"', text)[1]
+    problems = []
+    for name, want, digest in (("sql-wasm.min.js", sri, lambda b: base64.b64encode(hashlib.sha512(b).digest()).decode()),
+                               ("sql-wasm.wasm", wasm, lambda b: hashlib.sha256(b).hexdigest())):
+        try:
+            got = digest(urllib.request.urlopen(base + name, timeout=30).read())
+        except OSError as err:
+            problems.append(f"couldn't download {base + name}: {err}")
+            continue
+        if got != want:
+            problems.append(f"{name} on the CDN doesn't match the hash pinned in sql-runner.js")
+    return problems
+
+
 def _mkdocs_config():
     import yaml
 
@@ -198,6 +221,8 @@ def main():
     if js != py:
         failures.append(f"function lists differ: only in sql-runner.js {sorted(js - py)}, "
                         f"only here {sorted(py - js)}")
+
+    failures += _pinned_sqljs()
 
     runner_hook = importlib.util.spec_from_file_location("sql_runner", ROOT / "hooks" / "sql_runner.py")
     hook = importlib.util.module_from_spec(runner_hook)

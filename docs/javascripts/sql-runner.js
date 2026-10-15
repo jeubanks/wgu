@@ -6,6 +6,11 @@
   "use strict";
 
   var SQLJS = "https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.14.1/";
+  // Pinned hashes: the browser refuses the script if it doesn't match (SRI; cdnjs
+  // publishes the same value), and the runner checks the .wasm itself before using
+  // it (it matches npm's sql.js@1.14.1). Update both when changing the version.
+  var SQLJS_SCRIPT_SRI = "sha512-X+JPrklGBa10Bd2gGqA4zJdu/ooxejxmGCCHFZlvfvEsOYYqV/Ke8T+ph3SvE77SdVvK9c5vL1IGnVCSnc1yqg==";
+  var SQLJS_WASM_SHA256 = "438c88f666dc054ce4e9395f80fe9db4218b1a3c379960454880f048a7898aed";
   var STORAGE = "d427-sql:";
 
   var dataEl = document.getElementById("sql-runner-data");
@@ -21,9 +26,11 @@
     enginePromise = new Promise(function (resolve, reject) {
       var script = document.createElement("script");
       script.src = SQLJS + "sql-wasm.min.js";
+      script.integrity = SQLJS_SCRIPT_SRI;
       script.crossOrigin = "anonymous";
       script.onload = function () {
-        window.initSqlJs({ locateFile: function (file) { return SQLJS + file; } })
+        fetchWasm()
+          .then(function (wasm) { return window.initSqlJs({ wasmBinary: wasm }); })
           .then(function (SQL) {
             // Build the sample data once; every run starts from a copy of it.
             var db = new SQL.Database();
@@ -38,6 +45,24 @@
     });
     enginePromise.catch(function () { enginePromise = null; });
     return enginePromise;
+  }
+
+  // Download sql.js's .wasm and check it against the pinned SHA-256 before using it.
+  function fetchWasm() {
+    return fetch(SQLJS + "sql-wasm.wasm", { mode: "cors", credentials: "omit" })
+      .then(function (res) {
+        if (!res.ok) throw new Error("Couldn't download SQLite (sql.js). Check your connection.");
+        return res.arrayBuffer();
+      })
+      .then(function (buf) {
+        return crypto.subtle.digest("SHA-256", buf).then(function (digest) {
+          var hex = Array.prototype.map.call(new Uint8Array(digest), function (b) {
+            return ("0" + b.toString(16)).slice(-2);
+          }).join("");
+          if (hex !== SQLJS_WASM_SHA256) throw new Error("SQLite (sql.js) didn't match its pinned checksum, so it wasn't run.");
+          return buf;
+        });
+      });
   }
 
   function freshDb(engine) {

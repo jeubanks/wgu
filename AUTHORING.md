@@ -35,7 +35,7 @@ Every pull request runs these checks (`.github/workflows/checks.yml`), and `main
 | setup.sql + solutions.sql run on MySQL 8.4 | D427's `setup.sql`, then all of its `solutions.sql`, then every full statement on the cheat sheet (`scripts/check_cheatsheet.py`). Add steps for each new SQL course. |
 | Exercise files match solutions.sql | `build_solutions.py`, `build_diagrams.py`, and `build_errors.py` leave no changes |
 
-Run the same things locally before pushing. The accessibility check needs Playwright: `pip install playwright==1.49.1 && python3 -m playwright install chromium` (or add `--channel chrome` to use an installed Chrome). If you edit `solutions.sql` or a `CREATE TABLE` in `setup.sql`, run `python3 build_solutions.py` / `python3 build_diagrams.py` in the course folder and commit what they change.
+Run the same things locally before pushing. The accessibility check needs Playwright: `pip install -r requirements-ci.txt && python3 -m playwright install chromium` (or add `--channel chrome` to use an installed Chrome). If you edit `solutions.sql` or a `CREATE TABLE` in `setup.sql`, run `python3 build_solutions.py` / `python3 build_diagrams.py` in the course folder and commit what they change.
 
 ## Adding a course
 
