@@ -1,5 +1,6 @@
 site_name: WGU Study Kits
 site_url: https://jeubanks.github.io/wgu/
+site_description: Unofficial practice for WGU courses. D427 has 151 MySQL exercises with quizzes, diagrams, and SQL you can run in your browser.
 repo_url: https://github.com/jeubanks/wgu
 edit_uri: edit/main/
 
@@ -13,6 +14,7 @@ watch:
   - D949_Data_Structures_And_Algorithms_I
   - hooks
   - includes
+  - overrides
 
 exclude_docs: |
   *.py
@@ -29,6 +31,7 @@ extra_javascript:
   - javascripts/sql-runner.js
   - javascripts/quiz.js
   - javascripts/progress.js
+  - javascripts/site.js
 
 hooks:
   - hooks/er_diagrams.py
@@ -37,9 +40,12 @@ hooks:
   - hooks/sql_runner.py
   - hooks/quiz.py
   - hooks/progress.py
+  - hooks/page_footer.py
 
 theme:
   name: material
+  custom_dir: overrides
+  favicon: assets/favicon.svg
   features:
     - navigation.tabs
     - navigation.sections
