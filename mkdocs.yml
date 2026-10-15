@@ -28,6 +28,7 @@ extra_css:
 extra_javascript:
   - javascripts/sql-runner.js
   - javascripts/quiz.js
+  - javascripts/progress.js
 
 hooks:
   - hooks/er_diagrams.py
@@ -35,6 +36,7 @@ hooks:
   - hooks/details.py
   - hooks/sql_runner.py
   - hooks/quiz.py
+  - hooks/progress.py
 
 theme:
   name: material

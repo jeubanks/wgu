@@ -419,6 +419,10 @@
     renderPart(part);
     renderSummary();
     if (part.kind !== "written" && questionDone(part.question) && part.answerBox) part.answerBox.open = true;
+    if (questionDone(part.question)) {
+      // Every part answered: progress.js marks the question done.
+      document.dispatchEvent(new CustomEvent("d427:solved", { detail: { label: part.question } }));
+    }
     if (part.kind !== "written") part.feedback.focus({ preventScroll: true });
   }
 

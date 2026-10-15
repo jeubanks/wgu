@@ -367,6 +367,10 @@
         if (withCheck && !out.error) {
           var verdict = check(engine, label, out.results);
           nodes.push(message(verdict.ok ? "ok" : "bad", (verdict.ok ? "✓ " : "✗ ") + verdict.text));
+          if (verdict.ok) {
+            // progress.js ticks this exercise's Done box.
+            document.dispatchEvent(new CustomEvent("d427:solved", { detail: { label: label } }));
+          }
         }
         out.results.forEach(function (r, i) { nodes.push(renderTable(r, i, out.results.length)); });
         if (out.error) {
@@ -416,8 +420,16 @@
     var strong = first && first.tagName === "P" ? first.firstElementChild : null;
     if (!strong || strong.tagName !== "STRONG" || first.firstChild !== strong) return;
     var label = strong.textContent.trim();
-    if (!Object.prototype.hasOwnProperty.call(DATA.solutions, label)) return;
     var before = li.querySelector(":scope > details");
+    var skip = DATA.skip || {};
+    if (Object.prototype.hasOwnProperty.call(skip, label)) {
+      var note = document.createElement("p");
+      note.className = "sql-runner-skip";
+      note.textContent = "Try it (SQLite) isn't available here. " + skip[label];
+      li.insertBefore(note, before);
+      return;
+    }
+    if (!Object.prototype.hasOwnProperty.call(DATA.solutions, label)) return;
     li.insertBefore(build(label), before);
   });
 })();

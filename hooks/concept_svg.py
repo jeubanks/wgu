@@ -215,3 +215,88 @@ def delete_svg(case, title, description):
                 y += 44
         out.append(_wrap(body, width, y, title, description))
     return tuple(out)
+
+
+NODE_H = 40       # org-chart box height
+NODE_GAP = 14     # between boxes on one level
+LEVEL_GAP = 34    # between levels
+INDENT = 26       # narrow layout: per level
+
+
+def _node(x, y, w, name, key, cls=""):
+    return (f'<g class="er-table cd-node{cls}" transform="translate({x:.1f},{y:.1f})">'
+            f'<rect class="er-box" width="{w:.1f}" height="{NODE_H}" rx="6"/>'
+            f'<rect class="er-border" width="{w:.1f}" height="{NODE_H}" rx="6"/>'
+            f'<text class="cd-cell cd-key" x="{w / 2:.1f}" y="17" text-anchor="middle">{escape(name)}</text>'
+            f'<text class="er-more" x="{w / 2:.1f}" y="32" text-anchor="middle">{escape(key)}</text></g>')
+
+
+def tree_svg(tree, title, description):
+    """(wide, narrow) SVGs for a table that points at itself, drawn as an org chart.
+
+    tree is a hooks/concept_diagrams.Tree. Wide: the rows on the left, the chart on
+    the right, top-down. Narrow: the rows on top, the chart below as an indented tree.
+    """
+    labels = {n: (tree.names[n], f"{tree.key_col} {n}") for n in tree.order}
+    node_w = max(max(len(a) * CH, len(b) * 6.6) for a, b in labels.values()) + 2 * PAD
+    out = []
+    for narrow in (False, True):
+        grid = Grid(tree.title, tree.cols, tree.rows, keys=[tree.cols.index(tree.key_col),
+                                                             tree.cols.index(tree.parent_col)])
+        body = [grid.svg("t")]
+        pos = {}
+        if narrow:
+            x0, y0 = 0, grid.h + 34
+            for i, n in enumerate(tree.order):
+                pos[n] = (x0 + tree.depth[n] * INDENT, y0 + i * (NODE_H + 8))
+            for n in tree.order:
+                p = tree.parent[n]
+                if p is None:
+                    continue
+                px, py = pos[p]
+                cx, cy = pos[n]
+                body.insert(0, f'<path class="cd-link" d="M{px + 12:.1f},{py + NODE_H:.1f} '
+                               f'V{cy + NODE_H / 2:.1f} H{cx:.1f}"/>')
+            width = max(grid.w, max(x for x, _ in pos.values()) + node_w)
+            height = y0 + len(tree.order) * (NODE_H + 8)
+            body.append(_label(0, grid.h + 22, f"{tree.parent_col} points at {tree.key_col}:", "cd-step"))
+        else:
+            x0 = grid.w + ARROW_GAP
+            # Leaves get the next free slot; each parent sits centered over its children.
+            slot = [0]
+            cx = {}
+
+            def place(n):
+                kids = tree.children[n]
+                if not kids:
+                    cx[n] = slot[0] * (node_w + NODE_GAP)
+                    slot[0] += 1
+                else:
+                    for k in kids:
+                        place(k)
+                    cx[n] = (cx[kids[0]] + cx[kids[-1]]) / 2
+
+            for r in tree.roots:
+                place(r)
+                slot[0] += 0.4  # a little air between separate trees
+            for n in tree.order:
+                pos[n] = (x0 + cx[n], tree.depth[n] * (NODE_H + LEVEL_GAP))
+            for n in tree.order:
+                p = tree.parent[n]
+                if p is None:
+                    continue
+                px, py = pos[p]
+                nx, ny = pos[n]
+                mid = py + NODE_H + LEVEL_GAP / 2
+                body.insert(0, f'<path class="cd-link" d="M{px + node_w / 2:.1f},{py + NODE_H:.1f} '
+                               f'V{mid:.1f} H{nx + node_w / 2:.1f} V{ny:.1f}"/>')
+            y = HEAD + COLHEAD / 2
+            body.append(_arrow(grid.w + 10, y, x0 - 8, y))
+            width = max(x for x, _ in pos.values()) + node_w
+            height = max(grid.h, max(y for _, y in pos.values()) + NODE_H)
+        for n in tree.order:
+            name, key = labels[n]
+            x, y = pos[n]
+            body.append(_node(x, y, node_w, name, key, " cd-root" if tree.parent[n] is None else ""))
+        out.append(_wrap(body, width, height, title, description))
+    return tuple(out)
