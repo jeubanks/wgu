@@ -1,6 +1,7 @@
 /* Exercise progress: a "Done" checkbox on each exercise, a progress bar per part
    on the overview page, and a "To review" list there of exercises you missed (a
-   failed Check, or a quiz question with a wrong part) until you get them right. The list of parts and exercises comes from
+   failed Check, or a quiz question with a wrong part) until you get them right.
+   Those exercises also get a "To review" tag next to their number on their page. The list of parts and exercises comes from
    hooks/progress.py (#ex-progress-data). Progress lives in localStorage only.
    sql-runner.js sends a "d427:solved" event when a Check passes; that ticks the box. */
 (function () {
@@ -26,7 +27,7 @@
   var known = {};
   DATA.parts.forEach(function (p) { p.labels.forEach(function (l) { known[l] = true; }); });
 
-  var boxes = {};
+  var boxes = {}, labels = {};
   function set(label, value) {
     if (value) done[label] = true; else delete done[label];
     save(done);
@@ -54,20 +55,40 @@
     wrap.appendChild(document.createTextNode(" Done"));
     first.insertBefore(wrap, strong);
     boxes[label] = box;
+    labels[label] = strong;
     li.classList.toggle("ex-is-done", box.checked);
   });
+
+  // A "To review" tag next to each exercise on the review list, on its own page.
+  function markReview(label, on) {
+    var strong = labels[label];
+    if (!strong) return;
+    var tag = strong.parentNode.querySelector(":scope > .ex-review-mark");
+    if (on && !tag) {
+      tag = document.createElement("span");
+      tag.className = "ex-review-mark";
+      tag.textContent = "To review";
+      tag.title = "A Check failed or a quiz answer was wrong here. Get it right to clear this.";
+      strong.after(tag);
+    } else if (!on && tag) {
+      tag.remove();
+    }
+  }
+  Object.keys(loadReview()).forEach(function (label) { markReview(label, true); });
 
   document.addEventListener("d427:solved", function (e) {
     if (!e.detail || !known[e.detail.label]) return;
     set(e.detail.label, true);
     var review = loadReview();
     if (review[e.detail.label]) { delete review[e.detail.label]; saveReview(review); }
+    markReview(e.detail.label, false);
   });
   document.addEventListener("d427:missed", function (e) {
     if (!e.detail || !known[e.detail.label]) return;
     var review = loadReview();
     review[e.detail.label] = true;
     saveReview(review);
+    markReview(e.detail.label, true);
   });
 
   if (!DATA.overview) return;
