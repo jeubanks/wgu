@@ -93,7 +93,15 @@ Both parts use the `d427` practice database. **Run `setup.sql` first** so you st
 
   </details>
 
-The rest of the exercises use a small scratch table. Create it first:
+The rest of the exercises use a small scratch table. Create a table named **Visitor** with these columns first:
+
+- `VisitorID`: a whole number that MySQL fills in automatically (auto-increment). It is the primary key.
+- `FullName`: text up to 40 characters. It is required (cannot be NULL).
+- `City`: text up to 20 characters.
+- `Visits`: a whole number. It is required (cannot be NULL). If no value is given, it should be 0.
+
+<details>
+<summary>Solution</summary>
 
 ```sql
 CREATE TABLE Visitor (
@@ -103,6 +111,8 @@ CREATE TABLE Visitor (
   Visits     INT NOT NULL DEFAULT 0
 );
 ```
+
+</details>
 
 - **T.3** Making changes permanent with COMMIT:
   - Start a transaction and add these two visitors:

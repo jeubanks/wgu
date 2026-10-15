@@ -250,21 +250,18 @@ These sections change the data and the tables. Do them in order: later exercises
 
 ### Guest: adding, changing, and deleting
 
-These exercises use a small scratch table named Guest that no other exercise uses. Create it first:
-
-```sql
-CREATE TABLE Guest (
-  GuestID   INT AUTO_INCREMENT PRIMARY KEY,
-  FullName  VARCHAR(40) NOT NULL,
-  City      VARCHAR(20),
-  Visits    INT NOT NULL DEFAULT 0
-);
-```
+These exercises use a small scratch table named Guest that no other exercise uses. You create it in 7.9.
 
 - **7.9**\
-  **Uses:** Guest *(you created it with the statement above)*
+  **Creates:** Guest
 
-  Two ways to write an INSERT. Add these two guests to the **Guest** table:
+  Create a table named **Guest** with these columns, in this order:
+  - `GuestID`: a whole number that MySQL fills in automatically (auto-increment). It is the primary key.
+  - `FullName`: text up to 40 characters. It is required (cannot be NULL).
+  - `City`: text up to 20 characters.
+  - `Visits`: a whole number. It is required (cannot be NULL). If no value is given, it should be 0.
+
+  Then try two ways to write an INSERT. Add these two guests to the **Guest** table:
 
   | GuestID | FullName | City | Visits |
   |---|---|---|---|
@@ -282,6 +279,7 @@ CREATE TABLE Guest (
   <details>
   <summary>Hint</summary>
 
+  - For the table, `INT AUTO_INCREMENT PRIMARY KEY` lets MySQL number the rows, and `NOT NULL DEFAULT 0` makes Visits required but filled in when you leave it out.
   - With no column list, the VALUES must cover every column, in the order the table defines them. Writing NULL (or DEFAULT) for an AUTO_INCREMENT column lets MySQL choose the number.
   - A column you leave out of the column list gets its DEFAULT. A NOT NULL column with no DEFAULT can't be left out.
 
@@ -313,7 +311,7 @@ CREATE TABLE Guest (
   <!-- /solution -->
 
 - **7.10**\
-  **Uses:** Guest *(from the top of this group)*
+  **Uses:** Guest *(from 7.9)*
 
   Choosing your own AUTO_INCREMENT value. Add these two guests, one at a time:
 
@@ -348,7 +346,7 @@ CREATE TABLE Guest (
   <!-- /solution -->
 
 - **7.11**\
-  **Uses:** Guest *(from the top of this group)*
+  **Uses:** Guest *(from 7.9)*
 
   Check before you delete. You want to remove every guest who has never visited (Visits is 0).
   - First write a **SELECT** with the WHERE clause you plan to use, and look at which rows it returns.
@@ -378,7 +376,7 @@ CREATE TABLE Guest (
   <!-- /solution -->
 
 - **7.12**\
-  **Uses:** Guest *(from the top of this group)*
+  **Uses:** Guest *(from 7.9)*
 
   > **ⓘ Note:** This changes **every row** in the existing Guest table, and there's no undo.
 
@@ -409,7 +407,7 @@ CREATE TABLE Guest (
   <!-- /solution -->
 
 - **7.13**\
-  **Uses:** Guest *(from the top of this group)*
+  **Uses:** Guest *(from 7.9)*
 
   DELETE versus TRUNCATE. Both remove every row from a table, but they aren't the same:
   - Run `DELETE FROM Guest;` with **no** WHERE, and count the rows.

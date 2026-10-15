@@ -635,15 +635,12 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 - **11.12** *(in `d427_drills`)*\
   **Creates:** Movie *(a separate table, not the one in `d427`)*
 
-  Create this table:
+  Create the **Movie** table:
+  - MovieID — integer, not NULL
+  - MovieName — variable-length string with max 25 chars, not NULL
+  - ReleaseDate — date
 
-  ```sql
-  CREATE TABLE Movie (
-    MovieID      INT NOT NULL,
-    MovieName    VARCHAR(25) NOT NULL,
-    ReleaseDate  DATE
-  );
-  ```
+  Then:
 
   - Change the MovieName column so it can hold up to 50 characters. **Keep the name MovieName, and keep it NOT NULL.**
   - Then rename the column to CanadianMovieName, keeping VARCHAR(50) and NOT NULL.
@@ -655,6 +652,7 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   <details>
   <summary>Hint</summary>
 
+  - Create the table first: two NOT NULL columns and one DATE column, no primary key.
   - `MODIFY col definition` keeps the name. `CHANGE old_name new_name definition` renames the column.
   - Both replace the whole definition, so write NOT NULL again.
 

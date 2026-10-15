@@ -507,6 +507,7 @@ DELETE FROM Student WHERE ID = 2;
 SELECT * FROM LessonSchedule WHERE StudentID IS NULL;    -- Jamal's 2/4 lesson now has NULL (SET NULL)
 
 -- [7.9]
+-- Hint: For the table, `INT AUTO_INCREMENT PRIMARY KEY` lets MySQL number the rows, and `NOT NULL DEFAULT 0` makes Visits required but filled in when you leave it out.
 -- Hint: With no column list, the VALUES must cover every column, in the order the table defines them. Writing NULL (or DEFAULT) for an AUTO_INCREMENT column lets MySQL choose the number.
 -- Hint: A column you leave out of the column list gets its DEFAULT. A NOT NULL column with no DEFAULT can't be left out.
 CREATE TABLE Guest (
@@ -1042,6 +1043,7 @@ INSERT INTO Automobile VALUES (1, 'Toyota', 'Camry', 2024, 79.9, 2.5);
 SELECT * FROM Automobile;
 
 -- [11.12]
+-- Hint: Create the table first: two NOT NULL columns and one DATE column, no primary key.
 -- Hint: `MODIFY col definition` keeps the name. `CHANGE old_name new_name definition` renames the column.
 -- Hint: Both replace the whole definition, so write NOT NULL again.
 CREATE TABLE Movie (
