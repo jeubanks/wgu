@@ -2,7 +2,7 @@
 
 [← Exercise index](exercises.md) · [MySQL error decoder](errors.md)
 
-The rules and syntax the D427 assessment leans on, on one page. Print it (three pages) or keep it open while you practice. Every statement here was run on MySQL 8.4.
+The rules and syntax the D427 assessment leans on, on one page. Print it (three pages) or keep it open while you practice. Every full statement here runs on MySQL 8.4, checked by CI on every change.
 
 <div class="cheatsheet" markdown>
 
@@ -67,15 +67,17 @@ CREATE TABLE Lesson (
 
 | To | Write |
 |---|---|
-| add a column | `ALTER TABLE t ADD COLUMN c VARCHAR(20) AFTER other;` |
+| add a column | `ALTER TABLE t ADD COLUMN d VARCHAR(20) AFTER other;` |
 | change a column's type (same name) | `ALTER TABLE t MODIFY c VARCHAR(50) NOT NULL;` |
 | rename and retype a column | `ALTER TABLE t CHANGE old new VARCHAR(50) NOT NULL;` |
 | rename a column only | `ALTER TABLE t RENAME COLUMN old TO new;` |
 | drop a column | `ALTER TABLE t DROP COLUMN c;` |
 | add a primary key | `ALTER TABLE t ADD PRIMARY KEY (c);` |
-| add a foreign key | `ALTER TABLE t ADD CONSTRAINT fk_name FOREIGN KEY (c) REFERENCES p(id);` |
-| add a unique rule or a check | `ALTER TABLE t ADD CONSTRAINT uq_name UNIQUE (c);` · `ADD CONSTRAINT ck_name CHECK (c > 0);` |
-| drop them | `DROP PRIMARY KEY` · `DROP FOREIGN KEY fk_name` · `DROP INDEX uq_name` · `DROP CHECK ck_name` |
+| add a foreign key | `ALTER TABLE t ADD CONSTRAINT fk_name FOREIGN KEY (x) REFERENCES p(id);` |
+| add a unique rule | `ALTER TABLE t ADD CONSTRAINT uq_name UNIQUE (c);` |
+| add a check | `ALTER TABLE t ADD CONSTRAINT ck_name CHECK (x > 0);` |
+| drop a primary key | `ALTER TABLE t DROP PRIMARY KEY;` |
+| drop a foreign key, unique rule, or check | `ALTER TABLE t DROP FOREIGN KEY fk_name;` · `ALTER TABLE t DROP INDEX uq_name;` · `ALTER TABLE t DROP CHECK ck_name;` |
 | rename a table | `ALTER TABLE t RENAME TO t2;` |
 | remove a table | `DROP TABLE t;` (children first, if foreign keys point at it) |
 

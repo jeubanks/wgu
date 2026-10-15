@@ -32,6 +32,9 @@ jobs:
       - run: python3 scripts/check_links.py site
       # Every Try it box's solution still runs in SQLite, the way the browser runs it.
       - run: python3 scripts/check_sql_runner.py
+      # Every page, light and dark, every folded box open: no axe-core violations.
+      - run: pip install playwright==1.49.1 && python3 -m playwright install --with-deps chromium
+      - run: python3 scripts/check_a11y.py site
 
   solutions:
     name: setup.sql + solutions.sql run on MySQL 8.4
@@ -68,6 +71,12 @@ jobs:
       # No --force: the first error stops the client and fails the step.
       - run: mysql -h 127.0.0.1 -uroot < setup.sql
       - run: mysql -h 127.0.0.1 -uroot < solutions.sql > /dev/null
+      # Every full statement on the cheat sheet, taken from the page itself.
+      - name: Cheat sheet statements run on MySQL 8.4
+        shell: bash
+        run: |
+          set -o pipefail
+          python3 ../scripts/check_cheatsheet.py | mysql -h 127.0.0.1 -uroot > /dev/null
 
   solutions-fresh:
     name: Exercise files match solutions.sql
