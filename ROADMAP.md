@@ -29,7 +29,7 @@ D427 is the model course. Once its patterns are settled, other courses reuse the
 
 ## Done
 
-- Drill: a constraint-wording mode (multiple choice, its own score); Check pairs each of your results with a different expected one on multi-query exercises (#PR)
+- Drill: a constraint-wording mode (multiple choice, its own score); Check pairs each of your results with a different expected one on multi-query exercises (#25)
 - sql.js pinned by hash (SRI on the script, a SHA-256 check on the .wasm, both verified in CI), and Dependabot for Actions and Python packages (#22)
 - CI runs every cheat-sheet statement on MySQL 8.4, and an axe-core accessibility scan of every page in light and dark mode (#21)
 - Link anchors on every exercise, a Continue button on the Overview, error decoder links straight to exercises, and the spec-to-type drill (#20)
