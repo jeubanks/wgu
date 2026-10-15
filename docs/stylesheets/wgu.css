@@ -884,3 +884,14 @@
     --md-shadow-z3:0 0.2rem 0.5rem #0003,0 0 0.05rem #00000059;
   }
 }
+
+/* SQL runner: what differs after a failed Check (javascripts/sql-runner.js). */
+.md-typeset .sql-diff { margin: 0.5rem 0; }
+.md-typeset .sql-diff__title { margin: 0 0 0.2rem; font-size: 0.7rem; font-weight: 700; }
+.md-typeset .sql-diff--missing > summary {
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--md-typeset-a-color);
+}
+.md-typeset .sql-diff .sql-result { margin-top: 0.2rem; }

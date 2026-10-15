@@ -30,6 +30,8 @@ jobs:
       - run: pip install -r requirements-docs.txt
       - run: mkdocs build --strict
       - run: python3 scripts/check_links.py site
+      # Every Try it box's solution still runs in SQLite, the way the browser runs it.
+      - run: python3 scripts/check_sql_runner.py
 
   solutions:
     name: setup.sql + solutions.sql run on MySQL 8.4

@@ -31,7 +31,7 @@ Every pull request runs these checks (`.github/workflows/checks.yml`), and `main
 
 | Check | What it runs |
 |---|---|
-| Site builds, links resolve | `mkdocs build --strict`, then `scripts/check_links.py site` |
+| Site builds, links resolve | `mkdocs build --strict`, `scripts/check_links.py site`, and `scripts/check_sql_runner.py` (every Try it solution runs in SQLite) |
 | setup.sql + solutions.sql run on MySQL 8.4 | D427's `setup.sql`, then all of its `solutions.sql` (add steps for each new SQL course) |
 | Exercise files match solutions.sql | `build_solutions.py` and `build_diagrams.py` leave no changes |
 
@@ -187,7 +187,8 @@ LEFT: Caption for the LEFT JOIN tab.
 
 - **Only read-only queries.** Changing data and tables should be practiced on real MySQL. List exceptions inside a section under `skip`, with the reason the learner sees.
 - The course's first runner page gets the full "SQLite, not MySQL" note; other pages get a short one under each section.
-- Every runner solution must also run in SQLite. Check that in the preview (or CI, once it covers the runner) when you add or change one.
+- Every runner solution must also run in SQLite, and return a result table for Check to compare. `scripts/check_sql_runner.py` checks this in CI. If a solution needs a MySQL function SQLite lacks, add it to `FUNCTIONS` in both `docs/javascripts/sql-runner.js` and the check script (the check fails if the two lists differ), or put the exercise in `skip`.
+- A failed Check shows the rows yours has that the answer doesn't, and (folded, since it shows part of the answer) the rows the answer has that yours doesn't.
 
 ## Progress tracking
 
