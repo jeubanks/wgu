@@ -991,6 +991,36 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
 | `Driver RIGHT JOIN Bus` | every bus; the Green line (no driver) gets NULL for Name |
 <!-- /join-diagram -->
 
+**A table joined to itself (a self-join).** Sometimes a foreign key points back at its own table. In this made-up Crew table, each crew member's LeadID holds the CrewID of the person they report to, so the rows form a chart:
+
+<!-- tree-diagram
+table: Crew(CrewID, Name, LeadID) = 1, Rae, NULL; 2, Sol, 1; 3, Teo, 1; 4, Uma, 2; 5, Vic, 2
+rows: Crew | CrewID, Name, LeadID
+parent: LeadID -> CrewID
+label: Name
+-->
+| CrewID | Name | LeadID | Reports to |
+|---|---|---|---|
+| 1 | Rae | NULL | nobody (the top) |
+| 2 | Sol | 1 | Rae |
+| 3 | Teo | 1 | Rae |
+| 4 | Uma | 2 | Sol |
+| 5 | Vic | 2 | Sol |
+<!-- /tree-diagram -->
+
+To list each person next to their lead, use the table twice with two aliases: `c` for the crew member and `l` for the lead, joined on `c.LeadID = l.CrewID`.
+
+<!-- join-diagram
+from: Crew c | CrewID, Name, LeadID
+join: Crew l | CrewID, Name
+on: c.LeadID = l.CrewID
+select: c.Name, l.Name
+INNER: Each crew member's LeadID finds their lead's row. Rae has no lead (NULL), so an **inner join** leaves her out.
+LEFT: With `Crew c LEFT JOIN Crew l`, every crew member stays. Rae's lead shows as NULL.
+-->
+`Crew c JOIN Crew l ON c.LeadID = l.CrewID` gives 4 rows (Rae has no lead). `Crew c LEFT JOIN Crew l` gives all 5, with NULL as Rae's lead.
+<!-- /join-diagram -->
+
 ### Employee and Department
 
 - **5.1** Show each employee's FirstName and LastName next to the DeptName of their department. Use an inner join. One employee is missing from the result. Who is it, and why are they missing? *(14 rows)*
@@ -1076,12 +1106,22 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
   join: Employee m | EmpID, FirstName | EmpID IN (7, 8, 10, 11)
   on: e.ManagerID = m.EmpID
   select: e.FirstName, m.FirstName
-  fold: Picture it: the Employee table joined to itself
+  in: solution
+  heading: The self-join, on four of the rows:
   INNER: The same four rows play two parts: `e` is the employee and `m` is the manager. Each employee's ManagerID points at the manager's EmpID.
   LEFT: The `e` side is kept whole, so an employee with no manager stays, with NULL for the manager's name.
   -->
-  *(On the site, a picture of the Employee table joined to itself goes here: each employee's ManagerID points at another employee's EmpID.)*
   <!-- /join-diagram -->
+
+  <!-- tree-diagram
+  rows: Employee | EmpID, FirstName, ManagerID
+  parent: ManagerID -> EmpID
+  label: FirstName
+  in: solution
+  heading: Who reports to whom:
+  caption: Grace, Barbara, and Katherine have no manager, so they're at the top. Their Manager column is NULL in your result.
+  -->
+  <!-- /tree-diagram -->
 
   <!-- solution:5.4 -->
   <details>

@@ -30,6 +30,16 @@ condition). Each INNER / LEFT / RIGHT line adds a tab with that join.
 
 Each rule line adds a tab: the rows before and after `DELETE FROM parent WHERE delete`.
 
+    <!-- tree-diagram
+    rows: Employee | EmpID, FirstName, ManagerID
+    parent: ManagerID -> EmpID
+    label: FirstName
+    caption: Text above the picture (Markdown).
+    -->
+
+A table whose foreign key points at its own primary key (the setup for a
+self-join), drawn as an org chart next to its rows. No tabs.
+
 On the site the whole block, fallback text included, becomes the tabs. The rows
 come from setup.sql (loaded into SQLite with hooks/sql_runner.py's converter),
 so the pictures stay true to the data. The SVG is drawn by hooks/concept_svg.py.
@@ -41,7 +51,8 @@ Optional lines, for both kinds:
   `from:` / `parent:` can then be left out.
 - `fold: Title` puts the tabs in a folded tip box.
 - `in: solution` moves the picture into the exercise's Solution box, the next
-  one after the comment. Use it when the picture is the answer. Leave the
+  one after the comment. `heading: Text` replaces its bold heading there
+  ("The foreign key at work:"). Use it when the picture is the answer. Leave the
   fallback text empty: GitHub readers have the solution's SQL comments.
 """
 import importlib.util
@@ -58,7 +69,7 @@ for _name in ("er_svg", "concept_svg"):  # mkdocs serve reloads this hook; pick 
 
 import concept_svg  # noqa: E402
 
-BLOCK = re.compile(r"^(?P<indent>[ \t]*)<!-- (?P<kind>join|delete)-diagram\n(?P<spec>.*?)^[ \t]*-->\n"
+BLOCK = re.compile(r"^(?P<indent>[ \t]*)<!-- (?P<kind>join|delete|tree)-diagram\n(?P<spec>.*?)^[ \t]*-->\n"
                    r".*?^[ \t]*<!-- /(?P=kind)-diagram -->[ \t]*$", re.M | re.S)
 JOINS = ("INNER", "LEFT", "RIGHT")
 RULES = ("CASCADE", "SET NULL", "RESTRICT")
@@ -269,9 +280,53 @@ class DeleteCase:
                 f"Statement: {self.statement} {effect}")
 
 
+class Tree:
+    """A table that points at itself, as parent links between its rows."""
+
+    def __init__(self, db, spec):
+        table, _, cols, where = _source(spec["rows"])
+        self.parent_col, self.key_col = (s.strip() for s in spec["parent"].split("->"))
+        label = spec.get("label", cols[1])
+        self.title, self.cols = table, cols
+        self.rows = _rows(db, table, cols, where)
+        ki, pi, li = cols.index(self.key_col), cols.index(self.parent_col), cols.index(label)
+        ids = [r[ki] for r in self.rows]
+        self.names = {r[ki]: _text(r[li]) for r in self.rows}
+        self.parent = {r[ki]: (r[pi] if r[pi] in ids else None) for r in self.rows}
+        self.children = {i: [r[ki] for r in self.rows if self.parent[r[ki]] == i] for i in ids}
+        self.roots = [i for i in ids if self.parent[i] is None]
+        self.order, self.depth = [], {}
+
+        def walk(n, d):
+            self.order.append(n)
+            self.depth[n] = d
+            for k in self.children[n]:
+                walk(k, d + 1)
+
+        for r in self.roots:
+            walk(r, 0)
+        if len(self.order) != len(ids):
+            raise ValueError(f"tree-diagram: {table} has a loop in {self.parent_col}")
+
+    def describe(self):
+        parts = []
+        for n in self.order:
+            p = self.parent[n]
+            who = f"{self.names[n]} ({self.key_col} {n})"
+            parts.append(f"{who} has no {self.parent_col}, so is at the top." if p is None
+                         else f"{who} has {self.parent_col} {p}, which points at {self.names[p]}.")
+        return f"{self.title} rows, drawn as a chart: " + " ".join(parts)
+
+
+def _text(value):
+    return concept_svg._text(value)
+
+
 def _expand(match, db, diagrams, pending):
     indent, kind, spec = match["indent"], match["kind"], _spec(match["spec"])
     _make_tables(db, spec["table"])
+    if kind == "tree":
+        return _expand_tree(indent, spec, db, diagrams, pending)
     tabs = [k for k in spec if k in (JOINS if kind == "join" else RULES)]
     if not tabs:
         raise ValueError(f"{kind}-diagram has no tabs: {spec}")
@@ -301,7 +356,29 @@ def _expand(match, db, diagrams, pending):
 
     out.append(f'{pad}<p class="cd-legend">{legend}</p>')
     if spec.get("in") == "solution":
-        pending.append(out)
+        pending.append((spec.get("heading", "The foreign key at work:"), out))
+        return f"{indent}<!-- cd-pending {len(pending) - 1} -->"
+    return "\n".join(out)
+
+
+def _expand_tree(indent, spec, db, diagrams, pending):
+    tree = Tree(db, spec)
+    title = ("Made-up table: " if spec["table"] else "") + \
+        f"{tree.title} as a chart: each {tree.parent_col} points at another row's {tree.key_col}"
+    diagrams.append(concept_svg.tree_svg(tree, title, tree.describe()))
+    pad = indent
+    out = []
+    if "fold" in spec:
+        out += [f'{indent}??? tip "{spec["fold"]}"', ""]
+        pad = indent + "    "
+    if spec.get("caption"):
+        out += [f"{pad}{spec['caption']}", ""]
+    out.append(f'{pad}<div class="cd-diagram" data-cd="{len(diagrams) - 1}"></div>')
+    if spec["table"]:
+        out += ["", f'{pad}<p class="cd-legend"><span class="cd-made-up">Made-up table for illustration, '
+                    f'not in <code>setup.sql</code></span></p>']
+    if spec.get("in") == "solution":
+        pending.append((spec.get("heading", "The foreign key at work:"), out))
         return f"{indent}<!-- cd-pending {len(pending) - 1} -->"
     return "\n".join(out)
 
@@ -322,7 +399,8 @@ def _into_solutions(markdown, pending):
         if start is None:
             raise ValueError("in: solution, but no Solution box after the picture")
         end = next(k for k in range(start, len(lines)) if lines[k] == f"{indent}</details>")
-        lines[end:end] = ["", f"{indent}**The foreign key at work:**", ""] + pending[int(m["n"])] + [""]
+        heading, block = pending[int(m["n"])]
+        lines[end:end] = ["", f"{indent}**{heading}**", ""] + block + [""]
         del lines[i]
     return "\n".join(lines)
 

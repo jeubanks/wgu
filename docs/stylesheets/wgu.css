@@ -664,3 +664,69 @@
 .md-typeset .cd-legend .cd-key-changed::before { background: color-mix(in srgb, var(--cd-changed) 35%, transparent); outline: 1px solid var(--cd-changed); }
 .md-typeset .cd-legend .cd-made-up { font-style: italic; }
 .md-typeset .cd-legend .cd-made-up::before { display: none; }
+
+/* Exercises the SQL runner leaves out (hooks/sql_runner.py SKIP). */
+.md-typeset .sql-runner-skip {
+  color: var(--md-default-fg-color--light);
+  font-size: 0.7rem;
+  font-style: italic;
+}
+
+/* Exercise progress (javascripts/progress.js): the Done checkbox on each
+   exercise, and the per-part bars on the D427 overview. */
+.md-typeset .ex-done {
+  float: right;
+  margin-left: 0.8rem;
+  font-size: 0.7rem;
+  color: var(--md-default-fg-color--light);
+  cursor: pointer;
+  user-select: none;
+}
+.md-typeset .ex-done input {
+  accent-color: #97e152;
+  vertical-align: -0.15em;
+  cursor: pointer;
+}
+.md-typeset li.ex-is-done > p:first-child > strong:first-of-type::after {
+  content: " ✓";
+  color: #6fbf2a;
+}
+.md-typeset .ex-progress {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 6px;
+  padding: 0.6rem 0.9rem;
+  margin: 0.8rem 0 1.2rem;
+}
+.md-typeset .ex-progress-note { margin: 0 0 0.6rem; font-size: 0.72rem; }
+.md-typeset .ex-progress-row {
+  display: grid;
+  grid-template-columns: minmax(0, 14rem) minmax(0, 1fr) 4.5rem;
+  gap: 0.7rem;
+  align-items: center;
+  margin: 0.3rem 0;
+  font-size: 0.75rem;
+}
+.md-typeset .ex-progress-row progress {
+  width: 100%;
+  height: 0.6rem;
+  accent-color: #0070f0;
+}
+[data-md-color-scheme="slate"] .md-typeset .ex-progress-row progress { accent-color: #46b1ef; }
+.md-typeset .ex-progress-count { text-align: right; font-variant-numeric: tabular-nums; }
+.md-typeset .ex-progress-total { margin: 0.6rem 0 0.4rem; font-size: 0.75rem; font-weight: 700; }
+.md-typeset .ex-progress-reset {
+  font-size: 0.65rem;
+  padding: 0.3em 1em;
+  color: var(--md-typeset-a-color);
+  border-color: var(--md-typeset-a-color);
+}
+.md-typeset .ex-progress-reset:hover,
+.md-typeset .ex-progress-reset:focus {
+  color: var(--md-accent-bg-color);
+  background-color: var(--md-typeset-a-color);
+  border-color: var(--md-typeset-a-color);
+}
+@media (max-width: 480px) {
+  .md-typeset .ex-progress-row { grid-template-columns: minmax(0, 1fr) 4rem; }
+  .md-typeset .ex-progress-row progress { grid-column: 1 / -1; grid-row: 2; }
+}
