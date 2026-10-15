@@ -6,9 +6,6 @@ D427 is the model course. Once its patterns are settled, other courses reuse the
 
 ## Up next
 
-- [ ] **Authoring guide** (`AUTHORING.md`): every marker and convention the build understands (solution markers, quiz answer keys, diagram blocks, Uses/Creates lines, "never give away the answer"), and how to add a course.
-- [ ] **Course settings in one place**: hooks read each course's pages and features from `mkdocs.yml` instead of hard-coding D427 paths.
-- [ ] **Root README**: what the repo is, a link to the site, and the folder layout.
 - [ ] **Show what's wrong when Check fails**: list the missing rows and the extra rows, not just "right rows, wrong order".
 - [ ] **CI for the SQL runner**: load `setup.sql` into SQLite the way the runner does and check that every runner solution still runs.
 
@@ -37,6 +34,7 @@ D427 is the model course. Once its patterns are settled, other courses reuse the
 
 ## Done
 
+- `ROADMAP.md`, `AUTHORING.md`, a root README, and per-course settings in `mkdocs.yml` (`extra.courses`) (#16)
 - Site published with MkDocs Material and GitHub Pages; WGU colors with a charcoal dark mode (#1)
 - Local MySQL setup option and `setup.sql` download links (#2, #3)
 - Tables written from specs instead of copied `CREATE TABLE` (#5)
