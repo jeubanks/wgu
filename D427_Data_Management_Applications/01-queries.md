@@ -453,11 +453,11 @@ These sections only read data, so you can redo any exercise at any time. Every e
   - **a)** For every student who has an email, show two columns:
     - `LastLower`: their LastName in lowercase. Use `LOWER`.
     - `NewEmail`: their Email with `@example.com` changed to `@stable.example`. Use `REPLACE`.
-  - **b)** This query doesn't use a table. A SELECT with no FROM works out the values you give it and returns one row. Start from the text `'   Round Rock  '` (spaces before and after) and show two columns:
-    - `Trimmed`: the text with `TRIM` applied, inside square brackets. Use `CONCAT` to add the brackets.
-    - `NotTrimmed`: the text inside square brackets, without TRIM.
+  - **b)** See what `TRIM` removes from the text `'   Round Rock  '`. This query doesn't use a table: leave out FROM and you get one row. Show two columns:
+    - `FullLength`: the `LENGTH` of the text.
+    - `TrimmedLength`: the `LENGTH` of the text after TRIM.
 
-    The brackets show where the text starts and ends. What does TRIM remove?
+    How many characters did TRIM remove? Why not the space between "Round" and "Rock"?
 
   *(7 rows, then 1 row)*
 
@@ -466,7 +466,7 @@ These sections only read data, so you can redo any exercise at any time. Every e
   <summary>Hint</summary>
 
   - `REPLACE(text, 'find', 'replace with')` changes every match.
-  - In b), TRIM goes inside CONCAT: `CONCAT('[', ..., ']')`.
+  - In b), put TRIM inside LENGTH.
 
   </details>
 
@@ -478,9 +478,9 @@ These sections only read data, so you can redo any exercise at any time. Every e
          REPLACE(Email, '@example.com', '@stable.example') AS NewEmail
   FROM Student
   WHERE Email IS NOT NULL;
-  SELECT CONCAT('[', TRIM('   Round Rock  '), ']') AS Trimmed,     -- [Round Rock]
-         CONCAT('[', '   Round Rock  ', ']')       AS NotTrimmed;  -- [   Round Rock  ]
-  -- TRIM removes spaces at the start and end only, never the space inside "Round Rock".
+  SELECT LENGTH('   Round Rock  ')       AS FullLength,      -- 15
+         LENGTH(TRIM('   Round Rock  ')) AS TrimmedLength;   -- 10
+  -- TRIM removes the 5 spaces at the start and end only, never the space inside "Round Rock".
   ```
 
   </details>

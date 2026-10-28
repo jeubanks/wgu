@@ -144,14 +144,14 @@ WHERE Phone IS NOT NULL;
 
 -- [3.3]
 -- Hint: `REPLACE(text, 'find', 'replace with')` changes every match.
--- Hint: In b), TRIM goes inside CONCAT: `CONCAT('[', ..., ']')`.
+-- Hint: In b), put TRIM inside LENGTH.
 SELECT LOWER(LastName) AS LastLower,
        REPLACE(Email, '@example.com', '@stable.example') AS NewEmail
 FROM Student
 WHERE Email IS NOT NULL;
-SELECT CONCAT('[', TRIM('   Round Rock  '), ']') AS Trimmed,     -- [Round Rock]
-       CONCAT('[', '   Round Rock  ', ']')       AS NotTrimmed;  -- [   Round Rock  ]
--- TRIM removes spaces at the start and end only, never the space inside "Round Rock".
+SELECT LENGTH('   Round Rock  ')       AS FullLength,      -- 15
+       LENGTH(TRIM('   Round Rock  ')) AS TrimmedLength;   -- 10
+-- TRIM removes the 5 spaces at the start and end only, never the space inside "Round Rock".
 
 -- [3.4]
 -- Hint: `TIMESTAMPDIFF(YEAR, start, end)` counts the whole years between two dates. Use '2026-10-01' as the end date.
