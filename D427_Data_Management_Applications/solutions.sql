@@ -203,9 +203,10 @@ SELECT Title, RatingCode,
          ELSE              'Not rated'
        END AS Audience
 FROM Movie;
--- The movie with no RatingCode gets "Not rated" from ELSE. The simple form tests
--- RatingCode = 'G', RatingCode = 'PG', and so on, so WHEN NULL would test RatingCode = NULL,
--- which is never true.
+SELECT CASE NULL WHEN NULL THEN 'matched' ELSE 'no match' END;   -- 'no match'
+-- The simple form tests RatingCode = 'G', RatingCode = 'PG', and so on. WHEN NULL would test
+-- RatingCode = NULL, which is never true, so the NULL rating has to be caught by ELSE
+-- (or by the searched form: CASE WHEN RatingCode IS NULL THEN ...).
 
 -- [3.9]
 -- Hint: `COALESCE(col, 'something')` returns 'something' when col is NULL. (`IFNULL` works the same way.)
@@ -432,17 +433,18 @@ WHERE ID IN (SELECT StudentID FROM LessonSchedule);
 -- [6.6]
 -- Hint: One lesson has no student, so the subquery's list contains a NULL. `x NOT IN (1, 2, NULL)` can never be TRUE.
 -- Hint: Fix 1: leave the NULL out inside the subquery. Fix 2: use `NOT EXISTS` with a subquery that matches on the student's ID.
--- The trap: this returns ZERO rows, because LessonSchedule.StudentID contains a NULL.
+-- a) The trap: this returns ZERO rows, because LessonSchedule.StudentID contains a NULL.
 --   x NOT IN (1, 2, NULL)  ==  x<>1 AND x<>2 AND x<>NULL  ==  UNKNOWN
 SELECT ID, FirstName, LastName
 FROM Student
 WHERE ID NOT IN (SELECT StudentID FROM LessonSchedule);
 
--- Correct (either works):
+-- b) Fixed NOT IN: leave the NULL out of the subquery.
 SELECT ID, FirstName, LastName
 FROM Student
 WHERE ID NOT IN (SELECT StudentID FROM LessonSchedule WHERE StudentID IS NOT NULL);
 
+-- c) NOT EXISTS isn't affected by the NULL.
 SELECT s.ID, s.FirstName, s.LastName
 FROM Student s
 WHERE NOT EXISTS (SELECT 1 FROM LessonSchedule ls WHERE ls.StudentID = s.ID);
@@ -1374,7 +1376,7 @@ LEFT JOIN Visa v ON v.PassportID = p.PassportID
 WHERE v.VisaID IS NULL;
 
 -- [12.18]
--- Hint: The first query is GROUP BY grade, with COUNT(*).
+-- Hint: a) is GROUP BY grade, with COUNT(*).
 -- Hint: "Only the grades that have a count greater than 2" is a condition on each group's count. Which clause filters groups?
 SELECT grade, COUNT(*) AS gradeCount
 FROM student_grades

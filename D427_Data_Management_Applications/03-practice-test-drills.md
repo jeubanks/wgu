@@ -1383,10 +1383,11 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
   </details>
   <!-- /solution -->
 
-- **12.6** Compare each book's cost with the average cost of all books:
+- **12.6** Compare each book's cost with the average cost of all books. Write two separate queries:
   - a) Write a query to pull all data for books that cost more than the average cost. *(1 row)*
   - b) Write a query to pull all data for books that cost less than the average cost. *(12 rows)*
-  - c) Try `WHERE Cost > AVG(Cost)` and read the error. Why doesn't it work?
+
+  Then try `WHERE Cost > AVG(Cost)` and read the error. Why doesn't it work?
 
   <!-- solution:12.6 -->
   <details>
@@ -1535,6 +1536,7 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
   <!-- /solution -->
 
 - **12.12** The course guide asks you to know the difference between a **row subquery** and a **table subquery**.
+  Write two separate queries:
   - a) Using a **row subquery**, show the Title, Genre, and Year of every book that has the same Genre **and** the same Year as 'Normal People'. Compare both columns at once. *(2 rows)*
   - b) Using a **table subquery**, show the Title and Year of every book published in a year that had more than 50 releases (from YearSales). *(4 rows)*
   - In your own words: what does each kind of subquery return, and how is that different from the scalar subquery you wrote in 12.6?
@@ -1689,15 +1691,15 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
 
 ### student_grades
 
-- **12.18** Using the student_grades table:
-  - Write a query to count how many students have each grade (A, B, and C). Name the count gradeCount. *(3 rows)*
-  - Add a clause to the query so it shows only the grades that have a count greater than 2. *(1 row)*
+- **12.18** Using the student_grades table, write two separate queries:
+  - a) Count how many students have each grade (A, B, and C). Name the count gradeCount. *(3 rows)*
+  - b) Copy your query from a) and add a clause so it shows only the grades that have a count greater than 2. *(1 row)*
 
   <!-- solution:12.18 -->
   <details>
   <summary>Hint</summary>
 
-  - The first query is GROUP BY grade, with COUNT(*).
+  - a) is GROUP BY grade, with COUNT(*).
   - "Only the grades that have a count greater than 2" is a condition on each group's count. Which clause filters groups?
 
   </details>
@@ -1725,7 +1727,7 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
   - `SELECT Name FROM Compensation WHERE Salary = Bonus;`
   - `SELECT Name FROM Compensation WHERE Salary <> Bonus;`
 
-  Run them. There are 5 people, but the two results together contain only 2 names. Where did the other three go? *(1 row, then 1 row)*
+  Run them as two separate queries. There are 5 people, but the two results together contain only 2 names. Where did the other three go? *(1 row, then 1 row)*
 
   <!-- solution:12.19 -->
   <details>
