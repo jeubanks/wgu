@@ -36,7 +36,7 @@ Nothing here yet.
 
 ## Done
 
-- Exercises 2.6, 2.9, 3.3, 3.5, 3.8, 4.7, 6.6, 12.6, 12.12, 12.18, and 12.19 now say how many separate queries to write, matching what Check expects; 3.3 b) is a single TRIM call, and 3.8 keeps its follow-up questions (#PR)
+- Exercises 2.6, 2.9, 3.3, 3.5, 3.8, 4.7, 6.6, 12.6, 12.12, 12.18, and 12.19 now say how many separate queries to write, matching what Check expects; 3.3 b) is a single TRIM call, and 3.8 keeps its follow-up questions (#35)
 - Exercises 2.7 and 4.7 now say to write two separate queries, matching their solutions (#34)
 - Exercise 2.4 now says to write two separate queries (#33)
 - A "To review" tag next to each missed exercise on its own page; MkDocs now knows the exercise anchors, so its missing-anchor notices are gone (it still reports real broken anchors) (#31)
