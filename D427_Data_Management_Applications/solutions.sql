@@ -203,10 +203,9 @@ SELECT Title, RatingCode,
          ELSE              'Not rated'
        END AS Audience
 FROM Movie;
-SELECT CASE NULL WHEN NULL THEN 'matched' ELSE 'no match' END;   -- 'no match'
--- The simple form tests RatingCode = 'G', RatingCode = 'PG', and so on. WHEN NULL would test
--- RatingCode = NULL, which is never true, so the NULL rating has to be caught by ELSE
--- (or by the searched form: CASE WHEN RatingCode IS NULL THEN ...).
+-- The movie with no RatingCode gets "Not rated" from ELSE. The simple form tests
+-- RatingCode = 'G', RatingCode = 'PG', and so on, so WHEN NULL would test RatingCode = NULL,
+-- which is never true.
 
 -- [3.9]
 -- Hint: `COALESCE(col, 'something')` returns 'something' when col is NULL. (`IFNULL` works the same way.)
