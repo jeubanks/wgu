@@ -23,7 +23,7 @@
     document.querySelectorAll(".md-typeset .er-wide, .md-typeset .md-typeset__scrollwrap").forEach(function (el) {
       var isTable = !el.classList.contains("er-wide");
       if (isTable) tables += 1;
-      var scrolls = el.scrollWidth > el.clientWidth + 1;
+      var scrolls = el.scrollWidth > el.clientWidth;  // the same test axe uses: even 1px scrolls
       if (scrolls) {
         var title = el.querySelector("svg title");
         var name = isTable ? "Table " + tables : (title ? title.textContent.trim() : "Diagram");
