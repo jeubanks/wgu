@@ -1,2 +1,2 @@
 # CI-only tools (the accessibility check). Dependabot keeps this pinned version current.
-playwright==1.63.0
+playwright==1.64.0
