@@ -273,9 +273,10 @@ These sections only read data, so you can redo any exercise at any time. Every e
   </details>
   <!-- /solution -->
 
-- **2.6** Show the FirstName, LastName, City, and Phone of the students who live in Austin or in Round Rock **and** who have a phone number. Use parentheses around the two city conditions.
-  - After it works, remove the parentheses from your WHERE clause and run it again.
-  - Explain why the result is different.
+- **2.6** Write two separate queries:
+  - **a)** Show the FirstName, LastName, City, and Phone of the students who live in Austin or in Round Rock **and** who have a phone number. Use parentheses around the two city conditions.
+  - **b)** Copy your query from a) and remove the parentheses from the WHERE clause.
+    - Explain why the result is different.
 
   *(4 rows, then 5 rows)*
 
@@ -293,7 +294,10 @@ These sections only read data, so you can redo any exercise at any time. Every e
   ```sql
   SELECT FirstName, LastName, City, Phone FROM Student
   WHERE (City = 'Austin' OR City = 'Round Rock')
-    AND Phone IS NOT NULL;
+    AND Phone IS NOT NULL;                                   -- 4 rows
+  SELECT FirstName, LastName, City, Phone FROM Student
+  WHERE City = 'Austin' OR City = 'Round Rock'
+    AND Phone IS NOT NULL;                                   -- 5 rows
   -- AND binds tighter than OR. Drop the parentheses and you get
   -- "Austin  OR  (Round Rock AND has phone)" - a different question: Priya (Austin,
   -- no phone) sneaks in, so you get 5 rows instead of 4.
@@ -358,9 +362,9 @@ These sections only read data, so you can redo any exercise at any time. Every e
 
 ### Horse
 
-- **2.9** Show the RegisteredName and Breed of the horses whose breed is **not** Quarter Horse.
-  - First, write the query without doing anything special for NULL. Count the rows.
-  - Then fix the query so the horse with an unknown breed (NULL) is also included. Compare the two results.
+- **2.9** Write two separate queries:
+  - **a)** Show the RegisteredName and Breed of the horses whose breed is **not** Quarter Horse. Don't do anything special for NULL. Count the rows.
+  - **b)** Copy your query from a) and change it so the horse with an unknown breed (NULL) is also included. Compare the two results.
 
   *(7 rows, then 8 rows)*
 
@@ -378,7 +382,9 @@ These sections only read data, so you can redo any exercise at any time. Every e
 
   ```sql
   SELECT RegisteredName, Breed FROM Horse
-  WHERE Breed <> 'Quarter Horse' OR Breed IS NULL;
+  WHERE Breed <> 'Quarter Horse';                       -- 7 rows: 'Blue Ribbon' (NULL breed) is missing
+  SELECT RegisteredName, Breed FROM Horse
+  WHERE Breed <> 'Quarter Horse' OR Breed IS NULL;      -- 8 rows
   -- Without the IS NULL test, 'Blue Ribbon' disappears: NULL <> 'x' is UNKNOWN, not TRUE.
   ```
 

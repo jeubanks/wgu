@@ -91,7 +91,10 @@ WHERE LastName LIKE '_a%';                     -- _ = exactly one char, % = zero
 -- Hint: AND is evaluated before OR. Use parentheses to keep the two cities together.
 SELECT FirstName, LastName, City, Phone FROM Student
 WHERE (City = 'Austin' OR City = 'Round Rock')
-  AND Phone IS NOT NULL;
+  AND Phone IS NOT NULL;                                   -- 4 rows
+SELECT FirstName, LastName, City, Phone FROM Student
+WHERE City = 'Austin' OR City = 'Round Rock'
+  AND Phone IS NOT NULL;                                   -- 5 rows
 -- AND binds tighter than OR. Drop the parentheses and you get
 -- "Austin  OR  (Round Rock AND has phone)" - a different question: Priya (Austin,
 -- no phone) sneaks in, so you get 5 rows instead of 4.
@@ -115,7 +118,9 @@ WHERE Email IS NULL;                           -- "= NULL" never matches anythin
 -- Hint: When Breed is NULL, `Breed <> 'Quarter Horse'` is UNKNOWN, not TRUE, so WHERE drops that row.
 -- Hint: Add a second condition with OR to keep the horse whose breed is NULL.
 SELECT RegisteredName, Breed FROM Horse
-WHERE Breed <> 'Quarter Horse' OR Breed IS NULL;
+WHERE Breed <> 'Quarter Horse';                       -- 7 rows: 'Blue Ribbon' (NULL breed) is missing
+SELECT RegisteredName, Breed FROM Horse
+WHERE Breed <> 'Quarter Horse' OR Breed IS NULL;      -- 8 rows
 -- Without the IS NULL test, 'Blue Ribbon' disappears: NULL <> 'x' is UNKNOWN, not TRUE.
 
 -- =====================================================================
