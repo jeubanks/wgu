@@ -917,10 +917,97 @@
 /* Exercise anchors (hooks/anchors.py): land below the header, and mark the
    exercise a link jumped to. */
 .md-typeset li[id^="ex-"] { scroll-margin-top: 4rem; }
-.md-typeset li[id^="ex-"]:target {
-  border-radius: 6px;
-  box-shadow: -0.5rem 0 0 0 var(--md-accent-fg-color--transparent), 0 0 0 0.25rem var(--md-accent-fg-color--transparent);
-  background: var(--md-accent-fg-color--transparent);
+
+/* Exercise cards, on screen: each exercise sits in its own card with its
+   number as a badge, so the question stands out from its boxes. Closed boxes
+   (Try it, Hint, Solution) shrink to one row of quiet buttons; an open box
+   takes the full width. Print keeps the plain list. */
+:root {
+  --ex-card-bg: #f7fafc;
+  --ex-card-edge: #d5dde6;
+  --ex-badge-bg: #0070f0;
+  --ex-badge-fg: #ffffff;
+  --ex-badge-done-bg: #2f7a0c;
+  --ex-badge-done-fg: #ffffff;
+}
+@media screen {
+  [data-md-color-scheme="slate"] {
+    --ex-card-bg: #252933;
+    --ex-card-edge: #3a404d;
+    --ex-badge-bg: #46b1ef;
+    --ex-badge-fg: #001731;
+    --ex-badge-done-bg: #97e152;
+    --ex-badge-done-fg: #001731;
+  }
+
+  .md-typeset ul:has(> li[id^="ex-"]) {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  [dir] .md-typeset ul > li[id^="ex-"] {
+    margin: 1rem 0;  /* Material's lists are flow-root, so this doubles between cards */
+    padding: 0.8rem 1rem 0.9rem;
+    border: 1px solid var(--ex-card-edge);
+    border-radius: 8px;
+    background: var(--ex-card-bg);
+  }
+  /* Medium Blue is 4.4:1 on the light card; this deeper blue is 5.3:1. */
+  [data-md-color-scheme="default"] .md-typeset li[id^="ex-"] { --sql-color: #0064d6; }
+  .md-typeset li[id^="ex-"]:target {
+    border-color: var(--ex-badge-bg);
+    box-shadow: 0 0 0 2px var(--ex-badge-bg);
+  }
+  .md-typeset li[id^="ex-"] > p:first-child {
+    margin-top: 0;
+    font-size: 0.85rem;
+    line-height: 1.65;
+  }
+  .md-typeset li[id^="ex-"] > p:first-child > strong:first-of-type {
+    display: inline-block;
+    margin-right: 0.5em;
+    padding: 0 0.55em;
+    border-radius: 6px;
+    background: var(--ex-badge-bg);
+    color: var(--ex-badge-fg);
+    font-size: 0.8rem;
+    line-height: 1.6;
+    font-variant-numeric: tabular-nums;
+  }
+  .md-typeset li.ex-is-done > p:first-child > strong:first-of-type { background: var(--ex-badge-done-bg); color: var(--ex-badge-done-fg); }
+  .md-typeset li.ex-is-done > p:first-child > strong:first-of-type::after { color: inherit; }
+
+  /* Closed boxes as buttons. */
+  .md-typeset li[id^="ex-"] > details:not([open]) {
+    display: inline-block;
+    margin: 0.7rem 0.5rem 0 0;
+    border-width: 1px;
+    border-radius: 999px;
+    box-shadow: none;
+    background: transparent;
+    vertical-align: top;
+  }
+  .md-typeset li[id^="ex-"] > details:not([open]) > summary {
+    padding: 0.3rem 0.9rem 0.3rem 1.9rem;
+    border-radius: 999px;
+    background: transparent;
+  }
+  .md-typeset li[id^="ex-"] > details:not([open]) > summary:hover {
+    background: var(--md-accent-fg-color--transparent);
+  }
+  .md-typeset li[id^="ex-"] > details:not([open]) > summary::before {
+    left: 0.6rem;
+    top: calc(50% - 0.45rem);
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+  .md-typeset li[id^="ex-"] > details:not([open]) > summary::after { display: none; }
+  .md-typeset li[id^="ex-"] > details[open] { margin: 0.8rem 0 0.2rem; }
+
+  /* More room: a wider page on large screens (Material stops at 61rem), and
+     more space above each table heading on exercise pages. */
+  .md-grid { max-width: 72rem; }
+  .md-typeset h3 { margin-top: 2em; }
 }
 
 /* Spec-to-type drill (javascripts/drill.js). */

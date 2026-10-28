@@ -23,7 +23,7 @@
     document.querySelectorAll(".md-typeset .er-wide, .md-typeset .md-typeset__scrollwrap").forEach(function (el) {
       var isTable = !el.classList.contains("er-wide");
       if (isTable) tables += 1;
-      var scrolls = el.scrollWidth > el.clientWidth + 1;
+      var scrolls = el.scrollWidth > el.clientWidth;  // the same test axe uses: even 1px scrolls
       if (scrolls) {
         var title = el.querySelector("svg title");
         var name = isTable ? "Table " + tables : (title ? title.textContent.trim() : "Diagram");
@@ -40,7 +40,24 @@
     });
   }
 
-  function init() { codeNavs(); scrollables(); }
+  // A table's width can change after the first check (the web font arriving,
+  // say), so check again whenever a box or what's in it changes size. Material
+  // adds the table wrappers itself, so this runs from init, after it has.
+  var watchQueued = false;
+  var watcher = window.ResizeObserver && new ResizeObserver(function () {
+    if (watchQueued) return;
+    watchQueued = true;
+    requestAnimationFrame(function () { watchQueued = false; scrollables(); });
+  });
+  function watchSizes() {
+    if (!watcher) return;
+    document.querySelectorAll(".md-typeset .er-wide, .md-typeset .md-typeset__scrollwrap").forEach(function (el) {
+      watcher.observe(el);
+      if (el.firstElementChild) watcher.observe(el.firstElementChild);
+    });
+  }
+
+  function init() { codeNavs(); scrollables(); watchSizes(); }
   if (window.document$ && window.document$.subscribe) window.document$.subscribe(function () { setTimeout(init, 0); });
   else init();
   var resizeTimer;
