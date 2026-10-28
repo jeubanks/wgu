@@ -80,6 +80,8 @@ Run the same things locally before pushing. The accessibility check needs Playwr
 
 An exercise is a top-level list item that starts with its bold label. The build finds exercises by this pattern, so keep it exact: `- **7.3**`, a space or a backslash line break, then the text.
 
+On screen, each exercise is a card with its label as a badge, and its closed boxes (Try it, Hint, Solution, Answer) sit in one row of small buttons; an open box takes the card's full width (`wgu.css`, "Exercise cards"). Print keeps the plain list.
+
 ```markdown
 - **7.3**\
   **Uses:** Rating, Movie *(already in the database, from `setup.sql`)*\
