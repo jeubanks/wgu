@@ -36,6 +36,7 @@ Nothing here yet.
 
 ## Done
 
+- Exercise 2.4 now says to write two separate queries (#PR)
 - A "To review" tag next to each missed exercise on its own page; MkDocs now knows the exercise anchors, so its missing-anchor notices are gone (it still reports real broken anchors) (#31)
 - No references to the real assessment: wording points to the D427 practice tests; renamed the cheat sheet to SQL quick reference, Assessment drills to Practice-test drills, and Mock assessment to Final practice (pages and URLs) (#28); the same for D949's READMEs (#29)
 - Search finds exercises by number (one search entry per exercise); a To review list on the Overview of missed exercises (#26)
