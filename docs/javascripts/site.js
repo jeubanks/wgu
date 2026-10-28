@@ -40,16 +40,30 @@
     });
   }
 
-  function init() { codeNavs(); scrollables(); }
+  // A table's width can change after the first check (the web font arriving,
+  // say), so check again whenever a box or what's in it changes size. Material
+  // adds the table wrappers itself, so this runs from init, after it has.
+  var watchQueued = false;
+  var watcher = window.ResizeObserver && new ResizeObserver(function () {
+    if (watchQueued) return;
+    watchQueued = true;
+    requestAnimationFrame(function () { watchQueued = false; scrollables(); });
+  });
+  function watchSizes() {
+    if (!watcher) return;
+    document.querySelectorAll(".md-typeset .er-wide, .md-typeset .md-typeset__scrollwrap").forEach(function (el) {
+      watcher.observe(el);
+      if (el.firstElementChild) watcher.observe(el.firstElementChild);
+    });
+  }
+
+  function init() { codeNavs(); scrollables(); watchSizes(); }
   if (window.document$ && window.document$.subscribe) window.document$.subscribe(function () { setTimeout(init, 0); });
   else init();
   var resizeTimer;
   window.addEventListener("resize", function () { clearTimeout(resizeTimer); resizeTimer = setTimeout(scrollables, 200); });
   // Folded boxes only get a width when they open.
   document.addEventListener("toggle", scrollables, true);
-  // The web font can change a table's width after the first check.
-  window.addEventListener("load", scrollables);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(scrollables);
 
   // Material opens every folded box before printing. Remember which boxes the
   // reader had open (data-was-open), so wgu.css can print only those open.
