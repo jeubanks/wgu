@@ -951,6 +951,7 @@
     border: 1px solid var(--ex-card-edge);
     border-radius: 8px;
     background: var(--ex-card-bg);
+    font-size: 0.84rem;  /* the whole exercise, not just its first line */
   }
   /* Medium Blue is 4.4:1 on the light card; this deeper blue is 5.3:1. */
   [data-md-color-scheme="default"] .md-typeset li[id^="ex-"] { --sql-color: #0064d6; }
@@ -958,11 +959,7 @@
     border-color: var(--ex-badge-bg);
     box-shadow: 0 0 0 2px var(--ex-badge-bg);
   }
-  .md-typeset li[id^="ex-"] > p:first-child {
-    margin-top: 0;
-    font-size: 0.85rem;
-    line-height: 1.65;
-  }
+  .md-typeset li[id^="ex-"] > p:first-child { margin-top: 0; }
   .md-typeset li[id^="ex-"] > p:first-child > strong:first-of-type {
     display: inline-block;
     margin-right: 0.5em;
@@ -1003,6 +1000,12 @@
   }
   .md-typeset li[id^="ex-"] > details:not([open]) > summary::after { display: none; }
   .md-typeset li[id^="ex-"] > details[open] { margin: 0.8rem 0 0.2rem; }
+  @media (max-width: 600px) {
+    [dir] .md-typeset ul > li[id^="ex-"] { padding: 0.7rem 0.7rem 0.8rem; }
+    [dir] .md-typeset li[id^="ex-"] ul { margin-left: 0; }
+    .md-typeset li[id^="ex-"] table:not([class]) th,
+    .md-typeset li[id^="ex-"] table:not([class]) td { padding: 0.6em 0.7em; }
+  }
 
   /* More room: a wider page on large screens (Material stops at 61rem), and
      more space above each table heading on exercise pages. */
@@ -1110,3 +1113,20 @@
   [data-md-color-scheme="slate"] .md-typeset .ex-review-mark { color: #1e2129; background: #f2c94c; }
 }
 @media print { .md-typeset .ex-review-mark { display: none; } }
+
+/* Buttons: corners that match the exercise badges, and in dark mode a Sky Blue
+   main button (Material's Blue Midnight one is hard to see on the charcoal page). */
+.md-typeset .md-button { border-radius: 6px; }
+@media screen {
+  [data-md-color-scheme="slate"] .md-typeset .md-button--primary {
+    background-color: #46b1ef;
+    border-color: #46b1ef;
+    color: #001731;
+  }
+  [data-md-color-scheme="slate"] .md-typeset .md-button--primary:hover,
+  [data-md-color-scheme="slate"] .md-typeset .md-button--primary:focus {
+    background-color: #6cc4f5;
+    border-color: #6cc4f5;
+    color: #001731;
+  }
+}
