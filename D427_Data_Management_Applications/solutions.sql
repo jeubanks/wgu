@@ -143,7 +143,8 @@ FROM Student
 WHERE Phone IS NOT NULL;
 
 -- [3.3]
--- Hint: `REPLACE(text, 'find', 'replace with')` changes every match. `TRIM()` removes spaces from both ends.
+-- Hint: `REPLACE(text, 'find', 'replace with')` changes every match.
+-- Hint: In b), TRIM goes inside CONCAT: `CONCAT('[', ..., ']')`.
 SELECT LOWER(LastName) AS LastLower,
        REPLACE(Email, '@example.com', '@stable.example') AS NewEmail
 FROM Student

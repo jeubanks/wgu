@@ -449,15 +449,15 @@ These sections only read data, so you can redo any exercise at any time. Every e
   </details>
   <!-- /solution -->
 
-- **3.3** More string functions.
+- **3.3** More string functions. Write two separate queries:
   - **a)** For every student who has an email, show two columns:
     - `LastLower`: their LastName in lowercase. Use `LOWER`.
     - `NewEmail`: their Email with `@example.com` changed to `@stable.example`. Use `REPLACE`.
-  - **b)** In one SELECT, show two columns:
-    - `Trimmed`: `CONCAT('[', TRIM('   Round Rock  '), ']')`
-    - `NotTrimmed`: the same thing without TRIM
+  - **b)** This query doesn't use a table. A SELECT with no FROM works out the values you give it and returns one row. Start from the text `'   Round Rock  '` (spaces before and after) and show two columns:
+    - `Trimmed`: the text with `TRIM` applied, inside square brackets. Use `CONCAT` to add the brackets.
+    - `NotTrimmed`: the text inside square brackets, without TRIM.
 
-    What does TRIM remove?
+    The brackets show where the text starts and ends. What does TRIM remove?
 
   *(7 rows, then 1 row)*
 
@@ -465,7 +465,8 @@ These sections only read data, so you can redo any exercise at any time. Every e
   <details>
   <summary>Hint</summary>
 
-  - `REPLACE(text, 'find', 'replace with')` changes every match. `TRIM()` removes spaces from both ends.
+  - `REPLACE(text, 'find', 'replace with')` changes every match.
+  - In b), TRIM goes inside CONCAT: `CONCAT('[', ..., ']')`.
 
   </details>
 
