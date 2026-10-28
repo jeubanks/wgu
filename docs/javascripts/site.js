@@ -47,6 +47,9 @@
   window.addEventListener("resize", function () { clearTimeout(resizeTimer); resizeTimer = setTimeout(scrollables, 200); });
   // Folded boxes only get a width when they open.
   document.addEventListener("toggle", scrollables, true);
+  // The web font can change a table's width after the first check.
+  window.addEventListener("load", scrollables);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(scrollables);
 
   // Material opens every folded box before printing. Remember which boxes the
   // reader had open (data-was-open), so wgu.css can print only those open.
