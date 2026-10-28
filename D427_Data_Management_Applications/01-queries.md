@@ -219,7 +219,7 @@ These sections only read data, so you can redo any exercise at any time. Every e
   </details>
   <!-- /solution -->
 
-- **2.4** The opposite of 2.1 and 2.3:
+- **2.4** The opposite of 2.1 and 2.3. Write two separate queries:
   - **a)** Show the Title and ReleaseYear of the movies that did **not** come out from 2014 to 2016. Use `NOT BETWEEN`.
     - There are 12 movies, and 6 came out in those years. Why do you get 5 rows and not 6?
   - **b)** Show the Title of the movies whose title does **not** start with "The ". Use `NOT LIKE`.
