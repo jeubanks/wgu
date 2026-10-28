@@ -302,9 +302,10 @@ These sections only read data, so you can redo any exercise at any time. Every e
   </details>
   <!-- /solution -->
 
-- **2.7** Show the FirstName, LastName, and City of the students who do **not** live in Austin or Round Rock. Use `NOT IN` with a list of the two cities.
-  - One student has no city (NULL). Is she in your result? Why not?
-  - Change the query so she's included.
+- **2.7** Write two separate queries:
+  - **a)** Show the FirstName, LastName, and City of the students who do **not** live in Austin or Round Rock. Use `NOT IN` with a list of the two cities.
+    - One student has no city (NULL). Is she in your result? Why not?
+  - **b)** Copy your query from a) and change it so she's included.
 
   *(2 rows, then 3 rows)*
 
@@ -882,7 +883,7 @@ These sections only read data, so you can redo any exercise at any time. Every e
 
 - **4.7** This one needs **both** WHERE and HAVING. For each DeptID, count the employees who were hired on or after 2018-01-01. Show only the departments where that count is 2 or more. Name the count column RecentHires.
   - Which condition goes in WHERE, and which goes in HAVING? Why?
-  - Then remove the WHERE clause and run it again. The count now includes every employee, so rename the column to `Headcount`. Why do you get more rows?
+  - Then write a second query: the same thing without the WHERE clause. The count now includes every employee, so name the column `Headcount`. Why do you get more rows?
 
   *(3 rows, then 5 rows)*
 
