@@ -91,7 +91,10 @@ WHERE LastName LIKE '_a%';                     -- _ = exactly one char, % = zero
 -- Hint: AND is evaluated before OR. Use parentheses to keep the two cities together.
 SELECT FirstName, LastName, City, Phone FROM Student
 WHERE (City = 'Austin' OR City = 'Round Rock')
-  AND Phone IS NOT NULL;
+  AND Phone IS NOT NULL;                                   -- 4 rows
+SELECT FirstName, LastName, City, Phone FROM Student
+WHERE City = 'Austin' OR City = 'Round Rock'
+  AND Phone IS NOT NULL;                                   -- 5 rows
 -- AND binds tighter than OR. Drop the parentheses and you get
 -- "Austin  OR  (Round Rock AND has phone)" - a different question: Priya (Austin,
 -- no phone) sneaks in, so you get 5 rows instead of 4.
@@ -115,7 +118,9 @@ WHERE Email IS NULL;                           -- "= NULL" never matches anythin
 -- Hint: When Breed is NULL, `Breed <> 'Quarter Horse'` is UNKNOWN, not TRUE, so WHERE drops that row.
 -- Hint: Add a second condition with OR to keep the horse whose breed is NULL.
 SELECT RegisteredName, Breed FROM Horse
-WHERE Breed <> 'Quarter Horse' OR Breed IS NULL;
+WHERE Breed <> 'Quarter Horse';                       -- 7 rows: 'Blue Ribbon' (NULL breed) is missing
+SELECT RegisteredName, Breed FROM Horse
+WHERE Breed <> 'Quarter Horse' OR Breed IS NULL;      -- 8 rows
 -- Without the IS NULL test, 'Blue Ribbon' disappears: NULL <> 'x' is UNKNOWN, not TRUE.
 
 -- =====================================================================
@@ -138,14 +143,12 @@ FROM Student
 WHERE Phone IS NOT NULL;
 
 -- [3.3]
--- Hint: `REPLACE(text, 'find', 'replace with')` changes every match. `TRIM()` removes spaces from both ends.
+-- Hint: `REPLACE(text, 'find', 'replace with')` changes every match.
 SELECT LOWER(LastName) AS LastLower,
        REPLACE(Email, '@example.com', '@stable.example') AS NewEmail
 FROM Student
 WHERE Email IS NOT NULL;
-SELECT CONCAT('[', TRIM('   Round Rock  '), ']') AS Trimmed,     -- [Round Rock]
-       CONCAT('[', '   Round Rock  ', ']')       AS NotTrimmed;  -- [   Round Rock  ]
--- TRIM removes spaces at the start and end only, never the space inside "Round Rock".
+SELECT TRIM('   Round Rock  ') AS Trimmed;    -- 'Round Rock': the space in the middle stays
 
 -- [3.4]
 -- Hint: `TIMESTAMPDIFF(YEAR, start, end)` counts the whole years between two dates. Use '2026-10-01' as the end date.
@@ -430,17 +433,18 @@ WHERE ID IN (SELECT StudentID FROM LessonSchedule);
 -- [6.6]
 -- Hint: One lesson has no student, so the subquery's list contains a NULL. `x NOT IN (1, 2, NULL)` can never be TRUE.
 -- Hint: Fix 1: leave the NULL out inside the subquery. Fix 2: use `NOT EXISTS` with a subquery that matches on the student's ID.
--- The trap: this returns ZERO rows, because LessonSchedule.StudentID contains a NULL.
+-- a) The trap: this returns ZERO rows, because LessonSchedule.StudentID contains a NULL.
 --   x NOT IN (1, 2, NULL)  ==  x<>1 AND x<>2 AND x<>NULL  ==  UNKNOWN
 SELECT ID, FirstName, LastName
 FROM Student
 WHERE ID NOT IN (SELECT StudentID FROM LessonSchedule);
 
--- Correct (either works):
+-- b) Fixed NOT IN: leave the NULL out of the subquery.
 SELECT ID, FirstName, LastName
 FROM Student
 WHERE ID NOT IN (SELECT StudentID FROM LessonSchedule WHERE StudentID IS NOT NULL);
 
+-- c) NOT EXISTS isn't affected by the NULL.
 SELECT s.ID, s.FirstName, s.LastName
 FROM Student s
 WHERE NOT EXISTS (SELECT 1 FROM LessonSchedule ls WHERE ls.StudentID = s.ID);
@@ -1372,7 +1376,7 @@ LEFT JOIN Visa v ON v.PassportID = p.PassportID
 WHERE v.VisaID IS NULL;
 
 -- [12.18]
--- Hint: The first query is GROUP BY grade, with COUNT(*).
+-- Hint: a) is GROUP BY grade, with COUNT(*).
 -- Hint: "Only the grades that have a count greater than 2" is a condition on each group's count. Which clause filters groups?
 SELECT grade, COUNT(*) AS gradeCount
 FROM student_grades

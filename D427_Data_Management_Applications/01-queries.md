@@ -273,9 +273,10 @@ These sections only read data, so you can redo any exercise at any time. Every e
   </details>
   <!-- /solution -->
 
-- **2.6** Show the FirstName, LastName, City, and Phone of the students who live in Austin or in Round Rock **and** who have a phone number. Use parentheses around the two city conditions.
-  - After it works, remove the parentheses from your WHERE clause and run it again.
-  - Explain why the result is different.
+- **2.6** Write two separate queries:
+  - **a)** Show the FirstName, LastName, City, and Phone of the students who live in Austin or in Round Rock **and** who have a phone number. Use parentheses around the two city conditions.
+  - **b)** Copy your query from a) and remove the parentheses from the WHERE clause.
+    - Explain why the result is different.
 
   *(4 rows, then 5 rows)*
 
@@ -293,7 +294,10 @@ These sections only read data, so you can redo any exercise at any time. Every e
   ```sql
   SELECT FirstName, LastName, City, Phone FROM Student
   WHERE (City = 'Austin' OR City = 'Round Rock')
-    AND Phone IS NOT NULL;
+    AND Phone IS NOT NULL;                                   -- 4 rows
+  SELECT FirstName, LastName, City, Phone FROM Student
+  WHERE City = 'Austin' OR City = 'Round Rock'
+    AND Phone IS NOT NULL;                                   -- 5 rows
   -- AND binds tighter than OR. Drop the parentheses and you get
   -- "Austin  OR  (Round Rock AND has phone)" - a different question: Priya (Austin,
   -- no phone) sneaks in, so you get 5 rows instead of 4.
@@ -358,9 +362,9 @@ These sections only read data, so you can redo any exercise at any time. Every e
 
 ### Horse
 
-- **2.9** Show the RegisteredName and Breed of the horses whose breed is **not** Quarter Horse.
-  - First, write the query without doing anything special for NULL. Count the rows.
-  - Then fix the query so the horse with an unknown breed (NULL) is also included. Compare the two results.
+- **2.9** Write two separate queries:
+  - **a)** Show the RegisteredName and Breed of the horses whose breed is **not** Quarter Horse. Don't do anything special for NULL. Count the rows.
+  - **b)** Copy your query from a) and change it so the horse with an unknown breed (NULL) is also included. Compare the two results.
 
   *(7 rows, then 8 rows)*
 
@@ -378,7 +382,9 @@ These sections only read data, so you can redo any exercise at any time. Every e
 
   ```sql
   SELECT RegisteredName, Breed FROM Horse
-  WHERE Breed <> 'Quarter Horse' OR Breed IS NULL;
+  WHERE Breed <> 'Quarter Horse';                       -- 7 rows: 'Blue Ribbon' (NULL breed) is missing
+  SELECT RegisteredName, Breed FROM Horse
+  WHERE Breed <> 'Quarter Horse' OR Breed IS NULL;      -- 8 rows
   -- Without the IS NULL test, 'Blue Ribbon' disappears: NULL <> 'x' is UNKNOWN, not TRUE.
   ```
 
@@ -443,15 +449,11 @@ These sections only read data, so you can redo any exercise at any time. Every e
   </details>
   <!-- /solution -->
 
-- **3.3** More string functions.
+- **3.3** More string functions. Write two separate queries:
   - **a)** For every student who has an email, show two columns:
     - `LastLower`: their LastName in lowercase. Use `LOWER`.
     - `NewEmail`: their Email with `@example.com` changed to `@stable.example`. Use `REPLACE`.
-  - **b)** In one SELECT, show two columns:
-    - `Trimmed`: `CONCAT('[', TRIM('   Round Rock  '), ']')`
-    - `NotTrimmed`: the same thing without TRIM
-
-    What does TRIM remove?
+  - **b)** Use `TRIM` to remove the spaces from the start and end of `'   Round Rock  '`. Name the column `Trimmed`. No table is needed, so leave out FROM.
 
   *(7 rows, then 1 row)*
 
@@ -459,7 +461,7 @@ These sections only read data, so you can redo any exercise at any time. Every e
   <details>
   <summary>Hint</summary>
 
-  - `REPLACE(text, 'find', 'replace with')` changes every match. `TRIM()` removes spaces from both ends.
+  - `REPLACE(text, 'find', 'replace with')` changes every match.
 
   </details>
 
@@ -471,9 +473,7 @@ These sections only read data, so you can redo any exercise at any time. Every e
          REPLACE(Email, '@example.com', '@stable.example') AS NewEmail
   FROM Student
   WHERE Email IS NOT NULL;
-  SELECT CONCAT('[', TRIM('   Round Rock  '), ']') AS Trimmed,     -- [Round Rock]
-         CONCAT('[', '   Round Rock  ', ']')       AS NotTrimmed;  -- [   Round Rock  ]
-  -- TRIM removes spaces at the start and end only, never the space inside "Round Rock".
+  SELECT TRIM('   Round Rock  ') AS Trimmed;    -- 'Round Rock': the space in the middle stays
   ```
 
   </details>
@@ -504,7 +504,7 @@ These sections only read data, so you can redo any exercise at any time. Every e
   </details>
   <!-- /solution -->
 
-- **3.5** More date functions:
+- **3.5** More date functions. Write two separate queries:
   - **a)** For every employee hired on or after 2019-01-01, show the FirstName, LastName, HireDate, and a column named `DaysEmployed`: how many **days** they have worked as of 2026-10-01. Use `DATEDIFF`. Sort by HireDate, oldest first.
   - **b)** Show the FirstName, LastName, and HireDate of the employees hired in June, July, or August of any year. Use `MONTH()`.
 
@@ -608,13 +608,13 @@ These sections only read data, so you can redo any exercise at any time. Every e
 
 - **3.8** CASE has two forms. 3.7 used the **searched** form (`CASE WHEN condition THEN ...`). The **simple** form compares one column against a list of values: `CASE RatingCode WHEN 'G' THEN ... END`.
 
-  Use the simple form. For every movie, show the Title, the RatingCode, and a column named `Audience`:
-  - G → "Everyone", PG → "Parental guidance", PG-13 → "Teens and up", R → "Adults"
-  - anything else → "Not rated"
+  Write two separate queries:
+  - **a)** Use the simple form. For every movie, show the Title, the RatingCode, and a column named `Audience`:
+    - G → "Everyone", PG → "Parental guidance", PG-13 → "Teens and up", R → "Adults"
+    - anything else → "Not rated"
 
-  Then answer:
-  - Which movie gets "Not rated"?
-  - Could you catch it with `WHEN NULL THEN ...` instead of ELSE? To find out, run `SELECT CASE NULL WHEN NULL THEN 'matched' ELSE 'no match' END;`.
+    Which movie gets "Not rated"?
+  - **b)** Could you catch that movie with `WHEN NULL THEN ...` instead of ELSE? To find out, run `SELECT CASE NULL WHEN NULL THEN 'matched' ELSE 'no match' END;`.
 
   *(12 rows, then 1 row)*
 
@@ -881,9 +881,11 @@ These sections only read data, so you can redo any exercise at any time. Every e
   </details>
   <!-- /solution -->
 
-- **4.7** This one needs **both** WHERE and HAVING. For each DeptID, count the employees who were hired on or after 2018-01-01. Show only the departments where that count is 2 or more. Name the count column RecentHires.
-  - Which condition goes in WHERE, and which goes in HAVING? Why?
-  - Then write a second query: the same thing without the WHERE clause. The count now includes every employee, so name the column `Headcount`. Why do you get more rows?
+- **4.7** Write two separate queries:
+  - **a)** This one needs **both** WHERE and HAVING. For each DeptID, count the employees who were hired on or after 2018-01-01. Show only the departments where that count is 2 or more. Name the count column RecentHires.
+    - Which condition goes in WHERE, and which goes in HAVING? Why?
+  - **b)** Copy your query from a) and remove the WHERE clause. The count now includes every employee, so name the column `Headcount`.
+    - Why do you get more rows?
 
   *(3 rows, then 5 rows)*
 
@@ -1447,11 +1449,12 @@ LEFT: With `Crew c LEFT JOIN Crew l`, every crew member stays. Rae's lead shows 
   </details>
   <!-- /solution -->
 
-- **6.6** Show the ID, FirstName, and LastName of the students who have **no** lessons. Use `NOT IN` with a subquery.
-  - Your first try will return zero rows. Work out why.
-  - Then fix it in two different ways. One of the ways should use `NOT EXISTS`.
+- **6.6** Show the ID, FirstName, and LastName of the students who have **no** lessons. Write three separate queries:
+  - **a)** Use `NOT IN` with a subquery that returns every StudentID in LessonSchedule. It returns zero rows. Work out why.
+  - **b)** Copy your query from a) and fix it, still using `NOT IN`.
+  - **c)** Write it again using `NOT EXISTS` instead.
 
-  *(0 rows, then 1 row for each fix)*
+  *(0 rows, then 1 row, then 1 row)*
 
   <!-- solution:6.6 -->
   <details>
@@ -1466,17 +1469,18 @@ LEFT: With `Crew c LEFT JOIN Crew l`, every crew member stays. Rae's lead shows 
   <summary>Solution</summary>
 
   ```sql
-  -- The trap: this returns ZERO rows, because LessonSchedule.StudentID contains a NULL.
+  -- a) The trap: this returns ZERO rows, because LessonSchedule.StudentID contains a NULL.
   --   x NOT IN (1, 2, NULL)  ==  x<>1 AND x<>2 AND x<>NULL  ==  UNKNOWN
   SELECT ID, FirstName, LastName
   FROM Student
   WHERE ID NOT IN (SELECT StudentID FROM LessonSchedule);
 
-  -- Correct (either works):
+  -- b) Fixed NOT IN: leave the NULL out of the subquery.
   SELECT ID, FirstName, LastName
   FROM Student
   WHERE ID NOT IN (SELECT StudentID FROM LessonSchedule WHERE StudentID IS NOT NULL);
 
+  -- c) NOT EXISTS isn't affected by the NULL.
   SELECT s.ID, s.FirstName, s.LastName
   FROM Student s
   WHERE NOT EXISTS (SELECT 1 FROM LessonSchedule ls WHERE ls.StudentID = s.ID);
