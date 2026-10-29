@@ -14,8 +14,8 @@ On the Setup page (README.md) the Mermaid diagram, which is there for GitHub,
 is swapped for the same tables drawn as SVG.
 
 Part 1 and Section 12 have no Uses lines; there each `### Movie and Rating`
-style heading names the tables, so the block goes under the heading instead,
-and each exercise under it gets a Show tables button that opens a copy.
+style heading names the tables instead. Each exercise under the heading gets a
+Show tables box: the first holds the diagram, and the rest open a copy of it.
 
 Only tables setup.sql builds are drawn. Tables from earlier exercises
 (*(from 8.1)*), the d427_drills copies in Section 11, and anything an
@@ -159,19 +159,25 @@ def _add_diagrams(markdown, builder, schema, diagrams):
         names = _names(heading[1], schema)
         if not names:
             continue
-        inserts[i] = _block(builder, schema, names, "", diagrams)
-        # Each exercise under the heading gets its own Show tables button too,
-        # next to its Hint, so the diagram is a click away however far down it
-        # is. It stays empty here; site.js copies the heading's diagram in when
-        # it's opened, so the page doesn't carry a copy per exercise.
+        # Each exercise under the heading gets its own Show tables box, next to
+        # its Hint, so the diagram is a click away however far down it is. The
+        # first one holds the diagram; the rest stay empty and site.js copies
+        # it in when they're opened, so the page doesn't carry a copy per exercise.
+        slots = []
         for start, stop in _exercises(lines):
             if not i < start < end:
                 continue
             k = next((k for k in range(start, stop) if SOLUTION.match(lines[k])), None)
             if k is not None and not lines[k - 1].strip():
-                indent = SOLUTION.match(lines[k])["indent"]
-                inserts[k - 1] = [f'{indent}??? tables "Show tables"', "",
-                                  f'{indent}    <div class="er-copy" data-er-from="{len(diagrams) - 1}"></div>', ""]
+                slots.append((k - 1, SOLUTION.match(lines[k])["indent"]))
+        if not slots:  # no exercise to hold it: under the heading, as one box
+            inserts[i] = _block(builder, schema, names, "", diagrams)
+            continue
+        (first, indent), rest = slots[0], slots[1:]
+        inserts[first] = _block(builder, schema, names, indent, diagrams)[1:]
+        for k, indent in rest:
+            inserts[k] = [f'{indent}??? tables "Show tables"', "",
+                          f'{indent}    <div class="er-copy" data-er-from="{len(diagrams) - 1}"></div>', ""]
 
     out = []
     for i, line in enumerate(lines):
