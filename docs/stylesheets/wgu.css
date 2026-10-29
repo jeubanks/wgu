@@ -1007,6 +1007,54 @@
     .md-typeset li[id^="ex-"] table:not([class]) td { padding: 0.6em 0.7em; }
   }
 
+  /* Folding (javascripts/progress.js): a chevron button at the card's top
+     right, and folded cards cut to their first line. Print shows every card whole. */
+  [dir] .md-typeset ul > li[id^="ex-"] { position: relative; }
+  .md-typeset li[id^="ex-"] > p:first-child { padding-right: 1.9rem; }
+  .md-typeset .ex-fold {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.5rem;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 6px;
+    color: var(--md-default-fg-color--light);
+    cursor: pointer;
+  }
+  .md-typeset .ex-fold:hover,
+  .md-typeset .ex-fold:focus-visible { background: var(--md-accent-fg-color--transparent); color: var(--md-typeset-a-color); }
+  .md-typeset .ex-fold::before {  /* a chevron: down when open, right when folded */
+    content: "";
+    position: absolute;
+    top: 0.5rem;
+    left: 0.58rem;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-right: 2px solid currentcolor;
+    border-bottom: 2px solid currentcolor;
+    transform: rotate(45deg);
+  }
+  .md-typeset li.ex-folded > .ex-fold::before { top: 0.6rem; left: 0.5rem; transform: rotate(-45deg); }
+  [dir] .md-typeset ul > li.ex-folded { margin: 0.35rem 0; padding-bottom: 0.8rem; cursor: pointer; }  /* margins add up: 0.7rem between folded cards */
+  [dir] .md-typeset ul > li.ex-folded[id^="ex-"] > :not(:first-child, .ex-fold) { display: none; }
+  .md-typeset li.ex-folded > p:first-child {
+    margin-bottom: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .md-typeset .ex-fold-switch {
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+    margin: 0 0 0.6rem;
+    font-size: 0.72rem;
+    color: var(--md-default-fg-color--light);
+    cursor: pointer;
+    user-select: none;
+  }
+  .md-typeset .ex-fold-switch input { accent-color: var(--ex-badge-bg); cursor: pointer; }
+
   /* More room: a wider page on large screens (Material stops at 61rem), and
      more space above each table heading on exercise pages. */
   .md-grid { max-width: 72rem; }
@@ -1130,3 +1178,4 @@
     color: #001731;
   }
 }
+@media print { .md-typeset .ex-fold, .md-typeset .ex-fold-switch { display: none; } }

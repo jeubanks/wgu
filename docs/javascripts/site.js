@@ -57,6 +57,26 @@
     });
   }
 
+  // An exercise's own Show tables box (hooks/er_diagrams.py) starts empty:
+  // opening it copies in the diagram from its heading's box, with the ids
+  // renamed (er3w-t -> er3c1w-t) so the copy's labels point at itself.
+  var copies = 0;
+  function fillCopy(d) {
+    var slot = d.querySelector(".er-copy:empty");
+    if (!slot) return;
+    var source = document.getElementById("er" + slot.dataset.erFrom);
+    var box = source && source.closest("details");
+    if (!box) return;
+    copies += 1;
+    var html = "";
+    Array.prototype.forEach.call(box.children, function (el) { if (el.tagName !== "SUMMARY") html += el.outerHTML; });
+    slot.innerHTML = html.replace(new RegExp("\\ber" + slot.dataset.erFrom + "(?![0-9])", "g"), "er" + slot.dataset.erFrom + "c" + copies);
+    watchSizes();
+  }
+  document.addEventListener("toggle", function (e) {
+    if (e.target.tagName === "DETAILS" && e.target.open) fillCopy(e.target);
+  }, true);
+
   function init() { codeNavs(); scrollables(); watchSizes(); }
   if (window.document$ && window.document$.subscribe) window.document$.subscribe(function () { setTimeout(init, 0); });
   else init();

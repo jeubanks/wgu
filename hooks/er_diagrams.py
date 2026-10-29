@@ -5,8 +5,8 @@ Which courses and pages get them is set in mkdocs.yml (extra.courses: er_diagram
 The exercise files stay unchanged. At build time, under each exercise whose
 `**Uses:**` line names tables "from `setup.sql`", this adds a collapsed block
 with an ER diagram (inline SVG from hooks/er_svg.py) of those tables plus the
-tables one foreign key away, shown compact and in gray. When none of them are
-linked by a foreign key, there's no diagram: a lone box adds nothing.
+tables one foreign key away, shown compact and in gray. Tables with no foreign
+keys still get one: it lists their columns, types, and keys.
 The schema comes from the course's setup.sql via its build_diagrams.py (D427's is
 D427_Data_Management_Applications/build_diagrams.py).
 
@@ -14,7 +14,8 @@ On the Setup page (README.md) the Mermaid diagram, which is there for GitHub,
 is swapped for the same tables drawn as SVG.
 
 Part 1 and Section 12 have no Uses lines; there each `### Movie and Rating`
-style heading names the tables, so the block goes under the heading instead.
+style heading names the tables, so the block goes under the heading instead,
+and each exercise under it gets a Show tables button that opens a copy.
 
 Only tables setup.sql builds are drawn. Tables from earlier exercises
 (*(from 8.1)*), the d427_drills copies in Section 11, and anything an
@@ -36,6 +37,7 @@ SECTION = re.compile(r"^## ")
 USES = re.compile(r"^(?P<indent>\s*)\*\*Uses:\*\*(?P<text>.*?)(?:\\|<br>)?$")
 CREATES = re.compile(r"^\s*\*\*Creates:\*\*(?P<text>.*?)(?:\\|<br>)?$")
 NOTE = re.compile(r"\*\([^*]*\)\*")  # *(from `setup.sql`)*
+SOLUTION = re.compile(r"^(?P<indent>\s*)<!-- solution:")
 FENCE = re.compile(r"^\s*(```|~~~)")
 
 
@@ -86,16 +88,10 @@ def _neighbors(schema, names):
     return out
 
 
-def _has_links(tables):
-    return any(fk.parent in tables for t in tables.values() for fk in t.foreign_keys)
-
-
 def _block(builder, schema, names, indent, diagrams, excluded=()):
-    """A folded "Show tables" block, or [] when the tables have no relationships."""
+    """A folded "Show tables" block."""
     neighbors = _neighbors(schema, names) - set(excluded)
     tables = {n: schema[n] for n in schema if n in names or n in neighbors}  # setup.sql order
-    if not _has_links(tables):
-        return []
     used = [n for n in tables if n in names]
     title = "Tables used: " + ", ".join(used)
     diagrams.append(_svg(builder, tables, title, compact=neighbors))
@@ -161,8 +157,21 @@ def _add_diagrams(markdown, builder, schema, diagrams):
         if any(USES.match(l) or CREATES.match(l) for l in lines[i:end]):
             continue
         names = _names(heading[1], schema)
-        if names:
-            inserts[i] = _block(builder, schema, names, "", diagrams)
+        if not names:
+            continue
+        inserts[i] = _block(builder, schema, names, "", diagrams)
+        # Each exercise under the heading gets its own Show tables button too,
+        # next to its Hint, so the diagram is a click away however far down it
+        # is. It stays empty here; site.js copies the heading's diagram in when
+        # it's opened, so the page doesn't carry a copy per exercise.
+        for start, stop in _exercises(lines):
+            if not i < start < end:
+                continue
+            k = next((k for k in range(start, stop) if SOLUTION.match(lines[k])), None)
+            if k is not None and not lines[k - 1].strip():
+                indent = SOLUTION.match(lines[k])["indent"]
+                inserts[k - 1] = [f'{indent}??? tables "Show tables"', "",
+                                  f'{indent}    <div class="er-copy" data-er-from="{len(diagrams) - 1}"></div>', ""]
 
     out = []
     for i, line in enumerate(lines):

@@ -80,7 +80,7 @@ Run the same things locally before pushing. The accessibility check needs Playwr
 
 An exercise is a top-level list item that starts with its bold label. The build finds exercises by this pattern, so keep it exact: `- **7.3**`, a space or a backslash line break, then the text.
 
-On screen, each exercise is a card with its label as a badge, and its closed boxes (Try it, Hint, Solution, Answer) sit in one row of small buttons; an open box takes the card's full width (`wgu.css`, "Exercise cards"). Print keeps the plain list.
+On screen, each exercise is a card with its label as a badge, and its closed boxes (Try it, Hint, Solution, Answer) sit in one row of small buttons; an open box takes the card's full width (`wgu.css`, "Exercise cards"). A chevron at each card's top right folds it to its first line, and a "Collapse completed exercises" switch under the page title folds the cards marked Done (`progress.js`; the switch is remembered). Print keeps the plain list, unfolded.
 
 ```markdown
 - **7.3**\
@@ -150,7 +150,7 @@ On the quiz page (`quiz:` in the course settings), each question part has a hidd
 
 ### "Show tables" ER diagrams
 
-Generated from `setup.sql`; nothing to write. `er_diagrams.pages` lists the pages that get a folded "Show tables" diagram under each exercise's **Uses:** line, showing those tables and the tables they link to. `er_diagrams.readme` names the page whose `<!-- er-diagram -->` ... `<!-- /er-diagram -->` Mermaid block (written by `build_diagrams.py`, so GitHub renders it) becomes the full SVG diagram on the site.
+Generated from `setup.sql`; nothing to write. `er_diagrams.pages` lists the pages that get a folded "Show tables" diagram under each exercise's **Uses:** line, showing those tables and the tables they link to. Where a page has no Uses lines (Part 1, Section 12), the diagram goes under each `### Movie and Rating` style heading instead, and each exercise under that heading gets its own Show tables button, which copies in the heading's diagram when opened (`site.js`). An exercise needs a `<!-- solution:N.N -->` marker for the button to go in front of. `er_diagrams.readme` names the page whose `<!-- er-diagram -->` ... `<!-- /er-diagram -->` Mermaid block (written by `build_diagrams.py`, so GitHub renders it) becomes the full SVG diagram on the site.
 
 ### Join, delete, and self-join pictures
 
