@@ -5,8 +5,8 @@ Which courses and pages get them is set in mkdocs.yml (extra.courses: er_diagram
 The exercise files stay unchanged. At build time, under each exercise whose
 `**Uses:**` line names tables "from `setup.sql`", this adds a collapsed block
 with an ER diagram (inline SVG from hooks/er_svg.py) of those tables plus the
-tables one foreign key away, shown compact and in gray. When none of them are
-linked by a foreign key, there's no diagram: a lone box adds nothing.
+tables one foreign key away, shown compact and in gray. Tables with no foreign
+keys still get one: it lists their columns, types, and keys.
 The schema comes from the course's setup.sql via its build_diagrams.py (D427's is
 D427_Data_Management_Applications/build_diagrams.py).
 
@@ -88,16 +88,10 @@ def _neighbors(schema, names):
     return out
 
 
-def _has_links(tables):
-    return any(fk.parent in tables for t in tables.values() for fk in t.foreign_keys)
-
-
 def _block(builder, schema, names, indent, diagrams, excluded=()):
-    """A folded "Show tables" block, or [] when the tables have no relationships."""
+    """A folded "Show tables" block."""
     neighbors = _neighbors(schema, names) - set(excluded)
     tables = {n: schema[n] for n in schema if n in names or n in neighbors}  # setup.sql order
-    if not _has_links(tables):
-        return []
     used = [n for n in tables if n in names]
     title = "Tables used: " + ", ".join(used)
     diagrams.append(_svg(builder, tables, title, compact=neighbors))
@@ -166,8 +160,6 @@ def _add_diagrams(markdown, builder, schema, diagrams):
         if not names:
             continue
         inserts[i] = _block(builder, schema, names, "", diagrams)
-        if not inserts[i]:
-            continue
         # Each exercise under the heading gets its own Show tables button too,
         # next to its Hint, so the diagram is a click away however far down it
         # is. It stays empty here; site.js copies the heading's diagram in when
