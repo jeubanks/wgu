@@ -1074,7 +1074,7 @@ LEFT: With `Crew c LEFT JOIN Crew l`, every crew member stays. Rae's lead shows 
   </details>
   <!-- /solution -->
 
-- **5.3** Write exercise 5.2 again, but use a `RIGHT JOIN` this time. You should get the same result. *(6 rows)*
+- **5.3** Write exercise 5.2 again with a `RIGHT JOIN` in place of the `LEFT JOIN`, and get the same 6 rows. Changing only the word LEFT to RIGHT isn't enough: try it, see which rows change, and work out what else has to change. *(6 rows)*
 
   <!-- solution:5.3 -->
   <details>
