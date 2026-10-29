@@ -36,6 +36,7 @@ Nothing here yet.
 
 ## Done
 
+- Folding exercise cards: a chevron folds a card to one line, and a remembered "Collapse completed exercises" switch folds the ones marked Done; every exercise that reads `setup.sql` tables has its own Show tables button, including tables with no foreign keys (#38)
 - Layout polish: one text size for a whole exercise card, tighter cards and tables on phones, rounded buttons, and a Sky Blue main button in dark mode (#37)
 - Exercise cards: each exercise sits in its own card with its number as a badge, closed boxes shrink to one row of small buttons, and the page is wider on large screens; tables that scroll sideways get keyboard access again whenever their width changes (#36)
 - Exercises 2.6, 2.9, 3.3, 3.5, 3.8, 4.7, 6.6, 12.6, 12.12, 12.18, and 12.19 now say how many separate queries to write, matching what Check expects; 3.3 b) is a single TRIM call, and 3.8 keeps its follow-up questions (#35)
