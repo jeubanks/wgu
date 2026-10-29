@@ -59,6 +59,64 @@
     li.classList.toggle("ex-is-done", box.checked);
   });
 
+  // Folding: a button on each card folds it to its first line. The "Collapse
+  // completed" switch (remembered) folds the cards marked Done when the page
+  // loads or the switch goes on; ticking a box leaves its card open until next
+  // time, so the page doesn't jump. Linking to a folded card opens it.
+  var FOLD = KEY + "-fold";
+  var foldButtons = {};
+  function fold(label, on) {
+    var b = foldButtons[label];
+    if (!b) return;
+    b.closest("li").classList.toggle("ex-folded", on);
+    b.setAttribute("aria-expanded", on ? "false" : "true");
+    b.setAttribute("aria-label", (on ? "Expand exercise " : "Collapse exercise ") + label);
+  }
+  Object.keys(boxes).forEach(function (label) {
+    var li = boxes[label].closest("li");
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "ex-fold";
+    b.addEventListener("click", function () { fold(label, !li.classList.contains("ex-folded")); });
+    li.appendChild(b);  // last, since other scripts read the first child
+    li.dataset.exLabel = label;
+    foldButtons[label] = b;
+    fold(label, false);
+    // A folded card opens from a click anywhere on its line, too.
+    li.addEventListener("click", function (e) {
+      if (li.classList.contains("ex-folded") && !e.target.closest("a, input, label, button")) fold(label, false);
+    });
+  });
+  function foldDone(on) {
+    Object.keys(foldButtons).forEach(function (label) { if (done[label]) fold(label, on); });
+  }
+  function openTarget() {
+    var t = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    var li = t && t.closest("li.ex-folded");
+    if (li) fold(li.dataset.exLabel, false);
+  }
+  var firstCard = Object.keys(boxes).length && boxes[Object.keys(boxes)[0]].closest("ul");
+  if (firstCard) {
+    var foldOn = false;
+    try { foldOn = localStorage.getItem(FOLD) === "1"; } catch (e) { /* storage blocked */ }
+    var bar = document.createElement("label");
+    bar.className = "ex-fold-switch";
+    var sw = document.createElement("input");
+    sw.type = "checkbox";
+    sw.setAttribute("role", "switch");
+    sw.checked = foldOn;
+    sw.addEventListener("change", function () {
+      try { localStorage.setItem(FOLD, sw.checked ? "1" : "0"); } catch (e) { /* storage blocked */ }
+      foldDone(sw.checked);
+    });
+    bar.append(sw, document.createTextNode(" Collapse completed exercises"));
+    var h1 = document.querySelector(".md-content h1");
+    if (h1) h1.after(bar); else firstCard.before(bar);
+    if (foldOn) foldDone(true);
+    openTarget();
+    window.addEventListener("hashchange", openTarget);
+  }
+
   // A "To review" tag next to each exercise on the review list, on its own page.
   function markReview(label, on) {
     var strong = labels[label];
