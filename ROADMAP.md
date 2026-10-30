@@ -36,7 +36,7 @@ Nothing here yet.
 
 ## Done
 
-- Exercise 5.5 is a self-join only: it shows each person's DeptID instead of joining Department twice (#41)
+- Exercise 5.5 is a self-join only: it shows each person's DeptID instead of joining Department twice (#42)
 - Exercise 5.3 now says that changing only LEFT to RIGHT isn't enough to get 5.2's rows (#40)
 - No more Show tables box under the headings of Part 1 and Section 12: each exercise's own box is enough, and the first one under a heading holds the diagram (#39)
 - Folding exercise cards: a chevron folds a card to one line, and a remembered "Collapse completed exercises" switch folds the ones marked Done; every exercise that reads `setup.sql` tables has its own Show tables button, including tables with no foreign keys (#38)
