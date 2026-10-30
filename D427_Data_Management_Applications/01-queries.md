@@ -1152,9 +1152,9 @@ LEFT: With `Crew c LEFT JOIN Crew l`, every crew member stays. Rae's lead shows 
 
 - **5.5** Show the employees whose manager works in a **different** department than they do. Leave out employees who have no department. Show four columns:
   - `Employee`: the employee's FirstName and LastName joined with a space
-  - `EmpDept`: the employee's DeptName
+  - `EmpDeptID`: the employee's DeptID
   - `Manager`: the manager's FirstName and LastName joined with a space
-  - `MgrDept`: the manager's DeptName
+  - `MgrDeptID`: the manager's DeptID
 
   *(2 rows)*
 
@@ -1162,7 +1162,8 @@ LEFT: With `Crew c LEFT JOIN Crew l`, every crew member stays. Rae's lead shows 
   <details>
   <summary>Hint</summary>
 
-  - You need Employee twice (the employee and the manager) and Department twice (one for each person's department).
+  - Start from the self-join in 5.4, then compare the two people's DeptIDs.
+  - Does `e.DeptID <> m.DeptID` keep an employee whose DeptID is NULL?
 
   </details>
 
@@ -1170,13 +1171,11 @@ LEFT: With `Crew c LEFT JOIN Crew l`, every crew member stays. Rae's lead shows 
   <summary>Solution</summary>
 
   ```sql
-  SELECT CONCAT(e.FirstName, ' ', e.LastName) AS Employee, ed.DeptName AS EmpDept,
-         CONCAT(m.FirstName, ' ', m.LastName) AS Manager,  md.DeptName AS MgrDept
+  SELECT CONCAT(e.FirstName, ' ', e.LastName) AS Employee, e.DeptID AS EmpDeptID,
+         CONCAT(m.FirstName, ' ', m.LastName) AS Manager,  m.DeptID AS MgrDeptID
   FROM Employee e
-  JOIN Employee   m  ON e.ManagerID = m.EmpID
-  JOIN Department ed ON e.DeptID    = ed.DeptID
-  JOIN Department md ON m.DeptID    = md.DeptID
-  WHERE e.DeptID <> m.DeptID;
+  JOIN Employee m ON e.ManagerID = m.EmpID
+  WHERE e.DeptID <> m.DeptID;   -- a NULL DeptID never passes <>, so no-department employees drop out
   ```
 
   </details>
