@@ -341,14 +341,13 @@ ORDER BY e.EmpID;
 -- CONCAT with any NULL argument returns NULL, so top-level managers show NULL.
 
 -- [5.5]
--- Hint: You need Employee twice (the employee and the manager) and Department twice (one for each person's department).
-SELECT CONCAT(e.FirstName, ' ', e.LastName) AS Employee, ed.DeptName AS EmpDept,
-       CONCAT(m.FirstName, ' ', m.LastName) AS Manager,  md.DeptName AS MgrDept
+-- Hint: Start from the self-join in 5.4, then compare the two people's DeptIDs.
+-- Hint: Does `e.DeptID <> m.DeptID` keep an employee whose DeptID is NULL?
+SELECT CONCAT(e.FirstName, ' ', e.LastName) AS Employee, e.DeptID AS EmpDeptID,
+       CONCAT(m.FirstName, ' ', m.LastName) AS Manager,  m.DeptID AS MgrDeptID
 FROM Employee e
-JOIN Employee   m  ON e.ManagerID = m.EmpID
-JOIN Department ed ON e.DeptID    = ed.DeptID
-JOIN Department md ON m.DeptID    = md.DeptID
-WHERE e.DeptID <> m.DeptID;
+JOIN Employee m ON e.ManagerID = m.EmpID
+WHERE e.DeptID <> m.DeptID;   -- a NULL DeptID never passes <>, so no-department employees drop out
 
 -- [5.6]
 -- Hint: "Include movies that have no rating" means every movie is kept. Put Movie on the left of a LEFT JOIN.
