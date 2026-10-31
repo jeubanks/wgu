@@ -38,8 +38,9 @@
             var db = new SQL.Database();
             db.exec(DATA.setup);
             var image = db.export();
+            var creates = setupCreates(db);
             db.close();
-            resolve({ SQL: SQL, image: image });
+            resolve({ SQL: SQL, image: image, creates: creates });
           }, reject);
       };
       script.onerror = function () { reject(new Error("Couldn't download SQLite (sql.js). Check your connection.")); };
@@ -72,6 +73,7 @@
     var db = new engine.SQL.Database(image || engine.image);
     db.run("PRAGMA foreign_keys = ON");  // off by default in SQLite; MySQL always checks them
     addMySqlFunctions(db);
+    addShowFunctions(db, engine.creates);
     return db;
   }
 
@@ -175,6 +177,94 @@
     Object.keys(FUNCTIONS).forEach(function (name) { db.create_function(name, FUNCTIONS[name]); });
   }
 
+  /* ---------- SHOW TABLES, SHOW CREATE TABLE, DESCRIBE ---------- */
+
+  // setup.sql's tables: lowercase name -> {mysql: its CREATE TABLE as written,
+  // sqlite: SQLite's version, types: column -> MySQL type}. SHOW CREATE TABLE and
+  // DESCRIBE show the MySQL text for a table that's still as setup.sql built it.
+  function setupCreates(db) {
+    var out = {};
+    Object.keys(DATA.creates || {}).forEach(function (name) {
+      var res = db.exec("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = '" + name + "'");
+      if (!res[0]) return;
+      var mysql = DATA.creates[name], types = {};
+      mysql.slice(mysql.indexOf("(") + 1).split("\n").forEach(function (line) {
+        var m = /^\s*`?(\w+)`?\s+(.+?)(?=\s+(?:NOT\s+NULL|NULL|PRIMARY|DEFAULT|AUTO_INCREMENT|UNIQUE|CHECK|REFERENCES|COMMENT)\b|\s*,?\s*$)/i.exec(line);
+        if (m && !/^(?:PRIMARY|FOREIGN|UNIQUE|KEY|INDEX|CONSTRAINT|CHECK)$/i.test(m[1])) types[m[1].toLowerCase()] = m[2].toLowerCase();
+      });
+      out[name.toLowerCase()] = { mysql: mysql, sqlite: res[0].values[0][0], types: types };
+    });
+    return out;
+  }
+
+  function addShowFunctions(db, creates) {
+    function setupVersion(table, sql) {
+      var c = creates && creates[String(table).toLowerCase()];
+      return c && c.sqlite === sql ? c : null;
+    }
+    // The table's real name, or MySQL's error if there's no such table.
+    db.create_function("MYSQL_TABLE", function (asked, found) {
+      if (found === null) throw "Table 'd427." + asked + "' doesn't exist";  // sql.js passes on a string, not an Error's message
+      return found;
+    });
+    db.create_function("MYSQL_CREATE", function (table, sql) {
+      var c = setupVersion(table, sql);
+      return c ? c.mysql : sql;
+    });
+    db.create_function("MYSQL_TYPE", function (table, sql, column, type) {
+      var c = setupVersion(table, sql);
+      return (c && c.types[String(column).toLowerCase()]) || String(type).toLowerCase();
+    });
+  }
+
+  // A table name as MySQL takes it: Movie, `Movie`, d427.Movie.
+  var TABLE_NAME = "(?:`?\\w+`?\\.)?`?(\\w+)`?";
+  // A one-row FROM item: the table's real name as x.t (MySQL's error if there's none).
+  function knownTable(name) {
+    return "(SELECT MYSQL_TABLE('" + name + "', (SELECT name FROM sqlite_master WHERE type = 'table' AND name = '" +
+      name + "' COLLATE NOCASE)) AS t) AS x";
+  }
+  var TABLE_SQL = "(SELECT sql FROM sqlite_master WHERE type = 'table' AND name = x.t)";
+  var SHOW_STATEMENTS = [
+    [/SHOW\s+TABLES(?:\s+LIKE\s+('(?:[^'\\]|''|\\.)*'))?/i, function (like) {
+      return "SELECT name AS Tables_in_d427 FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite\\_%' ESCAPE '\\'" +
+        (like ? " AND name LIKE " + like + " ESCAPE '\\'" : "") + " ORDER BY name";
+    }],
+    [new RegExp("SHOW\\s+CREATE\\s+TABLE\\s+" + TABLE_NAME, "i"), function (name) {
+      return "SELECT x.t AS \"Table\", MYSQL_CREATE(x.t, m.sql) AS \"Create Table\" FROM " + knownTable(name) +
+        " CROSS JOIN sqlite_master AS m WHERE m.type = 'table' AND m.name = x.t";
+    }],
+    [new RegExp("(?:DESCRIBE|DESC|SHOW\\s+COLUMNS\\s+FROM)\\s+" + TABLE_NAME, "i"), function (name) {
+      return "SELECT c.name AS Field, MYSQL_TYPE(x.t, " + TABLE_SQL + ", c.name, c.type) AS Type," +
+        " CASE WHEN c.\"notnull\" OR c.pk THEN 'NO' ELSE 'YES' END AS \"Null\"," +
+        " CASE WHEN c.pk THEN 'PRI'" +
+        " WHEN EXISTS (SELECT 1 FROM pragma_index_list(x.t) AS i WHERE i.\"unique\" AND i.origin = 'u'" +
+        " AND (SELECT COUNT(*) FROM pragma_index_info(i.name)) = 1 AND (SELECT name FROM pragma_index_info(i.name)) = c.name) THEN 'UNI'" +
+        " WHEN EXISTS (SELECT 1 FROM pragma_foreign_key_list(x.t) AS f WHERE f.\"from\" = c.name AND f.seq = 0)" +
+        " OR EXISTS (SELECT 1 FROM pragma_index_list(x.t) AS i WHERE (SELECT name FROM pragma_index_info(i.name) WHERE seqno = 0) = c.name) THEN 'MUL'" +
+        " ELSE '' END AS \"Key\"," +
+        " CASE WHEN c.dflt_value LIKE '''%''' THEN substr(c.dflt_value, 2, length(c.dflt_value) - 2) ELSE c.dflt_value END AS \"Default\"," +
+        " CASE WHEN c.pk AND " + TABLE_SQL + " LIKE '%AUTOINCREMENT%' THEN 'auto_increment' ELSE '' END AS Extra" +
+        " FROM " + knownTable(name) + " CROSS JOIN pragma_table_info(x.t) AS c ORDER BY c.cid";
+    }],
+  ];
+
+  // MySQL statements SQLite doesn't have, as SELECTs that show the same thing.
+  // Only whole statements: from a statement's start (after any comments) to its semicolon.
+  function showStatements(sql) {
+    return sql.split(/(;)/).map(function (part) {
+      var lead = /^(?:\s|--[^\n]*\n|#[^\n]*\n|\/\*[\s\S]*?\*\/)*/.exec(part)[0];
+      var body = part.slice(lead.length).replace(/\s+$/, "");
+      for (var i = 0; i < SHOW_STATEMENTS.length; i++) {
+        var m = SHOW_STATEMENTS[i][0].exec(body);
+        if (m && m.index === 0 && m[0].length === body.length) {
+          return lead + SHOW_STATEMENTS[i][1](m[1]) + part.slice(lead.length + body.length);
+        }
+      }
+      return part;
+    }).join("");
+  }
+
   // Strings, quoted names, and comments, so the rewrites below only touch SQL code.
   var TOKENS = /('(?:[^'\\]|''|\\.)*'|"(?:[^"\\]|""|\\.)*"|`[^`]*`|--[^\n]*|#[^\n]*|\/\*[\s\S]*?\*\/)/;
 
@@ -225,7 +315,7 @@
   }
 
   function toSqlite(sql) {
-    return createTables(sql.split(TOKENS).map(function (part, i) {
+    return createTables(showStatements(sql).split(TOKENS).map(function (part, i) {
       if (i % 2) {
         if (part[0] === "#") return "--" + part.slice(1);
         // MySQL reads "text" as a string; SQLite would look for a column first.
@@ -586,6 +676,7 @@
         var td = tr.insertCell();
         if (v === null) td.appendChild(el("span", "sql-null", "NULL"));
         else td.textContent = v instanceof Uint8Array ? "(binary)" : String(v);
+        if (typeof v === "string" && v.indexOf("\n") >= 0) td.className = "sql-pre";  // SHOW CREATE TABLE
         if (typeof v === "number") td.className = "sql-num";
       });
     });

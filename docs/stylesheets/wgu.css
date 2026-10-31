@@ -195,6 +195,10 @@
   background: var(--md-default-bg-color);
   font-weight: 700;
 }
+.md-typeset .sql-result td.sql-pre {
+  white-space: pre;
+  font-family: var(--md-code-font-family);
+}
 .md-typeset .sql-result td.sql-num {
   text-align: right;
   font-variant-numeric: tabular-nums;

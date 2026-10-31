@@ -67,6 +67,15 @@ def create_tables(sql):
     return "".join(out)
 
 
+def create_statements(sql):
+    """{table name: its CREATE TABLE statement as written}, for SHOW CREATE TABLE."""
+    out = {}
+    for match in re.finditer(r"\bCREATE\s+TABLE\s+`?(\w+)`?\s*\(", sql, re.I):
+        stop = sql.find(";", match.end())
+        out[match[1]] = sql[match.start():len(sql) if stop < 0 else stop].strip()
+    return out
+
+
 def to_sqlite(sql):
     """setup.sql (MySQL) -> a script SQLite can run."""
     return create_tables(DATABASE_LINE.sub("", sql))
