@@ -26,10 +26,13 @@ Sections 11–13 are built from the two D427 practice tests and the D427 Challen
 
 ## Setup
 
-You need a MySQL 8.4 server and the <a href="setup.sql" download>`setup.sql`</a> file, which builds the practice database. There are two ways to get a server:
+You need a MySQL 8.4 server and the <a href="setup.sql" download>`setup.sql`</a> file, which builds the practice database. There are three ways to get a server:
 
 - **[Docker](#option-a-docker)** (recommended): nothing is installed on your computer except Docker, and you can remove it all with one command. The rest of this page uses this setup.
 - **[MySQL on your computer](#option-b-mysql-installed-on-your-computer)**: install MySQL yourself if you already have it or prefer not to use Docker.
+- **[Online, in your browser](#option-c-online-with-db-fiddle)**: nothing to install. A free website runs real MySQL for you. Handy on a work or school computer, or to get started right away.
+
+Part 1, Section 7, and most of Section 12 also have **Try it** boxes on the site itself. Those run SQLite in your browser, not MySQL, so they're for practice only; everything else needs one of the three options.
 
 ### Option A: Docker
 
@@ -106,6 +109,24 @@ You should see thirteen tables: `Book`, `Compensation`, `Department`, `Employee`
 4. Connect with `mysql -u root -p d427` and run the checks from step 5 above.
 
 The commands in the rest of this page are for Docker. With a local install, use `mysql -u root -p` in place of `docker exec ... mysql -uroot`, and `SOURCE` the full path to your copy of `setup.sql`.
+
+### Option C: Online, with DB Fiddle
+
+[DB Fiddle](https://www.db-fiddle.com/) runs real MySQL 8.4 on its own server and shows the results in your browser. It's free, and you don't need an account.
+
+1. Open [db-fiddle.com](https://www.db-fiddle.com/) and set **Database** (top left) to **MySQL v8**. It runs MySQL 8.4.
+2. Open <a href="setup.sql">`setup.sql`</a> in a new tab, copy all of it, and paste it into **Schema SQL** (the left box). It works as is.
+3. Type your statements into **Query SQL** (the right box) and press **Run**. Check that it works with `SELECT COUNT(*) FROM Employee;` (15).
+
+How it differs from a server of your own:
+
+- **Every Run starts over.** DB Fiddle rebuilds the database from Schema SQL each time, so nothing you change is kept. That makes resetting easy (just press Run), but for the sections that build on earlier exercises (7 to 10, and 14), keep the earlier exercises' statements in Query SQL above the new one, or move them to the end of Schema SQL.
+- **Errors show MySQL's message but not its number.** `ERROR 1451` shows as just "Cannot delete or update a parent row: ...". The [error decoder](errors.md) matches messages too.
+- **A failing statement hides the other results.** Run a statement that's meant to fail on its own.
+- **Save** makes a public link that anyone who has it can open. You don't need to save to practice.
+- `\G` and `SOURCE` are mysql-client commands, so they don't work here. Use `SHOW CREATE TABLE Employee;` with a semicolon.
+
+DB Fiddle is a third-party website, not part of this kit, so it may change.
 
 ## Day-to-day use
 

@@ -8,6 +8,9 @@ Built from the D427 practice tests and the D427 Challenge. These sections don't 
 
 ## 11. Writing tables from a specification
 
+> [!NOTE]
+> **This section needs MySQL.** These exercises create and change tables with MySQL types and constraints, in a second database. SQLite, which runs the Try it boxes elsewhere on this site, can't do that faithfully, so there are none here. Use MySQL from [Setup](README.md#setup): Docker, MySQL on your computer, or [DB Fiddle online](README.md#option-c-online-with-db-fiddle), with nothing to install.
+
 The D427 practice tests describe each column of a table in words, like *"integer with range 0 to 65 thousand, auto increment, primary key"*, and you turn that wording into the right data type and constraints. This section practices exactly that.
 
 > [!TIP]
