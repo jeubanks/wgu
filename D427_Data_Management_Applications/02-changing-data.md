@@ -2,7 +2,7 @@
 
 [← Exercise index](exercises.md) · Solutions: [`solutions.sql`](solutions.sql)
 
-These sections change the data and the tables. Do them in order: later exercises expect the earlier ones to be done. To start over, run `SOURCE /work/setup.sql;` (or the path to your copy of `setup.sql` if MySQL is installed on your computer).
+These sections change the data and the tables. Do them in order: later exercises expect the earlier ones to be done. To start over, run `SOURCE /work/setup.sql;` (or the path to your copy of `setup.sql` if MySQL is installed on your computer). Section 7 also has a **Try it** box on each exercise, so you can practice in your browser; Sections 8 to 10 need MySQL.
 
 **In this part:** [7. Modifying data](#7-modifying-data) · [8. CREATE / ALTER / DROP](#8-create--alter--drop) · [9. Views and indexes](#9-views-and-indexes) · [10. From design to tables](#10-from-design-to-tables)
 

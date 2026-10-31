@@ -12,8 +12,12 @@ On each listed page this hook adds:
   solutions.sql, via the course's build_solutions.py).
 
 docs/javascripts/sql-runner.js finds each exercise on the page and adds the editor.
-Only read-only queries should get it: changing data and tables should be practiced
-on real MySQL. scripts/check_sql_runner.py checks every runner solution in CI.
+Mostly read-only queries get it. The sections listed in `changes` change data:
+there each box starts from setup.sql plus the solutions of the section's earlier
+exercises, and Check compares the tables (and any new table's columns) with what
+the solution leaves. Changing tables (ALTER, DROP CHECK, ...) is too different in
+SQLite, so those sections stay on MySQL. scripts/check_sql_runner.py checks every
+runner solution in CI.
 """
 import importlib.util
 import json
@@ -59,6 +63,21 @@ SECTION_NOTE = """
 """
 
 
+CHANGES_NOTE = """
+!!! info "Try the statements in your browser (SQLite)"
+
+    Each exercise below has a **Try it** box that runs **SQLite** in your browser. It starts
+    from the data as it should be just before that exercise: `setup.sql`, plus the solutions
+    of the earlier exercises in this section. Nothing you run is kept, so a mistake can't
+    break the next exercise. **Check** compares the tables your statements leave with the
+    ones the solution leaves.
+
+    It's for practice only: this kit is written for MySQL 8.4. Error messages are SQLite's
+    wording, with no MySQL error numbers, so for 7.3 and 7.9 run the failing statements on
+    MySQL too. Run each statement that should fail on its own: a run stops at the first error.
+"""
+
+
 def on_config(config, **kwargs):
     courses.load(config)
 
@@ -100,7 +119,8 @@ def on_page_markdown(markdown, page, **kwargs):
         heading = re.search(rf"^## {n}\..*$", markdown, re.M)
         if heading:
             at = heading.end()
-            markdown = markdown[:at] + "\n" + SECTION_NOTE + markdown[at:]
+            note = CHANGES_NOTE if n in course.runner_changes else SECTION_NOTE
+            markdown = markdown[:at] + "\n" + note + markdown[at:]
     return markdown
 
 
@@ -112,6 +132,8 @@ def on_page_content(html, page, **kwargs):
         "setup": sqlite_setup.to_sqlite(course.setup_sql.read_text()),
         "solutions": read_solutions(course, sections),
         "skip": {label: why for label, why in course.runner_skip.items() if _section(label) in sections},
+        "changes": [n for n in sections if n in course.runner_changes],
     }
+    data["order"] = list(data["solutions"])  # page order, for the changes sections' start states
     blob = json.dumps(data).replace("</", "<\\/")
     return html + f'\n<script type="application/json" id="sql-runner-data">{blob}</script>\n'

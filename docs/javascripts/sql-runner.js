@@ -1,7 +1,9 @@
-/* In-browser SQL runner for D427 Part 1 (SQLite via sql.js).
+/* In-browser SQL runner for D427 (SQLite via sql.js).
    hooks/sql_runner.py puts the sample data and solution queries on the page as
    JSON (#sql-runner-data). This adds a "Try it" box to every exercise that has a
-   solution. sql.js (~700 KB) is only downloaded on the first Run or Check. */
+   solution. sql.js (~700 KB) is only downloaded on the first Run or Check.
+   In the sections listed in DATA.changes, the exercises change data: each box
+   starts from the earlier exercises' solutions, and Check compares the tables. */
 (function () {
   "use strict";
 
@@ -65,8 +67,10 @@
       });
   }
 
-  function freshDb(engine) {
-    var db = new engine.SQL.Database(engine.image);
+  // A copy of the sample data, or of a later starting point (startImage).
+  function freshDb(engine, image) {
+    var db = new engine.SQL.Database(image || engine.image);
+    db.run("PRAGMA foreign_keys = ON");  // off by default in SQLite; MySQL always checks them
     addMySqlFunctions(db);
     return db;
   }
@@ -174,8 +178,54 @@
   // Strings, quoted names, and comments, so the rewrites below only touch SQL code.
   var TOKENS = /('(?:[^'\\]|''|\\.)*'|"(?:[^"\\]|""|\\.)*"|`[^`]*`|--[^\n]*|#[^\n]*|\/\*[\s\S]*?\*\/)/;
 
+  // CREATE TABLE, MySQL -> SQLite. Keep in step with hooks/sqlite_setup.py.
+  var INT = "(?:TINY|SMALL|MEDIUM|BIG)?INT(?:EGER)?(?:\\s*\\(\\d+\\))?(?:\\s+UNSIGNED)?";
+  var TYPES = [
+    // An AUTO_INCREMENT key becomes AUTOINCREMENT, which, like MySQL, never hands
+    // out a number again after its row is deleted (the counter is sqlite_sequence).
+    [new RegExp("\\b" + INT + "(\\s+NOT\\s+NULL)?\\s+(?:AUTO_INCREMENT\\s+PRIMARY\\s+KEY|PRIMARY\\s+KEY\\s+AUTO_INCREMENT)\\b", "gi"), "INTEGER PRIMARY KEY AUTOINCREMENT$1"],
+    [/\bAUTO_INCREMENT\b/gi, ""],
+    [new RegExp("\\b" + INT + "\\b", "gi"), "INTEGER"],
+    [/\b(?:DECIMAL|NUMERIC|FLOAT|DOUBLE)(?:\(\d+(?:,\s*\d+)?\))?(?:\s+UNSIGNED)?/gi, "REAL"],
+    [/\b(?:VAR)?CHAR\(\d+\)/gi, "TEXT COLLATE NOCASE"],
+    [/\b(?:DATETIME|DATE|TIMESTAMP)\b/gi, "TEXT"],
+  ];
+  var TABLE_KEY = /,\s*PRIMARY\s+KEY\s*\(\s*`?(\w+)`?\s*\)/i;
+
+  function autoKeyAtTableLevel(body) {
+    var key = TABLE_KEY.exec(body);
+    if (!key) return body;
+    var column = new RegExp("(\\b" + key[1] + "`?\\s+)" + INT + "(\\s+NOT\\s+NULL)?\\s+AUTO_INCREMENT\\b", "i");
+    if (!column.test(body)) return body;
+    body = body.replace(column, "$1INTEGER PRIMARY KEY AUTOINCREMENT$2");
+    return body.replace(TABLE_KEY, "");
+  }
+
+  function createTables(sql) {
+    var out = "", at = 0, re = /\bCREATE\s+TABLE\b/gi, m;
+    while ((m = re.exec(sql))) {
+      if (m.index < at) continue;
+      var start = sql.indexOf("(", re.lastIndex);
+      if (start < 0) break;
+      var depth = 0, end = start;
+      for (; end < sql.length; end++) {
+        if (sql[end] === "(") depth++;
+        else if (sql[end] === ")" && --depth === 0) break;
+      }
+      var body = autoKeyAtTableLevel(sql.slice(start, end + 1));
+      TYPES.forEach(function (t) { body = body.replace(t[0], t[1]); });
+      var stop = sql.indexOf(";", end);
+      if (stop < 0) stop = sql.length;
+      var options = /^\s*(ENGINE|DEFAULT|CHARSET|COLLATE|AUTO_INCREMENT)\b/i.test(sql.slice(end + 1, stop));
+      out += sql.slice(at, start) + body;
+      at = options ? stop : end + 1;
+      re.lastIndex = at;
+    }
+    return out + sql.slice(at);
+  }
+
   function toSqlite(sql) {
-    return sql.split(TOKENS).map(function (part, i) {
+    return createTables(sql.split(TOKENS).map(function (part, i) {
       if (i % 2) {
         if (part[0] === "#") return "--" + part.slice(1);
         // MySQL reads "text" as a string; SQLite would look for a column first.
@@ -187,16 +237,20 @@
         // LEFT, RIGHT, and IF are keywords in SQLite, so they can't be function names.
         .replace(/\bLEFT\s*\(/gi, "MYSQL_LEFT(")
         .replace(/\bRIGHT\s*\(/gi, "MYSQL_RIGHT(")
-        .replace(/\bIF\s*\(/gi, "MYSQL_IF(");
-    }).join("");
+        .replace(/\bIF\s*\(/gi, "MYSQL_IF(")
+        // SQLite has no TRUNCATE: empty the table and restart its AUTO_INCREMENT counter.
+        .replace(/\bTRUNCATE\s+(?:TABLE\s+)?([A-Za-z_]\w*)\s*(?=;|$)/gi,
+          "DELETE FROM $1; DELETE FROM sqlite_sequence WHERE name = '$1'");
+    }).join(""));
   }
 
   /* ---------- Running and checking ---------- */
 
   // Runs every statement. Returns {results: [{columns, rows, ordered}], changed, error},
   // with a result for each statement that returns rows, up to the first error.
-  function run(engine, sql) {
-    var db = freshDb(engine);
+  // With keep, the database stays open as .db, for Check to look at the tables.
+  function run(engine, sql, image, keep) {
+    var db = freshDb(engine, image);
     var results = [], changed = 0, error = null;
     try {
       for (var it = db.iterateStatements(toSqlite(sql)), step = it.next(); !step.done; step = it.next()) {
@@ -211,9 +265,9 @@
     } catch (err) {
       error = err && err.message ? err.message : String(err);
     } finally {
-      db.close();
+      if (!keep) db.close();
     }
-    return { results: results, changed: changed, error: error };
+    return { results: results, changed: changed, error: error, db: keep ? db : null };
   }
 
   // True if the statement has its own ORDER BY (not just one inside a subquery).
@@ -373,6 +427,141 @@
     return { ok: false, diff: diff, text: text.trim() };
   }
 
+  /* ---------- Exercises that change data ---------- */
+
+  function section(label) { return +label.split(".")[0]; }
+  function changes(label) { return (DATA.changes || []).indexOf(section(label)) >= 0; }
+
+  // The data just before an exercise: the sample data plus the solutions of the
+  // earlier exercises in its section, in page order. Built once per exercise.
+  var startImages = {};
+  function startImage(engine, label) {
+    if (startImages[label]) return startImages[label];
+    var image = engine.image, order = DATA.order || [];
+    for (var i = 0; i < order.length && order[i] !== label; i++) {
+      if (section(order[i]) !== section(label)) continue;
+      var out = run(engine, DATA.solutions[order[i]], image, true);
+      image = out.db.export();
+      out.db.close();
+    }
+    startImages[label] = image;
+    return image;
+  }
+
+  // {lowercased name: {name, columns, rows}} for every table in a database.
+  function tables(db) {
+    var out = {};
+    var names = db.exec("SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name");
+    (names[0] ? names[0].values : []).forEach(function (row) {
+      var name = row[0], res = db.exec('SELECT * FROM "' + name.replace(/"/g, '""') + '"');
+      var columns = db.exec('PRAGMA table_info("' + name.replace(/"/g, '""') + '")')[0].values.map(function (c) { return c[1]; });
+      out[name.toLowerCase()] = { name: name, columns: columns, rows: res[0] ? res[0].values : [] };
+    });
+    return out;
+  }
+
+  function sameTable(a, b) {
+    if (!a || !b || a.columns.length !== b.columns.length) return false;
+    var d = diffRows(a, b);
+    return !d.missing.length && !d.extra.length;
+  }
+
+  // The columns each CREATE TABLE in a script defines, as MySQL reads them:
+  // {lowercased table: [{name, type, notNull, dflt, auto, key}]}. Used to compare
+  // a table the exercise creates with the solution's, without running MySQL.
+  function columnSpecs(sql) {
+    var specs = {}, code = sql.split(TOKENS).map(function (part, i) {
+      return i % 2 && /^(--|#|\/\*)/.test(part) ? " " : part;
+    }).join("");
+    var re = /\bCREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?`?(\w+)`?\s*\(/gi, m;
+    while ((m = re.exec(code))) {
+      var depth = 1, at = re.lastIndex, parts = [], from = at;
+      for (; at < code.length && depth; at++) {
+        if (code[at] === "(") depth++;
+        else if (code[at] === ")") depth--;
+        else if (code[at] === "," && depth === 1) { parts.push(code.slice(from, at)); from = at + 1; }
+      }
+      parts.push(code.slice(from, at - 1));
+      var cols = [], keys = [];
+      parts.forEach(function (p) {
+        p = p.trim();
+        var key = /^PRIMARY\s+KEY\s*\(([^)]*)\)/i.exec(p);
+        if (key) { keys = key[1].split(",").map(function (k) { return k.replace(/`/g, "").trim().toLowerCase(); }); return; }
+        if (!p || /^(CONSTRAINT|FOREIGN|UNIQUE|CHECK|KEY|INDEX)\b/i.test(p)) return;
+        var col = /^`?(\w+)`?\s+(\w+)\s*(\([^)]*\))?(\s+UNSIGNED)?/i.exec(p);
+        if (!col) return;
+        var type = col[2].toUpperCase().replace(/^INTEGER$/, "INT") +
+          (/INT$/.test(col[2].toUpperCase()) ? "" : (col[3] || "").replace(/\s+/g, "")) + (col[4] ? " UNSIGNED" : "");
+        var dflt = /\bDEFAULT\s+('(?:[^']|'')*'|\S+?)(?=\s|,|$)/i.exec(p);
+        cols.push({
+          name: col[1].toLowerCase(), shown: col[1], type: type,
+          notNull: /\bNOT\s+NULL\b/i.test(p), key: /\bPRIMARY\s+KEY\b/i.test(p),
+          auto: /\bAUTO_INCREMENT\b/i.test(p),
+          dflt: dflt ? dflt[1].replace(/^'|'$/g, "").toUpperCase() : null,
+        });
+      });
+      cols.forEach(function (c) { if (keys.indexOf(c.name) >= 0) c.key = true; if (c.key) c.notNull = true; });
+      specs[m[1].toLowerCase()] = cols;
+      re.lastIndex = at;
+    }
+    return specs;
+  }
+
+  var COLUMN_PARTS = [["type", "type"], ["notNull", "NOT NULL"], ["dflt", "DEFAULT"], ["auto", "AUTO_INCREMENT"], ["key", "primary key"]];
+
+  // What differs between your CREATE TABLE and the solution's, without saying
+  // what the solution has.
+  function columnProblems(name, mine, theirs) {
+    if (!mine) return [name + ": Check can't find your CREATE TABLE for it."];
+    var names = function (cols) { return cols.map(function (c) { return c.name; }).join(","); };
+    if (names(mine) !== names(theirs)) return [name + ": the columns or their order differ from what the exercise asks for."];
+    var out = [];
+    theirs.forEach(function (want, i) {
+      var off = COLUMN_PARTS.filter(function (p) { return mine[i][p[0]] !== want[p[0]]; }).map(function (p) { return p[1]; });
+      if (off.length) out.push(name + "." + want.shown + ": check its " + off.join(", ") + ".");
+    });
+    return out;
+  }
+
+  // Compares the tables after your statements with the tables after the solution's.
+  function checkTables(engine, label, sql, db) {
+    var image = startImage(engine, label);
+    var before = freshDb(engine, image), start = tables(before);
+    before.close();
+    var sol = run(engine, DATA.solutions[label], image, true), want = tables(sol.db);
+    sol.db.close();
+    var mine = tables(db);
+    var touched = Object.keys(want).filter(function (k) { return !sameTable(want[k], start[k]); });
+    if (!touched.length) return { info: "This exercise doesn't change any data, so there's nothing for Check to compare. Run each statement and read what happens." };
+
+    var problems = [], diffs = [];
+    Object.keys(want).concat(Object.keys(mine)).forEach(function (k, i, all) {
+      if (all.indexOf(k) !== i) return;
+      var w = want[k], m = mine[k], name = (w || m).name;
+      if (!w) { problems.push(name + ": the solution doesn't have this table."); return; }
+      if (!m) { problems.push(name + ": your statements don't leave this table."); return; }
+      if (m.columns.length !== w.columns.length) {
+        problems.push(name + ": expected " + plural(w.columns.length, "column") + ", yours has " + m.columns.length + ".");
+        return;
+      }
+      if (!sameTable(m, w)) {
+        var d = diffRows(m, w);
+        d.table = name;
+        diffs.push(d);
+        problems.push(name + ": " + (m.rows.length === w.rows.length
+          ? "some values are different."
+          : "expected " + plural(w.rows.length, "row") + ", yours has " + m.rows.length + "."));
+      }
+    });
+    // A table the exercise creates: its columns too, as MySQL would define them.
+    var theirSpecs = columnSpecs(DATA.solutions[label]), mySpecs = columnSpecs(sql);
+    Object.keys(theirSpecs).forEach(function (k) {
+      if (!start[k] && want[k]) problems = problems.concat(columnProblems(want[k].name, mySpecs[k], theirSpecs[k]));
+    });
+    if (!problems.length) return { ok: true, text: "Your tables match the ones the solution leaves." };
+    return { ok: false, text: "Not quite: " + problems.join(" "), diffs: diffs };
+  }
+
   /* ---------- UI ---------- */
 
   function el(tag, cls, text) {
@@ -412,10 +601,11 @@
   // so they're shown. The missing rows are part of the answer, so they're folded.
   function renderDiff(diff) {
     var nodes = [];
+    var where = diff.table ? diff.table + ": " : "";
     if (diff.extra.length) {
       var extra = el("div", "sql-diff sql-diff--extra");
       extra.appendChild(el("p", "sql-diff__title",
-        plural(diff.extra.length, "row") + " in yours that the answer doesn't have:"));
+        where + plural(diff.extra.length, "row") + " in yours that the answer doesn't have:"));
       extra.appendChild(renderTable({ columns: diff.columns, rows: diff.extra.slice(0, DIFF_ROWS) }, 0, 1));
       if (diff.extra.length > DIFF_ROWS) extra.appendChild(el("p", "sql-result__caption", "Showing the first " + DIFF_ROWS + "."));
       nodes.push(extra);
@@ -423,7 +613,7 @@
     if (diff.missing.length) {
       var missing = el("details", "sql-diff sql-diff--missing");
       missing.appendChild(el("summary", null,
-        plural(diff.missing.length, "row") + " the answer has that yours doesn't (shows part of the answer)"));
+        where + plural(diff.missing.length, "row") + " the answer has that yours doesn't (shows part of the answer)"));
       missing.appendChild(renderTable({ columns: diff.expColumns, rows: diff.missing.slice(0, DIFF_ROWS) }, 0, 1));
       if (diff.missing.length > DIFF_ROWS) missing.appendChild(el("p", "sql-result__caption", "Showing the first " + DIFF_ROWS + "."));
       nodes.push(missing);
@@ -448,7 +638,7 @@
     editor.setAttribute("autocapitalize", "off");
     editor.setAttribute("autocomplete", "off");
     editor.setAttribute("aria-label", "SQL for exercise " + label);
-    editor.placeholder = "SELECT ...   (Ctrl+Enter to run)";
+    editor.placeholder = (changes(label) ? "INSERT / UPDATE / DELETE ..." : "SELECT ...") + "   (Ctrl+Enter to run)";
     try { editor.value = localStorage.getItem(STORAGE + label) || ""; } catch (e) { /* storage blocked */ }
 
     var actions = el("div", "sql-actions");
@@ -478,20 +668,26 @@
       output.replaceChildren(message("info", "Loading SQLite…"));
       runBtn.disabled = checkBtn.disabled = true;
       loadEngine().then(function (engine) {
-        var nodes = [], out = run(engine, sql);
+        var changing = changes(label);
+        var nodes = [], out = run(engine, sql, changing ? startImage(engine, label) : null, changing);
         if (withCheck && !out.error) {
-          var verdict = check(engine, label, out.results);
-          nodes.push(message(verdict.ok ? "ok" : "bad", (verdict.ok ? "✓ " : "✗ ") + verdict.text));
-          if (!verdict.ok && verdict.diff) nodes = nodes.concat(renderDiff(verdict.diff));
-          // progress.js ticks this exercise's Done box on a pass, and puts it on the
-          // review list on a fail (until a later pass).
-          document.dispatchEvent(new CustomEvent(verdict.ok ? "d427:solved" : "d427:missed", { detail: { label: label } }));
+          var verdict = changing ? checkTables(engine, label, sql, out.db) : check(engine, label, out.results);
+          if (verdict.info) {
+            nodes.push(message("info", verdict.info));
+          } else {
+            nodes.push(message(verdict.ok ? "ok" : "bad", (verdict.ok ? "✓ " : "✗ ") + verdict.text));
+            if (!verdict.ok) (verdict.diffs || (verdict.diff ? [verdict.diff] : [])).forEach(function (d) { nodes = nodes.concat(renderDiff(d)); });
+            // progress.js ticks this exercise's Done box on a pass, and puts it on the
+            // review list on a fail (until a later pass).
+            document.dispatchEvent(new CustomEvent(verdict.ok ? "d427:solved" : "d427:missed", { detail: { label: label } }));
+          }
         }
+        if (out.db) out.db.close();
         out.results.forEach(function (r, i) { nodes.push(renderTable(r, i, out.results.length)); });
         if (out.error) {
           nodes.push(message("bad", "SQLite error: " + out.error));
         } else if (!out.results.length) {
-          nodes.push(message("info", out.changed
+          nodes.push(message("info", out.changed || changing
             ? "Done: " + plural(out.changed, "row") + " changed (only for this run)."
             : "Done. The query returned no result table."));
         }
@@ -535,7 +731,8 @@
     var strong = first && first.tagName === "P" ? first.firstElementChild : null;
     if (!strong || strong.tagName !== "STRONG" || first.firstChild !== strong) return;
     var label = strong.textContent.trim();
-    var before = li.querySelector(":scope > details");
+    // In front of the Hint: a Show tables box can come earlier, under the Uses line.
+    var before = li.querySelector(":scope > details:not(.tables)");
     var skip = DATA.skip || {};
     if (Object.prototype.hasOwnProperty.call(skip, label)) {
       var note = document.createElement("p");

@@ -135,11 +135,15 @@ extra:
         pages: [01-queries.md, 02-changing-data.md, 03-practice-test-drills.md, 05-final-practice.md]
       # join-diagram / delete-diagram / tree-diagram blocks.
       concept_diagrams: true
-      # Try it boxes: page -> sections. Only read-only queries.
+      # Try it boxes: page -> sections. Read-only queries, except the sections in
+      # changes: there each box starts from the earlier exercises' solutions, and
+      # Check compares the tables.
       sql_runner:
         pages:
           01-queries.md: [1, 2, 3, 4, 5, 6]
+          02-changing-data.md: [7]
           03-practice-test-drills.md: [12]
+        changes: [7]
         skip:
           "12.20": This one changes data, so do it on MySQL.
           "12.21": This one changes data, so do it on MySQL.

@@ -5,8 +5,10 @@ For each course with `sql_runner` in mkdocs.yml (extra.courses), this loads the
 course's setup.sql into SQLite with hooks/sqlite_setup.py (the same translation
 the site uses), adds the MySQL functions that docs/javascripts/sql-runner.js
 adds, applies its query rewrites, and runs the solution of every exercise that
-gets a Try it box. It fails if a solution errors or returns no result table (Check
-would have nothing to compare), if a `skip` label isn't a runner exercise, if
+gets a Try it box. In the `changes` sections, each solution runs on the data the
+earlier solutions in its section left, as the boxes do. It fails if a solution
+errors, if a read-only one returns no result table (Check would have nothing to
+compare), if a `skip` label isn't a runner exercise, if
 this file's function list and sql-runner.js's have drifted apart, or if the sql.js
 files on the CDN don't match the hashes pinned in sql-runner.js.
 
@@ -140,15 +142,17 @@ def to_sqlite_query(sql):
         part = re.sub(r"\bLEFT\s*\(", "MYSQL_LEFT(", part, flags=re.I)
         part = re.sub(r"\bRIGHT\s*\(", "MYSQL_RIGHT(", part, flags=re.I)
         part = re.sub(r"\bIF\s*\(", "MYSQL_IF(", part, flags=re.I)
+        part = re.sub(r"\bTRUNCATE\s+(?:TABLE\s+)?([A-Za-z_]\w*)\s*(?=;|$)",
+                      r"DELETE FROM \1; DELETE FROM sqlite_sequence WHERE name = '\1'", part, flags=re.I)
         out.append(part)
-    return "".join(out)
+    return sqlite_setup.create_tables("".join(out))
 
 
 def _statements(sql):
     """Split a script into statements, like sql.js's iterateStatements."""
     buf, out = "", []
-    for line in sql.splitlines(keepends=True):
-        buf += line
+    for piece in re.split(r"(?<=;)", sql):
+        buf += piece
         if sqlite3.complete_statement(buf):
             if buf.strip():
                 out.append(buf)
@@ -158,12 +162,20 @@ def _statements(sql):
     return out
 
 
-def run(setup, sql):
-    """(number of result tables, error or None) for one solution on fresh data."""
-    db = sqlite3.connect(":memory:")
+def connect(setup):
+    db = sqlite3.connect(":memory:", isolation_level=None)
     for name, (nargs, fn) in FUNCTIONS.items():
         db.create_function(name, nargs, fn)
     db.executescript(setup)
+    db.execute("PRAGMA foreign_keys = ON")
+    return db
+
+
+def run(setup, sql, db=None):
+    """(number of result tables, error or None) for one solution on fresh data,
+    or on db (left open) when given."""
+    keep = db is not None
+    db = db or connect(setup)
     tables = 0
     try:
         for stmt in _statements(to_sqlite_query(sql)):
@@ -174,7 +186,8 @@ def run(setup, sql):
     except sqlite3.Error as err:
         return tables, str(err)
     finally:
-        db.close()
+        if not keep:
+            db.close()
     return tables, None
 
 
@@ -242,8 +255,16 @@ def main():
             labels = [label for label in solutions if int(label.split(".")[0]) in page_sections]
             if not labels:
                 failures.append(f"{course.slug} {page}: no runner exercises in sections {list(page_sections)}")
+            chains = {}  # changes section -> the database its solutions so far have left
             for label in labels:
                 total += 1
+                n = int(label.split(".")[0])
+                if n in course.runner_changes:
+                    db = chains.setdefault(n, connect(setup))
+                    _tables, error = run(setup, solutions[label], db)
+                    if error:
+                        failures.append(f"{course.slug} {label}: {error}")
+                    continue
                 tables, error = run(setup, solutions[label])
                 if error:
                     failures.append(f"{course.slug} {label}: {error}")

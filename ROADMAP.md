@@ -36,6 +36,7 @@ Nothing here yet.
 
 ## Done
 
+- Try it boxes on Section 7 (INSERT, UPDATE, DELETE): each starts from the earlier exercises' solutions, Check compares the tables (and 7.9's column definitions), with foreign keys, AUTO_INCREMENT, and TRUNCATE behaving like MySQL; 6.6's NOT EXISTS solution drops its aliases (#43)
 - Exercise 5.5 is a self-join only: it shows each person's DeptID instead of joining Department twice (#42)
 - Exercise 5.3 now says that changing only LEFT to RIGHT isn't enough to get 5.2's rows (#40)
 - No more Show tables box under the headings of Part 1 and Section 12: each exercise's own box is enough, and the first one under a heading holds the diagram (#39)
