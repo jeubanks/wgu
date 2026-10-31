@@ -15,7 +15,8 @@ is swapped for the same tables drawn as SVG.
 
 Part 1 and Section 12 have no Uses lines; there each `### Movie and Rating`
 style heading names the tables instead. Each exercise under the heading gets a
-Show tables box: the first holds the diagram, and the rest open a copy of it.
+Show tables box between its label and its text: the first holds the
+diagram, and the rest open a copy of it.
 
 Only tables setup.sql builds are drawn. Tables from earlier exercises
 (*(from 8.1)*), the d427_drills copies in Section 11, and anything an
@@ -125,6 +126,7 @@ def _exercises(lines):
 def _add_diagrams(markdown, builder, schema, diagrams):
     lines = markdown.split("\n")
     inserts = {}  # line index -> lines to insert after it
+    texts = {}  # exercise line index -> its text, moved below its Show tables box
 
     # Per exercise, from its Uses line.
     for start, end in _exercises(lines):
@@ -159,25 +161,35 @@ def _add_diagrams(markdown, builder, schema, diagrams):
         names = _names(heading[1], schema)
         if not names:
             continue
-        # Each exercise under the heading gets its own Show tables box, next to
-        # its Hint, so the diagram is a click away however far down it is. The
-        # first one holds the diagram; the rest stay empty and site.js copies
-        # it in when they're opened, so the page doesn't carry a copy per exercise.
+        # Each exercise under the heading gets its own Show tables box between
+        # its label and its text (where a Uses line would put it), so the
+        # diagram is a click away however far down it is. The first one holds
+        # the diagram; the rest stay empty and site.js copies it in when
+        # they're opened, so the page doesn't carry a copy per exercise.
         slots = []
         for start, stop in _exercises(lines):
             if not i < start < end:
                 continue
             k = next((k for k in range(start, stop) if SOLUTION.match(lines[k])), None)
-            if k is not None and not lines[k - 1].strip():
-                slots.append((k - 1, SOLUTION.match(lines[k])["indent"]))
+            if k is not None:
+                indent = SOLUTION.match(lines[k])["indent"]
+                label = ITEM.match(lines[start])
+                text = lines[start][label.end():].strip()
+                if text:  # `- **1.2** Show the ...` -> the label, then the text
+                    lines[start] = label[0]
+                    texts[start] = indent + text
+                slots.append((start, indent))
         if not slots:  # no exercise to hold it: under the heading, as one box
             inserts[i] = _block(builder, schema, names, "", diagrams)
             continue
         (first, indent), rest = slots[0], slots[1:]
-        inserts[first] = _block(builder, schema, names, indent, diagrams)[1:]
+        inserts[first] = _block(builder, schema, names, indent, diagrams)
         for k, indent in rest:
-            inserts[k] = [f'{indent}??? tables "Show tables"', "",
+            inserts[k] = ["", f'{indent}??? tables "Show tables"', "",
                           f'{indent}    <div class="er-copy" data-er-from="{len(diagrams) - 1}"></div>', ""]
+        for k, _ in slots:
+            if k in texts:
+                inserts[k] = inserts[k] + [texts[k]]
 
     out = []
     for i, line in enumerate(lines):
