@@ -69,6 +69,7 @@ Run the same things locally before pushing. The accessibility check needs Playwr
              01-queries.md: [1, 2, 3]  # page -> section numbers
            skip:
              "12.20": This one changes data, so do it on MySQL.
+           changes: [7]                # sections whose exercises change data
          quiz: 04-concepts-check.md    # interactive answer keys
    ```
 
@@ -189,9 +190,9 @@ LEFT: Caption for the LEFT JOIN tab.
 
 `sql_runner.pages` maps a page to the section numbers whose exercises get a **Try it** box. It runs SQLite in the browser on `setup.sql` (translated by `hooks/sqlite_setup.py`), and **Check** compares the learner's result with the solution's.
 
-- **Only read-only queries.** Changing data and tables should be practiced on real MySQL. List exceptions inside a section under `skip`, with the reason the learner sees.
+- **Read-only queries, except in `changes` sections.** In a section listed under `changes` (D427's Section 7: INSERT, UPDATE, DELETE), each box starts from `setup.sql` plus the solutions of the section's earlier exercises, in page order, and Check compares every table after the learner's statements with the tables after the solution's. For a table the exercise creates, it also compares each column's type, NOT NULL, DEFAULT, AUTO_INCREMENT, and key, as written in the CREATE TABLE, and only says which ones differ. An exercise whose solution changes nothing (like 7.3, which is about errors) gets a note instead of a verdict. Foreign keys are on, AUTO_INCREMENT keeps counting past deleted rows like MySQL's, and TRUNCATE restarts it. Changing tables (ALTER, DROP CHECK, ...) behaves too differently in SQLite, so those sections stay on MySQL. List exceptions inside a section under `skip`, with the reason the learner sees.
 - The course's first runner page gets the full "SQLite, not MySQL" note; other pages get a short one under each section.
-- Every runner solution must also run in SQLite, and return a result table for Check to compare. `scripts/check_sql_runner.py` checks this in CI. If a solution needs a MySQL function SQLite lacks, add it to `FUNCTIONS` in both `docs/javascripts/sql-runner.js` and the check script (the check fails if the two lists differ), or put the exercise in `skip`.
+- Every runner solution must also run in SQLite (a `changes` section's in order, each on the data the earlier ones left), and a read-only one must return a result table for Check to compare. `scripts/check_sql_runner.py` checks this in CI. If a solution needs a MySQL function SQLite lacks, add it to `FUNCTIONS` in both `docs/javascripts/sql-runner.js` and the check script (the check fails if the two lists differ), or put the exercise in `skip`.
 - A failed Check shows the rows yours has that the answer doesn't, and (folded, since it shows part of the answer) the rows the answer has that yours doesn't.
 
 ## Progress tracking

@@ -444,9 +444,9 @@ FROM Student
 WHERE ID NOT IN (SELECT StudentID FROM LessonSchedule WHERE StudentID IS NOT NULL);
 
 -- c) NOT EXISTS isn't affected by the NULL.
-SELECT s.ID, s.FirstName, s.LastName
-FROM Student s
-WHERE NOT EXISTS (SELECT 1 FROM LessonSchedule ls WHERE ls.StudentID = s.ID);
+SELECT ID, FirstName, LastName
+FROM Student
+WHERE NOT EXISTS (SELECT 1 FROM LessonSchedule WHERE StudentID = Student.ID);
 
 -- =====================================================================
 -- 7. Modifying data: INSERT, UPDATE, DELETE

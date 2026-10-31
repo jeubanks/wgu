@@ -19,6 +19,7 @@ turns on the build features it uses by listing pages for them:
           sql_runner:                           # Try it boxes: page -> sections
             pages: {01-queries.md: [1, 2, 3, 4, 5, 6]}
             skip: {"12.20": "Why it's left out."}
+            changes: [7]                        # sections whose exercises change data
           quiz: 04-concepts-check.md            # interactive answer keys
 
 A course with only `folder` is published as plain pages. See AUTHORING.md.
@@ -41,6 +42,7 @@ class Course:
     concept_diagrams: bool = False
     runner_pages: dict = field(default_factory=dict)
     runner_skip: dict = field(default_factory=dict)
+    runner_changes: tuple = ()
     quiz: str = None
 
     def uri(self, page):
@@ -88,6 +90,7 @@ def _course(slug, s):
         concept_diagrams=bool(s.get("concept_diagrams")),
         runner_pages={page: tuple(sections) for page, sections in (runner.get("pages") or {}).items()},
         runner_skip={str(k): v for k, v in (runner.get("skip") or {}).items()},
+        runner_changes=tuple(runner.get("changes") or ()),
         quiz=s.get("quiz"),
     )
 
