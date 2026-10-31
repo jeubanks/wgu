@@ -151,7 +151,7 @@ On the quiz page (`quiz:` in the course settings), each question part has a hidd
 
 ### "Show tables" ER diagrams
 
-Generated from `setup.sql`; nothing to write. `er_diagrams.pages` lists the pages that get a folded "Show tables" diagram under each exercise's **Uses:** line, showing those tables and the tables they link to. Where a page has no Uses lines (Part 1, Section 12), each `### Movie and Rating` style heading names the tables instead, and every exercise under it gets its own Show tables box: the first exercise's holds the diagram, and the others copy it in when opened (`site.js`). An exercise needs a `<!-- solution:N.N -->` marker for the button to go in front of. `er_diagrams.readme` names the page whose `<!-- er-diagram -->` ... `<!-- /er-diagram -->` Mermaid block (written by `build_diagrams.py`, so GitHub renders it) becomes the full SVG diagram on the site.
+Generated from `setup.sql`; nothing to write. `er_diagrams.pages` lists the pages that get a folded "Show tables" diagram under each exercise's **Uses:** line, showing those tables and the tables they link to. Where a page has no Uses lines (Part 1, Section 12), each `### Movie and Rating` style heading names the tables instead, and every exercise under it gets its own Show tables box between its label and its text, where a Uses line would put it: the first exercise's holds the diagram, and the others copy it in when opened (`site.js`). An exercise needs a `<!-- solution:N.N -->` marker to get one. `er_diagrams.readme` names the page whose `<!-- er-diagram -->` ... `<!-- /er-diagram -->` Mermaid block (written by `build_diagrams.py`, so GitHub renders it) becomes the full SVG diagram on the site.
 
 ### Join, delete, and self-join pictures
 
