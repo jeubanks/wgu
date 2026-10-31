@@ -38,6 +38,7 @@ Nothing here yet.
 
 ## Done
 
+- Try it runs SHOW TABLES, DESCRIBE, and SHOW CREATE TABLE (7.7's hint uses SHOW CREATE TABLE), showing setup.sql's CREATE TABLE and MySQL column types (#46)
 - Part 1 and Section 12 put Show tables on its own line between the exercise label and the question, as Part 2 does under its Uses line (#45)
 - Setup's Option C: DB Fiddle runs MySQL 8.4 online with nothing to install (tested with setup.sql, ALTER, SHOW, EXPLAIN, and a second database); Sections 8 to 11 and 14 say they need MySQL and link to Setup (#44)
 - Try it boxes on Section 7 (INSERT, UPDATE, DELETE): each starts from the earlier exercises' solutions, Check compares the tables (and 7.9's column definitions), with foreign keys, AUTO_INCREMENT, and TRUNCATE behaving like MySQL; 6.6's NOT EXISTS solution drops its aliases (#43)
