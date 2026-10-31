@@ -40,6 +40,7 @@ NOTE = """
     for **MySQL 8.4**, and the exercises that change data and tables should be done there.
     Text comparisons ignore case, like MySQL, and common MySQL functions are added
     (`CONCAT`, `DATEDIFF`, `TIMESTAMPDIFF`, `YEAR`, `MONTH`, `DAYNAME`, `IF`, `LEFT`, ...).
+    `SHOW TABLES`, `DESCRIBE`, and `SHOW CREATE TABLE` work too.
     Where they still differ:
 
     - **GROUP BY:** SQLite lets you SELECT a column that is neither grouped nor inside an aggregate.
@@ -49,6 +50,8 @@ NOTE = """
     - **Decimals** show without trailing zeros: `17500` here, `17500.00` in MySQL.
     - **`||`** joins strings here; in MySQL it means OR. Use `CONCAT`.
     - **Errors** are SQLite's wording, with no MySQL error numbers.
+    - **`SHOW CREATE TABLE`** shows the table as `setup.sql` writes it, not in MySQL's
+      own layout (backticks, `ENGINE=InnoDB`, constraint names).
     - Functions that aren't added (for example `DATE_FORMAT`, `DATE_ADD ... INTERVAL`) give "no such function".
 """
 
@@ -130,6 +133,7 @@ def on_page_content(html, page, **kwargs):
         return html
     data = {
         "setup": sqlite_setup.to_sqlite(course.setup_sql.read_text()),
+        "creates": sqlite_setup.create_statements(course.setup_sql.read_text()),
         "solutions": read_solutions(course, sections),
         "skip": {label: why for label, why in course.runner_skip.items() if _section(label) in sections},
         "changes": [n for n in sections if n in course.runner_changes],
