@@ -2,7 +2,7 @@
 
 [← Exercise index](exercises.md) · Solutions: [`solutions.sql`](solutions.sql)
 
-These sections change the data and the tables. Do them in order: later exercises expect the earlier ones to be done. To start over, run `SOURCE /work/setup.sql;` (or the path to your copy of `setup.sql` if MySQL is installed on your computer). Section 7 also has a **Try it** box on each exercise, so you can practice in your browser; Sections 8 to 10 need MySQL.
+These sections change the data and the tables. Do them in order: later exercises expect the earlier ones to be done. To start over, run `SOURCE /work/setup.sql;` (or the path to your copy of `setup.sql` if MySQL is installed on your computer). Section 7 also has a **Try it** box on each exercise, so you can practice in your browser; Sections 8 to 10 need MySQL (see [Setup](README.md#setup), which includes an online option).
 
 **In this part:** [7. Modifying data](#7-modifying-data) · [8. CREATE / ALTER / DROP](#8-create--alter--drop) · [9. Views and indexes](#9-views-and-indexes) · [10. From design to tables](#10-from-design-to-tables)
 
@@ -499,6 +499,9 @@ These exercises use a small scratch table named Guest that no other exercise use
 
 ## 8. CREATE / ALTER / DROP
 
+> [!NOTE]
+> **This section needs MySQL.** These exercises create, change, and drop tables the way MySQL does. SQLite, which runs the Try it boxes elsewhere on this site, can't do that faithfully, so there are none here. Use MySQL from [Setup](README.md#setup): Docker, MySQL on your computer, or [DB Fiddle online](README.md#option-c-online-with-db-fiddle), with nothing to install.
+
 ### Song and Playlist
 
 - **8.1**\
@@ -895,6 +898,9 @@ These exercises use a small scratch table named Guest that no other exercise use
 
 ## 9. Views and indexes
 
+> [!NOTE]
+> **This section needs MySQL.** These exercises use MySQL's views, indexes, `SHOW INDEX`, and `EXPLAIN`. SQLite, which runs the Try it boxes elsewhere on this site, can't do that faithfully, so there are none here. Use MySQL from [Setup](README.md#setup): Docker, MySQL on your computer, or [DB Fiddle online](README.md#option-c-online-with-db-fiddle), with nothing to install.
+
 ### LessonSchedule
 
 - **9.1**\
@@ -1160,6 +1166,9 @@ These exercises use a small scratch table named Guest that no other exercise use
 ---
 
 ## 10. From design to tables
+
+> [!NOTE]
+> **This section needs MySQL.** These exercises create tables with MySQL types and keys. SQLite, which runs the Try it boxes elsewhere on this site, can't do that faithfully, so there are none here. Use MySQL from [Setup](README.md#setup): Docker, MySQL on your computer, or [DB Fiddle online](README.md#option-c-online-with-db-fiddle), with nothing to install.
 
 - **10.1**\
   **Creates:** Customer, Product, an orders table, and an order-lines table *(you choose the names for the last two)*

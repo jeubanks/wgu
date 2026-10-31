@@ -6,6 +6,9 @@ Do this part last, as a timed practice run.
 
 ## 14. Final practice
 
+> [!NOTE]
+> **This section needs MySQL.** These tasks create and change tables the way MySQL does. SQLite, which runs the Try it boxes elsewhere on this site, can't do that faithfully, so there are none here. Use MySQL from [Setup](README.md#setup): Docker, MySQL on your computer, or [DB Fiddle online](README.md#option-c-online-with-db-fiddle), with nothing to install.
+
 > [!IMPORTANT]
 > **Run `setup.sql` again before you start this section.** Do the tasks in order, because each one builds on the ones before it. Try to answer them without looking at the solutions. Give yourself about 60 minutes.
 

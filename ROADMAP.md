@@ -24,6 +24,8 @@ Nothing here yet.
 
 ### Waiting on a decision
 
+- [ ] **MySQL without installing it**: a dev container so "Open in Codespaces" starts MySQL 8.4 with `d427` loaded, linked from Setup and Part 2. Sections 8 to 10 need real MySQL (ALTER ... MODIFY, DROP CHECK, SHOW, EXPLAIN), so the SQLite runner can't cover them.
+- [ ] **Restore points for Part 2**: a downloadable `.sql` per section (setup.sql plus the earlier solutions), so starting a section fresh is one SOURCE command.
 - [ ] **Timed mode for the final practice**: a 60-minute timer, hints and solutions locked until you finish, then a self-scored result.
 
 ### Decided against
@@ -36,6 +38,7 @@ Nothing here yet.
 
 ## Done
 
+- Setup's Option C: DB Fiddle runs MySQL 8.4 online with nothing to install (tested with setup.sql, ALTER, SHOW, EXPLAIN, and a second database); Sections 8 to 11 and 14 say they need MySQL and link to Setup (#44)
 - Try it boxes on Section 7 (INSERT, UPDATE, DELETE): each starts from the earlier exercises' solutions, Check compares the tables (and 7.9's column definitions), with foreign keys, AUTO_INCREMENT, and TRUNCATE behaving like MySQL; 6.6's NOT EXISTS solution drops its aliases (#43)
 - Exercise 5.5 is a self-join only: it shows each person's DeptID instead of joining Department twice (#42)
 - Exercise 5.3 now says that changing only LEFT to RIGHT isn't enough to get 5.2's rows (#40)
