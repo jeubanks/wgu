@@ -121,7 +121,7 @@ The commands in the rest of this page are for Docker. With a local install, use 
 How it differs from a server of your own:
 
 - **Every Run starts over.** DB Fiddle rebuilds the database from Schema SQL each time, so nothing you change is kept. That makes resetting easy (just press Run), but for the sections that build on earlier exercises (7 to 10, and 14), keep the earlier exercises' statements in Query SQL above the new one, or move them to the end of Schema SQL.
-- **Errors show MySQL's message but not its number.** `ERROR 1451` shows as just "Cannot delete or update a parent row: ...". The [error decoder](errors.md) matches messages too.
+- **Errors show MySQL's message but not its number.** Deleting a parent row that other rows still use, for example, shows just "Cannot delete or update a parent row: ...". The [error decoder](errors.md) matches messages too.
 - **A failing statement hides the other results.** Run a statement that's meant to fail on its own.
 - **Save** makes a public link that anyone who has it can open. You don't need to save to practice.
 - `\G` and `SOURCE` are mysql-client commands, so they don't work here. Use `SHOW CREATE TABLE Employee;` with a semicolon.
