@@ -299,8 +299,8 @@ These sections only read data, so you can redo any exercise at any time. Every e
   WHERE City = 'Austin' OR City = 'Round Rock'
     AND Phone IS NOT NULL;                                   -- 5 rows
   -- AND binds tighter than OR. Drop the parentheses and you get
-  -- "Austin  OR  (Round Rock AND has phone)" - a different question: Priya (Austin,
-  -- no phone) sneaks in, so you get 5 rows instead of 4.
+  -- "Austin  OR  (Round Rock AND has phone)", which is a different question. Priya (Austin,
+  -- no phone) gets in, so you get 5 rows instead of 4.
   ```
 
   </details>

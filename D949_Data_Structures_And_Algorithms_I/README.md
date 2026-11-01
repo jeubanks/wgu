@@ -1,6 +1,6 @@
 # WGU C949 Data Structures and Algorithms I: Practice Kit
 
-Hands-on Python practice for WGU's **C949 Data Structures and Algorithms I**. It's built around the course's competencies and study materials, with extra practice on the skills that trip people up, especially Big-O and tracing pseudocode by hand.
+Hands-on Python practice for WGU's C949 Data Structures and Algorithms I. It's built around the course's competencies and study materials, with extra practice on the skills that trip people up, especially Big-O and tracing pseudocode by hand.
 
 Read it online at **[jeubanks.github.io/wgu](https://jeubanks.github.io/wgu/d949/)**.
 
