@@ -96,8 +96,8 @@ SELECT FirstName, LastName, City, Phone FROM Student
 WHERE City = 'Austin' OR City = 'Round Rock'
   AND Phone IS NOT NULL;                                   -- 5 rows
 -- AND binds tighter than OR. Drop the parentheses and you get
--- "Austin  OR  (Round Rock AND has phone)" - a different question: Priya (Austin,
--- no phone) sneaks in, so you get 5 rows instead of 4.
+-- "Austin  OR  (Round Rock AND has phone)", which is a different question. Priya (Austin,
+-- no phone) gets in, so you get 5 rows instead of 4.
 
 -- [2.7]
 -- Hint: `City NOT IN ('Austin', 'Round Rock')` means `City <> 'Austin' AND City <> 'Round Rock'`.
@@ -922,7 +922,7 @@ CREATE TABLE Customer (
 );
 -- The practice-test key writes  DECIMAL(7,2) UNSIGNED CHECK (CreditLimit <= 19999.99).
 -- That works too, but MySQL warns (1681) that UNSIGNED on DECIMAL is deprecated.
--- "Do not add any additional constraints": no PRIMARY KEY, no NOT NULL - the spec didn't ask.
+-- "Do not add any additional constraints": no PRIMARY KEY and no NOT NULL, because the spec didn't ask for them.
 DESCRIBE Customer;
 
 -- [11.6]
@@ -941,7 +941,7 @@ INSERT INTO Country (CountryName, Continent, PopulationMillions, IndependenceDat
   ('Canada',  'North America', NULL,  '1867-07-01'),    -- "<No Value>" means NULL
   ('Brazil',  'South America', 214.3, '1822-09-07'),
   ('Germany', 'Europe',        83.2,  '1871-01-18');
--- A CHECK only rejects FALSE. NULL makes the check UNKNOWN, which passes - so Canada is accepted.
+-- A CHECK only rejects FALSE. NULL makes the check UNKNOWN, which passes, so Canada is accepted.
 -- Expected to FAIL:
 --   INSERT INTO Country (CountryName, Continent) VALUES ('Atlantis', 'Atlantic');
 --   ERROR 3819: Check constraint 'Country_chk_1' is violated.
@@ -1024,7 +1024,7 @@ ALTER TABLE Department ADD CONSTRAINT MgrIDCheck CHECK (ManagerID >= 2000);
 -- Expected to FAIL:
 --   INSERT INTO Department VALUES (3, 'Finance', 1999);
 --   ERROR 3819: Check constraint 'MgrIDCheck' is violated.
-ALTER TABLE Department DROP CHECK MgrIDCheck;   -- naming the constraint is what makes this easy
+ALTER TABLE Department DROP CHECK MgrIDCheck;   -- the constraint's name makes this easy
 INSERT INTO Department VALUES (3, 'Finance', 1999);
 SELECT * FROM Department;
 

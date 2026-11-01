@@ -423,7 +423,7 @@ These exercises use a small scratch table named Guest that no other exercise use
 
   UPDATE with no WHERE. Run `UPDATE Guest SET Visits = Visits + 1;` with **no** WHERE clause. How many rows did MySQL say it changed? Look at the table.
 
-  There's no undo for this: every guest's Visits went up. Why do people say to always write the WHERE (or the SELECT from 7.11) first? *(check: 2 rows changed; Ana Ruiz now has 4 visits and Cara Lin 6)*
+  Every guest's Visits went up. Why do people say to always write the WHERE (or the SELECT from 7.11) first? *(check: 2 rows changed; Ana Ruiz now has 4 visits and Cara Lin 6)*
 
   <!-- solution:7.12 -->
   <details>

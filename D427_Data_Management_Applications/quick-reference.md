@@ -2,7 +2,7 @@
 
 [← Exercise index](exercises.md) · [MySQL error decoder](errors.md)
 
-The D427 rules and syntax, on one page. Print it (three pages) or keep it open while you practice. Every full statement here runs on MySQL 8.4, checked by CI on every change.
+The D427 rules and syntax, on one page. Print it (three pages) or keep it open while you practice. Every full statement here runs on MySQL 8.4.
 
 <div class="quick-reference" markdown>
 

@@ -2,7 +2,7 @@
 
 [← Exercise index](exercises.md)
 
-These exercises go beyond what D427 tests, so they were moved out of the D427 set to keep it focused. They're kept here for a later, more advanced SQL course.
+These exercises cover topics beyond D427. They're here for a later, more advanced SQL course.
 
 - **Part A: Transactions** (START TRANSACTION, COMMIT, ROLLBACK)
 - **Part B: More advanced queries and views** (LIMIT/OFFSET, quoted aliases, more CASE, numeric functions, FULL OUTER JOIN emulation, UNION, correlated and derived-table subqueries, WITH CHECK OPTION)

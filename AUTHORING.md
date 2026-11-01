@@ -2,7 +2,7 @@
 
 How the course pages are written, what the site build does with them, and how to add a course. D427 (`D427_Data_Management_Applications/`) is the model: every feature below is in use there, so when in doubt, copy what it does.
 
-The rule behind all of it: **the Markdown stays readable on GitHub.** Everything the site adds (folded hints, quizzes, diagrams, the SQL runner, progress tracking) comes from build hooks in `hooks/` reading plain Markdown and hidden HTML comments. Nothing here needs a special editor.
+The Markdown stays readable on GitHub. Everything the site adds (folded hints, quizzes, diagrams, the SQL runner, progress tracking) comes from build hooks in `hooks/` reading plain Markdown and hidden HTML comments. Nothing here needs a special editor.
 
 ## Contents
 

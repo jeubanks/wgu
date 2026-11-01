@@ -2,7 +2,7 @@
 
 [← Exercise index](exercises.md) · Solutions: [`solutions.sql`](solutions.sql)
 
-Built from the D427 practice tests and the D427 Challenge. These sections don't depend on Parts 1 and 2, so you can do them at any time.
+These drills come from the D427 practice tests and the D427 Challenge. These sections don't depend on Parts 1 and 2, so you can do them at any time.
 
 **In this part:** [11. Writing tables from a specification](#11-writing-tables-from-a-specification) · [12. Practice-test-style queries](#12-practice-test-style-queries)
 
@@ -11,7 +11,7 @@ Built from the D427 practice tests and the D427 Challenge. These sections don't 
 > [!NOTE]
 > **This section needs MySQL.** These exercises create and change tables with MySQL types and constraints, in a second database. SQLite, which runs the Try it boxes elsewhere on this site, can't do that faithfully, so there are none here. Use MySQL from [Setup](README.md#setup): Docker, MySQL on your computer, or [DB Fiddle online](README.md#option-c-online-with-db-fiddle), with nothing to install.
 
-The D427 practice tests describe each column of a table in words, like *"integer with range 0 to 65 thousand, auto increment, primary key"*, and you turn that wording into the right data type and constraints. This section practices exactly that.
+The D427 practice tests describe each column of a table in words, like *"integer with range 0 to 65 thousand, auto increment, primary key"*, and you turn that wording into the right data type and constraints. This section practices that step.
 
 > [!TIP]
 > **Reading integer specs**
@@ -281,7 +281,7 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   );
   -- The practice-test key writes  DECIMAL(7,2) UNSIGNED CHECK (CreditLimit <= 19999.99).
   -- That works too, but MySQL warns (1681) that UNSIGNED on DECIMAL is deprecated.
-  -- "Do not add any additional constraints": no PRIMARY KEY, no NOT NULL - the spec didn't ask.
+  -- "Do not add any additional constraints": no PRIMARY KEY and no NOT NULL, because the spec didn't ask for them.
   DESCRIBE Customer;
   ```
 
@@ -342,7 +342,7 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
     ('Canada',  'North America', NULL,  '1867-07-01'),    -- "<No Value>" means NULL
     ('Brazil',  'South America', 214.3, '1822-09-07'),
     ('Germany', 'Europe',        83.2,  '1871-01-18');
-  -- A CHECK only rejects FALSE. NULL makes the check UNKNOWN, which passes - so Canada is accepted.
+  -- A CHECK only rejects FALSE. NULL makes the check UNKNOWN, which passes, so Canada is accepted.
   -- Expected to FAIL:
   --   INSERT INTO Country (CountryName, Continent) VALUES ('Atlantis', 'Atlantic');
   --   ERROR 3819: Check constraint 'Country_chk_1' is violated.
@@ -582,7 +582,7 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   -- Expected to FAIL:
   --   INSERT INTO Department VALUES (3, 'Finance', 1999);
   --   ERROR 3819: Check constraint 'MgrIDCheck' is violated.
-  ALTER TABLE Department DROP CHECK MgrIDCheck;   -- naming the constraint is what makes this easy
+  ALTER TABLE Department DROP CHECK MgrIDCheck;   -- the constraint's name makes this easy
   INSERT INTO Department VALUES (3, 'Finance', 1999);
   SELECT * FROM Department;
   ```

@@ -2,7 +2,7 @@
 
 [← Exercise index](exercises.md) · [SQL quick reference](quick-reference.md)
 
-The D427 practice tests describe each column in words, like *"integer with range 0 to 65 thousand, not NULL, default 0"*, and you turn that into SQL. This drill gives you endless random practice in that wording, in two modes:
+The D427 practice tests describe each column in words, like *"integer with range 0 to 65 thousand, not NULL, default 0"*, and you turn that into SQL. This drill gives you random practice in that wording, in two modes:
 
 - **Column types:** integer ranges near each type's limits (signed and unsigned), decimals, fixed- and variable-length strings, and dates. Type the type, press **Check** (or Enter), and read why.
 - **Constraint wording:** phrases like *"must be one of ..."*, *"default 'TX'"*, or *"must not be deletable"*. Pick the SQL they turn into.
