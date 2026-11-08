@@ -19,7 +19,10 @@ These sections change the data and the tables. Do them in order: later exercises
   |---|---|---|---|---|---|---|
   | *(leave out)* | Dune | Sci-Fi | PG-13 | 2021 | 155 | 108327830 |
 
-  Don't give an ID; let MySQL choose it. What ID did MySQL give *Dune*? *(check: 1 new row)*
+  - Don't give an ID; let MySQL choose it.
+  - What ID did MySQL give *Dune*?
+
+  *(check: 1 new row)*
 
   <!-- solution:7.1 -->
   <details>
@@ -113,7 +116,10 @@ These sections change the data and the tables. Do them in order: later exercises
   | Ava | Nguyen | Austin | ava@example.com |
   | Ethan | Brooks | Georgetown | ethan@example.com |
 
-  Leave out every other column: ID, Street, State, Zip, and Phone. After the insert, look at the two new rows. What State did they get, and why? *(check: 2 new rows)*
+  - Leave out every other column: ID, Street, State, Zip, and Phone.
+  - After the insert, look at the two new rows. What State did they get, and why?
+
+  *(check: 2 new rows)*
 
   <!-- solution:7.4 -->
   <details>
@@ -142,7 +148,11 @@ These sections change the data and the tables. Do them in order: later exercises
 - **7.5**\
   **Uses:** Employee, Department *(already in the database, from `setup.sql`)*
 
-  Give everyone in the Support department a 5% raise. In your WHERE clause, find the department by its **name** ("Support"). Do not type the DeptID number 30 directly. *(check: 3 rows changed)*
+  Give everyone in the Support department a 5% raise:
+  - In your WHERE clause, find the department by its **name** ("Support").
+  - Do not type the DeptID number 30 directly.
+
+  *(check: 3 rows changed)*
 
   <!-- solution:7.5 -->
   <details>
@@ -254,7 +264,11 @@ RESTRICT: `... ON DELETE RESTRICT`: the delete is refused while any ride points 
 - **7.8**\
   **Uses:** Student, LessonSchedule *(already in the database, from `setup.sql`)*
 
-  Delete the student Jamal Carter (ID 2). Then look at the LessonSchedule table. What happened to his lesson? Which foreign key action caused this? *(check: 2 lessons should now have a NULL StudentID)*
+  Delete the student Jamal Carter (ID 2). Then:
+  - Look at the LessonSchedule table. What happened to his lesson?
+  - Which foreign key action caused this?
+
+  *(check: 2 lessons should now have a NULL StudentID)*
 
   <!-- delete-diagram
   parent: Student | ID, FirstName | ID IN (2, 3)
@@ -361,7 +375,8 @@ These exercises use a small scratch table named Guest that no other exercise use
   | **100** | Cara Lin | Austin | 5 |
   | *(leave out)* | Dev Patel | Houston | *(leave out)* |
 
-  You give Cara Lin's GuestID yourself; Dev Patel gets his from MySQL. What GuestID does he get, and why not 3?
+  - You give Cara Lin's GuestID yourself.
+  - Dev Patel gets his from MySQL. What GuestID does he get, and why not 3?
 
   *(4 rows)*
 
@@ -421,9 +436,12 @@ These exercises use a small scratch table named Guest that no other exercise use
 
   > **ⓘ Note:** This changes **every row** in the existing Guest table, and there's no undo.
 
-  UPDATE with no WHERE. Run `UPDATE Guest SET Visits = Visits + 1;` with **no** WHERE clause. How many rows did MySQL say it changed? Look at the table.
+  UPDATE with no WHERE:
+  - Run `UPDATE Guest SET Visits = Visits + 1;` with **no** WHERE clause. How many rows did MySQL say it changed?
+  - Look at the table. Every guest's Visits went up.
+  - Why do people say to always write the WHERE (or the SELECT from 7.11) first?
 
-  Every guest's Visits went up. Why do people say to always write the WHERE (or the SELECT from 7.11) first? *(check: 2 rows changed; Ana Ruiz now has 4 visits and Cara Lin 6)*
+  *(check: 2 rows changed; Ana Ruiz now has 4 visits and Cara Lin 6)*
 
   <!-- solution:7.12 -->
   <details>
@@ -590,7 +608,9 @@ These exercises use a small scratch table named Guest that no other exercise use
 
   > **ⓘ Note:** You **change** the Genre column of the Song table from 8.1.
 
-  Change the `Genre` column so it can hold up to 30 characters instead of 20. **Make sure it still uses 'Pop' as the default**, which is easy to lose by mistake. Afterward, run `DESCRIBE Song` and check that Genre shows `varchar(30)` with the default `Pop`.
+  Change the `Genre` column so it can hold up to 30 characters instead of 20:
+  - **Make sure it still uses 'Pop' as the default**, which is easy to lose by mistake.
+  - Afterward, run `DESCRIBE Song` and check that Genre shows `varchar(30)` with the default `Pop`.
 
   <!-- solution:8.3 -->
   <details>
@@ -709,7 +729,11 @@ These exercises use a small scratch table named Guest that no other exercise use
   | 1 | 1 | 1 |
   | 1 | 2 | 2 |
 
-  **d)** Show the playlist's songs with three columns: the playlist's Name, the Position, and the song's Title. Sort by Position. *(2 rows)*
+  **d)** Show the playlist's songs:
+  - Show three columns: the playlist's Name, the Position, and the song's Title.
+  - Sort by Position.
+
+  *(2 rows)*
 
   <!-- solution:8.6 -->
   <details>
@@ -912,7 +936,11 @@ These exercises use a small scratch table named Guest that no other exercise use
   - `Horse`: the horse's RegisteredName
   - `FirstName` and `LastName`: the student's first and last name
 
-  The view must include every lesson, even a lesson that has no student assigned. Then select from the view to find the lessons that have no student. *(2 rows)*
+  The view must include every lesson, even a lesson that has no student assigned.
+
+  Then select from the view to find the lessons that have no student.
+
+  *(2 rows)*
 
   <!-- solution:9.1 -->
   <details>
@@ -1004,7 +1032,13 @@ These exercises use a small scratch table named Guest that no other exercise use
   - `Headcount`: the number of employees in the department
   - `AvgSalary`: the department's average salary, rounded to 2 decimal places
 
-  The view must include every department, even one with no employees (its Headcount is 0). Then select from the view to show the departments that have 3 or more employees, sorted by AvgSalary from highest to lowest. *(3 rows)*
+  The view must include every department, even one with no employees (its Headcount is 0).
+
+  Then select from the view:
+  - Show only the departments that have 3 or more employees.
+  - Sort them by AvgSalary from highest to lowest.
+
+  *(3 rows)*
 
   <!-- solution:9.3 -->
   <details>
@@ -1037,7 +1071,15 @@ These exercises use a small scratch table named Guest that no other exercise use
 
   > **ⓘ Note:** You **replace** the DeptSummary view you made in 9.3. You don't make a new view.
 
-  Management wants DeptSummary to show only departments that **have** employees. Change the view with `CREATE OR REPLACE VIEW` this time, and keep the same four columns. Then select everything from it, sorted by DeptID. Legal should be gone. *(5 rows)*
+  Management wants DeptSummary to show only departments that **have** employees:
+  - Change the view with `CREATE OR REPLACE VIEW` this time.
+  - Keep the same four columns.
+
+  Then select everything from it:
+  - Sort by DeptID.
+  - Legal should be gone.
+
+  *(5 rows)*
 
   What's the difference between `CREATE OR REPLACE VIEW` and `ALTER VIEW`? When would you choose one over the other?
 
@@ -1188,7 +1230,9 @@ These exercises use a small scratch table named Guest that no other exercise use
   - Order IDs: whole numbers from 0 to 4 billion, auto-increment
   - A foreign key column has the same type as the ID it points to.
 
-  You decide the primary keys, the foreign keys, and what should happen when a row is deleted. Don't name a table `Order`: ORDER is a reserved word in SQL. The solution names the tables Customer, Product, CustOrder, and OrderLine.
+  You decide the primary keys, the foreign keys, and what should happen when a row is deleted.
+
+  Don't name a table `Order`: ORDER is a reserved word in SQL. The solution names the tables Customer, Product, CustOrder, and OrderLine.
 
   Then add this data. The column names below are the ones the solution uses. Use your own if you named your columns differently.
 
@@ -1280,7 +1324,11 @@ These exercises use a small scratch table named Guest that no other exercise use
 
   `Enrollment(StudentID, StudentName, CourseID, CourseTitle, InstructorID, InstructorName, InstructorOffice, Grade)`
 
-  Its primary key is StudentID and CourseID together. Each course has exactly one instructor, and a student gets one Grade per course. Split it into tables that are in third normal form (3NF), and create those tables. Start each table's name with `NF_` (for example, `NF_Student`). Use these column types:
+  Its primary key is StudentID and CourseID together. Each course has exactly one instructor, and a student gets one Grade per course.
+
+  Split it into tables that are in third normal form (3NF), and create those tables. Start each table's name with `NF_` (for example, `NF_Student`).
+
+  Use these column types:
   - StudentID: a whole number from 0 to 16 million
   - InstructorID: a whole number from 0 to 65 thousand
   - CourseID: a 6-character code, like `D427`
@@ -1289,7 +1337,12 @@ These exercises use a small scratch table named Guest that no other exercise use
   - InstructorOffice: text up to 10 characters
   - Grade: 2 characters, like `A-`
 
-  Give every new table a primary key, and add a foreign key wherever one table refers to another. Also list the partial dependencies and the transitive dependencies that you removed. *(4 tables)*
+  Then:
+  - Give every new table a primary key.
+  - Add a foreign key wherever one table refers to another.
+  - Also list the partial dependencies and the transitive dependencies that you removed.
+
+  *(4 tables)*
 
   <!-- solution:10.2 -->
   <details>

@@ -30,7 +30,12 @@ These sections only read data from the tables that `setup.sql` created, so you c
   </details>
   <!-- /solution -->
 
-- **1.2** Show the Title and ReleaseYear of every movie. Sort the list so the newest movie is first. If two movies came out in the same year, sort those movies by Title from A to Z. One movie has no release year (NULL). Where does it show up in your list? *(12 rows)*
+- **1.2** Show the Title and ReleaseYear of every movie:
+  - Sort the list so the newest movie is first.
+  - If two movies came out in the same year, sort those movies by Title from A to Z.
+  - One movie has no release year (NULL). Where does it show up in your list?
+
+  *(12 rows)*
 
   <!-- solution:1.2 -->
   <details>
@@ -362,8 +367,11 @@ These sections only read data from the tables that `setup.sql` created, so you c
 ### Horse
 
 - **2.9** Write two separate queries:
-  - **a)** Show the RegisteredName and Breed of the horses whose breed is **not** Quarter Horse. Don't do anything special for NULL. Count the rows.
-  - **b)** Copy your query from a) and change it so the horse with an unknown breed (NULL) is also included. Compare the two results.
+  - **a)** Show the RegisteredName and Breed of the horses whose breed is **not** Quarter Horse.
+    - Don't do anything special for NULL.
+    - Count the rows.
+  - **b)** Copy your query from a) and change it so the horse with an unknown breed (NULL) is also included.
+    - Compare the two results.
 
   *(7 rows, then 8 rows)*
 
@@ -421,7 +429,13 @@ These sections only read data from the tables that `setup.sql` created, so you c
   </details>
   <!-- /solution -->
 
-- **3.2** The Phone column stores only the 10 digits, with no spaces or symbols. For every student who has a phone number, show the FirstName, the LastName, and a column named `FormattedPhone` that shows the phone number like this: `(512) 555-0101`. Leave out students who have no phone number. *(6 rows)*
+- **3.2** The Phone column stores only the 10 digits, with no spaces or symbols.
+
+  For every student who has a phone number:
+  - Show the FirstName, the LastName, and a column named `FormattedPhone` that shows the phone number like this: `(512) 555-0101`.
+  - Leave out students who have no phone number.
+
+  *(6 rows)*
 
   <!-- solution:3.2 -->
   <details>
@@ -451,7 +465,9 @@ These sections only read data from the tables that `setup.sql` created, so you c
   - **a)** For every student who has an email, show two columns:
     - `LastLower`: their LastName in lowercase. Use `LOWER`.
     - `NewEmail`: their Email with `@example.com` changed to `@stable.example`. Use `REPLACE`.
-  - **b)** Use `TRIM` to remove the spaces from the start and end of `'   Round Rock  '`. Name the column `Trimmed`. No table is needed, so leave out FROM.
+  - **b)** Use `TRIM` to remove the spaces from the start and end of `'   Round Rock  '`.
+    - Name the column `Trimmed`.
+    - No table is needed, so leave out FROM.
 
   *(7 rows, then 1 row)*
 
@@ -479,7 +495,11 @@ These sections only read data from the tables that `setup.sql` created, so you c
 
 ### Employee
 
-- **3.4** For every employee, show the FirstName, LastName, HireDate, and a column named `YearsOfService`: the number of full years they have worked here as of 2026-10-01. Use `TIMESTAMPDIFF` to do this. Sort the list so the employee who has worked here the longest is first. *(15 rows)*
+- **3.4** For every employee, show the FirstName, LastName, HireDate, and a column named `YearsOfService`:
+  - `YearsOfService` is the number of full years they have worked here as of 2026-10-01. Use `TIMESTAMPDIFF` to do this.
+  - Sort the list so the employee who has worked here the longest is first.
+
+  *(15 rows)*
 
   <!-- solution:3.4 -->
   <details>
@@ -503,7 +523,9 @@ These sections only read data from the tables that `setup.sql` created, so you c
   <!-- /solution -->
 
 - **3.5** More date functions. Write two separate queries:
-  - **a)** For every employee hired on or after 2019-01-01, show the FirstName, LastName, HireDate, and a column named `DaysEmployed`: how many **days** they have worked as of 2026-10-01. Use `DATEDIFF`. Sort by HireDate, oldest first.
+  - **a)** For every employee hired on or after 2019-01-01, show the FirstName, LastName, HireDate, and a column named `DaysEmployed`: how many **days** they have worked as of 2026-10-01.
+    - Use `DATEDIFF`.
+    - Sort by HireDate, oldest first.
   - **b)** Show the FirstName, LastName, and HireDate of the employees hired in June, July, or August of any year. Use `MONTH()`.
 
   *(8 rows, then 3 rows)*
@@ -647,7 +669,11 @@ These sections only read data from the tables that `setup.sql` created, so you c
   </details>
   <!-- /solution -->
 
-- **3.9** For every movie, show the Title and the Genre. If the Genre is NULL, show the word "Unclassified" instead. Name the second column `Genre`. *(12 rows)*
+- **3.9** For every movie, show the Title and the Genre:
+  - If the Genre is NULL, show the word "Unclassified" instead.
+  - Name the second column `Genre`.
+
+  *(12 rows)*
 
   <!-- solution:3.9 -->
   <details>
@@ -668,7 +694,12 @@ These sections only read data from the tables that `setup.sql` created, so you c
   </details>
   <!-- /solution -->
 
-- **3.10** For every movie, show the Title and a column named `GrossMillions`: the Gross in millions of dollars, rounded to one decimal place. For example, Arrival's Gross of 100,546,139 should show as 100.5. Leave out movies with no Gross (NULL). Sort the list so the largest amount is first. *(11 rows)*
+- **3.10** For every movie, show the Title and a column named `GrossMillions`:
+  - `GrossMillions` is the Gross in millions of dollars, rounded to one decimal place. For example, Arrival's Gross of 100,546,139 should show as 100.5.
+  - Leave out movies with no Gross (NULL).
+  - Sort the list so the largest amount is first.
+
+  *(11 rows)*
 
   <!-- solution:3.10 -->
   <details>
@@ -774,7 +805,11 @@ These sections only read data from the tables that `setup.sql` created, so you c
   </details>
   <!-- /solution -->
 
-- **4.3** For each genre, show the Genre and a column named `TotalGross`: the total Gross of all its movies. Leave out movies whose genre is NULL. Sort the list so the largest total is first. *(4 rows)*
+- **4.3** For each genre, show the Genre and a column named `TotalGross`: the total Gross of all its movies.
+  - Leave out movies whose genre is NULL.
+  - Sort the list so the largest total is first.
+
+  *(4 rows)*
 
   <!-- solution:4.3 -->
   <details>
@@ -831,7 +866,9 @@ These sections only read data from the tables that `setup.sql` created, so you c
   </details>
   <!-- /solution -->
 
-- **4.5** For each DeptID, show the DeptID and a column named `Headcount`: the number of employees in it. What happens to the employee who has no department? *(6 rows)*
+- **4.5** For each DeptID, show the DeptID and a column named `Headcount`: the number of employees in it.
+
+  What happens to the employee who has no department? *(6 rows)*
 
   <!-- solution:4.5 -->
   <details>
@@ -854,7 +891,11 @@ These sections only read data from the tables that `setup.sql` created, so you c
   </details>
   <!-- /solution -->
 
-- **4.6** Show each DeptID where the average salary of its employees is more than 120,000. Show two columns: the DeptID and `AvgSalary`, the average Salary rounded to 2 decimal places. *(3 rows)*
+- **4.6** Show each DeptID where the average salary of its employees is more than 120,000. Show two columns:
+  - the DeptID
+  - `AvgSalary`: the average Salary rounded to 2 decimal places
+
+  *(3 rows)*
 
   <!-- solution:4.6 -->
   <details>
@@ -880,7 +921,9 @@ These sections only read data from the tables that `setup.sql` created, so you c
   <!-- /solution -->
 
 - **4.7** Write two separate queries:
-  - **a)** This one needs **both** WHERE and HAVING. For each DeptID, count the employees who were hired on or after 2018-01-01. Show only the departments where that count is 2 or more. Name the count column RecentHires.
+  - **a)** This one needs **both** WHERE and HAVING. For each DeptID, count the employees who were hired on or after 2018-01-01.
+    - Show only the departments where that count is 2 or more.
+    - Name the count column RecentHires.
     - Which condition goes in WHERE, and which goes in HAVING? Why?
   - **b)** Copy your query from a) and remove the WHERE clause. The count now includes every employee, so name the column `Headcount`.
     - Why do you get more rows?
@@ -917,7 +960,13 @@ These sections only read data from the tables that `setup.sql` created, so you c
 
 ### LessonSchedule
 
-- **4.8** Each row in **LessonSchedule** is one lesson. Its HorseID column holds the ID of a horse in the Horse table. Show each HorseID that has two or more lessons scheduled. Show two columns: the HorseID and `Lessons`, the number of lessons for that horse. *(3 rows)*
+- **4.8** Each row in **LessonSchedule** is one lesson. Its HorseID column holds the ID of a horse in the Horse table.
+
+  Show each HorseID that has two or more lessons scheduled. Show two columns:
+  - the HorseID
+  - `Lessons`: the number of lessons for that horse
+
+  *(3 rows)*
 
   <!-- solution:4.8 -->
   <details>
@@ -944,7 +993,11 @@ These sections only read data from the tables that `setup.sql` created, so you c
 
 ### Student
 
-- **4.9** Show how many students live in each combination of State and City. Show three columns: State, City, and `Students` (the count). Sort the list by State, then by City. *(5 rows)*
+- **4.9** Show how many students live in each combination of State and City:
+  - Show three columns: State, City, and `Students` (the count).
+  - Sort the list by State, then by City.
+
+  *(5 rows)*
 
   <!-- solution:4.9 -->
   <details>
@@ -1023,7 +1076,11 @@ LEFT: With `Crew c LEFT JOIN Crew l`, every crew member stays. Rae's lead shows 
 
 ### Employee and Department
 
-- **5.1** Show each employee's FirstName and LastName next to the DeptName of their department. Use an inner join. One employee is missing from the result. Who is it, and why are they missing? *(14 rows)*
+- **5.1** Show each employee's FirstName and LastName next to the DeptName of their department:
+  - Use an inner join.
+  - One employee is missing from the result. Who is it, and why are they missing?
+
+  *(14 rows)*
 
   <!-- solution:5.1 -->
   <details>
@@ -1046,7 +1103,11 @@ LEFT: With `Crew c LEFT JOIN Crew l`, every crew member stays. Rae's lead shows 
   </details>
   <!-- /solution -->
 
-- **5.2** Show every DeptName and a column named `Headcount`: how many employees work in that department. **Include departments that have no employees.** Make sure the Legal department shows 0, not 1. Sort by Headcount from highest to lowest, then by DeptName from A to Z. *(6 rows)*
+- **5.2** Show every DeptName and a column named `Headcount`: how many employees work in that department.
+  - **Include departments that have no employees.** Make sure the Legal department shows 0, not 1.
+  - Sort by Headcount from highest to lowest, then by DeptName from A to Z.
+
+  *(6 rows)*
 
   <!-- solution:5.2 -->
   <details>
@@ -1071,7 +1132,13 @@ LEFT: With `Crew c LEFT JOIN Crew l`, every crew member stays. Rae's lead shows 
   </details>
   <!-- /solution -->
 
-- **5.3** Write exercise 5.2 again with a `RIGHT JOIN` in place of the `LEFT JOIN`, and get the same 6 rows. Changing only the word LEFT to RIGHT isn't enough: try it, see which rows change, and work out what else has to change. *(6 rows)*
+- **5.3** Write exercise 5.2 again with a `RIGHT JOIN` in place of the `LEFT JOIN`, and get the same 6 rows.
+
+  Changing only the word LEFT to RIGHT isn't enough:
+  - Try it, and see which rows change.
+  - Work out what else has to change.
+
+  *(6 rows)*
 
   <!-- solution:5.3 -->
   <details>
@@ -1099,7 +1166,11 @@ LEFT: With `Crew c LEFT JOIN Crew l`, every crew member stays. Rae's lead shows 
   - `Employee`: the employee's FirstName and LastName joined with a space
   - `Manager`: the manager's FirstName and LastName joined the same way
 
-  Include employees who do not have a manager. Their Manager shows NULL. Sort by the employee's EmpID. *(15 rows)*
+  Then:
+  - Include employees who do not have a manager. Their Manager shows NULL.
+  - Sort by the employee's EmpID.
+
+  *(15 rows)*
 
   <!-- join-diagram
   from: Employee e | EmpID, FirstName, ManagerID | EmpID IN (7, 8, 10, 11)
@@ -1147,13 +1218,13 @@ LEFT: With `Crew c LEFT JOIN Crew l`, every crew member stays. Rae's lead shows 
   </details>
   <!-- /solution -->
 
-- **5.5** Show the employees whose manager works in a **different** department than they do. Leave out employees who have no department. Show four columns:
+- **5.5** Show the employees whose manager works in a **different** department than they do. Show four columns:
   - `Employee`: the employee's FirstName and LastName joined with a space
   - `EmpDeptID`: the employee's DeptID
   - `Manager`: the manager's FirstName and LastName joined with a space
   - `MgrDeptID`: the manager's DeptID
 
-  *(2 rows)*
+  Leave out employees who have no department. *(2 rows)*
 
   <!-- solution:5.5 -->
   <details>
@@ -1228,7 +1299,11 @@ LEFT: With `Crew c LEFT JOIN Crew l`, every crew member stays. Rae's lead shows 
 
 ### Horse, Student, and LessonSchedule
 
-- **5.8** Show the lesson schedule with these columns: LessonDateTime, the horse's RegisteredName, and the student's FirstName and LastName. Sort the list by date and time, then by horse name. Only include lessons that have a student assigned. *(11 rows)*
+- **5.8** Show the lesson schedule with these columns: LessonDateTime, the horse's RegisteredName, and the student's FirstName and LastName.
+  - Sort the list by date and time, then by horse name.
+  - Only include lessons that have a student assigned.
+
+  *(11 rows)*
 
   <!-- solution:5.8 -->
   <details>
@@ -1300,7 +1375,11 @@ LEFT: With `Crew c LEFT JOIN Crew l`, every crew member stays. Rae's lead shows 
   </details>
   <!-- /solution -->
 
-- **5.11** If every horse could be paired with every student, how many pairs would there be? Use a `CROSS JOIN` to find out, and show the count in a column named `Pairings`. *(1 row: 80)*
+- **5.11** If every horse could be paired with every student, how many pairs would there be?
+  - Use a `CROSS JOIN` to find out.
+  - Show the count in a column named `Pairings`.
+
+  *(1 row: 80)*
 
   <!-- solution:5.11 -->
   <details>
@@ -1349,7 +1428,9 @@ LEFT: With `Crew c LEFT JOIN Crew l`, every crew member stays. Rae's lead shows 
   </details>
   <!-- /solution -->
 
-- **6.2** *(Optional: goes beyond what the D427 practice tests ask.)* Show the FirstName, LastName, DeptID, and Salary of the employees who earn more than the average salary **of their own department**. This needs a correlated subquery, which is a subquery that uses a value from the outer query. *(5 rows)*
+- **6.2** *(Optional: goes beyond what the D427 practice tests ask.)* Show the FirstName, LastName, DeptID, and Salary of the employees who earn more than the average salary **of their own department**.
+
+  This needs a correlated subquery, which is a subquery that uses a value from the outer query. *(5 rows)*
 
   <!-- solution:6.2 -->
   <details>
@@ -1446,7 +1527,8 @@ LEFT: With `Crew c LEFT JOIN Crew l`, every crew member stays. Rae's lead shows 
   <!-- /solution -->
 
 - **6.6** Show the ID, FirstName, and LastName of the students who have **no** lessons. Write three separate queries:
-  - **a)** Use `NOT IN` with a subquery that returns every StudentID in LessonSchedule. It returns zero rows. Work out why.
+  - **a)** Use `NOT IN` with a subquery that returns every StudentID in LessonSchedule.
+    - It returns zero rows. Work out why.
   - **b)** Copy your query from a) and fix it, still using `NOT IN`.
   - **c)** Write it again using `NOT EXISTS` instead.
 
