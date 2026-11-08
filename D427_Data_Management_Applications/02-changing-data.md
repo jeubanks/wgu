@@ -89,7 +89,7 @@ These sections change the data and the tables. Do them in order: later exercises
   <summary>Solution</summary>
 
   ```sql
-  -- Expected to FAIL - run it to see the error, then move on:
+  -- Expected to FAIL. Run it to see the error, then move on:
   --   DELETE FROM Rating WHERE RatingCode = 'PG';
   --   ERROR 1451: Cannot delete or update a parent row: a foreign key constraint fails
   -- Movie.RatingCode's FK has no ON DELETE clause, so the default (RESTRICT / NO ACTION) applies.
@@ -441,7 +441,7 @@ These exercises use a small scratch table named Guest that no other exercise use
   UPDATE Guest SET Visits = Visits + 1;         -- Rows matched: 2  Changed: 2
   SELECT * FROM Guest;                          -- Ana Ruiz 4, Cara Lin 6
   -- Some tools turn on "safe updates" mode, which refuses an UPDATE or DELETE without a WHERE
-  -- on a key column, for exactly this reason.
+  -- on a key column.
   ```
 
   </details>
@@ -450,7 +450,7 @@ These exercises use a small scratch table named Guest that no other exercise use
 - **7.13**\
   **Uses:** Guest *(from 7.9)*
 
-  DELETE versus TRUNCATE. Both remove every row from a table, but they aren't the same:
+  DELETE versus TRUNCATE. Both remove every row from a table. Try each one and compare:
   - Run `DELETE FROM Guest;` with **no** WHERE, and count the rows.
   - Add this guest, then look at the table. What GuestID did he get?
 
@@ -590,7 +590,7 @@ These exercises use a small scratch table named Guest that no other exercise use
 
   > **ⓘ Note:** You **change** the Genre column of the Song table from 8.1.
 
-  Change the `Genre` column so it can hold up to 30 characters instead of 20. **Make sure it still uses 'Pop' as the default.** Afterward, run `DESCRIBE Song` and check that Genre shows `varchar(30)` with the default `Pop`. It is easy to lose the default by mistake.
+  Change the `Genre` column so it can hold up to 30 characters instead of 20. **Make sure it still uses 'Pop' as the default**, which is easy to lose by mistake. Afterward, run `DESCRIBE Song` and check that Genre shows `varchar(30)` with the default `Pop`.
 
   <!-- solution:8.3 -->
   <details>
@@ -865,7 +865,7 @@ These exercises use a small scratch table named Guest that no other exercise use
 
   > **ⓘ Note:** You **rename** and then **drop** the EmployeeArchive table you made in 8.8.
 
-  This exercise uses the EmployeeArchive table from 8.8. If you skipped 8.8, do its CREATE TABLE step first.
+  If you skipped 8.8, do its CREATE TABLE step first.
   - Rename the EmployeeArchive table to FormerEmployee. Run `SHOW TABLES` to check the new name.
   - Delete (drop) the FormerEmployee table.
   - Write a DROP statement that does not cause an error when the table is already gone. Run it to check.
@@ -985,8 +985,6 @@ These exercises use a small scratch table named Guest that no other exercise use
   DELETE FROM LessonSchedule
   WHERE HorseID = 1 AND LessonDateTime = '2026-03-01 10:00:00';
   SELECT COUNT(*) AS Lessons FROM LessonDetail;                    -- 9 again
-  -- The view stores no rows of its own. It re-runs its SELECT every time, so it always
-  -- matches the tables underneath it.
   -- Expected to FAIL (ALTER VIEW only changes a view that already exists):
   --   ALTER VIEW NoSuchView AS SELECT 1;
   --   ERROR 1146: Table 'd427.NoSuchView' doesn't exist
@@ -1041,7 +1039,7 @@ These exercises use a small scratch table named Guest that no other exercise use
 
   Management wants DeptSummary to show only departments that **have** employees. Change the view with `CREATE OR REPLACE VIEW` this time, and keep the same four columns. Then select everything from it, sorted by DeptID. Legal should be gone. *(5 rows)*
 
-  Then answer this: what's the difference between `CREATE OR REPLACE VIEW` and `ALTER VIEW`? When would you choose one over the other?
+  What's the difference between `CREATE OR REPLACE VIEW` and `ALTER VIEW`? When would you choose one over the other?
 
   <!-- solution:9.4 -->
   <details>

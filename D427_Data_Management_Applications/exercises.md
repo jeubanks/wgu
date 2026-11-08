@@ -50,7 +50,7 @@ SOURCE /work/setup.sql;
 That path is for the Docker setup. If MySQL is installed on your computer, use the full path to wherever you saved `setup.sql`, for example `SOURCE ~/Downloads/setup.sql;`.
 
 > [!IMPORTANT]
-> - **Do Sections 1 to 10 in order.** Sections 1 to 6 only read data, so they never change anything. Sections 7 to 10 change the data and the tables, and later exercises expect that you already did the earlier ones.
+> - **Do Sections 1 to 10 in order.** Sections 1 to 6 only read data. Sections 7 to 10 change the data and the tables, and later exercises expect that you already did the earlier ones.
 > - **Sections 11 to 13 stand alone.** Section 11 builds its own tables in a separate database named `d427_drills`. Section 12 uses its own tables in `d427`, which no other section changes. Exercises 12.20 to 12.22 change those tables, so run `setup.sql` again before you redo Section 12. Section 13 needs no SQL at all.
 > - **Run `setup.sql` again before Section 14**, so you begin with fresh data.
 
@@ -69,7 +69,7 @@ When an exercise **changes** something that already exists, like adding a column
 
 Sections 1 to 6 and 12 only use the existing tables from `setup.sql`, so they don't need these lines.
 
-The note in parentheses at the end of an exercise tells you how many rows your query should return. For example, *(12 rows)* means your result should have 12 rows. If you get a different number, look at your query again before you check the solution.
+The note in parentheses at the end of an exercise, like *(12 rows)*, tells you how many rows your query should return. If you get a different number, look at your query again before you check the solution.
 
 Some exercises change data instead of returning rows. For those, the note in parentheses tells you what to check afterward.
 

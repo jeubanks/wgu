@@ -2,7 +2,7 @@
 
 [← Exercise index](exercises.md) · Solutions: [`solutions.sql`](solutions.sql)
 
-These drills come from the D427 practice tests and the D427 Challenge. These sections don't depend on Parts 1 and 2, so you can do them at any time.
+These drills come from the D427 practice tests and the D427 Challenge. They don't depend on Parts 1 and 2, so you can do them at any time.
 
 **In this part:** [11. Writing tables from a specification](#11-writing-tables-from-a-specification) · [12. Practice-test-style queries](#12-practice-test-style-queries)
 
@@ -582,7 +582,7 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   -- Expected to FAIL:
   --   INSERT INTO Department VALUES (3, 'Finance', 1999);
   --   ERROR 3819: Check constraint 'MgrIDCheck' is violated.
-  ALTER TABLE Department DROP CHECK MgrIDCheck;   -- the constraint's name makes this easy
+  ALTER TABLE Department DROP CHECK MgrIDCheck;
   INSERT INTO Department VALUES (3, 'Finance', 1999);
   SELECT * FROM Department;
   ```
@@ -1318,7 +1318,7 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
   <details>
   <summary>Hint</summary>
 
-  - `ORDER BY Title ASC`. ASC is the default, but writing it makes your intent clear.
+  - `ORDER BY Title ASC`. ASC is the default, so `ORDER BY Title` sorts the same way.
 
   </details>
 
@@ -1328,7 +1328,7 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
   ```sql
   SELECT Title
   FROM Book
-  ORDER BY Title ASC;      -- ASC is the default; writing it costs nothing
+  ORDER BY Title ASC;
   ```
 
   </details>
@@ -1509,7 +1509,7 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
   SELECT YearSales.TotalSales, Book.Title
   FROM YearSales
   LEFT JOIN Book ON Book.Year = YearSales.Year;
-  -- A RIGHT JOIN B  ==  B LEFT JOIN A. The table whose rows you keep is the one the arrow points at.
+  -- A RIGHT JOIN B  ==  B LEFT JOIN A. Either way, every row of B is kept.
   ```
 
   </details>

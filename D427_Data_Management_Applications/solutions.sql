@@ -26,7 +26,6 @@ SELECT * FROM Movie;
 SELECT Title, ReleaseYear
 FROM Movie
 ORDER BY ReleaseYear DESC, Title ASC;
--- Note: NULLs sort FIRST in ASC and LAST in DESC in MySQL.
 
 -- [1.3]
 -- Hint: The `DISTINCT` keyword goes right after SELECT.
@@ -96,7 +95,7 @@ SELECT FirstName, LastName, City, Phone FROM Student
 WHERE City = 'Austin' OR City = 'Round Rock'
   AND Phone IS NOT NULL;                                   -- 5 rows
 -- AND binds tighter than OR. Drop the parentheses and you get
--- "Austin  OR  (Round Rock AND has phone)", which is a different question. Priya (Austin,
+-- "Austin  OR  (Round Rock AND has phone)". Priya (Austin,
 -- no phone) gets in, so you get 5 rows instead of 4.
 
 -- [2.7]
@@ -121,7 +120,6 @@ SELECT RegisteredName, Breed FROM Horse
 WHERE Breed <> 'Quarter Horse';                       -- 7 rows: 'Blue Ribbon' (NULL breed) is missing
 SELECT RegisteredName, Breed FROM Horse
 WHERE Breed <> 'Quarter Horse' OR Breed IS NULL;      -- 8 rows
--- Without the IS NULL test, 'Blue Ribbon' disappears: NULL <> 'x' is UNKNOWN, not TRUE.
 
 -- =====================================================================
 -- 3. Built-in functions
@@ -293,7 +291,6 @@ SELECT HorseID, COUNT(*) AS Lessons
 FROM LessonSchedule
 GROUP BY HorseID
 HAVING COUNT(*) >= 2;
--- "two or more lessons" is a COUNT per horse, which only exists after GROUP BY, so it's HAVING.
 -- WHERE COUNT(*) >= 2 fails with ERROR 1111 (Invalid use of group function).
 
 -- [4.9]
@@ -432,7 +429,7 @@ WHERE ID IN (SELECT StudentID FROM LessonSchedule);
 -- [6.6]
 -- Hint: One lesson has no student, so the subquery's list contains a NULL. `x NOT IN (1, 2, NULL)` can never be TRUE.
 -- Hint: Fix 1: leave the NULL out inside the subquery. Fix 2: use `NOT EXISTS` with a subquery that matches on the student's ID.
--- a) The trap: this returns ZERO rows, because LessonSchedule.StudentID contains a NULL.
+-- a) This returns ZERO rows, because LessonSchedule.StudentID contains a NULL.
 --   x NOT IN (1, 2, NULL)  ==  x<>1 AND x<>2 AND x<>NULL  ==  UNKNOWN
 SELECT ID, FirstName, LastName
 FROM Student
@@ -467,7 +464,7 @@ SELECT ID, Title, Genre, ReleaseYear FROM Movie WHERE ID = 12;
 -- [7.3]
 -- Hint: Rating is the parent table and Movie is the child table. Which one does each statement break?
 -- Hint: Errors 1451 and 1452 are both foreign key errors. Read which one talks about a parent row and which one about a child row.
--- Expected to FAIL - run it to see the error, then move on:
+-- Expected to FAIL. Run it to see the error, then move on:
 --   DELETE FROM Rating WHERE RatingCode = 'PG';
 --   ERROR 1451: Cannot delete or update a parent row: a foreign key constraint fails
 -- Movie.RatingCode's FK has no ON DELETE clause, so the default (RESTRICT / NO ACTION) applies.
@@ -551,7 +548,7 @@ SELECT * FROM Guest;                          -- Ana Ruiz and Cara Lin are left
 UPDATE Guest SET Visits = Visits + 1;         -- Rows matched: 2  Changed: 2
 SELECT * FROM Guest;                          -- Ana Ruiz 4, Cara Lin 6
 -- Some tools turn on "safe updates" mode, which refuses an UPDATE or DELETE without a WHERE
--- on a key column, for exactly this reason.
+-- on a key column.
 
 -- [7.13]
 -- Hint: `DELETE FROM Guest;` removes the rows but keeps the AUTO_INCREMENT counter where it was.
@@ -715,8 +712,6 @@ SELECT COUNT(*) AS Lessons FROM LessonDetail;                    -- 10: the view
 DELETE FROM LessonSchedule
 WHERE HorseID = 1 AND LessonDateTime = '2026-03-01 10:00:00';
 SELECT COUNT(*) AS Lessons FROM LessonDetail;                    -- 9 again
--- The view stores no rows of its own. It re-runs its SELECT every time, so it always
--- matches the tables underneath it.
 -- Expected to FAIL (ALTER VIEW only changes a view that already exists):
 --   ALTER VIEW NoSuchView AS SELECT 1;
 --   ERROR 1146: Table 'd427.NoSuchView' doesn't exist
@@ -1024,7 +1019,7 @@ ALTER TABLE Department ADD CONSTRAINT MgrIDCheck CHECK (ManagerID >= 2000);
 -- Expected to FAIL:
 --   INSERT INTO Department VALUES (3, 'Finance', 1999);
 --   ERROR 3819: Check constraint 'MgrIDCheck' is violated.
-ALTER TABLE Department DROP CHECK MgrIDCheck;   -- the constraint's name makes this easy
+ALTER TABLE Department DROP CHECK MgrIDCheck;
 INSERT INTO Department VALUES (3, 'Finance', 1999);
 SELECT * FROM Department;
 
@@ -1248,10 +1243,10 @@ FROM Book
 WHERE Year = 2018;
 
 -- [12.3]
--- Hint: `ORDER BY Title ASC`. ASC is the default, but writing it makes your intent clear.
+-- Hint: `ORDER BY Title ASC`. ASC is the default, so `ORDER BY Title` sorts the same way.
 SELECT Title
 FROM Book
-ORDER BY Title ASC;      -- ASC is the default; writing it costs nothing
+ORDER BY Title ASC;
 
 -- [12.4]
 -- Hint: "Unique Genre values and the number of books with each" means GROUP BY Genre with COUNT(*). Name the count with `AS GenreCount`.
@@ -1313,7 +1308,7 @@ RIGHT JOIN Book ON YearSales.Year = Book.Year;
 SELECT YearSales.TotalSales, Book.Title
 FROM YearSales
 LEFT JOIN Book ON Book.Year = YearSales.Year;
--- A RIGHT JOIN B  ==  B LEFT JOIN A. The table whose rows you keep is the one the arrow points at.
+-- A RIGHT JOIN B  ==  B LEFT JOIN A. Either way, every row of B is kept.
 
 -- [12.11]
 -- Hint: LEFT JOIN from YearSales to Book, then keep the rows where the Book side is NULL.
@@ -1452,7 +1447,7 @@ SELECT Title, Cost FROM Book ORDER BY Cost DESC LIMIT 3;
 -- Hint: With no "if available" or "regardless" wording, it's INNER.
 
 -- [13.9]
--- Hint: "Materialized" means the results are actually saved, not worked out again each time.
+-- Hint: "Materialized" means the results are saved instead of worked out again each time.
 
 -- [13.10]
 -- Hint: An index is a sorted list of one column's values, each with a pointer to its row. Does the change alter that column's values, or add or remove rows?

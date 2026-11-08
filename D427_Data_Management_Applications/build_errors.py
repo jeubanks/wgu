@@ -54,7 +54,7 @@ ERRORS = {
              "Check the spelling and the database (`USE d427;`), and that the table or view was created (or not dropped)."),
     "1136": ("Changing data", "Column count doesn't match value count at row 1",
              "An INSERT gives a different number of values than columns.",
-             "With no column list, give a value for every column in table order. Better: list the columns you're filling in."),
+             "With no column list, give a value for every column in table order. Or, better, list the columns you're filling in."),
     "1364": ("Changing data", "Field '...' doesn't have a default value",
              "An INSERT leaves out a NOT NULL column that has no DEFAULT.",
              "Give the column a value, or give it a DEFAULT in the table definition."),

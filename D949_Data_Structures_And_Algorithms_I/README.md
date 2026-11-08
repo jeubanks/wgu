@@ -80,7 +80,7 @@ The course materials show code as pseudocode or Python. The full topic list and 
 
 ## Recommended reading
 
-**[A Common-Sense Guide to Data Structures and Algorithms, Second Edition](https://pragprog.com/titles/jwdsal2/a-common-sense-guide-to-data-structures-and-algorithms-second-edition/)** by Jay Wengrow (The Pragmatic Bookshelf). It explains Big-O and the core data structures in plain English, which makes it a strong companion to this kit. The publisher sells the ebook DRM-free, and one purchase includes PDF and EPUB. The author has also published [Python-specific editions](https://www.commonsensedev.com/books), which match the language this course uses.
+**[A Common-Sense Guide to Data Structures and Algorithms, Second Edition](https://pragprog.com/titles/jwdsal2/a-common-sense-guide-to-data-structures-and-algorithms-second-edition/)** by Jay Wengrow (The Pragmatic Bookshelf). It explains Big-O and the core data structures in plain English. The publisher sells the ebook DRM-free, and one purchase includes PDF and EPUB. The author has also published [Python-specific editions](https://www.commonsensedev.com/books), which match the language this course uses.
 
 ### EPUB readers
 
@@ -93,9 +93,9 @@ The course materials show code as pseudocode or Python. The full topic list and 
 
 ## Notes
 
-- **Course conventions:** following the class Big-O worksheet, the sort tables use O(n) for radix sort and O(n) for bucket sort's average case. Textbooks often write O(nk) and O(n + k).
-- **Verified code:** every lesson example and solution in `c949-practice/` was run against its checks (43 passing in `pytest --solutions`).
-- **Course materials not included:** the WGU course study guide, Big-O worksheet, and other course PDFs belong to WGU and are not redistributed here. Get them from your course resources.
+- Following the class Big-O worksheet, the sort tables use O(n) for radix sort and O(n) for bucket sort's average case. Textbooks often write O(nk) and O(n + k).
+- Every lesson example and solution in `c949-practice/` was run against its checks (43 passing in `pytest --solutions`).
+- The WGU course study guide, Big-O worksheet, and other course PDFs belong to WGU and are not included here. Get them from your course resources.
 
 ## Contributing
 
