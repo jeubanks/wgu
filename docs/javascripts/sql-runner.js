@@ -247,9 +247,15 @@
         " CASE WHEN c.pk AND " + TABLE_SQL + " LIKE '%AUTOINCREMENT%' THEN 'auto_increment' ELSE '' END AS Extra" +
         " FROM " + knownTable(name) + " CROSS JOIN pragma_table_info(x.t) AS c ORDER BY c.cid";
     }],
+    // SQLite has no TRUNCATE: empty the table and restart its AUTO_INCREMENT counter.
+    // sqlite_sequence holds the name as created, so match it in any case, like MySQL.
+    [new RegExp("TRUNCATE\\s+(?:TABLE\\s+)?" + TABLE_NAME, "i"), function (name) {
+      return "DELETE FROM " + name + "; DELETE FROM sqlite_sequence WHERE name = '" + name + "' COLLATE NOCASE";
+    }],
   ];
 
-  // MySQL statements SQLite doesn't have, as SELECTs that show the same thing.
+  // MySQL statements SQLite doesn't have, as statements it does: SELECTs that
+  // show the same thing, and TRUNCATE as two DELETEs.
   // Only whole statements: from a statement's start (after any comments) to its semicolon.
   function showStatements(sql) {
     return sql.split(/(;)/).map(function (part) {
@@ -327,10 +333,7 @@
         // LEFT, RIGHT, and IF are keywords in SQLite, so they can't be function names.
         .replace(/\bLEFT\s*\(/gi, "MYSQL_LEFT(")
         .replace(/\bRIGHT\s*\(/gi, "MYSQL_RIGHT(")
-        .replace(/\bIF\s*\(/gi, "MYSQL_IF(")
-        // SQLite has no TRUNCATE: empty the table and restart its AUTO_INCREMENT counter.
-        .replace(/\bTRUNCATE\s+(?:TABLE\s+)?([A-Za-z_]\w*)\s*(?=;|$)/gi,
-          "DELETE FROM $1; DELETE FROM sqlite_sequence WHERE name = '$1'");
+        .replace(/\bIF\s*\(/gi, "MYSQL_IF(");
     }).join(""));
   }
 
