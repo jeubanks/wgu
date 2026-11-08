@@ -143,7 +143,7 @@ def to_sqlite_query(sql):
         part = re.sub(r"\bRIGHT\s*\(", "MYSQL_RIGHT(", part, flags=re.I)
         part = re.sub(r"\bIF\s*\(", "MYSQL_IF(", part, flags=re.I)
         part = re.sub(r"\bTRUNCATE\s+(?:TABLE\s+)?([A-Za-z_]\w*)\s*(?=;|$)",
-                      r"DELETE FROM \1; DELETE FROM sqlite_sequence WHERE name = '\1'", part, flags=re.I)
+                      r"DELETE FROM \1; DELETE FROM sqlite_sequence WHERE name = '\1' COLLATE NOCASE", part, flags=re.I)
         out.append(part)
     return sqlite_setup.create_tables("".join(out))
 
