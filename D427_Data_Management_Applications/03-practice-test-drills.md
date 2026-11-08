@@ -171,7 +171,10 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   - If a row is deleted from Horse, the rows with the same horse ID should be deleted from LessonSchedule automatically.
   - If a row is deleted from Student, the same student IDs should be set to NULL in LessonSchedule automatically.
 
-  Before you create the real table, try it once with StudentID declared `NOT NULL`. It fails. Read the error, then create the table as described above. Why must StudentID allow NULL?
+  Before you create the real table:
+  - Try it once with StudentID declared `NOT NULL`. It fails. Read the error.
+  - Then create the table as described above.
+  - Why must StudentID allow NULL?
 
   <!-- solution:11.3 -->
   <details>
@@ -1185,7 +1188,8 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   |---|---|---|
   | 300 | 70000 | 5000000000 |
 
-  For each column, which type looks right at first glance but is one size too small? What happens to this INSERT if you use those types?
+  - For each column, which type looks right at first glance but is one size too small?
+  - What happens to this INSERT if you use those types?
 
   *(1 row)*
 
@@ -1290,7 +1294,9 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
   </details>
   <!-- /solution -->
 
-- **12.2** Write a query to retrieve the Title and Genre values for all records in the Book table with a Year value of 2018. Make sure your result returns the columns in the order given. *(4 rows)*
+- **12.2** Write a query to retrieve the Title and Genre values for all records in the Book table with a Year value of 2018.
+
+  Make sure your result returns the columns in the order given. *(4 rows)*
 
   <!-- solution:12.2 -->
   <details>
@@ -1334,7 +1340,11 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
   </details>
   <!-- /solution -->
 
-- **12.4** Write a query to output the unique Genre values and the number of books with each genre value from the Book table as GenreCount. Sort the results by Genre in reverse alphabetical order (Z–A). Where does the book with no genre show up? *(6 rows)*
+- **12.4** Write a query to output the unique Genre values and the number of books with each genre value from the Book table as GenreCount:
+  - Sort the results by Genre in reverse alphabetical order (Z–A).
+  - Where does the book with no genre show up?
+
+  *(6 rows)*
 
   <!-- solution:12.4 -->
   <details>
@@ -1390,7 +1400,9 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
   - a) Write a query to pull all data for books that cost more than the average cost. *(1 row)*
   - b) Write a query to pull all data for books that cost less than the average cost. *(12 rows)*
 
-  Then try `WHERE Cost > AVG(Cost)` and read the error. Why doesn't it work?
+  Then try `WHERE Cost > AVG(Cost)` and read the error.
+
+  Why doesn't it work?
 
   <!-- solution:12.6 -->
   <details>
@@ -1419,7 +1431,9 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
   </details>
   <!-- /solution -->
 
-- **12.7** Write a query to display both the TotalSales and the Title (if available) for all YearSales. Make sure your result returns the columns in the order given. *(12 rows)*
+- **12.7** Write a query to display both the TotalSales and the Title (if available) for all YearSales.
+
+  Make sure your result returns the columns in the order given. *(12 rows)*
 
   <!-- solution:12.7 -->
   <details>
@@ -1443,7 +1457,9 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
   </details>
   <!-- /solution -->
 
-- **12.8** Write a query to display both the Title and the TotalSales for all books. Make sure your result returns the columns in the order given. *(11 rows)*
+- **12.8** Write a query to display both the Title and the TotalSales for all books.
+
+  Make sure your result returns the columns in the order given. *(11 rows)*
 
   <!-- solution:12.8 -->
   <details>
@@ -1573,7 +1589,11 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
 
 ### Passport and Visa
 
-- **12.13** Write a query to display all visas and the name of the passport holder (if available). Display the VisaID and the PassportHolderName. Order by VisaID. *(8 rows)*
+- **12.13** Write a query to display all visas and the name of the passport holder (if available):
+  - Display the VisaID and the PassportHolderName.
+  - Order by VisaID.
+
+  *(8 rows)*
 
   <!-- solution:12.13 -->
   <details>
@@ -1597,7 +1617,11 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
   </details>
   <!-- /solution -->
 
-- **12.14** Write a query to return the PassportHolderName and VisaType. Unassigned visas should not appear in the results. Sort the results by PassportHolderName. *(6 rows)*
+- **12.14** Write a query to return the PassportHolderName and VisaType:
+  - Unassigned visas should not appear in the results.
+  - Sort the results by PassportHolderName.
+
+  *(6 rows)*
 
   <!-- solution:12.14 -->
   <details>
@@ -1642,7 +1666,9 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
   </details>
   <!-- /solution -->
 
-- **12.16** Write a statement to create a view called **Visas_2023** that retrieves all visas issued in the year 2023 from the Visa table. Then select everything from the view. Can you write the filter two different ways? *(4 rows)*
+- **12.16** Write a statement to create a view called **Visas_2023** that retrieves all visas issued in the year 2023 from the Visa table.
+  - Then select everything from the view. *(4 rows)*
+  - Can you write the filter two different ways?
 
   <!-- solution:12.16 -->
   <details>
@@ -1730,7 +1756,9 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
   - `SELECT Name FROM Compensation WHERE Salary = Bonus;`
   - `SELECT Name FROM Compensation WHERE Salary <> Bonus;`
 
-  Run them as two separate queries. There are 5 people, but the two results together contain only 2 names. Where did the other three go? *(1 row, then 1 row)*
+  Run them as two separate queries. *(1 row, then 1 row)*
+
+  There are 5 people, but the two results together contain only 2 names. Where did the other three go?
 
   <!-- solution:12.19 -->
   <details>
@@ -1754,7 +1782,11 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
   </details>
   <!-- /solution -->
 
-- **12.20** Add 2000 to the bonus of every person with a salary less than 70000. Ravi Patel has no bonus yet (NULL). After your update, he should have a bonus of 2000, not NULL. *(check: 2 rows changed)*
+- **12.20** Add 2000 to the bonus of every person with a salary less than 70000.
+
+  Ravi Patel has no bonus yet (NULL). After your update, he should have a bonus of 2000, not NULL.
+
+  *(check: 2 rows changed)*
 
   <!-- solution:12.20 -->
   <details>

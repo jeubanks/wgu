@@ -148,7 +148,12 @@ CREATE TABLE Visitor (
 
   </details>
 
-- **T.4** Start a transaction, then run `UPDATE Visitor SET Visits = Visits + 1;` with **no** WHERE clause. Look at the table, then ROLLBACK and look again. *(check: visits go to 3 and 2, then back to 2 and 1)*
+- **T.4** An UPDATE with no WHERE, inside a transaction:
+  - Start a transaction, then run `UPDATE Visitor SET Visits = Visits + 1;` with **no** WHERE clause.
+  - Look at the table.
+  - Then ROLLBACK and look again.
+
+  *(check: visits go to 3 and 2, then back to 2 and 1)*
 
   <details>
   <summary>Hint</summary>
@@ -200,7 +205,13 @@ CREATE TABLE Visitor (
 
   </details>
 
-- **T.6** Structure changes end a transaction. Start a transaction, add a visitor (Hal Ito from Austin), then run `CREATE TABLE TxDemo (x INT);`. Now ROLLBACK and look at Visitor. Is Hal Ito still there? Why? When you're done, drop the TxDemo and Visitor tables. *(1 row)*
+- **T.6** Structure changes end a transaction:
+  - Start a transaction, add a visitor (Hal Ito from Austin), then run `CREATE TABLE TxDemo (x INT);`.
+  - Now ROLLBACK and look at Visitor.
+  - Is Hal Ito still there? Why?
+  - When you're done, drop the TxDemo and Visitor tables.
+
+  *(1 row)*
 
   <details>
   <summary>Hint</summary>
@@ -237,7 +248,11 @@ CREATE TABLE Visitor (
 
 Exercises B.1 to B.9 only read data. B.10 creates a view and changes one employee's salary.
 
-- **B.1** Show the Title and Gross of the movies ranked **4th, 5th, and 6th** by Gross (highest first). Use `LIMIT` with `OFFSET`. Where would the movie with no Gross (NULL) end up in this ranking? *(3 rows)*
+- **B.1** Show the Title and Gross of the movies ranked **4th, 5th, and 6th** by Gross (highest first):
+  - Use `LIMIT` with `OFFSET`.
+  - Where would the movie with no Gross (NULL) end up in this ranking?
+
+  *(3 rows)*
 
   <details>
   <summary>Hint</summary>
@@ -260,7 +275,11 @@ Exercises B.1 to B.9 only read data. B.10 creates a view and changes one employe
 
   </details>
 
-- **B.2** Show each employee's LastName and Salary, but make the column headings read **Last Name** and **Annual Salary**, with the spaces. Sort by salary, highest first. *(15 rows)*
+- **B.2** Show each employee's LastName and Salary:
+  - Make the column headings read **Last Name** and **Annual Salary**, with the spaces.
+  - Sort by salary, highest first.
+
+  *(15 rows)*
 
   <details>
   <summary>Hint</summary>
@@ -283,7 +302,12 @@ Exercises B.1 to B.9 only read data. B.10 creates a view and changes one employe
 
   </details>
 
-- **B.3** Use CASE to sort in your own order: list every student with Texas students first, then everyone else. Within each part, sort by LastName. (`ORDER BY State` alone won't work. Why not?) *(8 rows)*
+- **B.3** Use CASE to sort in your own order:
+  - List every student with Texas students first, then everyone else.
+  - Within each part, sort by LastName.
+  - `ORDER BY State` alone won't work. Why not?
+
+  *(8 rows)*
 
   <details>
   <summary>Hint</summary>
@@ -311,7 +335,9 @@ Exercises B.1 to B.9 only read data. B.10 creates a view and changes one employe
   - `BilledHours`: the hours a theater would book, rounding **up** (133 minutes needs 3). Use `CEIL`.
   - `OffFrom2Hours`: how far the length is from 120 minutes, in either direction. Use `ABS`.
 
-  Sort by Minutes. Then compare `7 / 2`, `7 DIV 2`, and `MOD(7, 2)` in one SELECT with no FROM. *(11 rows)*
+  Sort by Minutes. *(11 rows)*
+
+  Then compare `7 / 2`, `7 DIV 2`, and `MOD(7, 2)` in one SELECT with no FROM.
 
   <details>
   <summary>Hint</summary>
@@ -339,7 +365,13 @@ Exercises B.1 to B.9 only read data. B.10 creates a view and changes one employe
 
   </details>
 
-- **B.5** Counting by category with CASE. For each DeptID, show these columns: DeptID, `Over100k` (how many employees earn 100,000 or more), `Under100k` (how many earn less than 100,000), and `Total`. Sort by DeptID. *(6 rows)*
+- **B.5** Counting by category with CASE. For each DeptID, show these columns:
+  - DeptID
+  - `Over100k`: how many employees earn 100,000 or more
+  - `Under100k`: how many earn less than 100,000
+  - `Total`
+
+  Sort by DeptID. *(6 rows)*
 
   <details>
   <summary>Hint</summary>
@@ -365,7 +397,11 @@ Exercises B.1 to B.9 only read data. B.10 creates a view and changes one employe
 
   </details>
 
-- **B.6** MySQL does not support `FULL OUTER JOIN`. Write a query that gives the same result as a full outer join between Employee and Department. Show FirstName, LastName, and DeptName. Your result must include both Hedy Lamarr (who has no department) and Legal (which has no employees). *(16 rows)*
+- **B.6** MySQL does not support `FULL OUTER JOIN`. Write a query that gives the same result as a full outer join between Employee and Department:
+  - Show FirstName, LastName, and DeptName.
+  - Your result must include both Hedy Lamarr (who has no department) and Legal (which has no employees).
+
+  *(16 rows)*
 
   <details>
   <summary>Hint</summary>
@@ -421,7 +457,11 @@ Exercises B.1 to B.9 only read data. B.10 creates a view and changes one employe
 
   </details>
 
-- **B.8** For each department, show the employee who earns the most money. Show DeptName, FirstName, LastName, and Salary. Sort by Salary, highest first. *(5 rows)*
+- **B.8** For each department, show the employee who earns the most money:
+  - Show DeptName, FirstName, LastName, and Salary.
+  - Sort by Salary, highest first.
+
+  *(5 rows)*
 
   <details>
   <summary>Hint</summary>
@@ -444,7 +484,11 @@ Exercises B.1 to B.9 only read data. B.10 creates a view and changes one employe
 
   </details>
 
-- **B.9** Each department has a total payroll (the sum of the salaries of everyone in it). Show the DeptID and Payroll of each department whose total payroll is higher than the average total payroll of the departments that have employees. Use a subquery in the FROM clause (a derived table) to do this. *(2 rows)*
+- **B.9** Each department has a total payroll (the sum of the salaries of everyone in it).
+  - Show the DeptID and Payroll of each department whose total payroll is higher than the average total payroll of the departments that have employees.
+  - Use a subquery in the FROM clause (a derived table) to do this.
+
+  *(2 rows)*
 
   <details>
   <summary>Hint</summary>

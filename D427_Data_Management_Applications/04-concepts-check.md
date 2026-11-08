@@ -332,7 +332,9 @@ These questions cover the concepts the D427 practice tests ask about, as multipl
 
 - **13.7** Outer joins and self-joins. Assume a Book table with an AuthorID column and an Author table with ID and Name columns. These two tables are not in `d427`.
 
-  **a)** Which query performs an **outer join** of the Book table with a **different** table? For each wrong answer, say what's wrong with it.
+  **a)** Which query performs an **outer join** of the Book table with a **different** table?
+
+  For each wrong answer, say what's wrong with it.
 
   A. `SELECT B.Title, A.Name FROM Book B, Author A WHERE B.AuthorID = A.ID;`
 
@@ -510,7 +512,10 @@ These questions cover the concepts the D427 practice tests ask about, as multipl
 
   <!-- answer:13.11a blanks: Number of entities => 3 | three -->
 
-  **b)** "A person can have many skills." What is the cardinality of the relationship between Person and Skill? What extra fact would you need before you could be sure? How would you build a many-to-many relationship as tables?
+  **b)** "A person can have many skills."
+  - What is the cardinality of the relationship between Person and Skill?
+  - What extra fact would you need before you could be sure?
+  - How would you build a many-to-many relationship as tables?
 
   <!-- answer:13.11b written -->
 
