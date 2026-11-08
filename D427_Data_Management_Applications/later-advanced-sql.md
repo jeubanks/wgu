@@ -4,8 +4,8 @@
 
 These exercises cover topics beyond D427. They're here for a later, more advanced SQL course.
 
-- **Part A: Transactions** (START TRANSACTION, COMMIT, ROLLBACK)
-- **Part B: More advanced queries and views** (LIMIT/OFFSET, quoted aliases, more CASE, numeric functions, FULL OUTER JOIN emulation, UNION, correlated and derived-table subqueries, WITH CHECK OPTION)
+- Part A: Transactions (START TRANSACTION, COMMIT, ROLLBACK)
+- Part B: More advanced queries and views (LIMIT/OFFSET, quoted aliases, more CASE, numeric functions, FULL OUTER JOIN emulation, UNION, correlated and derived-table subqueries, WITH CHECK OPTION)
 
 Both parts use the `d427` practice database. **Run `setup.sql` first** so you start from fresh data. The row counts assume you haven't done other exercises since.
 
@@ -27,7 +27,7 @@ Both parts use the `d427` practice database. **Run `setup.sql` first** so you st
 > Things to know:
 > - A transaction belongs to the connection that started it. Run every step in the **same** console or MySQL session.
 > - Only changes to **rows** (INSERT, UPDATE, DELETE) can be rolled back. Statements that change the **structure**, like CREATE, ALTER, DROP, and TRUNCATE, save immediately and also commit any transaction that's open.
-> - Banks use transactions for exactly this reason: moving money is two UPDATEs (take it from one account, add it to another), and you never want only one of them to happen.
+> - Banks use transactions to move money. A transfer is two UPDATEs (take it from one account, add it to another), and you never want only one of them to happen.
 
 - **T.1** Undoing a change with ROLLBACK. Run each step as its own statement, in the same console:
   - Count the movies.

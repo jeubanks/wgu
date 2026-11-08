@@ -2,7 +2,7 @@
 
 [← Exercise index](exercises.md) · Solutions: [`solutions.sql`](solutions.sql)
 
-These sections only read data, so you can redo any exercise at any time. Every exercise here uses the existing tables that `setup.sql` created. None of them create a table.
+These sections only read data from the tables that `setup.sql` created, so you can redo any exercise at any time.
 
 **In this part:** [1. SELECT basics](#1-select-basics) · [2. Filtering](#2-filtering) · [3. Built-in functions](#3-built-in-functions) · [4. Aggregates, GROUP BY, HAVING](#4-aggregates-group-by-having) · [5. Joins](#5-joins) · [6. Subqueries](#6-subqueries)
 
@@ -48,7 +48,6 @@ These sections only read data, so you can redo any exercise at any time. Every e
   SELECT Title, ReleaseYear
   FROM Movie
   ORDER BY ReleaseYear DESC, Title ASC;
-  -- Note: NULLs sort FIRST in ASC and LAST in DESC in MySQL.
   ```
 
   </details>
@@ -299,7 +298,7 @@ These sections only read data, so you can redo any exercise at any time. Every e
   WHERE City = 'Austin' OR City = 'Round Rock'
     AND Phone IS NOT NULL;                                   -- 5 rows
   -- AND binds tighter than OR. Drop the parentheses and you get
-  -- "Austin  OR  (Round Rock AND has phone)", which is a different question. Priya (Austin,
+  -- "Austin  OR  (Round Rock AND has phone)". Priya (Austin,
   -- no phone) gets in, so you get 5 rows instead of 4.
   ```
 
@@ -385,7 +384,6 @@ These sections only read data, so you can redo any exercise at any time. Every e
   WHERE Breed <> 'Quarter Horse';                       -- 7 rows: 'Blue Ribbon' (NULL breed) is missing
   SELECT RegisteredName, Breed FROM Horse
   WHERE Breed <> 'Quarter Horse' OR Breed IS NULL;      -- 8 rows
-  -- Without the IS NULL test, 'Blue Ribbon' disappears: NULL <> 'x' is UNKNOWN, not TRUE.
   ```
 
   </details>
@@ -938,7 +936,6 @@ These sections only read data, so you can redo any exercise at any time. Every e
   FROM LessonSchedule
   GROUP BY HorseID
   HAVING COUNT(*) >= 2;
-  -- "two or more lessons" is a COUNT per horse, which only exists after GROUP BY, so it's HAVING.
   -- WHERE COUNT(*) >= 2 fails with ERROR 1111 (Invalid use of group function).
   ```
 
@@ -1468,7 +1465,7 @@ LEFT: With `Crew c LEFT JOIN Crew l`, every crew member stays. Rae's lead shows 
   <summary>Solution</summary>
 
   ```sql
-  -- a) The trap: this returns ZERO rows, because LessonSchedule.StudentID contains a NULL.
+  -- a) This returns ZERO rows, because LessonSchedule.StudentID contains a NULL.
   --   x NOT IN (1, 2, NULL)  ==  x<>1 AND x<>2 AND x<>NULL  ==  UNKNOWN
   SELECT ID, FirstName, LastName
   FROM Student

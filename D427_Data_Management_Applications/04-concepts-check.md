@@ -201,10 +201,10 @@ These questions cover the concepts the D427 practice tests ask about, as multipl
   <details>
   <summary>Answer</summary>
 
-  - a) **CASCADE:** the invoices are deleted too.
-  - b) **SET NULL:** the invoices stay, with `customer_id` set to NULL. The column must allow NULL.
-  - c) **RESTRICT:** the DELETE of the customer is refused (ERROR 1451), and nothing changes.
-  - d) **No clause:** the same as RESTRICT. MySQL's default is NO ACTION, which InnoDB treats as RESTRICT.
+  - a) CASCADE: the invoices are deleted too.
+  - b) SET NULL: the invoices stay, with `customer_id` set to NULL. The column must allow NULL.
+  - c) RESTRICT: the DELETE of the customer is refused (ERROR 1451), and nothing changes.
+  - d) No clause: the same as RESTRICT. MySQL's default is NO ACTION, which InnoDB treats as RESTRICT.
   - e) It's a syntax error (ERROR 1064). The correct form is `ON DELETE SET NULL`. The practice test still expects the SET NULL behavior as the answer.
   - f) Each `customer_id` can appear only once, so a customer can have at most one invoice. That makes it a one-to-one relationship.
 
@@ -444,7 +444,7 @@ These questions cover the concepts the D427 practice tests ask about, as multipl
   <details>
   <summary>Hint</summary>
 
-  - "Materialized" means the results are actually saved, not worked out again each time.
+  - "Materialized" means the results are saved instead of worked out again each time.
 
   </details>
   <!-- /solution -->

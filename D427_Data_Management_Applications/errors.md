@@ -2,7 +2,7 @@
 
 [← Exercise index](exercises.md)
 
-MySQL's error messages are short, and you have to work out the fix on your own. Every error the exercises show (on purpose, or as a common mistake) is here: the message, what it means, and the usual fix. The number after `ERROR` is the quickest way to find yours.
+Every error the exercises show (on purpose, or as a common mistake) is here: the message, what it means, and the usual fix. The number after `ERROR` is the quickest way to find yours.
 
 The `'...'` in each message stands for the table, column, or value MySQL names in the real one.
 
@@ -65,7 +65,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **What it means:** An INSERT gives a different number of values than columns.
 
-**Usual fix:** With no column list, give a value for every column in table order. Better: list the columns you're filling in.
+**Usual fix:** With no column list, give a value for every column in table order. Or, better, list the columns you're filling in.
 
 **Comes up in:** [7.9](02-changing-data.md#ex-7-9)
 

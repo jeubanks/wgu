@@ -38,6 +38,7 @@ Nothing here yet.
 
 ## Done
 
+- Second prose pass (humanizer), deeper: about 30 small fixes, mostly solutions.sql comments that repeated their hints, plus run-ups and decorative bold across the D427 pages, errors.md, and the D949 overview (#49)
 - Try it's TRUNCATE restarts the counter whatever case or backticks the table name is written in, so 7.13 gives MySQL's GuestIDs (#48)
 - Prose pass for AI-writing tells (humanizer): a dozen small wording fixes across the D427 pages, solutions.sql comments, AUTHORING, and the D949 overview (#47)
 - Try it runs SHOW TABLES, DESCRIBE, and SHOW CREATE TABLE (7.7's hint uses SHOW CREATE TABLE), showing setup.sql's CREATE TABLE and MySQL column types (#46)
