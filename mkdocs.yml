@@ -148,6 +148,7 @@ extra:
           "12.20": This one changes data, so do it on MySQL.
           "12.21": This one changes data, so do it on MySQL.
           "12.22": This one changes data, so do it on MySQL.
+          "12.23": This one changes data, so do it on MySQL.
       # Interactive answer keys (<!-- answer:... --> comments).
       quiz: 04-concepts-check.md
     d949:

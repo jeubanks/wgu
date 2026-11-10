@@ -554,12 +554,20 @@ These questions cover the concepts the D427 practice tests ask about, as multipl
 
   <!-- answer:13.11e written -->
 
+  **f)** How many attributes are in this address fragment? Name them.
+
+  > Denver, CO 80202\
+  > USA
+
+  <!-- answer:13.11f blanks: Number of attributes [1, 2, 3, 4] => 4 -->
+
   <!-- solution:13.11 -->
   <details>
   <summary>Hint</summary>
 
   - Entities are the nouns you'd store rows for. Words like "two" and "four" tell you how many, not what.
   - A relationship's degree is how many entity types take part in it: one (unary), two (binary), or three (ternary).
+  - An attribute is one fact you'd store in its own column. Count the separate pieces of the address.
 
   </details>
   <!-- /solution -->
@@ -589,6 +597,8 @@ These questions cover the concepts the D427 practice tests ask about, as multipl
   | An attribute | A column |
   | A one-to-many relationship | A foreign key in the "many" table |
   | A many-to-many relationship | A new linking table with two foreign keys (usually its composite primary key) |
+
+  - **f)** **4 attributes:** City (Denver), State (CO), ZIP code (80202), and Country (USA). Each is a separate fact you'd store in its own column. The line break doesn't make an attribute.
 
   </details>
 

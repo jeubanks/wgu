@@ -89,7 +89,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** Use a value that isn't taken. When adding a key to existing rows, fix the duplicates first.
 
-**Comes up in:** [11.8](03-practice-test-drills.md#ex-11-8), [11.15](03-practice-test-drills.md#ex-11-15), [11.17](03-practice-test-drills.md#ex-11-17), [11.18](03-practice-test-drills.md#ex-11-18)
+**Comes up in:** [11.8](03-practice-test-drills.md#ex-11-8), [11.15](03-practice-test-drills.md#ex-11-15), [11.17](03-practice-test-drills.md#ex-11-17), [11.18](03-practice-test-drills.md#ex-11-18), [11.23](03-practice-test-drills.md#ex-11-23)
 
 ### ERROR 1075
 
@@ -151,7 +151,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** Add the parent row first, or use a value that exists. NULL is allowed if the column allows it.
 
-**Comes up in:** [7.3](02-changing-data.md#ex-7-3), [11.7](03-practice-test-drills.md#ex-11-7)
+**Comes up in:** [7.3](02-changing-data.md#ex-7-3), [11.7](03-practice-test-drills.md#ex-11-7), [11.24](03-practice-test-drills.md#ex-11-24)
 
 ### ERROR 1822
 

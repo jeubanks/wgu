@@ -1215,6 +1215,105 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   SELECT * FROM Bin;
   -- With TINYINT UNSIGNED, SMALLINT UNSIGNED, and INT UNSIGNED instead, the INSERT fails on the first column that
   -- doesn't fit:  ERROR 1264: Out of range value for column 'BinID' at row 1
+  ```
+
+  </details>
+  <!-- /solution -->
+
+- **11.23** *(in `d427_drills`)*\
+  **Creates:** Publisher
+
+  Create the **Publisher** table with no primary key:
+  - PublisherID — integer
+  - Name — variable-length string, max 40
+
+  Then:
+  - Write a statement to modify the Publisher table to make the PublisherID column the primary key.
+  - Add these publishers:
+
+    | PublisherID | Name |
+    |---|---|
+    | 1 | Penguin |
+    | 2 | Vintage |
+
+  - Try to add another publisher with PublisherID 2 and the Name Knopf. It fails. Why?
+
+  *(check: `DESCRIBE Publisher;` shows PRI on PublisherID)*
+
+  <!-- solution:11.23 -->
+  <details>
+  <summary>Hint</summary>
+
+  - The statement is `ALTER TABLE ... ADD PRIMARY KEY (...)`.
+  - A primary key can't repeat a value that's already in the column.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  CREATE TABLE Publisher (
+    PublisherID  INT,
+    Name         VARCHAR(40)
+  );
+  ALTER TABLE Publisher ADD PRIMARY KEY (PublisherID);
+  DESCRIBE Publisher;                           -- PublisherID: Key = PRI, Null = NO
+  INSERT INTO Publisher VALUES (1, 'Penguin'), (2, 'Vintage');
+  -- Expected to FAIL (PublisherID 2 is already used):
+  --   INSERT INTO Publisher VALUES (2, 'Knopf');
+  --   ERROR 1062: Duplicate entry '2' for key 'Publisher.PRIMARY'
+  ```
+
+  </details>
+  <!-- /solution -->
+
+- **11.24** *(in `d427_drills`)*\
+  **Uses:** Publisher *(from 11.23)*\
+  **Creates:** Novel
+
+  Create the **Novel** table with no foreign key:
+  - ID — integer, primary key
+  - Title — variable-length string, max 60
+  - PublisherID — integer
+
+  Then:
+  - Write a statement to designate the PublisherID column in the Novel table as a foreign key to the PublisherID column in the Publisher table.
+  - Add this novel:
+
+    | ID | Title | PublisherID |
+    |---|---|---|
+    | 1 | Beloved | 2 |
+
+  - Try to add a novel with the ID 2, the Title Jazz, and the PublisherID 9. It fails. Why?
+
+  *(check: `SHOW CREATE TABLE Novel;` shows a FOREIGN KEY on PublisherID that references Publisher)*
+
+  <!-- solution:11.24 -->
+  <details>
+  <summary>Hint</summary>
+
+  - The statement is `ALTER TABLE ... ADD FOREIGN KEY (...) REFERENCES ...(...)`.
+  - A foreign key value has to match a row that exists in the parent table.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  CREATE TABLE Novel (
+    ID           INT PRIMARY KEY,
+    Title        VARCHAR(60),
+    PublisherID  INT                            -- same type as Publisher.PublisherID
+  );
+  ALTER TABLE Novel ADD FOREIGN KEY (PublisherID) REFERENCES Publisher (PublisherID);
+  INSERT INTO Novel VALUES (1, 'Beloved', 2);
+  SELECT * FROM Novel;
+  -- Expected to FAIL (there's no publisher 9):
+  --   INSERT INTO Novel VALUES (2, 'Jazz', 9);
+  --   ERROR 1452: Cannot add or update a child row: a foreign key constraint fails ...
+  SHOW CREATE TABLE Novel;                      -- FOREIGN KEY (`PublisherID`) REFERENCES `Publisher` (`PublisherID`)
   USE d427;
   ```
 
@@ -1864,6 +1963,32 @@ RIGHT: "Show every Route, **regardless of whether** a driver is assigned to it."
   UPDATE Book SET Cost = Cost + 1  WHERE Cost <= 50;
   UPDATE Book SET Cost = Cost + 10 WHERE Cost > 100;
   SELECT Title, Cost FROM Book ORDER BY Cost DESC LIMIT 3;
+  ```
+
+  </details>
+  <!-- /solution -->
+
+- **12.23** Write two statements:
+  - Delete the row with the ID value of 3 from the Book table.
+  - Count the books that are left.
+
+  *(check: 1 row deleted; 13 books left, counting Circe from 12.21)*
+
+  <!-- solution:12.23 -->
+  <details>
+  <summary>Hint</summary>
+
+  - Always give a DELETE a WHERE. Without one, it deletes every book.
+  - Circe, the book you added in 12.21, is still in the table.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  DELETE FROM Book WHERE ID = 3;                -- 1 row deleted (Becoming)
+  SELECT COUNT(*) AS Books FROM Book;           -- 13: 13 from setup.sql, plus Circe, minus Becoming
   ```
 
   </details>
