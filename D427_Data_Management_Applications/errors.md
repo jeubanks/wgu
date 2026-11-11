@@ -119,7 +119,7 @@ The `'...'` in each message stands for the table, column, or value MySQL names i
 
 **Usual fix:** Fix the value, or the rows that break the rule before adding it. Name constraints (`CONSTRAINT name CHECK (...)`) so they're easy to drop.
 
-**Comes up in:** [11.1](03-practice-test-drills.md#ex-11-1), [11.6](03-practice-test-drills.md#ex-11-6), [11.10](03-practice-test-drills.md#ex-11-10), [11.11](03-practice-test-drills.md#ex-11-11)
+**Comes up in:** [11.1](03-practice-test-drills.md#ex-11-1), [11.6](03-practice-test-drills.md#ex-11-6), [11.10](03-practice-test-drills.md#ex-11-10), [11.11](03-practice-test-drills.md#ex-11-11), [11.25](03-practice-test-drills.md#ex-11-25)
 
 ### ERROR 3959
 
