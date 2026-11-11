@@ -38,6 +38,7 @@ Nothing here yet.
 
 ## Done
 
+- Practice-test gaps filled: plain ALTER TABLE ADD PRIMARY KEY (11.23) and ADD FOREIGN KEY (11.24) drills, DELETE by ID (12.23), and counting attributes in an address (13.11f) (#51)
 - Exercise text is easier to read: about 70 exercises across D427 that ran several instructions together now have a lead line and one bullet per step, with the row count on its own line (#50)
 - Second prose pass (humanizer), deeper: about 30 small fixes, mostly solutions.sql comments that repeated their hints, plus run-ups and decorative bold across the D427 pages, errors.md, and the D949 overview (#49)
 - Try it's TRUNCATE restarts the counter whatever case or backticks the table name is written in, so 7.13 gives MySQL's GuestIDs (#48)

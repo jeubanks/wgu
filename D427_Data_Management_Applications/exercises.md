@@ -51,7 +51,7 @@ That path is for the Docker setup. If MySQL is installed on your computer, use t
 
 > [!IMPORTANT]
 > - **Do Sections 1 to 10 in order.** Sections 1 to 6 only read data. Sections 7 to 10 change the data and the tables, and later exercises expect that you already did the earlier ones.
-> - **Sections 11 to 13 stand alone.** Section 11 builds its own tables in a separate database named `d427_drills`. Section 12 uses its own tables in `d427`, which no other section changes. Exercises 12.20 to 12.22 change those tables, so run `setup.sql` again before you redo Section 12. Section 13 needs no SQL at all.
+> - **Sections 11 to 13 stand alone.** Section 11 builds its own tables in a separate database named `d427_drills`. Section 12 uses its own tables in `d427`, which no other section changes. Exercises 12.20 to 12.23 change those tables, so run `setup.sql` again before you redo Section 12. Section 13 needs no SQL at all.
 > - **Run `setup.sql` again before Section 14**, so you begin with fresh data.
 
 ### How to read each exercise

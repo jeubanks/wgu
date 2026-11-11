@@ -1227,6 +1227,36 @@ INSERT INTO Bin VALUES (300, 70000, 5000000000);
 SELECT * FROM Bin;
 -- With TINYINT UNSIGNED, SMALLINT UNSIGNED, and INT UNSIGNED instead, the INSERT fails on the first column that
 -- doesn't fit:  ERROR 1264: Out of range value for column 'BinID' at row 1
+
+-- [11.23]
+-- Hint: The statement is `ALTER TABLE ... ADD PRIMARY KEY (...)`.
+-- Hint: A primary key can't repeat a value that's already in the column.
+CREATE TABLE Publisher (
+  PublisherID  INT,
+  Name         VARCHAR(40)
+);
+ALTER TABLE Publisher ADD PRIMARY KEY (PublisherID);
+DESCRIBE Publisher;                           -- PublisherID: Key = PRI, Null = NO
+INSERT INTO Publisher VALUES (1, 'Penguin'), (2, 'Vintage');
+-- Expected to FAIL (PublisherID 2 is already used):
+--   INSERT INTO Publisher VALUES (2, 'Knopf');
+--   ERROR 1062: Duplicate entry '2' for key 'Publisher.PRIMARY'
+
+-- [11.24]
+-- Hint: The statement is `ALTER TABLE ... ADD FOREIGN KEY (...) REFERENCES ...(...)`.
+-- Hint: A foreign key value has to match a row that exists in the parent table.
+CREATE TABLE Novel (
+  ID           INT PRIMARY KEY,
+  Title        VARCHAR(60),
+  PublisherID  INT                            -- same type as Publisher.PublisherID
+);
+ALTER TABLE Novel ADD FOREIGN KEY (PublisherID) REFERENCES Publisher (PublisherID);
+INSERT INTO Novel VALUES (1, 'Beloved', 2);
+SELECT * FROM Novel;
+-- Expected to FAIL (there's no publisher 9):
+--   INSERT INTO Novel VALUES (2, 'Jazz', 9);
+--   ERROR 1452: Cannot add or update a child row: a foreign key constraint fails ...
+SHOW CREATE TABLE Novel;                      -- FOREIGN KEY (`PublisherID`) REFERENCES `Publisher` (`PublisherID`)
 USE d427;
 
 -- =====================================================================
@@ -1412,6 +1442,12 @@ UPDATE Book SET Cost = Cost + 1  WHERE Cost <= 50;
 UPDATE Book SET Cost = Cost + 10 WHERE Cost > 100;
 SELECT Title, Cost FROM Book ORDER BY Cost DESC LIMIT 3;
 
+-- [12.23]
+-- Hint: Always give a DELETE a WHERE. Without one, it deletes every book.
+-- Hint: Circe, the book you added in 12.21, is still in the table.
+DELETE FROM Book WHERE ID = 3;                -- 1 row deleted (Becoming)
+SELECT COUNT(*) AS Books FROM Book;           -- 13: 13 from setup.sql, plus Circe, minus Becoming
+
 -- =====================================================================
 -- 13. Concepts check
 -- =====================================================================
@@ -1456,6 +1492,7 @@ SELECT Title, Cost FROM Book ORDER BY Cost DESC LIMIT 3;
 -- [13.11]
 -- Hint: Entities are the nouns you'd store rows for. Words like "two" and "four" tell you how many, not what.
 -- Hint: A relationship's degree is how many entity types take part in it: one (unary), two (binary), or three (ternary).
+-- Hint: An attribute is one fact you'd store in its own column. Count the separate pieces of the address.
 
 -- [13.12]
 -- Hint: NULL means "unknown". Comparing anything with an unknown value, or adding to it, gives unknown.

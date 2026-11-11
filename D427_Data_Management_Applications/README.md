@@ -328,14 +328,14 @@ Start with [`exercises.md`](exercises.md), which links to every section.
 | 9 | [`02-changing-data.md`](02-changing-data.md) | Views and indexes | Yes |
 | 10 | [`02-changing-data.md`](02-changing-data.md) | Design and normalization to tables | Yes |
 | 11 | [`03-practice-test-drills.md`](03-practice-test-drills.md) | Writing tables from practice-test-style column descriptions; ADD PRIMARY KEY / FOREIGN KEY / CHECK; ON DELETE RESTRICT; unique indexes; ALTER VIEW | Yes (in `d427_drills`) |
-| 12 | [`03-practice-test-drills.md`](03-practice-test-drills.md) | Practice-test-style queries: "if available" / "regardless of" joins, GROUP BY, row vs table subqueries, NULL traps | 12.20–12.22 only |
+| 12 | [`03-practice-test-drills.md`](03-practice-test-drills.md) | Practice-test-style queries: "if available" / "regardless of" joins, GROUP BY, row vs table subqueries, NULL traps | 12.20–12.23 only |
 | 13 | [`04-concepts-check.md`](04-concepts-check.md) | Concepts check: DDL/DML, data types, keys, FK actions, joins, views, indexes, ER modeling | No (no SQL) |
 | 14 | [`05-final-practice.md`](05-final-practice.md) | Final practice (12 tasks, about 60 minutes) | Yes |
 
 A few rules keep the expected row counts accurate:
 
 1. **Work sections 1–10 in order.** Sections 7–10 change data and schema, and later exercises assume the earlier ones were done.
-2. **Sections 11–13 stand alone.** Do them whenever you like. Section 11 works in its own `d427_drills` database, and the tables Section 12 uses aren't touched by any other section. Exercises 12.20–12.22 change Book and Compensation, so reload `setup.sql` before you redo Section 12.
+2. **Sections 11–13 stand alone.** Do them whenever you like. Section 11 works in its own `d427_drills` database, and the tables Section 12 uses aren't touched by any other section. Exercises 12.20–12.23 change Book and Compensation, so reload `setup.sql` before you redo Section 12.
 3. **Reload `setup.sql` before Section 14.** The final practice starts from fresh data.
 4. **If you get lost, reset.** Re-running `setup.sql` rebuilds everything from scratch. To pick up in the middle of Section 7–10, reset and then run the earlier solutions from `solutions.sql` to bring the data back to that point.
 5. **Check your row count before looking at the answer.** A wrong count usually means a NULL or join issue; the hint in the exercise often points at which one.
