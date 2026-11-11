@@ -1257,6 +1257,26 @@ SELECT * FROM Novel;
 --   INSERT INTO Novel VALUES (2, 'Jazz', 9);
 --   ERROR 1452: Cannot add or update a child row: a foreign key constraint fails ...
 SHOW CREATE TABLE Novel;                      -- FOREIGN KEY (`PublisherID`) REFERENCES `Publisher` (`PublisherID`)
+
+-- [11.25]
+-- Hint: To name a CHECK in CREATE TABLE, write it on its own line after the columns: `CONSTRAINT name CHECK (...)`.
+-- Hint: MySQL can't edit a CHECK's condition. Drop the check and add it back under the same name. One ALTER TABLE can do both, separated by a comma.
+CREATE TABLE Ticket (
+  TicketID    INT PRIMARY KEY,
+  TicketType  VARCHAR(20),
+  Price       DECIMAL(5,2),
+  CONSTRAINT PriceCheck CHECK (Price BETWEEN 5.00 AND 100.00)
+);
+INSERT INTO Ticket VALUES (1, 'General', 25.00), (2, 'Student', 10.00);
+-- Expected to FAIL (150.00 is over 100.00):
+--   INSERT INTO Ticket VALUES (3, 'VIP', 150.00);
+--   ERROR 3819: Check constraint 'PriceCheck' is violated.
+ALTER TABLE Ticket
+  DROP CHECK PriceCheck,
+  ADD CONSTRAINT PriceCheck CHECK (Price BETWEEN 5.00 AND 200.00);
+INSERT INTO Ticket VALUES (3, 'VIP', 150.00);
+SELECT * FROM Ticket;                         -- 3 rows
+SHOW CREATE TABLE Ticket;                     -- CONSTRAINT `PriceCheck` CHECK ((`Price` between 5.00 and 200.00))
 USE d427;
 
 -- =====================================================================

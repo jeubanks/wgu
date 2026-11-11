@@ -1314,6 +1314,65 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
   --   INSERT INTO Novel VALUES (2, 'Jazz', 9);
   --   ERROR 1452: Cannot add or update a child row: a foreign key constraint fails ...
   SHOW CREATE TABLE Novel;                      -- FOREIGN KEY (`PublisherID`) REFERENCES `Publisher` (`PublisherID`)
+  ```
+
+  </details>
+  <!-- /solution -->
+
+- **11.25** *(in `d427_drills`)*\
+  **Creates:** Ticket
+
+  Create the **Ticket** table:
+  - TicketID — integer, primary key
+  - TicketType — variable-length string, max 20
+  - Price — decimal value up to 999.99, with 2 digits for cents. It must be from 5.00 to 100.00.
+
+  Write the Price rule in the CREATE TABLE statement as a constraint named **PriceCheck**.
+
+  Then:
+  - Add these tickets:
+
+    | TicketID | TicketType | Price |
+    |---|---|---|
+    | 1 | General | 25.00 |
+    | 2 | Student | 10.00 |
+
+  - Try to add a ticket with the TicketID 3, the TicketType VIP, and the Price 150.00. It fails. Which constraint does the error name?
+  - The rule changes: a price can now be up to 200.00. Change PriceCheck to allow it, in one ALTER TABLE statement. Keep the name PriceCheck.
+  - Add the VIP ticket again.
+  - Select everything from Ticket.
+
+  *(3 rows; `SHOW CREATE TABLE Ticket;` shows CONSTRAINT `PriceCheck` with 200.00)*
+
+  <!-- solution:11.25 -->
+  <details>
+  <summary>Hint</summary>
+
+  - To name a CHECK in CREATE TABLE, write it on its own line after the columns: `CONSTRAINT name CHECK (...)`.
+  - MySQL can't edit a CHECK's condition. Drop the check and add it back under the same name. One ALTER TABLE can do both, separated by a comma.
+
+  </details>
+
+  <details>
+  <summary>Solution</summary>
+
+  ```sql
+  CREATE TABLE Ticket (
+    TicketID    INT PRIMARY KEY,
+    TicketType  VARCHAR(20),
+    Price       DECIMAL(5,2),
+    CONSTRAINT PriceCheck CHECK (Price BETWEEN 5.00 AND 100.00)
+  );
+  INSERT INTO Ticket VALUES (1, 'General', 25.00), (2, 'Student', 10.00);
+  -- Expected to FAIL (150.00 is over 100.00):
+  --   INSERT INTO Ticket VALUES (3, 'VIP', 150.00);
+  --   ERROR 3819: Check constraint 'PriceCheck' is violated.
+  ALTER TABLE Ticket
+    DROP CHECK PriceCheck,
+    ADD CONSTRAINT PriceCheck CHECK (Price BETWEEN 5.00 AND 200.00);
+  INSERT INTO Ticket VALUES (3, 'VIP', 150.00);
+  SELECT * FROM Ticket;                         -- 3 rows
+  SHOW CREATE TABLE Ticket;                     -- CONSTRAINT `PriceCheck` CHECK ((`Price` between 5.00 and 200.00))
   USE d427;
   ```
 
