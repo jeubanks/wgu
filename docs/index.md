@@ -12,12 +12,12 @@ Practice material I've built for WGU courses. Unofficial: not affiliated with or
 
     [:octicons-arrow-right-24: Start here](d427/exercises.md)
 
--   :material-graph: **D949 Data Structures and Algorithms I**
+-   :material-graph: **C949 Data Structures and Algorithms I**
 
     ---
 
     44 Python exercises in seven lessons: Big-O, lists, stacks, queues, hash tables, trees, heaps, sorting, graphs, and pseudocode tracing.
 
-    [:octicons-arrow-right-24: Start here](d949/exercises.md)
+    [:octicons-arrow-right-24: Start here](c949/exercises.md)
 
 </div>

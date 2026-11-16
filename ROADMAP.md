@@ -6,9 +6,9 @@ D427 is the model course. Once its patterns are settled, other courses reuse the
 
 ## Up next
 
-- [ ] **D949 concepts check**: a quiz page (with the existing quiz hook) on Big-O classification, choosing a data structure, and short traces.
-- [ ] **D949 Big-O reference**: one printable page of operation costs for the structures and sorts, following the course Big-O worksheet's conventions (radix O(n), bucket average O(n)).
-- [ ] **D949 Try it runner (Pyodide)**: run each lesson's checks in the browser from the exercise card, and tick Done on a pass. About 10 MB from a CDN, so load it only when a Try it box opens.
+- [ ] **C949 concepts check**: a quiz page (with the existing quiz hook) on Big-O classification, choosing a data structure, and short traces.
+- [ ] **C949 Big-O reference**: one printable page of operation costs for the structures and sorts, following the course Big-O worksheet's conventions (radix O(n), bucket average O(n)).
+- [ ] **C949 Try it runner (Pyodide)**: run each lesson's checks in the browser from the exercise card, and tick Done on a pass. About 10 MB from a CDN, so load it only when a Try it box opens.
 
 ## Backlog
 
@@ -36,17 +36,18 @@ Nothing here yet.
 
 ### Parked
 
-- [ ] **D949 diagrams**: linked lists, trees, heaps, and hash tables drawn with the SVG renderer. Must not show an exercise's answer (4.1, 4.6, and 3.1 are drawing exercises).
+- [ ] **C949 diagrams**: linked lists, trees, heaps, and hash tables drawn with the SVG renderer. Must not show an exercise's answer (4.1, 4.6, and 3.1 are drawing exercises).
 
 ## Done
 
-- D949 exercise pages: an overview with a progress bar per lesson, and one page per lesson (short intro, folded lesson code, exercise cards with Done boxes). Hints and solutions are generated from `c949-practice/solutions/` by `build_solutions.py`, which CI keeps in sync; CI also runs `pytest --solutions`. Lesson 7 has its own pseudocode, and 3.6, 5.7, and 6.6 have written answers, so nothing points to the WGU guide for content (#53)
+- The course is C949, not D949: renamed the folder (`C949_Data_Structures_And_Algorithms_I`), its slug and URLs (`/wgu/c949/`), and every mention, including the social card. Old `/wgu/d949/...` links redirect to the new pages, anchors included (`old_slugs` in mkdocs.yml, `hooks/redirects.py`) (#53)
+- C949 exercise pages: an overview with a progress bar per lesson, and one page per lesson (short intro, folded lesson code, exercise cards with Done boxes). Hints and solutions are generated from `c949-practice/solutions/` by `build_solutions.py`, which CI keeps in sync; CI also runs `pytest --solutions`. Lesson 7 has its own pseudocode, and 3.6, 5.7, and 6.6 have written answers, so nothing points to the WGU guide for content (#53)
 - 11.25: name a CHECK inside CREATE TABLE, then change its rule (DROP CHECK + ADD CONSTRAINT under the same name, in one ALTER TABLE) (#52)
 - Practice-test gaps filled: plain ALTER TABLE ADD PRIMARY KEY (11.23) and ADD FOREIGN KEY (11.24) drills, DELETE by ID (12.23), and counting attributes in an address (13.11f) (#51)
 - Exercise text is easier to read: about 70 exercises across D427 that ran several instructions together now have a lead line and one bullet per step, with the row count on its own line (#50)
-- Second prose pass (humanizer), deeper: about 30 small fixes, mostly solutions.sql comments that repeated their hints, plus run-ups and decorative bold across the D427 pages, errors.md, and the D949 overview (#49)
+- Second prose pass (humanizer), deeper: about 30 small fixes, mostly solutions.sql comments that repeated their hints, plus run-ups and decorative bold across the D427 pages, errors.md, and the C949 overview (#49)
 - Try it's TRUNCATE restarts the counter whatever case or backticks the table name is written in, so 7.13 gives MySQL's GuestIDs (#48)
-- Prose pass for AI-writing tells (humanizer): a dozen small wording fixes across the D427 pages, solutions.sql comments, AUTHORING, and the D949 overview (#47)
+- Prose pass for AI-writing tells (humanizer): a dozen small wording fixes across the D427 pages, solutions.sql comments, AUTHORING, and the C949 overview (#47)
 - Try it runs SHOW TABLES, DESCRIBE, and SHOW CREATE TABLE (7.7's hint uses SHOW CREATE TABLE), showing setup.sql's CREATE TABLE and MySQL column types (#46)
 - Part 1 and Section 12 put Show tables on its own line between the exercise label and the question, as Part 2 does under its Uses line (#45)
 - Setup's Option C: DB Fiddle runs MySQL 8.4 online with nothing to install (tested with setup.sql, ALTER, SHOW, EXPLAIN, and a second database); Sections 8 to 11 and 14 say they need MySQL and link to Setup (#44)
@@ -61,7 +62,7 @@ Nothing here yet.
 - Exercises 2.7 and 4.7 now say to write two separate queries, matching their solutions (#34)
 - Exercise 2.4 now says to write two separate queries (#33)
 - A "To review" tag next to each missed exercise on its own page; MkDocs now knows the exercise anchors, so its missing-anchor notices are gone (it still reports real broken anchors) (#31)
-- No references to the real assessment: wording points to the D427 practice tests; renamed the cheat sheet to SQL quick reference, Assessment drills to Practice-test drills, and Mock assessment to Final practice (pages and URLs) (#28); the same for D949's READMEs (#29)
+- No references to the real assessment: wording points to the D427 practice tests; renamed the cheat sheet to SQL quick reference, Assessment drills to Practice-test drills, and Mock assessment to Final practice (pages and URLs) (#28); the same for C949's READMEs (#29)
 - Search finds exercises by number (one search entry per exercise); a To review list on the Overview of missed exercises (#26)
 - Dependabot's first updates merged: GitHub Actions to new majors, Playwright 1.63, newer MkDocs/Material minimums (#23, #24)
 - Drill: a constraint-wording mode (multiple choice, its own score); Check pairs each of your results with a different expected one on multi-query exercises (#25)

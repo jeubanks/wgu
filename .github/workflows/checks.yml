@@ -110,15 +110,15 @@ jobs:
             echo "::error::errors.md is out of date. Run python3 D427_Data_Management_Applications/build_errors.py and commit the result."
             exit 1
           fi
-      - run: python3 D949_Data_Structures_And_Algorithms_I/build_solutions.py
-      - name: Fail if D949's build_solutions.py changed anything
+      - run: python3 C949_Data_Structures_And_Algorithms_I/build_solutions.py
+      - name: Fail if C949's build_solutions.py changed anything
         run: |
           if ! git diff --exit-code; then
-            echo "::error::D949 lesson pages are out of date. Run python3 D949_Data_Structures_And_Algorithms_I/build_solutions.py and commit the result."
+            echo "::error::C949 lesson pages are out of date. Run python3 C949_Data_Structures_And_Algorithms_I/build_solutions.py and commit the result."
             exit 1
           fi
-      - name: D949 solutions pass their checks
-        working-directory: D949_Data_Structures_And_Algorithms_I/c949-practice
+      - name: C949 solutions pass their checks
+        working-directory: C949_Data_Structures_And_Algorithms_I/c949-practice
         run: |
           pip install pytest
           pytest --solutions

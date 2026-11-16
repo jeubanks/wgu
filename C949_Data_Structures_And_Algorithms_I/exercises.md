@@ -1,4 +1,4 @@
-# D949 Data Structures and Algorithms I: Python Practice
+# C949 Data Structures and Algorithms I: Python Practice
 
 44 exercises in seven lessons: Big-O, linked lists, stacks and queues, hash tables, trees and heaps, searching and sorting, graphs, and tracing pseudocode by hand.
 
@@ -26,7 +26,7 @@ Requires **Python 3.10+**. Get the files with Git, or download the repository as
 
 ```bash
 git clone https://github.com/jeubanks/wgu.git
-cd wgu/D949_Data_Structures_And_Algorithms_I/c949-practice
+cd wgu/C949_Data_Structures_And_Algorithms_I/c949-practice
 ```
 
 Then, for each lesson:

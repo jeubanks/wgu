@@ -45,7 +45,7 @@ def main():
     d.text((330, 150), "WGU Study Kits", font=title, fill=WHITE)
     d.text((332, 270), "D427 Data Management: 151 MySQL exercises,", font=body, fill=SKY)
     d.text((332, 320), "quizzes, diagrams, and SQL in your browser", font=body, fill=SKY)
-    d.text((332, 400), "D949 Data Structures and Algorithms I", font=body, fill=WHITE)
+    d.text((332, 400), "C949 Data Structures and Algorithms I", font=body, fill=WHITE)
     d.text((90, 580), "Unofficial study material  ·  jeubanks.github.io/wgu", font=small, fill=LIME)
 
     OUT.parent.mkdir(parents=True, exist_ok=True)

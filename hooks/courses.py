@@ -21,6 +21,7 @@ turns on the build features it uses by listing pages for them:
             skip: {"12.20": "Why it's left out."}
             changes: [7]                        # sections whose exercises change data
           quiz: 04-concepts-check.md            # interactive answer keys
+          old_slugs: [x123]                     # old URL paths that redirect here
 
 A course with only `folder` is published as plain pages. See AUTHORING.md.
 """
@@ -44,6 +45,7 @@ class Course:
     runner_skip: dict = field(default_factory=dict)
     runner_changes: tuple = ()
     quiz: str = None
+    old_slugs: tuple = ()
 
     def uri(self, page):
         """The docs/ path MkDocs uses for one of this course's pages."""
@@ -92,6 +94,7 @@ def _course(slug, s):
         runner_skip={str(k): v for k, v in (runner.get("skip") or {}).items()},
         runner_changes=tuple(runner.get("changes") or ()),
         quiz=s.get("quiz"),
+        old_slugs=tuple(s.get("old_slugs") or ()),
     )
 
 

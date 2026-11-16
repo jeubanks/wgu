@@ -58,7 +58,9 @@ def main():
     ap.add_argument("--channel", help="a browser channel, e.g. chrome, instead of Playwright's Chromium")
     args = ap.parse_args()
     site = Path(args.site).resolve()
-    pages = sorted(p.relative_to(site).parent.as_posix() for p in site.rglob("index.html"))
+    # Redirect stubs (hooks/redirects.py) leave at once, so there's nothing to check.
+    pages = sorted(p.relative_to(site).parent.as_posix() for p in site.rglob("index.html")
+                   if 'name="robots" content="noindex"' not in p.read_text())
     if not pages:
         sys.exit(f"No pages under {site}; run `mkdocs build` first.")
 
