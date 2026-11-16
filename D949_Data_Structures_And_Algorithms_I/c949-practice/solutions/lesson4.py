@@ -142,10 +142,15 @@ TREE_KEYS = (40, 20, 60, 10, 30, 50, 70, 25)
 
 # 4.1 Trace (paper first). Insert TREE_KEYS into an empty BST and draw it.
 # Give its preorder list and its height.
+# Hint 4.1: Every insert starts at the root: smaller keys go left, larger keys go right.
+# Hint 4.1: Preorder visits a node, then its left subtree, then its right subtree.
+# Hint 4.1: Height counts edges on the longest path from the root down to a leaf. A single leaf has height 0.
 TRACE_4_1_PREORDER = [40, 20, 10, 30, 25, 60, 50, 70]
 TRACE_4_1_HEIGHT = 3
 
 
+# Hint 4.2: Start the queue with the root, if there is one.
+# Hint 4.2: Take nodes from the left end of the queue, and add their children left first, then right.
 def level_order(root):
     """4.2 Keys level by level, using collections.deque as a queue."""
     out, q = [], deque([root] if root else [])
@@ -159,6 +164,8 @@ def level_order(root):
     return out
 
 
+# Hint 4.3: Comparing each node only with its own children isn't enough: every key in the left subtree must be smaller than the root, however deep it is.
+# Hint 4.3: Going left, the current key becomes the new upper limit. Going right, it becomes the new lower limit.
 def is_bst(node, lo=float('-inf'), hi=float('inf')):
     """4.3 True if the tree is a valid BST. Pass a (lo, hi) range down."""
     if node is None:
@@ -168,19 +175,25 @@ def is_bst(node, lo=float('-inf'), hi=float('inf')):
     return is_bst(node.left, lo, node.key) and is_bst(node.right, node.key, hi)
 
 
+# Hint 4.4: Which traversal visits a BST's keys in sorted order?
 def kth_smallest(root, k):
     """4.4 The k-th smallest key (k starts at 1)."""
     return inorder(root)[k - 1]
 
 
 # 4.5 Insert 1 through 7, in order, into a new BST. What is its height?
+# Hint 4.5: Draw it. Where does each new key go, when it's larger than every key already in the tree?
 HEIGHT_4_5 = 6
 
 # 4.6 Trace (paper first). Insert 4, 10, 3, 5, 1 into an empty MaxHeap.
 # Write the array after the LAST insert.
+# Hint 4.6: Add the new value at the end of the array, then swap it with its parent while the parent is smaller.
+# Hint 4.6: The lesson's MaxHeap keeps the root at index 0, so the parent of index `i` is `(i - 1) // 2`.
 TRACE_4_6 = [10, 5, 3, 4, 1]
 
 
+# Hint 4.7: `heapq` is a min-heap: `heap[0]` is always the smallest item.
+# Hint 4.7: When the heap grows past k items, pop one. Which one goes, and why is that the right one to drop?
 def k_largest(nums, k):
     """4.7 The k largest values, largest first, using heapq holding at most k items."""
     heap = []

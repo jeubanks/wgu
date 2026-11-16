@@ -1,7 +1,7 @@
 """Lesson 7: Tracing pseudocode.
 
-Paper-only drills: trace each one in the guide (Python Practice tab, Lesson 7)
-with a variable table, then type your answers into the variables below.
+Paper-only drills: trace each pseudocode snippet on the Lesson 7 page of the
+site with a variable table, then type your answers into the variables below.
 Run `python lesson7.py` to check them. Each check compares your answer with a
 Python translation of the pseudocode, which you can read after you answer.
 """
@@ -9,35 +9,49 @@ from _checker import need, run
 
 # ------------------------------------------------------------------ answers
 # 7.1 While loop: values of x and i when the loop ends.
+# Hint 7.1: Write a variable table: one row per pass, including the final check that fails.
 ANSWER_7_1 = (15, 16)
 
 # 7.2 Branching: final value of x.
+# Hint 7.2: Only the first branch whose condition is true runs.
 ANSWER_7_2 = 25
 
 # 7.3 For loop with remainder: everything output, in order.
+# Hint 7.3: "from 1 to 10" includes both ends.
+# Hint 7.3: `%` gives the remainder after division.
 ANSWER_7_3 = [3, 6, 9]
 
 # 7.4 Nested loops with n = 4: final count, and the Big-O as a string.
+# Hint 7.4: Count the inner passes for i = 0, 1, 2, 3 separately, then add them.
+# Hint 7.4: The Big-O is about how the count grows with n, not the count for n = 4.
 ANSWER_7_4 = (6, 'O(n^2)')
 
 # 7.5 Recursion: what Mystery(7) returns.
+# Hint 7.5: Expand the calls one at a time: Mystery(7) is 7 + Mystery(5), and so on, until n <= 0.
 ANSWER_7_5 = 16
 
 # 7.6 List scan: final m.
+# Hint 7.6: m only changes when an item is bigger than m.
 ANSWER_7_6 = 8
 
 # 7.7 Heap, root at index 1: (left child value, right child value) of index 2,
 # the parent value of index 6, and whether it is a valid max-heap (True/False).
+# Hint 7.7: With the root at index 1, the children of index i are 2i and 2i + 1, and its parent is i // 2.
+# Hint 7.7: In a max-heap, every parent is at least as large as its children.
 ANSWER_7_7 = ((10, 20), 40, True)
 
 # 7.8 Recursion with output on both sides: everything PrintDown(3) outputs.
+# Hint 7.8: Each call outputs before AND after its smaller call.
+# Hint 7.8: Draw the calls as a stack, and write down each output as it happens.
 ANSWER_7_8 = [3, 2, 1, 1, 2, 3]
 
 # 7.9 Stack: the two popped values, then what Peek shows.
+# Hint 7.9: Pop removes the newest item. Peek looks at it without removing it.
 ANSWER_7_9 = ((2, 1), 7)
 
 
 # ---------------------------------------- Python translations (read after!)
+# [7.1]
 def trace_7_1():
     x, i = 0, 1
     while i < 10:
@@ -46,6 +60,7 @@ def trace_7_1():
     return (x, i)
 
 
+# [7.2]
 def trace_7_2():
     x = 28
     if x > 10 and x < 20:
@@ -59,10 +74,12 @@ def trace_7_2():
     return x
 
 
+# [7.3]
 def trace_7_3():
     return [i for i in range(1, 11) if i % 3 == 0]   # 'from 1 to 10' includes 10
 
 
+# [7.4]
 def trace_7_4(n=4):
     count = 0
     for i in range(n):          # 0 to n - 1
@@ -71,12 +88,14 @@ def trace_7_4(n=4):
     return count
 
 
+# [7.5]
 def mystery(n):
     if n <= 0:
         return 0
     return n + mystery(n - 2)
 
 
+# [7.6]
 def trace_7_6():
     lst = [3, 8, 1, 6]
     m = lst[0]
@@ -86,6 +105,7 @@ def trace_7_6():
     return m
 
 
+# [7.7]
 HEAP_7_7 = [0, 50, 30, 40, 10, 20, 35]   # index 0 unused
 
 
@@ -97,6 +117,7 @@ def trace_7_7():
     return (children, parent, valid)
 
 
+# [7.8]
 def trace_7_8():
     out = []
 
@@ -111,6 +132,7 @@ def trace_7_8():
     return out
 
 
+# [7.9]
 def trace_7_9():
     s, pops = [], []
     s.append(5)

@@ -153,6 +153,10 @@ extra:
       quiz: 04-concepts-check.md
     d949:
       folder: D949_Data_Structures_And_Algorithms_I
+      # Done boxes on every exercise, and a bar per lesson on the overview page.
+      progress:
+        overview: exercises.md
+        pages: "0[0-9]-*.md"
 
 nav:
   - Home: index.md
@@ -169,5 +173,13 @@ nav:
       - Spec-to-type drill: d427/drill.md
       - Error decoder: d427/errors.md
   - D949 Data Structures:
-      - Overview: d949/README.md
-      - Python practice: d949/c949-practice/README.md
+      - Overview: d949/exercises.md
+      - About this kit: d949/README.md
+      - Lesson 1 – Big-O: d949/01-big-o.md
+      - Lesson 2 – Lists, stacks, queues: d949/02-lists-stacks-queues.md
+      - Lesson 3 – Hash tables: d949/03-hash-tables.md
+      - Lesson 4 – Trees and heaps: d949/04-trees-heaps.md
+      - Lesson 5 – Searching and sorting: d949/05-searching-sorting.md
+      - Lesson 6 – Graphs: d949/06-graphs.md
+      - Lesson 7 – Tracing pseudocode: d949/07-tracing.md
+      - Running the checks: d949/c949-practice/README.md

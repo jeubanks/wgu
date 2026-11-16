@@ -135,7 +135,8 @@ def merge_sort_key(a, key):
 
 
 # 5.7 Run `python lesson5.py --demo` and explain why quicksort is so much
-# slower on already-sorted input. (No check; see Solutions in the guide.)
+# slower on already-sorted input. (No check; the answer is under 5.7 on the
+# Lesson 5 page of the site.)
 
 
 # --------------------------------------------------------------------- checks

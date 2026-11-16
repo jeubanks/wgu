@@ -1,7 +1,7 @@
 """Lesson 7: Tracing pseudocode.
 
-Paper-only drills: trace each one in the guide (Python Practice tab, Lesson 7)
-with a variable table, then type your answers into the variables below.
+Paper-only drills: trace each pseudocode snippet on the Lesson 7 page of the
+site with a variable table, then type your answers into the variables below.
 Run `python lesson7.py` to check them. Each check compares your answer with a
 Python translation of the pseudocode, which you can read after you answer.
 """

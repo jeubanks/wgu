@@ -37,4 +37,4 @@ pytest -k reverse             # one exercise by name
 pytest --solutions            # run the suite against the answer key
 ```
 
-Exercises 5.7 and 6.6's memory question are discussion-only; their answers are in the guide's Solutions section.
+Exercises 5.7 and 6.6's memory question are discussion-only: there's no check. Their answers are in the solutions files and on the site, under each exercise.

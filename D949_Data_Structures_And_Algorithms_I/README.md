@@ -2,7 +2,7 @@
 
 Hands-on Python practice for WGU's C949 Data Structures and Algorithms I. It's built around the course's competencies and study materials, with extra practice on the skills that trip people up, especially Big-O and tracing pseudocode by hand.
 
-Read it online at **[jeubanks.github.io/wgu](https://jeubanks.github.io/wgu/d949/)**.
+Read it online at **[jeubanks.github.io/wgu](https://jeubanks.github.io/wgu/d949/exercises/)**: each lesson has its own page with the lesson code, the exercises, and a folded Hint and Solution under each one, and you can tick off exercises as you finish them.
 
 > Unofficial. Not affiliated with or endorsed by Western Governors University. Always check your zyBooks chapters and course materials. Where this kit and the course disagree, the course wins.
 
@@ -11,9 +11,12 @@ Read it online at **[jeubanks.github.io/wgu](https://jeubanks.github.io/wgu/d949
 ```
 .
 ├── README.md
+├── exercises.md                     # Overview: lesson list and how to start
+├── 01-big-o.md … 07-tracing.md      # Lesson pages: intro, lesson code, exercises
+├── build_solutions.py               # Copies hints, solutions, and lesson code into the pages
 └── c949-practice/
     ├── lesson1.py … lesson7.py      # Your work: lesson code + empty exercise stubs + checks
-    ├── solutions/                   # Finished versions of every lesson file
+    ├── solutions/                   # Finished versions of every lesson file, with hints
     ├── tests/                       # pytest suite (same checks as the lesson files)
     ├── _checker.py, conftest.py     # Plumbing; no need to edit
     ├── pytest.ini

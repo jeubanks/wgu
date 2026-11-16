@@ -20,10 +20,12 @@ TITLE = re.compile(r"^# (.+)$", re.M)
 
 PANEL = """
 <div class="ex-progress" id="ex-progress" markdown>
-<p class="ex-progress-note">Tick <strong>Done</strong> on an exercise when you've finished it.
-A passing <strong>Check</strong> in a Try it box ticks it for you. Progress is saved in this browser only.</p>
+<p class="ex-progress-note">Tick <strong>Done</strong> on an exercise when you've finished it.{auto}
+Progress is saved in this browser only.</p>
 </div>
 """
+# Only courses with Try it boxes or a quiz tick boxes on their own.
+AUTO_TICK = "\nA passing <strong>Check</strong> in a Try it box ticks it for you."
 
 
 def on_config(config, **kwargs):
@@ -58,7 +60,8 @@ def on_page_markdown(markdown, page, **kwargs):
     if not heading:
         return markdown
     at = heading.end()
-    return markdown[:at] + "\n" + PANEL + markdown[at:]
+    auto = AUTO_TICK if course.runner_pages or course.quiz else ""
+    return markdown[:at] + "\n" + PANEL.format(auto=auto) + markdown[at:]
 
 
 def on_page_content(html, page, **kwargs):

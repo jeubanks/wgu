@@ -6,7 +6,9 @@ D427 is the model course. Once its patterns are settled, other courses reuse the
 
 ## Up next
 
-Nothing queued. Pick from the backlog.
+- [ ] **D949 concepts check**: a quiz page (with the existing quiz hook) on Big-O classification, choosing a data structure, and short traces.
+- [ ] **D949 Big-O reference**: one printable page of operation costs for the structures and sorts, following the course Big-O worksheet's conventions (radix O(n), bucket average O(n)).
+- [ ] **D949 Try it runner (Pyodide)**: run each lesson's checks in the browser from the exercise card, and tick Done on a pass. About 10 MB from a CDN, so load it only when a Try it box opens.
 
 ## Backlog
 
@@ -34,10 +36,11 @@ Nothing here yet.
 
 ### Parked
 
-- [ ] **D949**: run the Python lessons in the browser (Pyodide), and data-structure diagrams with the SVG renderer. Left alone for now.
+- [ ] **D949 diagrams**: linked lists, trees, heaps, and hash tables drawn with the SVG renderer. Must not show an exercise's answer (4.1, 4.6, and 3.1 are drawing exercises).
 
 ## Done
 
+- D949 exercise pages: an overview with a progress bar per lesson, and one page per lesson (short intro, folded lesson code, exercise cards with Done boxes). Hints and solutions are generated from `c949-practice/solutions/` by `build_solutions.py`, which CI keeps in sync; CI also runs `pytest --solutions`. Lesson 7 has its own pseudocode, and 3.6, 5.7, and 6.6 have written answers, so nothing points to the WGU guide for content (#53)
 - 11.25: name a CHECK inside CREATE TABLE, then change its rule (DROP CHECK + ADD CONSTRAINT under the same name, in one ALTER TABLE) (#52)
 - Practice-test gaps filled: plain ALTER TABLE ADD PRIMARY KEY (11.23) and ADD FOREIGN KEY (11.24) drills, DELETE by ID (12.23), and counting attributes in an address (13.11f) (#51)
 - Exercise text is easier to read: about 70 exercises across D427 that ran several instructions together now have a lead line and one bullet per step, with the row count on its own line (#50)

@@ -14,6 +14,7 @@ The Markdown stays readable on GitHub. Everything the site adds (folded hints, q
 - [Diagrams](#diagrams)
 - [SQL runner](#sql-runner)
 - [Progress tracking](#progress-tracking)
+- [Python courses (D949)](#python-courses-d949)
 - [Glossary tooltips](#glossary-tooltips)
 - [GitHub Markdown the build adapts](#github-markdown-the-build-adapts)
 - [Rules](#rules)
@@ -199,6 +200,18 @@ LEFT: Caption for the LEFT JOIN tab.
 ## Progress tracking
 
 With `progress:` set, every exercise on the `pages` glob gets a **Done** checkbox, and the `overview` page gets a progress bar per page under its `## Contents` heading, plus a **Continue with ...** button to the first exercise not marked Done, and a **To review** list of exercises you missed (a failed Check, or a quiz question with a wrong part) until you get them right. `hooks/anchors.py` also adds one search entry per exercise, so searching its number finds it. A passing Check in a Try it box, or a fully answered quiz question, ticks the box. Progress is saved in the browser under `<slug>-progress`.
+
+## Python courses (D949)
+
+D949's lessons are Python, so it has its own `build_solutions.py` (in the course folder) instead of a `solutions.sql`. Each lesson page `0N-*.md` pairs with `c949-practice/lessonN.py` and `c949-practice/solutions/lessonN.py`:
+
+- **Exercises** use the same `- **N.M**` cards, with an `**In:**` line naming the function or variable to fill in. Trace exercises put the code to trace on the page.
+- **Solutions** are the solutions file's statements between its `exercises` (or `answers`) rule and its `checks` rule. A def or class belongs to the label its docstring starts with (`2.2 Reverse ...`); anything else belongs to the last label comment above it (`# 2.1 Trace ...`, or a bare `# [7.5]`).
+- **Hints** are comment lines in the solutions file: `# Hint 2.2: text`, one bullet each.
+- **Lesson code**: a `<!-- lesson-code -->` `<!-- /lesson-code -->` pair on the page gets the lesson file's code (between its `lesson code` and `exercises` rules), folded.
+- **No check:** an exercise with no Python answer (5.7, 3.6) gets a hand-written `<details><summary>Answer</summary>` block; its hints go above it.
+
+Run `python3 build_solutions.py` in the course folder after changing a lesson or solutions file. CI fails if it would change anything, and runs `pytest --solutions` in `c949-practice/`.
 
 ## Other D427 pages
 

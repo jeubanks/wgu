@@ -105,15 +105,22 @@ def demo():
 # ------------------------------------------------------------------ exercises
 
 # 5.1 Trace (paper first). Write the array after each OUTER pass on [5, 2, 9, 1, 6].
+# Hint 5.1: Selection sort: each pass finds the smallest item left and swaps it into the next place.
+# Hint 5.1: Insertion sort: each pass takes the next item and shifts it left into the sorted part.
+# Hint 5.1: Write down the array after every pass, even a pass where nothing moves.
 TRACE_5_1_SELECTION = [[1, 2, 9, 5, 6], [1, 2, 9, 5, 6], [1, 2, 5, 9, 6], [1, 2, 5, 6, 9]]
 TRACE_5_1_INSERTION = [[2, 5, 9, 1, 6], [2, 5, 9, 1, 6], [1, 2, 5, 9, 6], [1, 2, 5, 6, 9]]
 
 # 5.2 Trace (paper first). Binary search for 23 in the list below.
 # Which values does a[mid] take, in order?
+# Hint 5.2: `mid = (lo + hi) // 2` works on indexes, not values.
+# Hint 5.2: Write lo, hi, and mid for each step.
 SEARCH_LIST = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
 TRACE_5_2 = [16, 56, 23]
 
 
+# Hint 5.3: Two base cases: the range is empty, or `a[mid]` is the target.
+# Hint 5.3: Recurse on one half by moving `lo` or `hi` past `mid`.
 def binary_search_rec(a, target, lo=0, hi=None):
     """5.3 Recursive binary search; -1 if missing."""
     if hi is None:
@@ -128,6 +135,8 @@ def binary_search_rec(a, target, lo=0, hi=None):
     return binary_search_rec(a, target, lo, mid - 1)
 
 
+# Hint 5.4: Build it on merge sort: count the inversions in each half, then the ones the merge finds.
+# Hint 5.4: When the merge takes an item from the right half, how many items still waiting in the left half are bigger than it?
 def count_inversions(a):
     """5.4 Return (sorted_list, count) where count = pairs i < j with a[i] > a[j]. O(n log n)."""
     if len(a) <= 1:
@@ -147,6 +156,9 @@ def count_inversions(a):
     return out + left[i:] + right[j:], inv
 
 
+# Hint 5.5: Sort by the ones digit, then the tens digit, and so on, using 10 buckets.
+# Hint 5.5: Keep each bucket in the order items arrived, and read the buckets out from 0 to 9.
+# Hint 5.5: Stop once you've passed the largest number's highest digit.
 def radix_sort(a):
     """5.5 LSD radix sort for non-negative ints. Return a new sorted list."""
     exp = 1
@@ -159,6 +171,8 @@ def radix_sort(a):
     return list(a)
 
 
+# Hint 5.6: Start from the lesson's `merge_sort`, and compare `key(x)` instead of `x`.
+# Hint 5.6: Stable means items with equal keys keep their input order. On a tie, which half holds the earlier item?
 def merge_sort_key(a, key):
     """5.6 Stable merge sort by key(item). Return a new list."""
     if len(a) <= 1:
@@ -177,7 +191,16 @@ def merge_sort_key(a, key):
 
 
 # 5.7 Run `python lesson5.py --demo` and explain why quicksort is so much
-# slower on already-sorted input. (No check; see Solutions in the guide.)
+# slower on already-sorted input. (No check; the answer is under 5.7 on the
+# Lesson 5 page of the site.)
+# Hint 5.7: Look at which item the lesson's `quicksort` picks as its pivot.
+# Hint 5.7: On sorted input, how many items end up on each side of that pivot?
+#
+# Answer: the pivot is the last item, which on sorted input is the largest.
+# Every partition puts all the other items on one side and none on the other,
+# so each call only shrinks the range by one: n + (n - 1) + ... + 1 steps,
+# O(n^2), and the recursion goes n calls deep. A random or median-of-three
+# pivot avoids this.
 
 
 # --------------------------------------------------------------------- checks

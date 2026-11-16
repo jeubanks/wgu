@@ -16,8 +16,8 @@ Practice material I've built for WGU courses. Unofficial: not affiliated with or
 
     ---
 
-    Big-O, pseudocode tracing, and hands-on Python lessons with pytest checks.
+    44 Python exercises in seven lessons: Big-O, lists, stacks, queues, hash tables, trees, heaps, sorting, graphs, and pseudocode tracing.
 
-    [:octicons-arrow-right-24: Start here](d949/README.md)
+    [:octicons-arrow-right-24: Start here](d949/exercises.md)
 
 </div>
