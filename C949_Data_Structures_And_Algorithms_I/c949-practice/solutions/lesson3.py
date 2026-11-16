@@ -99,9 +99,13 @@ def demo():
 
 # 3.1 Trace (paper first). A 10-slot table uses key % 10 with linear probing.
 # Which slot does each of 15, 25, 35, 6, 16 land in? List the slots in order.
+# Hint 3.1: Each key starts at `key % 10`. If that slot is taken, try the next one.
+# Hint 3.1: Fill in a row of 10 slots as you go.
 TRACE_3_1 = [5, 6, 7, 8, 9]
 
 
+# Hint 3.2: Start from `LinearProbingTable.insert` in the lesson code. Only the slot formula changes.
+# Hint 3.2: `i` counts the attempts: 0, 1, 2, ... The offset is `i` squared, not `i`.
 class QuadraticProbingTable(LinearProbingTable):
     """3.2 Probe (key % n + i*i) % n instead of (key % n + i) % n."""
 
@@ -115,6 +119,8 @@ class QuadraticProbingTable(LinearProbingTable):
         raise OverflowError('no slot found')
 
 
+# Hint 3.3: Start with `h = 0` and update it once per character.
+# Hint 3.3: Take `% size` inside the loop, on every step, not only at the end.
 def string_hash(s, size):
     """3.3 Polynomial hash: h = h * 31 + ord(ch), mod size each step."""
     h = 0
@@ -123,6 +129,8 @@ def string_hash(s, size):
     return h
 
 
+# Hint 3.4: A set answers "have I seen this?" in O(1) on average.
+# Hint 3.4: Check before you add.
 def first_duplicate(items):
     """3.4 First item seen twice, in O(n) with a set. None if no duplicate."""
     seen = set()
@@ -133,6 +141,8 @@ def first_duplicate(items):
     return None
 
 
+# Hint 3.5: For each number `x`, the partner you need is `target - x`.
+# Hint 3.5: Keep the numbers you've already passed in a dict, from value to index.
 def two_sum(nums, target):
     """3.5 Index pair (i, j) with nums[i] + nums[j] == target, one pass with a dict."""
     seen = {}

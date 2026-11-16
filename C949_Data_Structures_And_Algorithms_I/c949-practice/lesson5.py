@@ -105,79 +105,38 @@ def demo():
 # ------------------------------------------------------------------ exercises
 
 # 5.1 Trace (paper first). Write the array after each OUTER pass on [5, 2, 9, 1, 6].
-TRACE_5_1_SELECTION = [[1, 2, 9, 5, 6], [1, 2, 9, 5, 6], [1, 2, 5, 9, 6], [1, 2, 5, 6, 9]]
-TRACE_5_1_INSERTION = [[2, 5, 9, 1, 6], [2, 5, 9, 1, 6], [1, 2, 5, 9, 6], [1, 2, 5, 6, 9]]
+TRACE_5_1_SELECTION = None   # list of 4 arrays
+TRACE_5_1_INSERTION = None   # list of 4 arrays
 
 # 5.2 Trace (paper first). Binary search for 23 in the list below.
 # Which values does a[mid] take, in order?
 SEARCH_LIST = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
-TRACE_5_2 = [16, 56, 23]
+TRACE_5_2 = None
 
 
 def binary_search_rec(a, target, lo=0, hi=None):
     """5.3 Recursive binary search; -1 if missing."""
-    if hi is None:
-        hi = len(a) - 1
-    if lo > hi:
-        return -1
-    mid = (lo + hi) // 2
-    if a[mid] == target:
-        return mid
-    if a[mid] < target:
-        return binary_search_rec(a, target, mid + 1, hi)
-    return binary_search_rec(a, target, lo, mid - 1)
+    raise NotImplementedError
 
 
 def count_inversions(a):
     """5.4 Return (sorted_list, count) where count = pairs i < j with a[i] > a[j]. O(n log n)."""
-    if len(a) <= 1:
-        return list(a), 0
-    mid = len(a) // 2
-    left, x = count_inversions(a[:mid])
-    right, y = count_inversions(a[mid:])
-    out, i, j, inv = [], 0, 0, x + y
-    while i < len(left) and j < len(right):
-        if left[i] <= right[j]:
-            out.append(left[i])
-            i += 1
-        else:
-            out.append(right[j])
-            j += 1
-            inv += len(left) - i             # right[j] jumps every remaining left item
-    return out + left[i:] + right[j:], inv
+    raise NotImplementedError
 
 
 def radix_sort(a):
     """5.5 LSD radix sort for non-negative ints. Return a new sorted list."""
-    exp = 1
-    while a and max(a) // exp > 0:
-        buckets = [[] for _ in range(10)]
-        for x in a:
-            buckets[(x // exp) % 10].append(x)
-        a = [x for b in buckets for x in b]
-        exp *= 10
-    return list(a)
+    raise NotImplementedError
 
 
 def merge_sort_key(a, key):
     """5.6 Stable merge sort by key(item). Return a new list."""
-    if len(a) <= 1:
-        return list(a)
-    m = len(a) // 2
-    left, right = merge_sort_key(a[:m], key), merge_sort_key(a[m:], key)
-    out, i, j = [], 0, 0
-    while i < len(left) and j < len(right):
-        if key(left[i]) <= key(right[j]):       # <= takes the left item on ties
-            out.append(left[i])
-            i += 1
-        else:
-            out.append(right[j])
-            j += 1
-    return out + left[i:] + right[j:]
+    raise NotImplementedError
 
 
 # 5.7 Run `python lesson5.py --demo` and explain why quicksort is so much
-# slower on already-sorted input. (No check; see Solutions in the guide.)
+# slower on already-sorted input. (No check; the answer is under 5.7 on the
+# Lesson 5 page of the site.)
 
 
 # --------------------------------------------------------------------- checks

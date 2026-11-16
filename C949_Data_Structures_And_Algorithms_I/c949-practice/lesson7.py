@@ -1,7 +1,7 @@
 """Lesson 7: Tracing pseudocode.
 
-Paper-only drills: trace each one in the guide (Python Practice tab, Lesson 7)
-with a variable table, then type your answers into the variables below.
+Paper-only drills: trace each pseudocode snippet on the Lesson 7 page of the
+site with a variable table, then type your answers into the variables below.
 Run `python lesson7.py` to check them. Each check compares your answer with a
 Python translation of the pseudocode, which you can read after you answer.
 """
@@ -9,32 +9,32 @@ from _checker import need, run
 
 # ------------------------------------------------------------------ answers
 # 7.1 While loop: values of x and i when the loop ends.
-ANSWER_7_1 = (15, 16)
+ANSWER_7_1 = None   # (x, i)
 
 # 7.2 Branching: final value of x.
-ANSWER_7_2 = 25
+ANSWER_7_2 = None
 
 # 7.3 For loop with remainder: everything output, in order.
-ANSWER_7_3 = [3, 6, 9]
+ANSWER_7_3 = None   # list
 
 # 7.4 Nested loops with n = 4: final count, and the Big-O as a string.
-ANSWER_7_4 = (6, 'O(n^2)')
+ANSWER_7_4 = None   # (count, 'O(...)')
 
 # 7.5 Recursion: what Mystery(7) returns.
-ANSWER_7_5 = 16
+ANSWER_7_5 = None
 
 # 7.6 List scan: final m.
-ANSWER_7_6 = 8
+ANSWER_7_6 = None
 
 # 7.7 Heap, root at index 1: (left child value, right child value) of index 2,
 # the parent value of index 6, and whether it is a valid max-heap (True/False).
-ANSWER_7_7 = ((10, 20), 40, True)
+ANSWER_7_7 = None   # ((left, right), parent, is_valid)
 
 # 7.8 Recursion with output on both sides: everything PrintDown(3) outputs.
-ANSWER_7_8 = [3, 2, 1, 1, 2, 3]
+ANSWER_7_8 = None   # list
 
 # 7.9 Stack: the two popped values, then what Peek shows.
-ANSWER_7_9 = ((2, 1), 7)
+ANSWER_7_9 = None   # ((first_pop, second_pop), peek)
 
 
 # ---------------------------------------- Python translations (read after!)

@@ -105,6 +105,11 @@ def to_matrix(g):
     raise NotImplementedError
 
 
+# 6.6b Memory: for a graph with V vertices and only a few edges, which takes
+# less memory, the adjacency list or the matrix? Give the Big-O of each.
+# (No check; the answer is under 6.6 on the Lesson 6 page of the site.)
+
+
 # --------------------------------------------------------------------- checks
 def check_6_1():
     """6.1 trace Dijkstra"""

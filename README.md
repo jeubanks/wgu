@@ -5,14 +5,14 @@ Unofficial practice material for WGU courses, published at **[jeubanks.github.io
 | Course | What's there |
 |---|---|
 | [D427 Data Management – Applications](D427_Data_Management_Applications/) | 151 MySQL exercises with hints and solutions, a concepts-check quiz, a final practice set, ER and join diagrams, and SQL you can run in the browser. [Setup](D427_Data_Management_Applications/README.md) · [Start here](D427_Data_Management_Applications/exercises.md) |
-| [D949 Data Structures and Algorithms I](D949_Data_Structures_And_Algorithms_I/) | Python lessons with pytest checks. [Start here](D949_Data_Structures_And_Algorithms_I/README.md) |
+| [C949 Data Structures and Algorithms I](C949_Data_Structures_And_Algorithms_I/) | Python lessons with pytest checks. [Start here](C949_Data_Structures_And_Algorithms_I/README.md) |
 
 ## Layout
 
 | Path | What it is |
 |---|---|
-| `D427_…/`, `D949_…/` | The courses: exercise pages (Markdown), SQL or Python, and their build scripts |
-| `docs/` | The site's own pages, styles, and scripts; `docs/d427` and `docs/d949` are symlinks to the course folders |
+| `D427_…/`, `C949_…/` | The courses: exercise pages (Markdown), SQL or Python, and their build scripts |
+| `docs/` | The site's own pages, styles, and scripts; `docs/d427` and `docs/c949` are symlinks to the course folders |
 | `hooks/` | MkDocs build hooks that add the interactive parts (quiz, SQL runner, diagrams, progress) |
 | `mkdocs.yml` | Site settings, including each course's features (`extra.courses`) |
 | `overrides/`, `includes/` | Theme additions (link previews) and the glossary tooltips |

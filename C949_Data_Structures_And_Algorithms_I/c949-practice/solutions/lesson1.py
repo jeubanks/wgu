@@ -58,9 +58,16 @@ def demo():
 #   c: for i in range(n):          d: for x in list_a:
 #          for j in range(i):              for y in list_b:
 #              print(i, j)                     print(x, y)
+# Hint 1.1: Count how many times the innermost line runs as n grows.
+# Hint 1.1: Ask what happens to the loop variable on each pass: does it go up by a fixed step, or get multiplied?
+# Hint 1.1: When the inner loop's length depends on `i`, add up the inner passes: 0 + 1 + ... + (n - 1).
+# Hint 1.1: Two different lists have two different sizes. Don't call them both n.
 ANSWERS_1_1 = {'a': 'O(n)', 'b': 'O(log n)', 'c': 'O(n^2)', 'd': 'O(n*m)'}
 
 
+# Hint 1.2: Each comparison throws away half of what's left.
+# Hint 1.2: Work out small cases by hand first: n = 1, 2, 3, 4, 8. Look for the pattern.
+# Hint 1.2: A loop that does `n //= 2` counts halvings without needing `math.log`.
 def binary_search_max_comparisons(n):
     """1.2 Most comparisons binary search can need on n items."""
     steps = 0
@@ -70,6 +77,9 @@ def binary_search_max_comparisons(n):
     return steps
 
 
+# Hint 1.3: `fib(n)` is `fib(n - 1) + fib(n - 2)`, with `n < 2` as the base case.
+# Hint 1.3: To count calls, add 1 to a global counter at the top of `fib`, and reset it to 0 before calling `fib(20)`.
+# Hint 1.3: For `fib_memo`, look in the dict before recursing, and store the result before returning it.
 def fib(n):
     """1.3a Naive recursive Fibonacci."""
     if n < 2:
@@ -93,6 +103,8 @@ def fib_memo(n, memo=None):
     return memo[n]
 
 
+# Hint 1.4: Base case: the empty list.
+# Hint 1.4: Otherwise: the first item plus the sum of the rest (`items[1:]`).
 def sum_list(items):
     """1.4 Recursive sum, no loops."""
     if not items:

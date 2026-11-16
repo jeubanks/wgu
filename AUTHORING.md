@@ -14,6 +14,7 @@ The Markdown stays readable on GitHub. Everything the site adds (folded hints, q
 - [Diagrams](#diagrams)
 - [SQL runner](#sql-runner)
 - [Progress tracking](#progress-tracking)
+- [Python courses (C949)](#python-courses-c949)
 - [Glossary tooltips](#glossary-tooltips)
 - [GitHub Markdown the build adapts](#github-markdown-the-build-adapts)
 - [Rules](#rules)
@@ -39,16 +40,16 @@ Run the same things locally before pushing. The accessibility check needs Playwr
 
 ## Adding a course
 
-1. **Make the folder** at the repo root, named like the existing ones (`D949_Data_Structures_And_Algorithms_I`).
-2. **Link it into the site:** `ln -s ../D949_Data_Structures_And_Algorithms_I docs/d949`. The short name (`d949`) is the course's *slug*: its URL path and the key for its settings.
+1. **Make the folder** at the repo root, named like the existing ones (`C949_Data_Structures_And_Algorithms_I`).
+2. **Link it into the site:** `ln -s ../C949_Data_Structures_And_Algorithms_I docs/c949`. The short name (`c949`) is the course's *slug*: its URL path and the key for its settings.
 3. **Add its pages to `nav:`** in `mkdocs.yml`, and a card for it on `docs/index.md`.
 4. **Add it under `extra.courses`** in `mkdocs.yml`. With only `folder`, it's published as plain pages:
 
    ```yaml
    extra:
      courses:
-       d949:
-         folder: D949_Data_Structures_And_Algorithms_I
+       c949:
+         folder: C949_Data_Structures_And_Algorithms_I
    ```
 
 5. **Turn on features** by adding their settings. Each is optional:
@@ -71,9 +72,12 @@ Run the same things locally before pushing. The accessibility check needs Playwr
              "12.20": This one changes data, so do it on MySQL.
            changes: [7]                # sections whose exercises change data
          quiz: 04-concepts-check.md    # interactive answer keys
+         old_slugs: [x123]             # old URL paths that redirect here, after a rename
    ```
 
    `hooks/courses.py` reads these; every hook that uses one says so in its docstring.
+
+   **Renaming a course:** rename the folder and the `docs/` symlink, change the slug, and list the old slug under `old_slugs`. `hooks/redirects.py` then writes a page at every old URL that forwards to the new one, keeping the `#anchor`. The progress saved in learners' browsers is keyed by slug, so it starts over.
 
 6. **Add its SQL to CI** if it has a `setup.sql` and `solutions.sql`: copy the MySQL steps in `.github/workflows/checks.yml` for the new folder.
 
@@ -199,6 +203,18 @@ LEFT: Caption for the LEFT JOIN tab.
 ## Progress tracking
 
 With `progress:` set, every exercise on the `pages` glob gets a **Done** checkbox, and the `overview` page gets a progress bar per page under its `## Contents` heading, plus a **Continue with ...** button to the first exercise not marked Done, and a **To review** list of exercises you missed (a failed Check, or a quiz question with a wrong part) until you get them right. `hooks/anchors.py` also adds one search entry per exercise, so searching its number finds it. A passing Check in a Try it box, or a fully answered quiz question, ticks the box. Progress is saved in the browser under `<slug>-progress`.
+
+## Python courses (C949)
+
+C949's lessons are Python, so it has its own `build_solutions.py` (in the course folder) instead of a `solutions.sql`. Each lesson page `0N-*.md` pairs with `c949-practice/lessonN.py` and `c949-practice/solutions/lessonN.py`:
+
+- **Exercises** use the same `- **N.M**` cards, with an `**In:**` line naming the function or variable to fill in. Trace exercises put the code to trace on the page.
+- **Solutions** are the solutions file's statements between its `exercises` (or `answers`) rule and its `checks` rule. A def or class belongs to the label its docstring starts with (`2.2 Reverse ...`); anything else belongs to the last label comment above it (`# 2.1 Trace ...`, or a bare `# [7.5]`).
+- **Hints** are comment lines in the solutions file: `# Hint 2.2: text`, one bullet each.
+- **Lesson code**: a `<!-- lesson-code -->` `<!-- /lesson-code -->` pair on the page gets the lesson file's code (between its `lesson code` and `exercises` rules), folded.
+- **No check:** an exercise with no Python answer (5.7, 3.6) gets a hand-written `<details><summary>Answer</summary>` block; its hints go above it.
+
+Run `python3 build_solutions.py` in the course folder after changing a lesson or solutions file. CI fails if it would change anything, and runs `pytest --solutions` in `c949-practice/`.
 
 ## Other D427 pages
 

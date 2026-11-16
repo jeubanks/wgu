@@ -134,9 +134,14 @@ def demo():
 #   s.pop(); q.dequeue()
 #   s.push(5); q.enqueue(5)
 #   print(s.peek(), q.dequeue())
+# Hint 2.1: A stack is last in, first out. A queue is first in, first out.
+# Hint 2.1: Track both on paper, one line per operation.
 TRACE_2_1 = (5, 2)
 
 
+# Hint 2.2: Walk the list with three pointers: the previous node, the current one, and the next one.
+# Hint 2.2: Save `cur.next` before you change it, or you lose the rest of the list.
+# Hint 2.2: The old head ends up as the new tail.
 def reverse(lst):
     """2.2 Reverse a LinkedList in place: O(n) time, O(1) space. Fix head and tail."""
     prev, cur = None, lst.head
@@ -148,6 +153,9 @@ def reverse(lst):
     lst.head = prev
 
 
+# Hint 2.3: Push each opener. On a closer, the top of the stack must be its matching opener.
+# Hint 2.3: Watch for a closer that arrives when the stack is empty.
+# Hint 2.3: When the text ends, what must be true of the stack?
 def is_balanced(text):
     """2.3 True when every ( [ { has a matching closer, in order. Use Stack."""
     pairs = {')': '(', ']': '[', '}': '{'}
@@ -161,6 +169,8 @@ def is_balanced(text):
     return s.is_empty()
 
 
+# Hint 2.4: Numbers go on the stack. An operator pops two values and pushes the result.
+# Hint 2.4: The first value popped is the right-hand operand. That matters for `-` and `/`.
 def eval_postfix(expr):
     """2.4 Evaluate a space-separated postfix expression with a stack."""
     s = Stack()
@@ -181,6 +191,8 @@ def eval_postfix(expr):
     return s.pop()
 
 
+# Hint 2.5: Use one list for items coming in and one for items going out.
+# Hint 2.5: Only move items into the outgoing list when it's empty. Moving them flips their order.
 class QueueFromStacks:
     """2.5 A FIFO queue built from two Python lists used as stacks."""
 

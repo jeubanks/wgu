@@ -4,14 +4,14 @@ site_description: Unofficial practice for WGU courses. D427 has 151 MySQL exerci
 repo_url: https://github.com/jeubanks/wgu
 edit_uri: edit/main/
 
-# docs/d427 and docs/d949 are symlinks to the course folders,
+# docs/d427 and docs/c949 are symlinks to the course folders,
 # so the exercise files stay where the scripts and Docker setup expect them.
 docs_dir: docs
 
 # mkdocs serve doesn't follow the symlinks when watching for changes.
 watch:
   - D427_Data_Management_Applications
-  - D949_Data_Structures_And_Algorithms_I
+  - C949_Data_Structures_And_Algorithms_I
   - hooks
   - includes
   - overrides
@@ -43,6 +43,7 @@ hooks:
   - hooks/progress.py
   - hooks/page_footer.py
   - hooks/anchors.py
+  - hooks/redirects.py
 
 theme:
   name: material
@@ -151,8 +152,14 @@ extra:
           "12.23": This one changes data, so do it on MySQL.
       # Interactive answer keys (<!-- answer:... --> comments).
       quiz: 04-concepts-check.md
-    d949:
-      folder: D949_Data_Structures_And_Algorithms_I
+    c949:
+      folder: C949_Data_Structures_And_Algorithms_I
+      # The course was published as d949 before; old links redirect here.
+      old_slugs: [d949]
+      # Done boxes on every exercise, and a bar per lesson on the overview page.
+      progress:
+        overview: exercises.md
+        pages: "0[0-9]-*.md"
 
 nav:
   - Home: index.md
@@ -168,6 +175,14 @@ nav:
       - SQL quick reference: d427/quick-reference.md
       - Spec-to-type drill: d427/drill.md
       - Error decoder: d427/errors.md
-  - D949 Data Structures:
-      - Overview: d949/README.md
-      - Python practice: d949/c949-practice/README.md
+  - C949 Data Structures:
+      - Overview: c949/exercises.md
+      - About this kit: c949/README.md
+      - Lesson 1 – Big-O: c949/01-big-o.md
+      - Lesson 2 – Lists, stacks, queues: c949/02-lists-stacks-queues.md
+      - Lesson 3 – Hash tables: c949/03-hash-tables.md
+      - Lesson 4 – Trees and heaps: c949/04-trees-heaps.md
+      - Lesson 5 – Searching and sorting: c949/05-searching-sorting.md
+      - Lesson 6 – Graphs: c949/06-graphs.md
+      - Lesson 7 – Tracing pseudocode: c949/07-tracing.md
+      - Running the checks: c949/c949-practice/README.md

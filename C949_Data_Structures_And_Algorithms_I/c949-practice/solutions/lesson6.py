@@ -76,10 +76,14 @@ def demo():
 
 # 6.1 Trace (paper first). Run Dijkstra by hand from 'S' on W2 and give the
 # final distance to every vertex.
+# Hint 6.1: Keep a table of best-known distances: S starts at 0, everything else at infinity.
+# Hint 6.1: Each step, take the unfinished vertex with the smallest distance, then check whether going through it shortens the way to its neighbors.
 W2 = {'S': {'A': 7, 'B': 2}, 'A': {'T': 1}, 'B': {'A': 3, 'T': 8}, 'T': {}}
 TRACE_6_1 = {'S': 0, 'A': 5, 'B': 2, 'T': 6}
 
 
+# Hint 6.2: BFS reaches every vertex by a fewest-edges path first.
+# Hint 6.2: Record which vertex discovered each one, then walk back from the goal.
 def shortest_path(g, start, goal):
     """6.2 Vertex list of a fewest-edges path (BFS + predecessor map). None if unreachable."""
     prev = {start: None}
@@ -99,6 +103,8 @@ def shortest_path(g, start, goal):
     return None
 
 
+# Hint 6.3: A stack hands back the last item pushed.
+# Hint 6.3: To visit neighbors in list order, push them in reverse order.
 def dfs_iter(g, start):
     """6.3 DFS with an explicit stack, same visit order as the recursive dfs."""
     visited, stack = [], [start]
@@ -113,6 +119,8 @@ def dfs_iter(g, start):
     return visited
 
 
+# Hint 6.4: Loop over every vertex. Each one you haven't seen yet starts a new component.
+# Hint 6.4: The lesson's `bfs` returns everything reachable from a vertex: mark all of it as seen.
 def count_components(g):
     """6.4 Number of connected components in an undirected graph."""
     seen, count = set(), 0
@@ -123,6 +131,9 @@ def count_components(g):
     return count
 
 
+# Hint 6.5: Count the incoming edges of each vertex. The ones with none can go first.
+# Hint 6.5: When you output a vertex, take its edges away. Which vertices drop to zero?
+# Hint 6.5: If you output fewer vertices than the graph has, the rest are stuck in a cycle.
 def topo_sort(g):
     """6.5 Kahn's algorithm. Edge X -> Y means X comes before Y. Raise ValueError on a cycle."""
     indeg = {v: 0 for v in g}
@@ -143,6 +154,8 @@ def topo_sort(g):
     return order
 
 
+# Hint 6.6: Sort the names first, then give each name its row and column number.
+# Hint 6.6: Start from a grid of zeros and set a 1 for each edge.
 def to_matrix(g):
     """6.6 Return (sorted_names, adjacency_matrix) with 1 where an edge exists."""
     names = sorted(g)
@@ -152,6 +165,17 @@ def to_matrix(g):
         for w in g[v]:
             m[idx[v]][idx[w]] = 1
     return names, m
+
+
+# 6.6b Memory: for a graph with V vertices and only a few edges, which takes
+# less memory, the adjacency list or the matrix? Give the Big-O of each.
+# (No check; the answer is under 6.6 on the Lesson 6 page of the site.)
+# Hint 6.6: Count what each one stores: one entry per what?
+#
+# Answer: the list. It stores one entry per vertex plus one per edge, O(V + E).
+# The matrix always has V * V cells, O(V^2), even when almost all are 0. The
+# matrix wins when the graph is dense or you need an O(1) "is there an edge
+# from A to B?" check.
 
 
 # --------------------------------------------------------------------- checks
