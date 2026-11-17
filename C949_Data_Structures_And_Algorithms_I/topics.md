@@ -34,11 +34,11 @@ Topics marked *coming* are in chapters not written yet. Until then, the [Big-O c
 | Bags | [1. Introduction](01-introduction.md#abstract-data-types-adts); [Cheat sheet](big-o.md#hash-tables-maps-and-sets) |
 | Hash tables: hash functions, keys, collisions, chaining, probing, computing `key % N` by hand | [4. Hash tables](04-hash-tables.md) |
 | Dictionaries and maps, and Python's dict methods | [4. Hash tables](04-hash-tables.md#the-map-adt); [12–20](12-programming-concepts.md#what-pythons-built-ins-cost) |
-| Trees: binary trees, BSTs, full, complete, perfect, and balanced trees, BST removal, traversals | [Cheat sheet](big-o.md#trees-and-heaps); 5. Trees *(coming)* |
-| AVL and red-black trees | [Cheat sheet](big-o.md#trees-and-heaps); 6. Balanced trees *(coming)* |
+| Trees: binary trees, BSTs, full, complete, perfect, and balanced trees, BST removal, traversals | [5. Trees](05-trees.md) |
+| AVL and red-black trees | [6. Balanced trees](06-balanced-trees.md) |
 | B-trees | [Cheat sheet](big-o.md#trees-and-heaps); 10. B-trees *(coming)* |
-| Heaps: percolate up and down, child and parent indexes, heapify | [Cheat sheet](big-o.md#trees-and-heaps); 7. Heaps and treaps *(coming)* |
-| Sets and set operations (union, intersection, difference) | [Cheat sheet](big-o.md#hash-tables-maps-and-sets); 8. Sets *(coming)* |
+| Heaps: percolate up and down, child and parent indexes, heapify | [7. Heaps and treaps](07-heaps-treaps.md) |
+| Sets and set operations (union, intersection, difference) | [8. Sets](08-sets.md) |
 | Graphs: kinds, adding and removing vertices and edges, Dijkstra vs Bellman-Ford | [Cheat sheet](big-o.md#graphs); 9. Graphs *(coming)* |
 
 ## Applies Algorithms

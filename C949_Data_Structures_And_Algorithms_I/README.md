@@ -22,12 +22,16 @@ Chapter numbers match the zyBooks chapters.
 - **[2. Lists](02-lists.md)**: singly- and doubly-linked lists, circular lists, dummy nodes, array-based lists
 - **[3. Stacks and queues](03-stacks-queues.md)**: stacks, queues, and deques, built on linked lists and on arrays
 - **[4. Hash tables](04-hash-tables.md)**: chaining, linear and quadratic probing, double hashing, resizing, hash functions
+- **[5. Trees](05-trees.md)**: binary trees and their shapes, binary search trees (search, insert, remove, traversals), tries
+- **[6. Balanced trees](06-balanced-trees.md)**: rotations, AVL trees and balance factors, red-black trees
+- **[7. Heaps and treaps](07-heaps-treaps.md)**: max- and min-heaps in an array, priority queues, heap sort, treaps
+- **[8. Sets](08-sets.md)**: the set ADT, union, intersection, difference, filter and map, and Python's set
 - **[11. Searching and algorithm analysis](11-algorithm-analysis.md)**: linear and binary search, finding Big-O by tracing (ten worked patterns), and all ten sorts with their best, average, and worst cases
 - **[12–20. Programming concepts](12-programming-concepts.md)**: reading code, static and dynamic typing, operators, loops, classes, memory management, data flow diagrams, and what Python's lists, dicts, and sets cost
 
 </div>
 
-Chapters 5 to 10 (trees, balanced trees, heaps and treaps, sets, graphs, B-trees) and 21 (recursion) are coming next.
+Chapters 9 (graphs), 10 (B-trees), and 21 (recursion) are coming next.
 
 **Reference:** the [Big-O cheat sheet](big-o.md) puts every structure and algorithm in the course on one printable page, with best, average, and worst cases.
 

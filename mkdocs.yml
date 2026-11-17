@@ -198,6 +198,10 @@ nav:
       - 2. Lists: c949/02-lists.md
       - 3. Stacks and queues: c949/03-stacks-queues.md
       - 4. Hash tables: c949/04-hash-tables.md
+      - 5. Trees: c949/05-trees.md
+      - 6. Balanced trees: c949/06-balanced-trees.md
+      - 7. Heaps and treaps: c949/07-heaps-treaps.md
+      - 8. Sets: c949/08-sets.md
       - 11. Searching and algorithm analysis: c949/11-algorithm-analysis.md
       - 12–20. Programming concepts: c949/12-programming-concepts.md
       - Topic map: c949/topics.md

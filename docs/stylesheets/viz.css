@@ -108,6 +108,7 @@
 .viz .vz-slot .ix, .viz .vz-cell .i { fill: var(--viz-muted); font-size: 12px; }
 .viz .vz-hn circle { fill: var(--viz-surface); stroke: var(--viz-ink); stroke-width: 1.5; transition: stroke .25s, fill .25s; }
 .viz .vz-hn text { fill: var(--viz-ink); font-size: 16px; font-weight: 600; }
+.viz .vz-hn text.note { fill: var(--viz-accent); font-size: 12px; font-weight: 600; }
 .viz .vz-hn.cur circle { stroke: var(--viz-accent); stroke-width: 3; fill: var(--viz-accent-soft); }
 .viz .vz-hn.cmp circle, .viz .vz-cell.cmp rect { stroke: var(--viz-warn); stroke-width: 3; }
 .viz .vz-edge { stroke: var(--viz-line); stroke-width: 2; }
