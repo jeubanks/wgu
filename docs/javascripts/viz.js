@@ -427,9 +427,8 @@
 
   /* ---------------- max-heap ---------------- */
   function heap(root) {
-    var B = bench(root, "Max-heap: the tree and the array are the same thing", "Insert percolates up; remove-max percolates down. Both views move together.", "0 0 780 330", "A max-heap drawn as a tree, and the same heap as an array");
-    var val = field(B.controls, "Value", numberInput(45, 0, 99));
-    var ins = btn(B.controls, "Insert", "primary"), rem = btn(B.controls, "Remove max"), reset = btn(B.controls, "Reset");
+    var B = bench(root, "Max-heap: the tree and the array are the same thing", "Insert percolates up; remove-max percolates down. Both views move together. New values are random.", "0 0 780 330", "A max-heap drawn as a tree, and the same heap as an array");
+    var ins = btn(B.controls, "Insert a random value", "primary"), rem = btn(B.controls, "Remove max"), reset = btn(B.controls, "Reset");
     var swapsEl = tallyRow(B.tally, "Swaps on the last operation");
     h("span", {}, B.tally).innerHTML = chip("O(log n)");
     B.code.remove();
@@ -488,7 +487,11 @@
       }
       draw(); busy = false;
     }
-    ins.addEventListener("click", function () { insert(Math.max(0, Math.min(99, parseInt(val.value, 10) || 0))); });
+    ins.addEventListener("click", function () {
+      var have = {}; items.forEach(function (n) { have[n.v] = true; });
+      var v; do { v = 1 + Math.floor(Math.random() * 98); } while (have[v]);
+      insert(v);
+    });
     rem.addEventListener("click", removeMax);
     reset.addEventListener("click", function () { if (busy) return; gN.textContent = ""; gA.textContent = ""; items = start(); draw(); say("Root at index 0. The children of index i are at 2i + 1 and 2i + 2, and its parent is at (i − 1) // 2."); });
     items = start(); draw(); say("Root at index 0. The children of index i are at 2i + 1 and 2i + 2, and its parent is at (i − 1) // 2.");
@@ -784,6 +787,223 @@
     });
   }
 
+
+  /* ---------------- shared small-tree helpers (BST, AVL) ---------------- */
+  var tid = 0;
+  function tnode(k) { tid += 1; return { id: tid, k: k, l: null, r: null }; }
+  function theight(n) { return n ? 1 + Math.max(theight(n.l), theight(n.r)) : -1; }
+  function tlayout(root, W, top, dy) {
+    var order = [];
+    (function walk(n, d) { if (!n) return; walk(n.l, d + 1); order.push([n, d]); walk(n.r, d + 1); })(root, 0);
+    var step = Math.min(70, (W - 80) / Math.max(1, order.length - 1)), x0 = W / 2 - step * (order.length - 1) / 2, pos = {};
+    order.forEach(function (o, i) { pos[o[0].id] = { x: x0 + i * step, y: top + o[1] * dy }; });
+    return pos;
+  }
+  function tdraw(gE, gN, root, pos, mark, notes) {
+    mark = mark || {}; notes = notes || {};
+    gE.textContent = "";
+    (function edges(n) { if (!n) return; [n.l, n.r].forEach(function (c) { if (c) { el("line", { class: "vz-edge", x1: pos[n.id].x, y1: pos[n.id].y, x2: pos[c.id].x, y2: pos[c.id].y }, gE); edges(c); } }); })(root);
+    var live = {};
+    (function nodes(n) {
+      if (!n) return; live[n.id] = true;
+      var g = gN.querySelector('.vz-hn[data-id="' + n.id + '"]'), p = pos[n.id];
+      if (!g) { g = el("g", { class: "vz-hn vz-move", "data-id": n.id }, gN); el("circle", { r: 19 }, g); txt(g, 0, 6, "", { "text-anchor": "middle", class: "k" }); txt(g, 24, -14, "", { class: "vz-cap note" }); g.style.transform = "translate(" + p.x + "px," + p.y + "px)"; }
+      g.querySelector("text.k").textContent = n.k;
+      g.querySelector("text.note").textContent = notes[n.id] !== undefined ? notes[n.id] : "";
+      g.setAttribute("class", "vz-hn vz-move" + (mark[n.id] ? " " + mark[n.id] : ""));
+      g.style.transform = "translate(" + p.x + "px," + p.y + "px)";
+      nodes(n.l); nodes(n.r);
+    })(root);
+    Array.prototype.forEach.call(gN.querySelectorAll(".vz-hn"), function (g) { if (!live[g.dataset.id]) g.remove(); });
+  }
+
+  /* ---------------- binary search tree ---------------- */
+  function bst(root) {
+    var B = bench(root, "Binary search tree: search, insert, remove, traverse", "New keys are random. Pick a key from the tree to search for or remove.", "0 0 780 300", "A binary search tree");
+    var insB = btn(B.controls, "Insert a random key", "primary");
+    var keySel = field(B.controls, "Key", select([], ""));
+    var findB = btn(B.controls, "Search"), remB = btn(B.controls, "Remove");
+    spacer(B.controls);
+    var travs = [["inorder", "Inorder"], ["preorder", "Preorder"], ["postorder", "Postorder"], ["level", "Level order"]].map(function (x) { var b = btn(B.controls, x[1]); b.dataset.t = x[0]; return b; });
+    var reset = btn(B.controls, "Reset");
+    var stepsEl = tallyRow(B.tally, "Nodes visited");
+    var hEl = h("span", { class: "viz-lbl" }, B.tally, "");
+    var svg = B.svg, gE = el("g", {}, svg), gN = el("g", {}, svg);
+    var tree, busy = false;
+    function insertKey(r, k) { if (!r) return tnode(k); if (k < r.k) r.l = insertKey(r.l, k); else r.r = insertKey(r.r, k); return r; }
+    function keys(n, out) { if (n) { keys(n.l, out); out.push(n.k); keys(n.r, out); } return out; }
+    function count(n) { return n ? 1 + count(n.l) + count(n.r) : 0; }
+    function draw(mark) {
+      var pos = tlayout(tree, 780, 34, 58); tdraw(gE, gN, tree, pos, mark);
+      var ks = keys(tree, []);
+      keySel.textContent = ""; ks.forEach(function (k) { var o = document.createElement("option"); o.value = k; o.textContent = k; keySel.appendChild(o); });
+      hEl.textContent = "Height " + theight(tree) + " · " + ks.length + " keys";
+    }
+    function build() { tree = null; [50, 30, 70, 20, 40, 60, 80].forEach(function (k) { tree = insertKey(tree, k); }); gN.textContent = ""; draw(); }
+    function say(t, c) { B.say.innerHTML = t; B.code.textContent = c || ""; }
+    function mk(id, cls) { var m = {}; m[id] = cls; return m; }
+    async function walkTo(k, verb) {
+      var n = tree, seen = 0, parent = null;
+      while (n) {
+        seen += 1; stepsEl.textContent = seen; draw(mk(n.id, "cur"));
+        if (k === n.k) { say(verb + " " + k + ": found it after " + seen + " comparison" + (seen === 1 ? "" : "s") + ".", "node.key == " + k); await sleep(700); return { node: n, parent: parent, seen: seen }; }
+        say(k + (k < n.k ? " < " : " > ") + n.k + ": go " + (k < n.k ? "left" : "right") + ".", k < n.k ? "node = node.left" : "node = node.right");
+        await sleep(750); parent = n; n = k < n.k ? n.l : n.r;
+      }
+      return { node: null, parent: parent, seen: seen };
+    }
+    async function doInsert() {
+      if (busy) return;
+      if (count(tree) >= 15 || theight(tree) >= 5) { say("This diagram holds 15 keys and 5 levels at most. Remove some or reset."); return; }
+      busy = true;
+      var have = {}; keys(tree, []).forEach(function (k) { have[k] = true; });
+      var k; do { k = 1 + Math.floor(Math.random() * 98); } while (have[k]);
+      var r = await walkTo(k, "Insert");
+      tree = insertKey(tree, k);
+      var nn = (function find(n) { return !n ? null : n.k === k ? n : find(k < n.k ? n.l : n.r); })(tree);
+      draw(mk(nn.id, "new"));
+      say("Insert <b>" + k + "</b>: the search stepped off the tree below " + r.parent.k + ", so " + k + " becomes its " + (k < r.parent.k ? "left" : "right") + " child, a new leaf. O(h).", "parent." + (k < r.parent.k ? "left" : "right") + " = Node(" + k + ")");
+      busy = false;
+    }
+    async function doSearch() {
+      if (busy || !keySel.value) return; busy = true;
+      await walkTo(+keySel.value, "Search for"); busy = false;
+    }
+    function removeKey(r, k) {
+      if (!r) return null;
+      if (k < r.k) r.l = removeKey(r.l, k); else if (k > r.k) r.r = removeKey(r.r, k);
+      else { if (!r.l) return r.r; if (!r.r) return r.l; var s = r.r; while (s.l) s = s.l; r.k = s.k; r.r = removeKey(r.r, s.k); }
+      return r;
+    }
+    async function doRemove() {
+      if (busy || !keySel.value) return;
+      if (count(tree) <= 1) { say("Keep at least one key. Press Reset to start over."); return; }
+      busy = true;
+      var k = +keySel.value, r = await walkTo(k, "Remove"), n = r.node;
+      if (!n.l && !n.r) {
+        draw(mk(n.id, "cmp")); say("<b>" + k + "</b> is a leaf: just remove it.", "parent." + (r.parent && k < r.parent.k ? "left" : "right") + " = None"); await sleep(900);
+      } else if (!n.l || !n.r) {
+        var c = n.l || n.r; var m = mk(n.id, "cmp"); m[c.id] = "cur"; draw(m);
+        say("<b>" + k + "</b> has one child, " + c.k + ": the child takes its place.", "parent's link = node's only child"); await sleep(1100);
+      } else {
+        var s = n.r, m2 = mk(n.id, "cmp"); m2[s.id] = "cur"; draw(m2);
+        say("<b>" + k + "</b> has two children. Find its successor: go right once, to " + s.k + "…", "succ = node.right"); await sleep(1000);
+        while (s.l) { s = s.l; m2 = mk(n.id, "cmp"); m2[s.id] = "cur"; draw(m2); say("…then left as far as possible: " + s.k + ".", "succ = succ.left"); await sleep(900); }
+        say("Copy " + s.k + " into the node, then remove the old " + s.k + ", which has no left child.", "node.key = succ.key"); await sleep(1100);
+      }
+      tree = removeKey(tree, k); draw();
+      say("Removed <b>" + k + "</b>. The tree still follows the BST rule.");
+      busy = false;
+    }
+    async function traverse(kind) {
+      if (busy) return; busy = true;
+      var order = [];
+      if (kind === "level") { var q = [tree]; while (q.length) { var x = q.shift(); order.push(x); if (x.l) q.push(x.l); if (x.r) q.push(x.r); } }
+      else (function walk(n) { if (!n) return; if (kind === "preorder") order.push(n); walk(n.l); if (kind === "inorder") order.push(n); walk(n.r); if (kind === "postorder") order.push(n); })(tree);
+      var done = {}, out = [];
+      var rule = { inorder: "left, node, right", preorder: "node, left, right", postorder: "left, right, node", level: "level by level, left to right" }[kind];
+      for (var i = 0; i < order.length; i++) {
+        done[order[i].id] = "new"; var m = Object.assign({}, done); m[order[i].id] = "cur"; draw(m);
+        out.push(order[i].k); stepsEl.textContent = i + 1;
+        say(kind.charAt(0).toUpperCase() + kind.slice(1) + " (" + rule + "): visit <b>" + order[i].k + "</b>.", out.join(", "));
+        await sleep(600);
+      }
+      draw(done);
+      say(kind.charAt(0).toUpperCase() + kind.slice(1) + " visits every node once: O(n)." + (kind === "inorder" ? " In a BST, that's sorted order." : ""), out.join(", "));
+      busy = false;
+    }
+    insB.addEventListener("click", doInsert); findB.addEventListener("click", doSearch); remB.addEventListener("click", doRemove);
+    travs.forEach(function (b) { b.addEventListener("click", function () { traverse(b.dataset.t); }); });
+    reset.addEventListener("click", function () { if (busy) return; build(); stepsEl.textContent = 0; say("Reset. Smaller keys go left, larger keys go right, at every node."); });
+    build(); say("Smaller keys go left, larger keys go right, at every node. Each step of a search goes down one level, so it costs O(h).");
+  }
+
+  /* ---------------- AVL rotation cases ---------------- */
+  function avl(root) {
+    var CASES = {
+      ll: { name: "Left-left", keys: [50, 40, 35] }, rr: { name: "Right-right", keys: [15, 25, 35] },
+      lr: { name: "Left-right", keys: [60, 45, 52] }, rl: { name: "Right-left", keys: [20, 70, 41] }
+    };
+    var B = bench(root, "AVL trees: the four rotation cases", "Each case inserts three keys. Watch the balance factors (left height − right height).", "0 0 780 260", "A small AVL tree being rebalanced");
+    var cBtns = Object.keys(CASES).map(function (c) { var b = btn(B.controls, CASES[c].name); b.dataset.c = c; return b; });
+    spacer(B.controls);
+    var back = btn(B.controls, "← Back"), next = btn(B.controls, "Next step →", "primary");
+    var rotEl = tallyRow(B.tally, "Rotations");
+    var svg = B.svg, gE = el("g", {}, svg), gN = el("g", {}, svg);
+    var frames = [], fi = 0;
+    function clone(n) { return n ? { id: n.id, k: n.k, l: clone(n.l), r: clone(n.r) } : null; }
+    function ins(r, k) { if (!r) return tnode(k); if (k < r.k) r.l = ins(r.l, k); else r.r = ins(r.r, k); return r; }
+    function bfs(n, acc) { if (n) { var b = theight(n.l) - theight(n.r); acc[n.id] = (b > 0 ? "+" : "") + b; bfs(n.l, acc); bfs(n.r, acc); } return acc; }
+    function rotR(y) { var x = y.l; y.l = x.r; x.r = y; return x; }
+    function rotL(x) { var y = x.r; x.r = y.l; y.l = x; return y; }
+    function snap(t, text, code, mark, rots) { frames.push({ t: clone(t), text: text, code: code || "", mark: mark || {}, rots: rots }); }
+    function build(c) {
+      frames = []; fi = 0; gN.textContent = "";
+      var ks = CASES[c].keys, t = null;
+      ks.forEach(function (k, i) { t = ins(t, k); snap(t, "Insert <b>" + k + "</b>" + (i < 2 ? "." : ". Now check the balance factors on the way back up."), "insert(" + k + ")", {}, 0); });
+      var top = t, m = {}; m[top.id] = "cmp";
+      var b = theight(top.l) - theight(top.r);
+      var zig = b > 0 ? (ks[2] > top.l.k) : (ks[2] < top.r.k);
+      snap(t, "<b>" + top.k + "</b> has balance factor " + (b > 0 ? "+2: too heavy on the left" : "−2: too heavy on the right") + ". The new key went " + (b > 0 ? "left" : "right") + ", then " + (zig ? (b > 0 ? "right" : "left") + ": a zigzag, so two rotations." : (b > 0 ? "left" : "right") + ": a straight line, so one rotation."), "", m, 0);
+      var rots = 0;
+      if (zig) {
+        if (b > 0) { top.l = rotL(top.l); snap(top, "First, a <b>left rotation</b> at " + clone(top.l.l).k + " turns the zigzag into a straight line.", "node.left = rotate_left(node.left)", m, ++rots); }
+        else { top.r = rotR(top.r); snap(top, "First, a <b>right rotation</b> at " + clone(top.r.r).k + " turns the zigzag into a straight line.", "node.right = rotate_right(node.right)", m, ++rots); }
+      }
+      t = b > 0 ? rotR(top) : rotL(top);
+      snap(t, "A <b>" + (b > 0 ? "right" : "left") + " rotation</b> at " + top.k + " moves " + t.k + " up. Every balance factor is back to −1, 0, or +1, and the keys are still in BST order.", b > 0 ? "root = rotate_right(node)" : "root = rotate_left(node)", {}, ++rots);
+      show();
+    }
+    function show() {
+      var f = frames[fi];
+      tdraw(gE, gN, f.t, tlayout(f.t, 780, 44, 70), f.mark, bfs(f.t, {}));
+      B.say.innerHTML = f.text; B.code.textContent = f.code; rotEl.textContent = f.rots;
+      next.disabled = fi >= frames.length - 1; back.disabled = fi <= 0;
+    }
+    cBtns.forEach(function (b) { b.addEventListener("click", function () { cBtns.forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); }); build(b.dataset.c); }); });
+    next.addEventListener("click", function () { if (fi < frames.length - 1) { fi++; show(); } });
+    back.addEventListener("click", function () { if (fi > 0) { fi--; show(); } });
+    cBtns[0].setAttribute("aria-pressed", "true"); build("ll");
+  }
+
+  /* ---------------- static: red-black tree, treap, set operations ---------------- */
+  function rbTree(root) {
+    var g = figure(root, "A red-black tree", "0 0 400 230", "A red-black tree: 13 black at the root; children 8 red and 17 red; 8's children 1 and 11 black; 17's children 15 and 25 black; 25's right child 27 red");
+    var P = { 13: [200, 26, "B"], 8: [110, 90, "R"], 17: [290, 90, "R"], 1: [60, 156, "B"], 11: [160, 156, "B"], 15: [240, 156, "B"], 25: [340, 156, "B"], 27: [370, 214, "R"] };
+    [[13, 8], [13, 17], [8, 1], [8, 11], [17, 15], [17, 25], [25, 27]].forEach(function (e) { line(g, P[e[0]][0], P[e[0]][1], P[e[1]][0], P[e[1]][1]); });
+    Object.keys(P).forEach(function (k) {
+      var p = P[k], red = p[2] === "R";
+      el("circle", { cx: p[0], cy: p[1], r: 17, fill: red ? "var(--viz-bad)" : "var(--viz-ink)", stroke: red ? "var(--viz-bad)" : "var(--viz-ink)", "stroke-width": 1.5 }, g);
+      txt(g, p[0], p[1] + 5, k, { "text-anchor": "middle", "font-weight": 600, "font-size": 13, fill: "var(--viz-surface)" });
+      txt(g, p[0] + 21, p[1] - 12, red ? "red" : "black", { class: "vz-cap", "font-size": 10 });
+    });
+  }
+  function treap(root) {
+    var g = figure(root, "A treap: BST order by key, heap order by priority", "0 0 400 200", "A treap. Root key 50 priority 93; its children key 30 priority 71 and key 70 priority 64; 30's children key 20 priority 12 and key 40 priority 55; 70's right child key 80 priority 30");
+    var P = { 50: [200, 30, 93], 30: [110, 96, 71], 70: [290, 96, 64], 20: [60, 166, 12], 40: [160, 166, 55], 80: [340, 166, 30] };
+    [[50, 30], [50, 70], [30, 20], [30, 40], [70, 80]].forEach(function (e) { line(g, P[e[0]][0], P[e[0]][1], P[e[1]][0], P[e[1]][1]); });
+    Object.keys(P).forEach(function (k) { var p = P[k]; el("rect", { class: "box", x: p[0] - 30, y: p[1] - 18, width: 60, height: 36, rx: 8 }, g); txt(g, p[0], p[1] - 2, "key " + k, { class: "tx", "text-anchor": "middle", "font-size": 11 }); txt(g, p[0], p[1] + 12, "pri " + p[2], { class: "acc", "text-anchor": "middle", "font-size": 10 }); });
+  }
+  function setOps(root) {
+    var g = figure(root, "Set operations on A = {1, 2, 3, 4, 5} and B = {4, 5, 6, 7}", "0 0 520 170", "Three pairs of overlapping circles A and B. Union shades both circles. Intersection shades only the overlap, holding 4 and 5. A minus B shades A outside the overlap, holding 1, 2, and 3.");
+    var svg = g.ownerSVGElement, defs = svg.querySelector("defs") || el("defs", {}, svg);
+    [["Union A ∪ B", "u"], ["Intersection A ∩ B", "i"], ["Difference A − B", "d"]].forEach(function (s, k) {
+      var cx = 90 + k * 170, ax = cx - 26, bx = cx + 26, cy = 80, r = 50, id = uid("vs");
+      var cpA = el("clipPath", { id: id + "a" }, defs); el("circle", { cx: ax, cy: cy, r: r }, cpA);
+      var fill = "var(--viz-accent)";
+      if (s[1] === "u") { el("circle", { cx: ax, cy: cy, r: r, fill: fill, opacity: .28 }, g); el("circle", { cx: bx, cy: cy, r: r, fill: fill, opacity: .28 }, g); }
+      if (s[1] === "i") el("circle", { cx: bx, cy: cy, r: r, fill: fill, opacity: .35, "clip-path": "url(#" + id + "a)" }, g);
+      if (s[1] === "d") { var mask = el("mask", { id: id + "m" }, defs); el("rect", { x: 0, y: 0, width: 520, height: 170, fill: "#fff" }, mask); el("circle", { cx: bx, cy: cy, r: r, fill: "#000" }, mask); el("circle", { cx: ax, cy: cy, r: r, fill: fill, opacity: .35, mask: "url(#" + id + "m)" }, g); }
+      el("circle", { cx: ax, cy: cy, r: r, fill: "none", stroke: "var(--viz-ink)", "stroke-width": 1.5 }, g);
+      el("circle", { cx: bx, cy: cy, r: r, fill: "none", stroke: "var(--viz-ink)", "stroke-width": 1.5 }, g);
+      txt(g, ax - 30, cy - 34, "A", { class: "tx", "font-size": 12 }); txt(g, bx + 24, cy - 34, "B", { class: "tx", "font-size": 12 });
+      txt(g, ax - 22, cy + 5, "1 2 3", { class: "tx", "text-anchor": "middle", "font-size": 11 });
+      txt(g, cx, cy + 5, "4 5", { class: "tx", "text-anchor": "middle", "font-size": 11 });
+      txt(g, bx + 22, cy + 5, "6 7", { class: "tx", "text-anchor": "middle", "font-size": 11 });
+      txt(g, cx, 156, s[0], { class: "vz-cap", "text-anchor": "middle" });
+    });
+  }
+
   /* ---------------- chapter cards ---------------- */
   var GLYPHS = {
     "01": function (s) { var P = [[110, 14], [60, 44], [160, 44], [130, 74], [190, 74]]; [[0, 1], [0, 2], [2, 3], [2, 4]].forEach(function (e) { line(s, P[e[0]][0], P[e[0]][1], P[e[1]][0], P[e[1]][1]); }); ["11", "S", "7", "M", "P"].forEach(function (v, i) { node(s, P[i][0], P[i][1], v); }); txt(s, 78, 26, "0", { class: "acc", "font-size": 11 }); txt(s, 140, 26, "1", { class: "acc", "font-size": 11 }); },
@@ -791,6 +1011,8 @@
     "03": function (s, m) { ["D", "C", "B", "A"].forEach(function (v, i) { box(s, 40, 4 + i * 18, 56, 16, v, 11); }); el("line", { x1: 140, y1: 12, x2: 100, y2: 12, stroke: "var(--viz-accent)", "stroke-width": 1.5, "marker-end": m }, s); txt(s, 146, 16, "top", { class: "acc", "font-size": 12 }); },
     "04": function (s) { [null, 5, 18, 31, null, 9, null].forEach(function (v, i) { box(s, 8 + i * 30, 28, 26, 26, v === null ? "" : v, 10); }); el("path", { d: "M50 62 C 60 74, 72 74, 80 62", fill: "none", stroke: "var(--viz-accent)", "stroke-width": 1.5 }, s); el("path", { d: "M80 62 C 90 74, 102 74, 110 62", fill: "none", stroke: "var(--viz-accent)", "stroke-width": 1.5 }, s); },
     "05": function (s) { var P = [[110, 14], [60, 44], [160, 44], [35, 74], [85, 74], [185, 74]]; [[0, 1], [0, 2], [1, 3], [1, 4], [2, 5]].forEach(function (e) { line(s, P[e[0]][0], P[e[0]][1], P[e[1]][0], P[e[1]][1]); }); [40, 20, 60, 10, 30, 70].forEach(function (v, i) { node(s, P[i][0], P[i][1], v); }); },
+    "06": function (s) { var P = [[110, 14], [60, 44], [160, 44], [35, 74]]; [[0, 1], [0, 2], [1, 3]].forEach(function (e) { line(s, P[e[0]][0], P[e[0]][1], P[e[1]][0], P[e[1]][1]); }); [20, 10, 30, 5].forEach(function (v, i) { node(s, P[i][0], P[i][1], v); }); el("path", { d: "M150 18 A 40 30 0 0 1 172 54", fill: "none", stroke: "var(--viz-accent)", "stroke-width": 1.5 }, s); },
+    "08": function (s) { el("circle", { cx: 90, cy: 44, r: 30, fill: "var(--viz-accent)", opacity: .2, stroke: "var(--viz-ink)", "stroke-width": 1.5 }, s); el("circle", { cx: 130, cy: 44, r: 30, fill: "var(--viz-accent)", opacity: .2, stroke: "var(--viz-ink)", "stroke-width": 1.5 }, s); txt(s, 110, 48, "∩", { class: "tx", "text-anchor": "middle", "font-size": 13 }); },
     "07": function (s) { var P = [[110, 14], [60, 44], [160, 44], [35, 74], [85, 74]]; [[0, 1], [0, 2], [1, 3], [1, 4]].forEach(function (e) { line(s, P[e[0]][0], P[e[0]][1], P[e[1]][0], P[e[1]][1]); }); [50, 30, 40, 10, 20].forEach(function (v, i) { node(s, P[i][0], P[i][1], v); }); },
     "09": function (s) { var P = [[30, 20], [100, 14], [180, 30], [60, 70], [150, 72]]; [[0, 1], [1, 2], [0, 3], [3, 4], [1, 4], [2, 4]].forEach(function (e) { line(s, P[e[0]][0], P[e[0]][1], P[e[1]][0], P[e[1]][1]); }); "ABCDE".split("").forEach(function (v, i) { node(s, P[i][0], P[i][1], v); }); },
     "11": function (s) { [["1", 2], ["2", 4], ["3", 10], ["4", 20], ["5", 40], ["6", 70]].forEach(function (b, i) { el("rect", { x: 30 + i * 28, y: 78 - b[1], width: 18, height: b[1], rx: 2, fill: "var(--viz-c" + b[0] + ")" }, s); }); line(s, 24, 78, 200, 78); },
@@ -823,7 +1045,8 @@
   var BUILDERS = {
     "linked-list": linkedList, "stack-queue": stackQueue, "hash-probe": hashProbe, heap: heap, sort: sort,
     "loop-grid": loopGrid, "growth-chart": growthChart, "cost-spectrum": costSpectrum, "chapter-map": chapterMap,
-    allocation: allocation, huffman: huffman, "tree-shapes": treeShapes
+    allocation: allocation, huffman: huffman, "tree-shapes": treeShapes,
+    bst: bst, avl: avl, "rb-tree": rbTree, treap: treap, "set-ops": setOps
   };
   document.querySelectorAll(".viz[data-viz]").forEach(function (root) {
     var f = BUILDERS[root.getAttribute("data-viz")];

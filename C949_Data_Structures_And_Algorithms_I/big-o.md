@@ -89,11 +89,7 @@ A tree with n nodes has height at least ⌊log₂ n⌋, and at most n − 1. Any
 
 A heap is stored in an array with no gaps. With the root at index 0, the children of index i are at 2i + 1 and 2i + 2, and its parent is at (i − 1) // 2. (With the root at index 1: children 2i and 2i + 1, parent i // 2.)
 
-<div class="viz" data-viz="heap" markdown>
-
-*On the site, an interactive diagram here inserts into and removes from a max-heap, showing the tree and the array side by side.*
-
-</div>
+For a heap you can step through, see [chapter 7](07-heaps-treaps.md#heaps).
 
 <div class="viz" data-viz="tree-shapes" markdown>
 
