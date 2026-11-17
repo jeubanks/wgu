@@ -26,12 +26,13 @@ Chapter numbers match the zyBooks chapters.
 - **[6. Balanced trees](06-balanced-trees.md)**: rotations, AVL trees and balance factors, red-black trees
 - **[7. Heaps and treaps](07-heaps-treaps.md)**: max- and min-heaps in an array, priority queues, heap sort, treaps
 - **[8. Sets](08-sets.md)**: the set ADT, union, intersection, difference, filter and map, and Python's set
+- **[9. Graphs](09-graphs.md)**: adjacency lists and matrices, BFS and DFS, directed and weighted graphs, Dijkstra, Bellman-Ford, topological sort, minimum spanning trees, all-pairs shortest paths
+- **[10. B-trees](10-b-trees.md)**: B-trees of order m, 2-3-4 tree search, insert (splits), and remove (rotations and fusion)
 - **[11. Searching and algorithm analysis](11-algorithm-analysis.md)**: linear and binary search, finding Big-O by tracing (ten worked patterns), and all ten sorts with their best, average, and worst cases
 - **[12–20. Programming concepts](12-programming-concepts.md)**: reading code, static and dynamic typing, operators, loops, classes, memory management, data flow diagrams, and what Python's lists, dicts, and sets cost
+- **[21. Recursion](21-recursion.md)**: base and recursive cases, the call stack, recursive search, debugging output, recursive math, and exploring all possibilities (permutations and subsets)
 
 </div>
-
-Chapters 9 (graphs), 10 (B-trees), and 21 (recursion) are coming next.
 
 **Reference:** the [Big-O cheat sheet](big-o.md) puts every structure and algorithm in the course on one printable page, with best, average, and worst cases.
 

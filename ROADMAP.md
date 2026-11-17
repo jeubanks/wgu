@@ -6,7 +6,6 @@ D427 is the model course. Once its patterns are settled, other courses reuse the
 
 ## Up next
 
-- [ ] **C949 chapters 9, 10, and 21**: graphs, B-trees (2-3-4 trees, order m), recursion. From the course study guide, cover: graph operations and their costs, Dijkstra (greedy) vs Bellman-Ford (dynamic programming); recursion's base case, recursive case, and call stack (factorial trace). Fold the Lesson 7 pseudocode tracing drills into chapter 21.
 - [ ] **C949 diagrams for chapters 9 and 10**: BFS and DFS on a graph, Dijkstra, and B-tree splits, built on `viz.js` like the existing ones. They must not reproduce a question's setup.
 - [ ] **C949 Try it runner (Pyodide)**: run each code lesson's checks in the browser, and tick Done on a pass. About 10 MB from a CDN, so load it only when a Try it box opens.
 
@@ -40,6 +39,7 @@ Nothing here yet.
 
 ## Done
 
+- C949 aligned with zyBooks: chapters 1 and 5 to 8 checked against the zyBooks chapter text (conventions, missing topics, and wrong answers fixed, new questions added), new chapters 9 (graphs) and 10 (B-trees and 2-3-4 trees), and chapter 21 (recursion), which completes the guide. Written by a workflow of one agent per chapter, each followed by an independent agent that re-derived every answer in Python and checked the zyBooks fit and house rules (#58)
 - C949 chapters 5 to 8: trees (shapes, BST search, insert, remove, traversals, tries), balanced trees (rotations, AVL balance factors and the four cases, red-black rules and insert), heaps and treaps (array indexes, percolate up and down, heapify, priority queues, heap sort, treaps), and sets (operations, filter and map, hash vs BST sets, Python's set), with 21 questions. New diagrams: a BST bench (random inserts, search, remove, animated traversals), an AVL bench (the four cases), and red-black, treap, and set-operation figures; the heap bench now inserts random values only (#57)
 - C949 chapter 11 complete: searching (linear, binary with the ⌊log₂ n⌋ + 1 bound and mid-value traces, interpolation) and sorting (all ten sorts with traces, best/average/worst, stability, and code clues), following zyBooks' conventions (middle-element quicksort pivot, 2ᵏ − 1 shell gaps, bucket index ⌊x·k/(M + 1)⌋, 0-based quickselect), plus eight more questions (#56)
 - Visual redesign: Space Grotesk headings with Inter and JetBrains Mono across the site; for C949, interactive benches (linked list, stack and circular queue, hash probing, max-heap, sorting, a loop tracer), a Big-O growth chart, a cost spectrum, chapter picture cards, static drawings (Huffman tree, memory allocation, tree shapes), and color-coded complexity chips in tables, all from `docs/javascripts/viz.js` (#55)

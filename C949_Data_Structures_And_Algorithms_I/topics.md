@@ -8,14 +8,14 @@ Topics marked *coming* are in chapters not written yet. Until then, the [Big-O c
 
 | Topic | Where |
 |---|---|
-| What makes something an algorithm: finiteness, definiteness, input, output, effectiveness, generality | [1. Introduction](01-introduction.md#what-makes-something-an-algorithm) |
+| What makes something an algorithm: zyBooks' characteristics (unambiguity, finiteness, well-defined inputs and outputs, effectiveness, feasibility, language independence) | [1. Introduction](01-introduction.md#what-makes-something-an-algorithm) |
 | Qualities of a good algorithm: correctness, simplicity, modularity, maintainability, robustness, extensibility | [1. Introduction](01-introduction.md#what-makes-something-an-algorithm) |
 | Kinds of algorithms: brute force, recursive, backtracking, divide and conquer, greedy, dynamic programming, randomized, searching, sorting, hashing, encryption | [1. Introduction](01-introduction.md#kinds-of-algorithms) |
 | Greedy algorithms and dynamic programming | [1. Introduction](01-introduction.md#greedy-algorithms) |
-| Recursion: base case, recursive case, the call stack, tracing factorial | [11. Algorithm analysis](11-algorithm-analysis.md#pattern-10-recursion); [12–20](12-programming-concepts.md#functions-and-recursion); 21. Recursion *(coming)* |
+| Recursion: base case, recursive case, the call stack, tracing factorial | [21. Recursion](21-recursion.md); [11. Recursion's Big-O](11-algorithm-analysis.md#pattern-10-recursion) |
 | Linear and binary search, including tracing binary search's mid values | [11. Searching](11-algorithm-analysis.md#searching); [Cheat sheet](big-o.md#searching) |
 | Interpolation search | [11. Searching](11-algorithm-analysis.md#interpolation-search); [Cheat sheet](big-o.md#searching) |
-| Breadth-first and depth-first search | [Cheat sheet](big-o.md#graphs); 9. Graphs *(coming)* |
+| Breadth-first and depth-first search | [9. Graphs](09-graphs.md#breadth-first-search-bfs) |
 | Sorting: bubble, selection, insertion, shell, merge, quick, heap, counting, radix, and bucket sort, their best, average, and worst cases, and recognizing each one in code | [11. Sorting](11-algorithm-analysis.md#sorting); [Cheat sheet](big-o.md#sorting) |
 | Big-O: growth rates, best, average, and worst case, and the rules for simplifying | [Cheat sheet](big-o.md#growth-rates-slowest-to-fastest) |
 | Finding the Big-O of code: nested and dependent loops, halving loops, hidden costs, recursion | [11. Algorithm analysis](11-algorithm-analysis.md) |
@@ -36,10 +36,10 @@ Topics marked *coming* are in chapters not written yet. Until then, the [Big-O c
 | Dictionaries and maps, and Python's dict methods | [4. Hash tables](04-hash-tables.md#the-map-adt); [12–20](12-programming-concepts.md#what-pythons-built-ins-cost) |
 | Trees: binary trees, BSTs, full, complete, perfect, and balanced trees, BST removal, traversals | [5. Trees](05-trees.md) |
 | AVL and red-black trees | [6. Balanced trees](06-balanced-trees.md) |
-| B-trees | [Cheat sheet](big-o.md#trees-and-heaps); 10. B-trees *(coming)* |
+| B-trees | [10. B-trees](10-b-trees.md) |
 | Heaps: percolate up and down, child and parent indexes, heapify | [7. Heaps and treaps](07-heaps-treaps.md) |
 | Sets and set operations (union, intersection, difference) | [8. Sets](08-sets.md) |
-| Graphs: kinds, adding and removing vertices and edges, Dijkstra vs Bellman-Ford | [Cheat sheet](big-o.md#graphs); 9. Graphs *(coming)* |
+| Graphs: kinds, adding and removing vertices and edges, Dijkstra vs Bellman-Ford | [9. Graphs](09-graphs.md) |
 
 ## Applies Algorithms
 
