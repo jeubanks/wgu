@@ -24,6 +24,7 @@ exclude_docs: |
 
 extra_css:
   - stylesheets/wgu.css
+  - stylesheets/viz.css
 
 # The SQL runner on D427 Part 1 and the quiz on Part 4
 # (hooks/sql_runner.py and hooks/quiz.py add their data to those pages).
@@ -33,6 +34,7 @@ extra_javascript:
   - javascripts/progress.js
   - javascripts/site.js
   - javascripts/drill.js
+  - javascripts/viz.js
 
 hooks:
   - hooks/er_diagrams.py
@@ -49,6 +51,9 @@ theme:
   name: material
   custom_dir: overrides
   favicon: assets/favicon.svg
+  font:
+    text: Inter
+    code: JetBrains Mono
   features:
     - navigation.tabs
     - navigation.sections

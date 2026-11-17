@@ -16,6 +16,7 @@ The Markdown stays readable on GitHub. Everything the site adds (folded hints, q
 - [Progress tracking](#progress-tracking)
 - [Python courses (C949)](#python-courses-c949)
 - [Glossary tooltips](#glossary-tooltips)
+- [Diagrams and interactive benches](#diagrams-and-interactive-benches-vizjs)
 - [GitHub Markdown the build adapts](#github-markdown-the-build-adapts)
 - [Rules](#rules)
 
@@ -217,6 +218,35 @@ C949 is a study guide first: one page per zyBooks chapter (`01-introduction.md` 
 - **No check:** an exercise with no Python answer (5.7, 3.6) gets a hand-written `<details><summary>Answer</summary>` block; its hints go above it.
 
 Run `python3 build_solutions.py` in the course folder after changing a lesson or solutions file. CI fails if it would change anything, and runs `pytest --solutions` in `c949-practice/`.
+
+## Diagrams and interactive benches (`viz.js`)
+
+`docs/javascripts/viz.js` (styles in `docs/stylesheets/viz.css`) draws pictures and step-through "benches" from a placeholder. The Markdown inside it is what GitHub shows:
+
+```markdown
+<div class="viz" data-viz="hash-probe" markdown>
+
+*On the site, an interactive diagram here inserts keys into a 13-bucket table and animates probing.*
+
+</div>
+```
+
+| `data-viz` | What it draws | Used on |
+|---|---|---|
+| `linked-list` | Singly-linked list: prepend, append, insert after, remove last, search, step by step with pointer changes | C949 2 |
+| `stack-queue` | A stack, and a queue in a circular array of 8 slots | C949 3 |
+| `hash-probe` | 13 buckets; linear, quadratic, and double-hashing probes, animated | C949 4 |
+| `heap` | Max-heap insert and remove-max, tree and array together | Cheat sheet |
+| `sort` | Bubble, selection, insertion, and merge sort on sorted, random, or reversed input, counting comparisons | C949 11 |
+| `loop-grid` | One dot per run of a loop's busiest line, for six loop patterns, n = 4, 8, 16 | C949 11 |
+| `growth-chart` | The seven growth classes as n grows, linear or log scale, with a table view | Cheat sheet |
+| `cost-spectrum` | Steps for n = 1,000 in each growth class | C949 contents |
+| `chapter-map` | Turns the Markdown list inside it into picture cards (one drawing per chapter number) | C949 contents |
+| `allocation`, `huffman`, `tree-shapes` | Static drawings | C949 2, 1, cheat sheet |
+
+- **Never let a bench answer a question.** Give each bench a setup the page's questions don't use (C949's hash bench has 13 buckets; its questions use 7, 10, and 11), and limit inputs where a question could be reproduced (the loop tracer stops at n = 16; question 11.5 asks about n = 32).
+- **Complexity chips:** on C949 pages, `viz.js` turns O(1), O(log n), O(n), O(n log n), O(n²), O(2ⁿ), and O(n!) in table cells into colored chips, one color per class, the same colors as the growth chart. Quiz tables and code are skipped.
+- Every bench works in light and dark, respects reduced motion, and narrates each step in a live region.
 
 ## Other D427 pages
 

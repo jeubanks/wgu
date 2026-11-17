@@ -17,6 +17,12 @@ Sorts that don't compare items have a second size, k: the number of digits (radi
 | O(2ⁿ) | Exponential | Naive recursive Fibonacci |
 | O(n!) | Factorial | Trying every ordering of n items |
 
+<div class="viz" data-viz="growth-chart" markdown>
+
+*On the site, an interactive chart here plots every growth class as n grows, with a log-scale view and a table.*
+
+</div>
+
 **Rules for working it out** (the [algorithm analysis page](11-algorithm-analysis.md) traces an example of each):
 
 - Drop constant factors: O(3n²) is O(n²), and O(n + 10) is O(n).
@@ -82,6 +88,18 @@ A **bag** (multiset) allows duplicates. Python's `collections.Counter` is one: a
 A tree with n nodes has height at least ⌊log₂ n⌋, and at most n − 1. Any traversal (inorder, preorder, postorder, level order) visits every node once: O(n).
 
 A heap is stored in an array with no gaps. With the root at index 0, the children of index i are at 2i + 1 and 2i + 2, and its parent is at (i − 1) // 2. (With the root at index 1: children 2i and 2i + 1, parent i // 2.)
+
+<div class="viz" data-viz="heap" markdown>
+
+*On the site, an interactive diagram here inserts into and removes from a max-heap, showing the tree and the array side by side.*
+
+</div>
+
+<div class="viz" data-viz="tree-shapes" markdown>
+
+*On the site, a drawing here shows full, complete, and perfect binary trees.*
+
+</div>
 
 ## Searching
 

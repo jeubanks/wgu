@@ -1,0 +1,183 @@
+/* Diagrams and interactive benches (docs/javascripts/viz.js), complexity chips,
+   and C949's chapter cards. Colors come from Material's tokens plus a few of our
+   own, redefined for the dark (slate) scheme. Growth classes use seven validated
+   categorical colors (--viz-c1 .. --viz-c7), always shown with their text label.
+   The tokens sit on [data-md-color-scheme] (the body), where Material defines the
+   colors they read, so they follow the light/dark switch. */
+:root, [data-md-color-scheme] {
+  --viz-ink: var(--md-default-fg-color);
+  --viz-muted: var(--md-default-fg-color--light);
+  --viz-line: var(--md-default-fg-color--lighter);
+  --viz-surface: var(--md-default-bg-color);
+  --viz-surface-2: var(--md-code-bg-color);
+  --viz-accent: #0b63d6;
+  --viz-accent-soft: #0b63d61f;
+  --viz-on-accent: #ffffff;
+  --viz-good: #2f7d0f;
+  --viz-good-soft: #2f7d0f1f;
+  --viz-bad: #c0292b;
+  --viz-bad-soft: #c0292b1c;
+  --viz-warn: #9a6400;
+  --viz-c1: #2a78d6; --viz-c2: #eb6834; --viz-c3: #1baf7a; --viz-c4: #eda100;
+  --viz-c5: #e87ba4; --viz-c6: #008300; --viz-c7: #6250d6;
+}
+[data-md-color-scheme="slate"] {
+  --viz-accent: #5ab8f2;
+  --viz-accent-soft: #5ab8f226;
+  --viz-on-accent: #10161f;
+  --viz-good: #97e152;
+  --viz-good-soft: #97e15222;
+  --viz-bad: #ff8a80;
+  --viz-bad-soft: #ff8a8022;
+  --viz-warn: #f2c14e;
+  --viz-c1: #3987e5; --viz-c2: #d95926; --viz-c3: #199e70; --viz-c4: #c98500;
+  --viz-c5: #d55181; --viz-c6: #0ca30c; --viz-c7: #9085e9;
+}
+
+/* ---------- complexity chip ---------- */
+.md-typeset .viz-chip {
+  display: inline-flex; align-items: center; gap: .35em;
+  font-family: var(--md-code-font-family); font-size: .82em; font-weight: 600; line-height: 1.2;
+  padding: .2em .55em .2em .45em; border-radius: 999px;
+  background: var(--viz-surface-2); color: var(--viz-ink); white-space: nowrap;
+}
+.md-typeset .viz-chip::before { content: ""; width: .6em; height: .6em; border-radius: 50%; background: var(--viz-dot, var(--viz-muted)); flex: none; }
+.viz-chip[data-c="1"] { --viz-dot: var(--viz-c1); } .viz-chip[data-c="2"] { --viz-dot: var(--viz-c2); }
+.viz-chip[data-c="3"] { --viz-dot: var(--viz-c3); } .viz-chip[data-c="4"] { --viz-dot: var(--viz-c4); }
+.viz-chip[data-c="5"] { --viz-dot: var(--viz-c5); } .viz-chip[data-c="6"] { --viz-dot: var(--viz-c6); }
+.viz-chip[data-c="7"] { --viz-dot: var(--viz-c7); }
+
+/* ---------- bench frame ---------- */
+.md-typeset .viz { margin: 1.4em 0; }
+.md-typeset .viz-bench { border: 1px solid var(--viz-line); border-radius: .7rem; overflow: hidden; background: var(--viz-surface); }
+.md-typeset .viz-head { display: flex; flex-wrap: wrap; gap: .3rem 1rem; align-items: baseline; justify-content: space-between; padding: .8rem 1rem .2rem; }
+.md-typeset .viz-head .viz-title { font-family: var(--wgu-display-font); font-weight: 600; font-size: 1rem; margin: 0; }
+.md-typeset .viz-head .viz-hint { color: var(--viz-muted); font-size: .72rem; }
+.md-typeset .viz-controls { display: flex; flex-wrap: wrap; gap: .4rem; padding: .4rem 1rem .7rem; align-items: center; }
+.md-typeset .viz-btn {
+  border: 1px solid var(--viz-line); background: var(--viz-surface-2); color: var(--viz-ink);
+  border-radius: .4rem; padding: .3rem .7rem; cursor: pointer; font: inherit; font-size: .72rem;
+}
+.md-typeset .viz-btn:hover { border-color: var(--viz-accent); }
+.md-typeset .viz-btn:focus-visible, .md-typeset .viz-field input:focus-visible, .md-typeset .viz-field select:focus-visible { outline: 2px solid var(--viz-accent); outline-offset: 2px; }
+.md-typeset .viz-btn.primary { background: var(--viz-accent); border-color: var(--viz-accent); color: var(--viz-on-accent); font-weight: 600; }
+.md-typeset .viz-btn[aria-pressed="true"] { background: var(--viz-accent-soft); border-color: var(--viz-accent); }
+.md-typeset .viz-btn:disabled { opacity: .45; cursor: default; }
+.md-typeset .viz-spacer { flex: 1; }
+.md-typeset .viz-field { display: inline-flex; gap: .35rem; align-items: center; font-size: .72rem; color: var(--viz-muted); }
+.md-typeset .viz-field input, .md-typeset .viz-field select {
+  border: 1px solid var(--viz-line); background: var(--viz-surface); color: var(--viz-ink);
+  border-radius: .4rem; padding: .25rem .4rem; font: inherit; width: 4.2rem;
+}
+.md-typeset .viz-field select { width: auto; }
+.md-typeset .viz-field input[type="range"] { width: 8rem; padding: 0; }
+.md-typeset .viz-stage { background: var(--viz-surface-2); border-block: 1px solid var(--viz-line); overflow-x: auto; }
+.md-typeset .viz-stage svg { display: block; width: 100%; height: auto; min-width: 34rem; }
+.md-typeset .viz-narr { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .6rem 1.2rem; padding: .7rem 1rem .9rem; align-items: start; }
+.md-typeset .viz-say { font-size: .78rem; min-height: 2.6em; margin: 0; }
+.md-typeset .viz-code { font-family: var(--md-code-font-family); font-size: .7rem; background: var(--viz-surface-2); border-radius: .4rem; padding: .4rem .6rem; margin-top: .4rem; white-space: pre; overflow-x: auto; min-height: 1.5em; }
+.md-typeset .viz-tally { display: grid; gap: .25rem; justify-items: end; min-width: 8rem; }
+.md-typeset .viz-big { font-family: var(--wgu-display-font); font-weight: 600; font-size: 1.4rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.md-typeset .viz-lbl { font-size: .65rem; color: var(--viz-muted); }
+@media (max-width: 44.9em) {
+  .md-typeset .viz-narr { grid-template-columns: minmax(0, 1fr); }
+  .md-typeset .viz-tally { justify-items: start; }
+}
+
+/* ---------- svg pieces ---------- */
+.viz svg text { font-family: var(--md-code-font-family); }
+.viz .vz-node rect { fill: var(--viz-surface); stroke: var(--viz-ink); stroke-width: 1.5; }
+.viz .vz-node .split { stroke: var(--viz-ink); stroke-width: 1.5; }
+.viz .vz-node text { fill: var(--viz-ink); font-size: 18px; font-weight: 600; }
+.viz .vz-node .dot { fill: var(--viz-ink); }
+.viz .vz-node.cur rect, .viz .vz-cell.cur rect, .viz .vz-slot.probe rect { stroke: var(--viz-accent); stroke-width: 3; fill: var(--viz-accent-soft); }
+.viz .vz-node.new rect, .viz .vz-slot.landed rect, .viz .vz-cell.new rect { stroke: var(--viz-good); stroke-width: 3; fill: var(--viz-good-soft); }
+.viz .vz-node.gone rect, .viz .vz-slot.taken rect, .viz .vz-cell.gone rect { stroke: var(--viz-bad); stroke-width: 3; fill: var(--viz-bad-soft); }
+.viz .vz-node.gone rect { stroke-dasharray: 5 4; }
+.viz .vz-move { transition: transform .45s cubic-bezier(.3, .7, .3, 1), opacity .35s; }
+.viz .vz-arrow { stroke: var(--viz-ink); stroke-width: 1.8; fill: none; }
+.viz .vz-arrow.hot { stroke: var(--viz-accent); stroke-width: 2.6; }
+.viz .vz-arrow.fresh { stroke: var(--viz-good); stroke-width: 2.6; }
+.viz .vz-ptr text { fill: var(--viz-accent); font-size: 13px; font-weight: 600; }
+.viz .vz-ptr line { stroke: var(--viz-accent); stroke-width: 1.8; }
+.viz .vz-muted { fill: var(--viz-muted); font-size: 13px; }
+.viz .vz-cap { fill: var(--viz-muted); font-size: 12px; font-family: var(--md-text-font-family), sans-serif; }
+.viz .vz-slot rect, .viz .vz-cell rect { fill: var(--viz-surface); stroke: var(--viz-line); stroke-width: 1.5; transition: fill .25s, stroke .25s; }
+.viz .vz-slot.full rect, .viz .vz-cell.full rect { stroke: var(--viz-ink); }
+.viz .vz-slot .k, .viz .vz-cell .v { fill: var(--viz-ink); font-size: 16px; font-weight: 600; }
+.viz .vz-slot .ix, .viz .vz-cell .i { fill: var(--viz-muted); font-size: 12px; }
+.viz .vz-hn circle { fill: var(--viz-surface); stroke: var(--viz-ink); stroke-width: 1.5; transition: stroke .25s, fill .25s; }
+.viz .vz-hn text { fill: var(--viz-ink); font-size: 16px; font-weight: 600; }
+.viz .vz-hn.cur circle { stroke: var(--viz-accent); stroke-width: 3; fill: var(--viz-accent-soft); }
+.viz .vz-hn.cmp circle, .viz .vz-cell.cmp rect { stroke: var(--viz-warn); stroke-width: 3; }
+.viz .vz-edge { stroke: var(--viz-line); stroke-width: 2; }
+.viz .vz-bar rect { fill: var(--viz-muted); opacity: .55; transition: fill .15s, opacity .15s; }
+.viz .vz-bar.cmp rect { fill: var(--viz-warn); opacity: 1; }
+.viz .vz-bar.swp rect { fill: var(--viz-accent); opacity: 1; }
+.viz .vz-bar.done rect { fill: var(--viz-good); opacity: .9; }
+.viz .vz-bar text { fill: var(--viz-ink); font-size: 12px; }
+.viz .vz-dotg circle { fill: var(--viz-accent); }
+.viz .vz-dotg circle.off { fill: var(--viz-line); }
+.viz .vz-static rect.box { fill: var(--viz-surface-2); stroke: var(--viz-ink); stroke-width: 1.5; }
+.viz .vz-static circle.nd { fill: var(--viz-surface-2); stroke: var(--viz-ink); stroke-width: 1.5; }
+.viz .vz-static .tx { fill: var(--viz-ink); font-weight: 600; }
+.viz .vz-static .ln { stroke: var(--viz-muted); stroke-width: 1.5; }
+.viz .vz-static .acc { fill: var(--viz-accent); font-weight: 600; }
+
+/* ---------- static figure frame ---------- */
+.md-typeset .viz-figure { border: 1px solid var(--viz-line); border-radius: .7rem; padding: .8rem 1rem; background: var(--viz-surface); }
+.md-typeset .viz-figure svg { width: 100%; max-width: 30rem; height: auto; display: block; margin: 0 auto; }
+.md-typeset .viz-figure .viz-title { font-family: var(--wgu-display-font); font-weight: 600; font-size: .9rem; margin: 0 0 .3rem; }
+
+/* ---------- growth chart ---------- */
+.md-typeset .viz-legend { display: flex; flex-wrap: wrap; gap: .35rem; padding: 0 1rem .4rem; }
+.md-typeset .viz-legend button {
+  border: 1px solid var(--viz-line); background: var(--viz-surface); color: var(--viz-ink); border-radius: 999px;
+  padding: .15rem .55rem .15rem .45rem; display: inline-flex; gap: .35rem; align-items: center;
+  font-family: var(--md-code-font-family); font-size: .68rem; font-weight: 600; cursor: pointer;
+}
+.md-typeset .viz-legend button::before { content: ""; width: .75rem; height: 3px; border-radius: 2px; background: var(--viz-sw); }
+.md-typeset .viz-legend button[aria-pressed="false"] { opacity: .5; text-decoration: line-through; }
+.md-typeset .viz-chart { position: relative; padding: .2rem 1rem .6rem; overflow-x: auto; }
+.viz .vz-grid line { stroke: var(--viz-line); stroke-width: 1; opacity: .6; }
+.viz .vz-axis text { fill: var(--viz-muted); font-size: 12px; }
+.viz .vz-series path { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.viz .vz-lbl { font-size: 12px; font-weight: 600; fill: var(--viz-ink); }
+.viz .vz-xh { stroke: var(--viz-muted); stroke-width: 1; stroke-dasharray: 3 3; }
+.viz .vz-hit { fill: transparent; }
+.md-typeset .viz-tip {
+  position: absolute; pointer-events: none; background: var(--viz-surface); border: 1px solid var(--viz-line);
+  border-radius: .4rem; padding: .4rem .6rem; font-family: var(--md-code-font-family); font-size: .65rem; line-height: 1.5;
+  box-shadow: 0 .3rem 1rem #0003; min-width: 10rem; z-index: 2;
+}
+.md-typeset .viz-tip .row { display: flex; justify-content: space-between; gap: .8rem; }
+.md-typeset .viz-tip .sw { display: inline-block; width: .6rem; height: 3px; border-radius: 2px; margin-right: .35rem; vertical-align: middle; }
+.md-typeset .viz details { margin: 0 1rem .8rem; }
+
+/* ---------- cost spectrum ---------- */
+.md-typeset .viz-spectrum { border: 1px solid var(--viz-line); border-radius: .7rem; padding: .8rem 1rem; background: var(--viz-surface); }
+.md-typeset .viz-spectrum ol { list-style: none; margin: .5rem 0 0; padding: 0; display: grid; gap: .3rem; }
+.md-typeset .viz-spectrum li { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr) 6.5rem; gap: .6rem; align-items: center; margin: 0; font-size: .7rem; }
+.md-typeset .viz-spectrum .bar { display: block; height: .55rem; border-radius: 0 4px 4px 0; background: var(--viz-dot); }
+.md-typeset .viz-spectrum .verdict { color: var(--viz-muted); text-align: right; font-variant-numeric: tabular-nums; }
+.md-typeset .viz-eyebrow { font-family: var(--md-code-font-family); font-size: .62rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--viz-muted); }
+
+/* ---------- chapter cards ---------- */
+.md-typeset .viz-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: .7rem; margin: 1rem 0; }
+.md-typeset .viz-card {
+  display: grid; grid-template-rows: auto 4.5rem auto 1fr; gap: .35rem; padding: .7rem .8rem .8rem;
+  border: 1px solid var(--viz-line); border-radius: .7rem; background: var(--viz-surface);
+  color: var(--viz-ink); text-decoration: none; transition: border-color .15s, transform .15s;
+}
+.md-typeset .viz-card:hover, .md-typeset .viz-card:focus-visible { border-color: var(--viz-accent); transform: translateY(-2px); color: var(--viz-ink); }
+.md-typeset .viz-card .num { font-family: var(--md-code-font-family); font-size: .62rem; font-weight: 600; color: var(--viz-muted); }
+.md-typeset .viz-card svg { width: 100%; height: 4.5rem; }
+.md-typeset .viz-card .ttl { font-family: var(--wgu-display-font); font-weight: 600; font-size: .85rem; line-height: 1.25; }
+.md-typeset .viz-card .sub { font-size: .66rem; color: var(--viz-muted); line-height: 1.4; }
+
+@media (prefers-reduced-motion: reduce) {
+  .viz .vz-move, .md-typeset .viz-card { transition: none !important; }
+}
+@media print {
+  .md-typeset .viz-controls, .md-typeset .viz-legend { display: none; }
+}

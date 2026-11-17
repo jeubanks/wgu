@@ -75,6 +75,12 @@ The `%` is what makes it wrap. For example, with an array of size 5:
 
 Every operation is O(1), and nothing ever shifts. When `length` reaches the array's size, the queue is full: a bounded queue refuses the item, and an unbounded one allocates a bigger array and copies the items over in queue order, starting from `front`.
 
+<div class="viz" data-viz="stack-queue" markdown>
+
+*On the site, an interactive diagram here pushes and pops a stack, and enqueues and dequeues a queue stored in a circular array.*
+
+</div>
+
 ## The deque ADT
 
 A **deque** (double-ended queue, said "deck") allows adding and removing at **both** ends: PushFront, PushBack, PopFront, PopBack, PeekFront, PeekBack. It can act as either a stack or a queue. A doubly-linked list, or a circular array, makes all of them O(1).

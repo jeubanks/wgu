@@ -56,6 +56,12 @@ In a singly-linked list, a node only points forward, so to remove a node you cha
 
 Given the node before it, removal is O(1). But removing the **last** node is O(n) even with a `tail` pointer: the new tail is the node before it, and the only way to find that node is to walk from the head.
 
+<div class="viz" data-viz="linked-list" markdown>
+
+*On the site, an interactive diagram here steps through prepend, append, insert after, remove last, and search on a singly-linked list.*
+
+</div>
+
 ## Doubly-linked lists
 
 A **doubly-linked list** gives each node two pointers: `next` and `prev`. The head's `prev` and the tail's `next` are null.
@@ -125,6 +131,12 @@ These two kinds of list show the two ways memory can be laid out:
 - **Linked allocation** (linked lists): each node is allocated on its own, anywhere in memory, and holds a pointer to the next. The list grows one node at a time with no copying, and inserts need no shifting, but finding item i means following i pointers.
 
 Doubling when the array is full makes resizes rare: after a resize to size 2n, the next n appends cost O(1) each. Averaged over all appends, each one is O(1). That's called **amortized** O(1), and it's how Python's `list.append` works.
+
+<div class="viz" data-viz="allocation" markdown>
+
+*On the site, a drawing here compares an array's single block of memory with a linked list's scattered nodes.*
+
+</div>
 
 ## Big-O summary
 

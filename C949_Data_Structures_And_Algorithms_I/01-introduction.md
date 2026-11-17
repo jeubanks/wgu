@@ -125,6 +125,12 @@ Two things to know:
 - **No code is the start of another.** Every character sits at a leaf, so the decoder reads bits until it hits a leaf, writes that character, and starts again from the root. No separators are needed.
 - **Ties can give different trees.** When two nodes have the same count, either order is fine. The codes change, but the total number of bits doesn't.
 
+<div class="viz" data-viz="huffman" markdown>
+
+*On the site, a drawing here shows this Huffman tree, with each code read off its branches.*
+
+</div>
+
 ## Heuristics
 
 A **heuristic** is a rule of thumb: it finds a good answer quickly, without promising the best one. Heuristics are used when the best answer would take too long to find, as with NP-complete problems.
