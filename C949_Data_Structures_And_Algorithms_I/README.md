@@ -14,9 +14,10 @@ Chapter numbers match the zyBooks chapters.
 - **[2. Lists](02-lists.md)**: singly- and doubly-linked lists, circular lists, dummy nodes, array-based lists
 - **[3. Stacks and queues](03-stacks-queues.md)**: stacks, queues, and deques, built on linked lists and on arrays
 - **[4. Hash tables](04-hash-tables.md)**: chaining, linear and quadratic probing, double hashing, resizing, hash functions
+- **[11. Algorithm analysis](11-algorithm-analysis.md)**: finding the Big-O of code by tracing it, with ten worked patterns, loops to recursion
 - **[12–20. Programming concepts](12-programming-concepts.md)**: reading code, static and dynamic typing, operators, loops, classes, memory management, data flow diagrams, and what Python's lists, dicts, and sets cost
 
-Chapters 5 to 11 (trees, balanced trees, heaps and treaps, sets, graphs, B-trees, searching and sorting) and 21 (recursion) are coming next.
+Chapters 5 to 10 (trees, balanced trees, heaps and treaps, sets, graphs, B-trees), chapter 11's searching and sorting sections, and 21 (recursion) are coming next.
 
 **Reference:** the [Big-O cheat sheet](big-o.md) puts every structure and algorithm in the course on one printable page, with best, average, and worst cases.
 

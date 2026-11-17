@@ -17,7 +17,7 @@ Sorts that don't compare items have a second size, k: the number of digits (radi
 | O(2ⁿ) | Exponential | Naive recursive Fibonacci |
 | O(n!) | Factorial | Trying every ordering of n items |
 
-**Rules for working it out:**
+**Rules for working it out** (the [algorithm analysis page](11-algorithm-analysis.md) traces an example of each):
 
 - Drop constant factors: O(3n²) is O(n²), and O(n + 10) is O(n).
 - Keep only the fastest-growing term: 5n³ + 2n² + 7 is O(n³), and 2ⁿ + n³ is O(2ⁿ), since exponentials beat any polynomial.

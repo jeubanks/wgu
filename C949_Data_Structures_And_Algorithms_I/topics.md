@@ -12,12 +12,13 @@ Topics marked *coming* are in chapters not written yet. Until then, the [Big-O c
 | Qualities of a good algorithm: correctness, simplicity, modularity, maintainability, robustness, extensibility | [1. Introduction](01-introduction.md#what-makes-something-an-algorithm) |
 | Kinds of algorithms: brute force, recursive, backtracking, divide and conquer, greedy, dynamic programming, randomized, searching, sorting, hashing, encryption | [1. Introduction](01-introduction.md#kinds-of-algorithms) |
 | Greedy algorithms and dynamic programming | [1. Introduction](01-introduction.md#greedy-algorithms) |
-| Recursion: base case, recursive case, the call stack, tracing factorial | [12–20. Programming concepts](12-programming-concepts.md#functions-and-recursion); 21. Recursion *(coming)* |
+| Recursion: base case, recursive case, the call stack, tracing factorial | [11. Algorithm analysis](11-algorithm-analysis.md#pattern-10-recursion); [12–20](12-programming-concepts.md#functions-and-recursion); 21. Recursion *(coming)* |
 | Linear and binary search, including tracing binary search's mid values | [Cheat sheet](big-o.md#searching); 11. Searching and algorithm analysis *(coming)*; code [Lesson 5](code/05-searching-sorting.md) |
 | Interpolation search | [Cheat sheet](big-o.md#searching); 11 *(coming)* |
 | Breadth-first and depth-first search | [Cheat sheet](big-o.md#graphs); 9. Graphs *(coming)* |
 | Sorting: bubble, selection, insertion, shell, merge, quick, heap, counting, radix, and bucket sort, their best, average, and worst cases, and recognizing each one in code | [Cheat sheet](big-o.md#sorting); 11 *(coming)* |
 | Big-O: growth rates, best, average, and worst case, and the rules for simplifying | [Cheat sheet](big-o.md#growth-rates-slowest-to-fastest) |
+| Finding the Big-O of code: nested and dependent loops, halving loops, hidden costs, recursion | [11. Algorithm analysis](11-algorithm-analysis.md) |
 
 ## Determines Data Structure Impact
 
