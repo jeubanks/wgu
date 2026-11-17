@@ -30,10 +30,9 @@ Chapter numbers match the zyBooks chapters.
 - **[10. B-trees](10-b-trees.md)**: B-trees of order m, 2-3-4 tree search, insert (splits), and remove (rotations and fusion)
 - **[11. Searching and algorithm analysis](11-algorithm-analysis.md)**: linear and binary search, finding Big-O by tracing (ten worked patterns), and all ten sorts with their best, average, and worst cases
 - **[12–20. Programming concepts](12-programming-concepts.md)**: reading code, static and dynamic typing, operators, loops, classes, memory management, data flow diagrams, and what Python's lists, dicts, and sets cost
+- **[21. Recursion](21-recursion.md)**: base and recursive cases, the call stack, recursive search, debugging output, recursive math, and exploring all possibilities (permutations and subsets)
 
 </div>
-
-Chapter 21 (recursion) is coming next.
 
 **Reference:** the [Big-O cheat sheet](big-o.md) puts every structure and algorithm in the course on one printable page, with best, average, and worst cases.
 

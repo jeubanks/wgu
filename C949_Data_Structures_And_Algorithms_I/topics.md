@@ -12,7 +12,7 @@ Topics marked *coming* are in chapters not written yet. Until then, the [Big-O c
 | Qualities of a good algorithm: correctness, simplicity, modularity, maintainability, robustness, extensibility | [1. Introduction](01-introduction.md#what-makes-something-an-algorithm) |
 | Kinds of algorithms: brute force, recursive, backtracking, divide and conquer, greedy, dynamic programming, randomized, searching, sorting, hashing, encryption | [1. Introduction](01-introduction.md#kinds-of-algorithms) |
 | Greedy algorithms and dynamic programming | [1. Introduction](01-introduction.md#greedy-algorithms) |
-| Recursion: base case, recursive case, the call stack, tracing factorial | [11. Algorithm analysis](11-algorithm-analysis.md#pattern-10-recursion); [12–20](12-programming-concepts.md#functions-and-recursion); 21. Recursion *(coming)* |
+| Recursion: base case, recursive case, the call stack, tracing factorial | [21. Recursion](21-recursion.md); [11. Recursion's Big-O](11-algorithm-analysis.md#pattern-10-recursion) |
 | Linear and binary search, including tracing binary search's mid values | [11. Searching](11-algorithm-analysis.md#searching); [Cheat sheet](big-o.md#searching) |
 | Interpolation search | [11. Searching](11-algorithm-analysis.md#interpolation-search); [Cheat sheet](big-o.md#searching) |
 | Breadth-first and depth-first search | [9. Graphs](09-graphs.md#breadth-first-search-bfs) |
