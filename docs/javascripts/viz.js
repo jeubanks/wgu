@@ -742,7 +742,7 @@
   /* ---------------- static figures ---------------- */
   function figure(root, title, viewBox, label) {
     root.textContent = "";
-    var f = h("div", { class: "viz-figure" }, root);
+    var f = h("div", { class: "viz-figure", tabindex: "0", role: "group", "aria-label": title }, root);
     h("p", { class: "viz-title" }, f, title);
     var svg = el("svg", { viewBox: viewBox, role: "img", "aria-label": label, class: "vz-static" }, f);
     return el("g", { class: "vz-static" }, svg);
@@ -783,7 +783,7 @@
       s[2].forEach(function (e) { line(g, pp[e[0]][0], pp[e[0]][1], pp[e[1]][0], pp[e[1]][1]); });
       pp.forEach(function (p) { el("circle", { class: "nd", cx: p[0], cy: p[1], r: 9 }, g); });
       txt(g, cx, 136, s[0], { class: "tx", "text-anchor": "middle", "font-size": 13 });
-      txt(g, cx, 154, s[3], { class: "vz-cap", "text-anchor": "middle", "font-size": 10.5 });
+      txt(g, cx, 154, s[3], { class: "vz-cap", "text-anchor": "middle", "font-size": 11 });
     });
   }
 
@@ -968,41 +968,45 @@
 
   /* ---------------- static: red-black tree, treap, set operations ---------------- */
   function rbTree(root) {
-    var g = figure(root, "A red-black tree", "0 0 400 230", "A red-black tree: 13 black at the root; children 8 red and 17 red; 8's children 1 and 11 black; 17's children 15 and 25 black; 25's right child 27 red");
+    var g = figure(root, "A red-black tree", "0 0 400 250", "A red-black tree: 13 black at the root; children 8 red and 17 red; 8's children 1 and 11 black; 17's children 15 and 25 black; 25's right child 27 red");
     var P = { 13: [200, 26, "B"], 8: [110, 90, "R"], 17: [290, 90, "R"], 1: [60, 156, "B"], 11: [160, 156, "B"], 15: [240, 156, "B"], 25: [340, 156, "B"], 27: [370, 214, "R"] };
     [[13, 8], [13, 17], [8, 1], [8, 11], [17, 15], [17, 25], [25, 27]].forEach(function (e) { line(g, P[e[0]][0], P[e[0]][1], P[e[1]][0], P[e[1]][1]); });
     Object.keys(P).forEach(function (k) {
       var p = P[k], red = p[2] === "R";
       el("circle", { cx: p[0], cy: p[1], r: 17, fill: red ? "var(--viz-bad)" : "var(--viz-ink)", stroke: red ? "var(--viz-bad)" : "var(--viz-ink)", "stroke-width": 1.5 }, g);
       txt(g, p[0], p[1] + 5, k, { "text-anchor": "middle", "font-weight": 600, "font-size": 13, fill: "var(--viz-surface)" });
-      txt(g, p[0] + 21, p[1] - 12, red ? "red" : "black", { class: "vz-cap", "font-size": 10 });
+      txt(g, p[0], p[1] + 31, red ? "red" : "black", { class: "vz-cap", "text-anchor": "middle", "font-size": 11 });
     });
   }
   function treap(root) {
     var g = figure(root, "A treap: BST order by key, heap order by priority", "0 0 400 200", "A treap. Root key 50 priority 93; its children key 30 priority 71 and key 70 priority 64; 30's children key 20 priority 12 and key 40 priority 55; 70's right child key 80 priority 30");
     var P = { 50: [200, 30, 93], 30: [110, 96, 71], 70: [290, 96, 64], 20: [60, 166, 12], 40: [160, 166, 55], 80: [340, 166, 30] };
     [[50, 30], [50, 70], [30, 20], [30, 40], [70, 80]].forEach(function (e) { line(g, P[e[0]][0], P[e[0]][1], P[e[1]][0], P[e[1]][1]); });
-    Object.keys(P).forEach(function (k) { var p = P[k]; el("rect", { class: "box", x: p[0] - 30, y: p[1] - 18, width: 60, height: 36, rx: 8 }, g); txt(g, p[0], p[1] - 2, "key " + k, { class: "tx", "text-anchor": "middle", "font-size": 11 }); txt(g, p[0], p[1] + 12, "pri " + p[2], { class: "acc", "text-anchor": "middle", "font-size": 10 }); });
+    Object.keys(P).forEach(function (k) { var p = P[k]; el("rect", { class: "box", x: p[0] - 34, y: p[1] - 19, width: 68, height: 38, rx: 8 }, g); txt(g, p[0], p[1] - 2, "key " + k, { class: "tx", "text-anchor": "middle", "font-size": 12.5 }); txt(g, p[0], p[1] + 13, "pri " + p[2], { class: "acc", "text-anchor": "middle", "font-size": 12 }); });
   }
   function setOps(root) {
-    var g = figure(root, "Set operations on A = {1, 2, 3, 4, 5} and B = {4, 5, 6, 7}", "0 0 520 170", "Three pairs of overlapping circles A and B. Union shades both circles. Intersection shades only the overlap, holding 4 and 5. A minus B shades A outside the overlap, holding 1, 2, and 3.");
-    var svg = g.ownerSVGElement, defs = svg.querySelector("defs") || el("defs", {}, svg);
-    [["Union A ∪ B", "u"], ["Intersection A ∩ B", "i"], ["Difference A − B", "d"]].forEach(function (s, k) {
-      var cx = 90 + k * 170, ax = cx - 26, bx = cx + 26, cy = 80, r = 50, id = uid("vs");
+    root.textContent = "";
+    var f = h("div", { class: "viz-figure", tabindex: "0", role: "group", "aria-label": "Set operations" }, root);
+    h("p", { class: "viz-title" }, f, "Set operations on A = {1, 2, 3, 4, 5} and B = {4, 5, 6, 7}");
+    var row = h("div", { class: "viz-venns" }, f);
+    [["Union A ∪ B", "u", "both circles shaded: 1 to 7"], ["Intersection A ∩ B", "i", "only the overlap shaded: 4 and 5"], ["Difference A − B", "d", "A outside the overlap shaded: 1, 2, 3"]].forEach(function (s) {
+      var svg = el("svg", { viewBox: "0 0 200 160", role: "img", "aria-label": s[0] + ": " + s[2], class: "vz-static" }, row);
+      var g = el("g", { class: "vz-static" }, svg), defs = el("defs", {}, svg);
+      var cx = 100, ax = cx - 28, bx = cx + 28, cy = 72, r = 52, id = uid("vs"), fill = "var(--viz-accent)";
       var cpA = el("clipPath", { id: id + "a" }, defs); el("circle", { cx: ax, cy: cy, r: r }, cpA);
-      var fill = "var(--viz-accent)";
       if (s[1] === "u") { el("circle", { cx: ax, cy: cy, r: r, fill: fill, opacity: .28 }, g); el("circle", { cx: bx, cy: cy, r: r, fill: fill, opacity: .28 }, g); }
       if (s[1] === "i") el("circle", { cx: bx, cy: cy, r: r, fill: fill, opacity: .35, "clip-path": "url(#" + id + "a)" }, g);
-      if (s[1] === "d") { var mask = el("mask", { id: id + "m" }, defs); el("rect", { x: 0, y: 0, width: 520, height: 170, fill: "#fff" }, mask); el("circle", { cx: bx, cy: cy, r: r, fill: "#000" }, mask); el("circle", { cx: ax, cy: cy, r: r, fill: fill, opacity: .35, mask: "url(#" + id + "m)" }, g); }
+      if (s[1] === "d") { var mask = el("mask", { id: id + "m" }, defs); el("rect", { x: 0, y: 0, width: 200, height: 160, fill: "#fff" }, mask); el("circle", { cx: bx, cy: cy, r: r, fill: "#000" }, mask); el("circle", { cx: ax, cy: cy, r: r, fill: fill, opacity: .35, mask: "url(#" + id + "m)" }, g); }
       el("circle", { cx: ax, cy: cy, r: r, fill: "none", stroke: "var(--viz-ink)", "stroke-width": 1.5 }, g);
       el("circle", { cx: bx, cy: cy, r: r, fill: "none", stroke: "var(--viz-ink)", "stroke-width": 1.5 }, g);
-      txt(g, ax - 30, cy - 34, "A", { class: "tx", "font-size": 12 }); txt(g, bx + 24, cy - 34, "B", { class: "tx", "font-size": 12 });
-      txt(g, ax - 22, cy + 5, "1 2 3", { class: "tx", "text-anchor": "middle", "font-size": 11 });
-      txt(g, cx, cy + 5, "4 5", { class: "tx", "text-anchor": "middle", "font-size": 11 });
-      txt(g, bx + 22, cy + 5, "6 7", { class: "tx", "text-anchor": "middle", "font-size": 11 });
-      txt(g, cx, 156, s[0], { class: "vz-cap", "text-anchor": "middle" });
+      txt(g, ax - 34, cy - 38, "A", { class: "tx", "font-size": 14 }); txt(g, bx + 26, cy - 38, "B", { class: "tx", "font-size": 14 });
+      txt(g, ax - 24, cy + 5, "1 2 3", { class: "tx", "text-anchor": "middle", "font-size": 13 });
+      txt(g, cx, cy + 5, "4 5", { class: "tx", "text-anchor": "middle", "font-size": 13 });
+      txt(g, bx + 24, cy + 5, "6 7", { class: "tx", "text-anchor": "middle", "font-size": 13 });
+      txt(g, cx, 150, s[0], { class: "vz-cap", "text-anchor": "middle", "font-size": 13 });
     });
   }
+
 
 
   /* ---------------- graph helpers ---------------- */

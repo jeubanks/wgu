@@ -76,14 +76,23 @@ A **bag** (multiset) allows duplicates. Python's `collections.Counter` is a bag:
 
 ## Trees and heaps
 
-| Structure | Search | Insert | Remove | Notes |
-|---|---|---|---|---|
-| Binary search tree (BST) | O(log n) average, O(n) worst | O(log n) average, O(n) worst | O(log n) average, O(n) worst | Worst case: keys inserted in sorted order make a chain. Best case for search: the key is at the root, O(1). |
-| AVL tree | O(log n) | O(log n) | O(log n) | Stays balanced with rotations. Height is at most about 1.44 log n. |
-| Red-black tree | O(log n) | O(log n) | O(log n) | Stays balanced with rotations and recoloring. Height is at most 2 log n. |
-| 2-3-4 tree / B-tree | O(log n) | O(log n) | O(log n) | All leaves at the same depth. |
-| Treap | O(log n) average, O(n) worst | O(log n) average, O(n) worst | O(log n) average, O(n) worst | A BST on keys and a heap on random priorities. |
-| Max-heap or min-heap | O(n) | O(log n) | remove max (or min): O(log n) | Peek at the max (or min): O(1). Building a heap from n items: O(n). |
+| Tree | Search, insert, remove: average | Worst case | Kept short by |
+|---|---|---|---|
+| Binary search tree (BST) | O(log n) | O(n) | Nothing. Keys inserted in sorted order make a chain. |
+| AVL tree | O(log n) | O(log n) | Rotations. Height stays under about 1.44 log n. |
+| Red-black tree | O(log n) | O(log n) | Rotations and recoloring. Height stays under 2 log n. |
+| 2-3-4 tree or B-tree | O(log n) | O(log n) | Splits and merges. Every leaf is at the same depth. |
+| Treap | O(log n) | O(n) | Random priorities, so it's balanced on average. |
+
+A BST search's best case is O(1), when the key is at the root.
+
+| Heap operation (max-heap or min-heap) | Big-O |
+|---|---|
+| Peek at the max (or min) | O(1) |
+| Insert | O(log n) |
+| Remove the max (or min) | O(log n) |
+| Search for any value | O(n) |
+| Build a heap from n items (heapify) | O(n) |
 
 A tree with n nodes has height at least ⌊log₂ n⌋, and at most n − 1. Any traversal (inorder, preorder, postorder, level order) visits every node once: O(n).
 
@@ -107,18 +116,31 @@ To step through a heap one operation at a time, see [chapter 7](07-heaps-treaps.
 
 ## Sorting
 
-| Sort | Best | Average | Worst | Space | Stable | How it works |
-|---|---|---|---|---|---|---|
-| Selection | O(n²) | O(n²) | O(n²) | O(1) | No | Find the smallest unsorted item, swap it into place |
-| Insertion | O(n) | O(n²) | O(n²) | O(1) | Yes | Take the next item and shift it left into the sorted part. Best case: already sorted. |
-| Bubble | O(n) | O(n²) | O(n²) | O(1) | Yes | Swap out-of-order neighbors. Best case: sorted, with an early stop when a pass makes no swaps. |
-| Shell | O(n log n) | About O(n^1.5), depending on the gaps | O(n²) | O(1) | No | Insertion sort on items a gap apart, with shrinking gaps. Halving the gap each time can give the O(n²) worst case. |
-| Merge | O(n log n) | O(n log n) | O(n log n) | O(n) | Yes | Split in half, sort each half, merge |
-| Quicksort | O(n log n) | O(n log n) | O(n²) | O(log n) | No | Partition around a pivot (zyBooks uses the middle element). Worst case: the pivot is always the smallest or largest item. |
-| Heap sort | O(n log n) | O(n log n) | O(n log n) | O(1) | No | Build a max-heap, then remove the max n times |
-| Counting | O(n + k) | O(n + k) | O(n + k) | O(n + k) | Yes | Count how many times each value occurs (k = range of values), then place items by their counts |
-| Radix | O(n·k) | O(n·k) | O(n·k) | O(n) | Yes | Sort by one digit at a time, least significant first, into 10 buckets (k = number of digits) |
-| Bucket | O(n + k) | O(n + k) | O(n²) | O(n + k) | Yes, with a stable sort in each bucket | Spread items into k buckets by value, sort each bucket. Worst case: everything lands in one bucket. |
+| Sort | Best | Average | Worst | Space | Stable |
+|---|---|---|---|---|---|
+| Selection | O(n²) | O(n²) | O(n²) | O(1) | No |
+| Insertion | O(n) | O(n²) | O(n²) | O(1) | Yes |
+| Bubble | O(n) | O(n²) | O(n²) | O(1) | Yes |
+| Shell | O(n log n) | about O(n^1.5) | O(n²) | O(1) | No |
+| Merge | O(n log n) | O(n log n) | O(n log n) | O(n) | Yes |
+| Quicksort | O(n log n) | O(n log n) | O(n²) | O(log n) | No |
+| Heap sort | O(n log n) | O(n log n) | O(n log n) | O(1) | No |
+| Counting | O(n + k) | O(n + k) | O(n + k) | O(n + k) | Yes |
+| Radix | O(n·k) | O(n·k) | O(n·k) | O(n) | Yes |
+| Bucket | O(n + k) | O(n + k) | O(n²) | O(n + k) | Yes, if each bucket's sort is |
+
+How each sort works, and what causes its best and worst cases:
+
+- **Selection:** find the smallest unsorted item and swap it into place. It scans the whole unsorted part every pass, so there's no faster case.
+- **Insertion:** take the next item and shift it left into the sorted part. Best case: the list is already sorted.
+- **Bubble:** swap neighbors that are out of order. Best case: a sorted list, with an early stop when a pass makes no swaps.
+- **Shell:** insertion sort on items a gap apart, with shrinking gaps. The average depends on the gaps; halving the gap each time can give the O(n²) worst case.
+- **Merge:** split in half, sort each half, then merge them.
+- **Quicksort:** partition around a pivot (zyBooks uses the middle element), then sort each side. Worst case: the pivot is always the smallest or largest item.
+- **Heap sort:** build a max-heap, then remove the max n times.
+- **Counting:** count how many times each value occurs (k is the range of values), then place the items by their counts.
+- **Radix:** sort by one digit at a time, least significant first, into 10 buckets (k is the number of digits).
+- **Bucket:** spread items into k buckets by value, then sort each bucket. Worst case: everything lands in one bucket.
 
 **Quickselect** (find the k-th smallest item): O(n) on average, O(n²) at worst.
 
