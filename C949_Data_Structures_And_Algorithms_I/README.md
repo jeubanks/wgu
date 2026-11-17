@@ -31,12 +31,15 @@ Chapter numbers match the zyBooks chapters.
 - **[11. Searching and algorithm analysis](11-algorithm-analysis.md)**: linear and binary search, finding Big-O by tracing (ten worked patterns), and all ten sorts with their best, average, and worst cases
 - **[12–20. Programming concepts](12-programming-concepts.md)**: reading code, static and dynamic typing, operators, loops, classes, memory management, data flow diagrams, and what Python's lists, dicts, and sets cost
 - **[21. Recursion](21-recursion.md)**: base and recursive cases, the call stack, recursive search, debugging output, recursive math, and exploring all possibilities (permutations and subsets)
+- **[Final practice](22-final-practice.md)**: 40 new questions that mix every chapter, for when you've finished the guide
 
 </div>
 
 The [Big-O cheat sheet](big-o.md) puts every structure and algorithm in the course on one printable page, with best, average, and worst cases.
 
 The [topic map](topics.md) is a checklist. It lists every topic in the course study guide by competency and shows where this guide covers it.
+
+For practice with new numbers every time, the [practice quiz](practice-quiz.md) builds a random 10-question quiz from the topics you pick, and checks each answer.
 
 If you want more practice, the optional [Practice in code](code/README.md) section has seven Python lessons where you build these structures yourself and run checks on your code. Lesson 7, [tracing pseudocode](code/07-tracing.md), needs only paper, and you can do it at any point.
 

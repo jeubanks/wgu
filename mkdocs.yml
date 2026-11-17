@@ -35,6 +35,7 @@ extra_javascript:
   - javascripts/site.js
   - javascripts/drill.js
   - javascripts/viz.js
+  - javascripts/practice.js
 
 hooks:
   - hooks/er_diagrams.py
@@ -207,6 +208,8 @@ nav:
       - 11. Searching and algorithm analysis: c949/11-algorithm-analysis.md
       - 12–20. Programming concepts: c949/12-programming-concepts.md
       - 21. Recursion: c949/21-recursion.md
+      - Final practice: c949/22-final-practice.md
+      - Practice quiz: c949/practice-quiz.md
       - Topic map: c949/topics.md
       - Big-O cheat sheet: c949/big-o.md
       - Tracing pseudocode: c949/code/07-tracing.md
