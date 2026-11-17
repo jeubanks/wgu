@@ -1,6 +1,8 @@
 """MkDocs hook: answer keys for interactive quiz pages (D427's is Part 4, the concepts check).
 
-Each course names its quiz page in mkdocs.yml (extra.courses: quiz).
+Each course names its quiz pages in mkdocs.yml (extra.courses: quiz), as one
+file name or a glob like "[0-9][0-9]-*.md". Answers are saved per page, keyed by
+the first two characters of its file name, so those must differ.
 
 The Markdown keeps its Hint and Answer blocks. Each question part also has a
 hidden HTML comment, right after the part, with a machine-readable key:
@@ -27,6 +29,7 @@ docs/javascripts/quiz.js finds each comment in the page and adds the controls.
 import json
 import re
 import sys
+from fnmatch import fnmatch
 from pathlib import Path
 
 from mkdocs.exceptions import PluginError
@@ -133,7 +136,7 @@ def on_config(config, **kwargs):
 def _quiz(src_uri):
     """The course whose quiz page this is, or None."""
     course, name = courses.for_page(src_uri)
-    return course if course is not None and name == course.quiz else None
+    return course if course is not None and course.quiz and fnmatch(name, course.quiz) else None
 
 
 def on_page_markdown(markdown, page, **kwargs):
@@ -167,6 +170,6 @@ def on_page_content(html, page, **kwargs):
     if course is None:
         return html
     # Saved answers live under "<course>-quiz:<page number>", e.g. d427-quiz:04.
-    storage = f"{course.slug}-quiz:{Path(course.quiz).stem[:2]}"
+    storage = f"{course.slug}-quiz:{Path(PAGE).stem[:2]}"
     blob = json.dumps({"storage": storage, "parts": _parts[PAGE]}).replace("</", "<\\/")
     return html + f'\n<script type="application/json" id="quiz-data">{blob}</script>\n'

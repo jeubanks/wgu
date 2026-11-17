@@ -1,75 +1,34 @@
-# WGU C949 Data Structures and Algorithms I: Practice Kit
+# WGU C949 Data Structures and Algorithms I: Study Guide
 
-Hands-on Python practice for WGU's C949 Data Structures and Algorithms I. It's built around the course's competencies and study materials, with extra practice on the skills that trip people up, especially Big-O and tracing pseudocode by hand.
+A study guide for WGU's C949 Data Structures and Algorithms I that follows the zyBooks chapters. For each data structure and algorithm, it explains how it works, step by step, and what it costs: the Big-O in the best, average, and worst case. Each chapter ends with questions to check yourself.
 
-Read it online at **[jeubanks.github.io/wgu](https://jeubanks.github.io/wgu/c949/exercises/)**: each lesson has its own page with the lesson code, the exercises, and a folded Hint and Solution under each one, and you can tick off exercises as you finish them.
+Read it online at **[jeubanks.github.io/wgu](https://jeubanks.github.io/wgu/c949/)**, where the questions check your answers and you can track which ones you've finished.
 
-> Unofficial. Not affiliated with or endorsed by Western Governors University. Always check your zyBooks chapters and course materials. Where this kit and the course disagree, the course wins.
+> Unofficial. Not affiliated with or endorsed by Western Governors University. Always check your zyBooks chapters and course materials. Where this guide and the course disagree, the course wins.
 
-## What's inside
+## Contents
 
-```
-.
-├── README.md
-├── exercises.md                     # Overview: lesson list and how to start
-├── 01-big-o.md … 07-tracing.md      # Lesson pages: intro, lesson code, exercises
-├── build_solutions.py               # Copies hints, solutions, and lesson code into the pages
-└── c949-practice/
-    ├── lesson1.py … lesson7.py      # Your work: lesson code + empty exercise stubs + checks
-    ├── solutions/                   # Finished versions of every lesson file, with hints
-    ├── tests/                       # pytest suite (same checks as the lesson files)
-    ├── _checker.py, conftest.py     # Plumbing; no need to edit
-    ├── pytest.ini
-    └── README.md                    # Practice-specific instructions
-```
+Chapter numbers match the zyBooks chapters.
 
-### The practice code (`c949-practice/`)
+- **[1. Introduction to data structures and algorithms](01-introduction.md)**: ADTs, Huffman compression, heuristics, greedy algorithms, dynamic programming
+- **[2. Lists](02-lists.md)**: singly- and doubly-linked lists, circular lists, dummy nodes, array-based lists
+- **[3. Stacks and queues](03-stacks-queues.md)**: stacks, queues, and deques, built on linked lists and on arrays
+- **[4. Hash tables](04-hash-tables.md)**: chaining, linear and quadratic probing, double hashing, resizing, hash functions
+- **[12–20. Python refresher](12-python-refresher.md)**: reading Python code, and what Python's lists, dicts, and sets cost
 
-Build each data structure yourself, then practice: Big-O experiments, linked lists, stacks, queues, hash tables, BSTs, heaps, sorts, graphs, and pseudocode tracing drills. Each lesson file contains working lesson code at the top and exercises below it. Code exercises start as functions that raise `NotImplementedError`; paper-trace exercises are variables set to `None` that you fill in with your answer.
+Chapters 5 to 11 (trees, balanced trees, heaps and treaps, sets, graphs, B-trees, searching and sorting) and 21 (recursion) are coming next.
 
-## Getting started
+**Reference:** the [Big-O cheat sheet](big-o.md) puts every structure and algorithm in the course on one printable page, with best, average, and worst cases.
 
-Requires **Python 3.10+**.
+**Optional:** [Practice in code](code/README.md) has seven Python lessons where you build these structures yourself, with checks. Its Lesson 7, [tracing pseudocode](code/07-tracing.md), needs only paper and fits in anywhere.
 
-```bash
-git clone https://github.com/jeubanks/wgu.git
-cd wgu/C949_Data_Structures_And_Algorithms_I/c949-practice
-python lesson1.py          # check your progress on Lesson 1
-python lesson1.py --demo   # also run the lesson's example code
-```
+## How to use this guide
 
-Sample output:
+1. Read a chapter here alongside the zyBooks chapter with the same number.
+2. Answer the questions at the end of the chapter without looking back. Each one tells you right away if you got it, and the folded **Answer** explains why.
+3. Keep the [Big-O cheat sheet](big-o.md) open. Most questions come down to knowing what an operation costs and why.
 
-```
-  ✓  2.1 trace stack and queue
-  ✗  2.2 reverse  tail not updated
-  ·  2.3 is_balanced  (not started)
-
-1/5 passing
-```
-
-### With pytest
-
-```bash
-pip install pytest
-pytest                        # every lesson; unstarted exercises show as skipped
-pytest tests/test_lesson4.py  # one lesson
-pytest -k reverse             # one exercise by name
-pytest --solutions            # run the same checks against the answer key
-```
-
-## Suggested study order
-
-| Priority | Material | Why |
-| --- | --- | --- |
-| 1 | [Course competencies](#course-competencies) | See what the course covers before you study |
-| 2 | Take the course pre-assessment | Use its coaching report to find your weak areas |
-| 3 | Lessons 7 and 1, plus the course Big-O worksheet | Big-O and tracing come up throughout the course |
-| 4 | Lessons 2 and 5 | Stacks, queues, lists, searching, and sorting |
-| 5 | Lessons 3 and 4 | Hash tables, trees, and heaps |
-| 6 | Lesson 6 (optional) | Graph algorithms are mostly beyond this course |
-
-Retake the pre-assessment once you can trace code on paper without guessing.
+Big-O questions ask about the **best**, **average**, and **worst** case. For each operation, learn all three, and the situation that causes each one: "searching a BST is O(log n) on average, and O(n) when the keys went in already sorted."
 
 ## Course competencies
 
@@ -79,7 +38,7 @@ The course is organized around three competencies:
 - Determines Data Structure Impact
 - Explains Algorithms
 
-The course materials show code as pseudocode or Python. The full topic list and zyBooks chapter map are in the course study guide in your WGU course resources.
+The course materials show code as pseudocode or Python. The full topic list and zyBooks chapter map are in the course study guide in your WGU course resources. Take the course pre-assessment early, and use its coaching report to pick which chapters to focus on.
 
 ## Recommended reading
 
@@ -94,9 +53,22 @@ The course materials show code as pseudocode or Python. The full topic list and 
 | Windows | [Thorium Reader](https://www.edrlab.org/software/thorium-reader/) | Free from the Microsoft Store or the EDRLab site |
 | Any | [Calibre](https://calibre-ebook.com/) | Free on all three; also converts between ebook formats |
 
+## What's inside
+
+```
+.
+├── README.md                        # This page: the guide's contents
+├── 01-introduction.md … 12-python-refresher.md
+│                                    # Chapter pages: how it works, Big-O, questions
+├── big-o.md                         # Big-O cheat sheet
+├── code/                            # Optional Python lessons (pages)
+├── build_solutions.py               # Copies hints, solutions, and lesson code into code/
+└── c949-practice/                   # The Python lesson files, solutions, and checks
+```
+
 ## Notes
 
-- Following the class Big-O worksheet, the sort tables use O(n) for radix sort and O(n) for bucket sort's average case. Textbooks often write O(nk) and O(n + k).
+- Following the course's Big-O worksheet, the cheat sheet lists radix sort as O(n) and bucket sort's average case as O(n). Textbooks often write O(nk) and O(n + k).
 - Every lesson example and solution in `c949-practice/` was run against its checks (43 passing in `pytest --solutions`).
 - The WGU course study guide, Big-O worksheet, and other course PDFs belong to WGU and are not included here. Get them from your course resources.
 

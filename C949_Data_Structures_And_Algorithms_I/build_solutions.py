@@ -5,7 +5,7 @@ The Python files are the source of truth. After changing one, run:
 
     python3 build_solutions.py
 
-For each lesson page 0N-*.md, this reads c949-practice/lessonN.py and
+For each lesson page code/0N-*.md, this reads c949-practice/lessonN.py and
 c949-practice/solutions/lessonN.py and writes three kinds of generated block:
 
 - `<!-- lesson-code -->` ... `<!-- /lesson-code -->`: the lesson code from the
@@ -33,7 +33,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 CODE = HERE / "c949-practice"
-PAGES = sorted(HERE.glob("0[0-9]-*.md"))
+PAGES = sorted((HERE / "code").glob("0[0-9]-*.md"))
 
 RULE = re.compile(r"^# -+ ?(\w[\w ]*)$")
 LABEL_COMMENT = re.compile(r"^# (?:\[(\d+\.\d+)\]|(\d+\.\d+)[a-z]?\b)")

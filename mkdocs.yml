@@ -154,12 +154,24 @@ extra:
       quiz: 04-concepts-check.md
     c949:
       folder: C949_Data_Structures_And_Algorithms_I
+      # Done boxes on every chapter question, and a bar per chapter on the contents page.
+      progress:
+        overview: README.md
+        pages: "[0-9][0-9]-*.md"
+      # Every chapter page ends with interactive questions (<!-- answer:... --> comments).
+      quiz: "[0-9][0-9]-*.md"
       # The course was published as d949 before; old links redirect here.
       old_slugs: [d949]
-      # Done boxes on every exercise, and a bar per lesson on the overview page.
-      progress:
-        overview: exercises.md
-        pages: "0[0-9]-*.md"
+      # The Python lessons moved under code/; old links redirect there.
+      moved:
+        exercises.md: code/README.md
+        01-big-o.md: code/01-big-o.md
+        02-lists-stacks-queues.md: code/02-lists-stacks-queues.md
+        03-hash-tables.md: code/03-hash-tables.md
+        04-trees-heaps.md: code/04-trees-heaps.md
+        05-searching-sorting.md: code/05-searching-sorting.md
+        06-graphs.md: code/06-graphs.md
+        07-tracing.md: code/07-tracing.md
 
 nav:
   - Home: index.md
@@ -176,13 +188,21 @@ nav:
       - Spec-to-type drill: d427/drill.md
       - Error decoder: d427/errors.md
   - C949 Data Structures:
-      - Overview: c949/exercises.md
-      - About this kit: c949/README.md
-      - Lesson 1 – Big-O: c949/01-big-o.md
-      - Lesson 2 – Lists, stacks, queues: c949/02-lists-stacks-queues.md
-      - Lesson 3 – Hash tables: c949/03-hash-tables.md
-      - Lesson 4 – Trees and heaps: c949/04-trees-heaps.md
-      - Lesson 5 – Searching and sorting: c949/05-searching-sorting.md
-      - Lesson 6 – Graphs: c949/06-graphs.md
-      - Lesson 7 – Tracing pseudocode: c949/07-tracing.md
-      - Running the checks: c949/c949-practice/README.md
+      - Contents: c949/README.md
+      - 1. Introduction: c949/01-introduction.md
+      - 2. Lists: c949/02-lists.md
+      - 3. Stacks and queues: c949/03-stacks-queues.md
+      - 4. Hash tables: c949/04-hash-tables.md
+      - 12–20. Python refresher: c949/12-python-refresher.md
+      - Big-O cheat sheet: c949/big-o.md
+      - Tracing pseudocode: c949/code/07-tracing.md
+      - Practice in code:
+          - Overview: c949/code/README.md
+          - Lesson 1 – Big-O: c949/code/01-big-o.md
+          - Lesson 2 – Lists, stacks, queues: c949/code/02-lists-stacks-queues.md
+          - Lesson 3 – Hash tables: c949/code/03-hash-tables.md
+          - Lesson 4 – Trees and heaps: c949/code/04-trees-heaps.md
+          - Lesson 5 – Searching and sorting: c949/code/05-searching-sorting.md
+          - Lesson 6 – Graphs: c949/code/06-graphs.md
+          - Lesson 7 – Tracing pseudocode: c949/code/07-tracing.md
+          - Running the checks: c949/c949-practice/README.md

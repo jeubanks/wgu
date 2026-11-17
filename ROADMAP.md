@@ -6,9 +6,10 @@ D427 is the model course. Once its patterns are settled, other courses reuse the
 
 ## Up next
 
-- [ ] **C949 concepts check**: a quiz page (with the existing quiz hook) on Big-O classification, choosing a data structure, and short traces.
-- [ ] **C949 Big-O reference**: one printable page of operation costs for the structures and sorts, following the course Big-O worksheet's conventions (radix O(n), bucket average O(n)).
-- [ ] **C949 Try it runner (Pyodide)**: run each lesson's checks in the browser from the exercise card, and tick Done on a pass. About 10 MB from a CDN, so load it only when a Try it box opens.
+- [ ] **C949 chapters 5 to 8**: trees, balanced trees (AVL, red-black), heaps and treaps, sets. Same shape as chapters 1 to 4: how each operation works, Big-O best/average/worst, and questions.
+- [ ] **C949 chapters 9 to 11 and 21**: graphs, B-trees (2-3-4 trees), searching and algorithm analysis (all the sorts), recursion. Fold the Lesson 7 pseudocode tracing drills into chapters 11 and 21.
+- [ ] **C949 step-by-step pictures**: diagrams for list inserts and removes, probing, BST and AVL operations, heap percolation. They must not show a question's answer.
+- [ ] **C949 Try it runner (Pyodide)**: run each code lesson's checks in the browser, and tick Done on a pass. About 10 MB from a CDN, so load it only when a Try it box opens.
 
 ## Backlog
 
@@ -40,6 +41,7 @@ Nothing here yet.
 
 ## Done
 
+- C949 is now a study guide that follows the zyBooks chapters: chapters 1 to 4 and a Python refresher (12 to 20), each explaining how every structure and operation works, with Big-O best/average/worst and interactive questions that tick Done; a Big-O cheat sheet for the whole course; the Python lessons moved to an optional Practice in code section, with redirects from their old URLs. The quiz hook now takes a glob of pages (#54)
 - The course is C949, not D949: renamed the folder (`C949_Data_Structures_And_Algorithms_I`), its slug and URLs (`/wgu/c949/`), and every mention, including the social card. Old `/wgu/d949/...` links redirect to the new pages, anchors included (`old_slugs` in mkdocs.yml, `hooks/redirects.py`) (#53)
 - C949 exercise pages: an overview with a progress bar per lesson, and one page per lesson (short intro, folded lesson code, exercise cards with Done boxes). Hints and solutions are generated from `c949-practice/solutions/` by `build_solutions.py`, which CI keeps in sync; CI also runs `pytest --solutions`. Lesson 7 has its own pseudocode, and 3.6, 5.7, and 6.6 have written answers, so nothing points to the WGU guide for content (#53)
 - 11.25: name a CHECK inside CREATE TABLE, then change its rule (DROP CHECK + ADD CONSTRAINT under the same name, in one ALTER TABLE) (#52)

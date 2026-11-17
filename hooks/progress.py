@@ -11,6 +11,7 @@ only, under "<course>-progress".
 import json
 import re
 import sys
+from fnmatch import fnmatch
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -24,8 +25,9 @@ PANEL = """
 Progress is saved in this browser only.</p>
 </div>
 """
-# Only courses with Try it boxes or a quiz tick boxes on their own.
-AUTO_TICK = "\nA passing <strong>Check</strong> in a Try it box ticks it for you."
+# Try it boxes and quiz questions tick the box on their own.
+TICK_RUNNER = "\nA passing <strong>Check</strong> in a Try it box ticks it for you."
+TICK_QUIZ = "\nAnswering every part of a question right ticks it for you."
 
 
 def on_config(config, **kwargs):
@@ -60,13 +62,14 @@ def on_page_markdown(markdown, page, **kwargs):
     if not heading:
         return markdown
     at = heading.end()
-    auto = AUTO_TICK if course.runner_pages or course.quiz else ""
+    auto = TICK_RUNNER if course.runner_pages else TICK_QUIZ if course.quiz else ""
     return markdown[:at] + "\n" + PANEL.format(auto=auto) + markdown[at:]
 
 
 def on_page_content(html, page, **kwargs):
     course, name = _tracked(page.file.src_uri)
-    if course is None:
+    # Only the overview and the counted pages: other pages may reuse labels.
+    if course is None or not (name == course.progress_overview or fnmatch(name, course.progress_pages)):
         return html
     data = {"key": f"{course.slug}-progress", "overview": name == course.progress_overview,
             "parts": _parts(course)}

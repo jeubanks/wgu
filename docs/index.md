@@ -16,8 +16,8 @@ Practice material I've built for WGU courses. Unofficial: not affiliated with or
 
     ---
 
-    44 Python exercises in seven lessons: Big-O, lists, stacks, queues, hash tables, trees, heaps, sorting, graphs, and pseudocode tracing.
+    A study guide that follows the zyBooks chapters: how each data structure and algorithm works, its best, average, and worst-case Big-O, and questions to check yourself.
 
-    [:octicons-arrow-right-24: Start here](c949/exercises.md)
+    [:octicons-arrow-right-24: Start here](c949/README.md)
 
 </div>
