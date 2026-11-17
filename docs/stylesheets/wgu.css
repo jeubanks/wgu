@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap");
+
 /* WGU web palette (brand.wgu.edu/web-color-palette):
    Midnight #001731, Blue Midnight #002855, Medium Blue #0070F0,
    Sky Blue #46B1EF, Lime Green #97E152, Light Blue #EEF6F9. */
@@ -1192,3 +1194,16 @@
   }
 }
 @media print { .md-typeset .ex-fold, .md-typeset .ex-fold-switch { display: none; } }
+
+/* ---------- Type and headings ----------
+   Inter for text and JetBrains Mono for code come from theme.font in mkdocs.yml;
+   headings use Space Grotesk. Heading color is the navy in light mode. */
+:root { --wgu-display-font: "Space Grotesk", "Inter", -apple-system, "Segoe UI", system-ui, sans-serif; }
+.md-typeset h1, .md-typeset h2, .md-typeset h3, .md-typeset h4,
+.md-header__topic, .md-nav__title { font-family: var(--wgu-display-font); }
+.md-typeset h1 { font-weight: 700; letter-spacing: -.01em; color: var(--md-primary-fg-color); text-wrap: balance; }
+.md-typeset h2 { font-weight: 600; letter-spacing: -.005em; text-wrap: balance; }
+.md-typeset h3 { font-weight: 600; }
+[data-md-color-scheme="slate"] .md-typeset h1 { color: var(--md-default-fg-color); }
+.md-typeset table:not([class]) th { font-family: var(--wgu-display-font); font-weight: 600; }
+.md-typeset table:not([class]) { border-radius: .5rem; }

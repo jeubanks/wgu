@@ -4,11 +4,19 @@ A study guide for WGU's C949 Data Structures and Algorithms I that follows the z
 
 Read it online at **[jeubanks.github.io/wgu](https://jeubanks.github.io/wgu/c949/)**, where the questions check your answers and you can track which ones you've finished.
 
+<div class="viz" data-viz="cost-spectrum" markdown>
+
+*On the site, a chart here compares how much work each growth class does for 1,000 items.*
+
+</div>
+
 > Unofficial. Not affiliated with or endorsed by Western Governors University. Always check your zyBooks chapters and course materials. Where this guide and the course disagree, the course wins.
 
 ## Contents
 
 Chapter numbers match the zyBooks chapters.
+
+<div class="viz" data-viz="chapter-map" markdown>
 
 - **[1. Introduction to data structures and algorithms](01-introduction.md)**: ADTs, Huffman compression, heuristics, greedy algorithms, dynamic programming
 - **[2. Lists](02-lists.md)**: singly- and doubly-linked lists, circular lists, dummy nodes, array-based lists
@@ -16,6 +24,8 @@ Chapter numbers match the zyBooks chapters.
 - **[4. Hash tables](04-hash-tables.md)**: chaining, linear and quadratic probing, double hashing, resizing, hash functions
 - **[11. Algorithm analysis](11-algorithm-analysis.md)**: finding the Big-O of code by tracing it, with ten worked patterns, loops to recursion
 - **[12–20. Programming concepts](12-programming-concepts.md)**: reading code, static and dynamic typing, operators, loops, classes, memory management, data flow diagrams, and what Python's lists, dicts, and sets cost
+
+</div>
 
 Chapters 5 to 10 (trees, balanced trees, heaps and treaps, sets, graphs, B-trees), chapter 11's searching and sorting sections, and 21 (recursion) are coming next.
 

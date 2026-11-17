@@ -30,6 +30,14 @@ These look like one line, but they are **not** constant:
 - `sorted(some_list)`, `some_list.sort()`: O(n log n)
 - Calling a function that has its own loop: whatever that function costs
 
+Try the method on the loop tracer below. Each dot is one run of the busiest line, and each row is one pass of the outer loop, so the shape of the dots is the shape of the cost: a line, a square, a triangle, a short row.
+
+<div class="viz" data-viz="loop-grid" markdown>
+
+*On the site, an interactive loop tracer here draws one dot per run of the busiest line, for six of the patterns on this page.*
+
+</div>
+
 ## Pattern 1: a single loop
 
 ```python
@@ -177,6 +185,14 @@ How many passes depends on the input, not just on n:
 | Worst | the target is last, or missing | n | O(n) |
 
 Whenever code can stop early, give each case. When a question says only "the Big-O", it means the worst case.
+
+Sorting shows the same thing. Run a sort on input that's already sorted, random, and reversed, and count the comparisons:
+
+<div class="viz" data-viz="sort" markdown>
+
+*On the site, an interactive diagram here runs bubble, selection, insertion, and merge sort on sorted, random, and reversed input, and counts the comparisons.*
+
+</div>
 
 ## Pattern 9: hidden loops
 

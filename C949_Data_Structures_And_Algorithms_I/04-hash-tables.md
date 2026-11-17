@@ -65,6 +65,12 @@ Jump farther each time, to break up clusters: bucket `(h + c1·i + c2·i²) % N`
 
 Use a **second hash function** to choose the step size: bucket `(h1(key) + i·h2(key)) % N`. Keys with the same home bucket usually have different steps, so they follow different paths. h2 must never return 0, or the probe would stay in one bucket. A common choice is `h2(key) = p − (key % p)` for a prime p smaller than N.
 
+<div class="viz" data-viz="hash-probe" markdown>
+
+*On the site, an interactive diagram here inserts keys into a 13-bucket table and animates linear probing, quadratic probing, and double hashing.*
+
+</div>
+
 ## Resizing and the load factor
 
 The **load factor** is the number of items divided by the number of buckets. It measures how full the table is:
