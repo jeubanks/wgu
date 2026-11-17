@@ -249,14 +249,24 @@ zyBooks' AVL removal uses the successor, but its red-black removal uses the pred
 
 Preparing to remove a black node checks six cases in order. In the table, "sibling" means the sibling of the node being prepared. After any case that rotates, look the sibling up again.
 
-| Case | Condition | Action | Then |
-|---|---|---|---|
-| 1 | The node is red, or it's the root | Nothing | Stop |
-| 2 | The sibling is red | Swap colors so the sibling turns black and the parent turns red, then rotate at the parent in the node's direction (left when the node is on the left, right when it's on the right). | Keep checking |
-| 3 | Parent black; sibling's two children both black | Make the sibling red. The missing black has moved up a level, so run these cases again on the **parent**. | Stop |
-| 4 | Parent red; sibling's two children both black | Swap the colors of the parent (now black) and the sibling (now red) | Stop |
-| 5 | Node on the left; sibling's inner (left) child red, outer (right) child black | Make the sibling red and that inner child black, then rotate right at the sibling, so the red child is now on the outside. | Keep checking |
-| 6 | Node on the right; sibling's inner (right) child red, outer (left) child black | The mirror of case 5: make the sibling red and that inner child black, then rotate left at the sibling. | Keep checking |
+1. **The node is red, or it's the root.**
+  - Do nothing, and stop.
+2. **The sibling is red.**
+  - Swap colors so the sibling turns black and the parent turns red.
+  - Rotate at the parent in the node's direction: left when the node is on the left, right when it's on the right.
+  - Keep checking the cases below.
+3. **The parent is black, and both of the sibling's children are black.**
+  - Make the sibling red.
+  - The missing black has moved up a level, so run these cases again on the **parent**, and stop here.
+4. **The parent is red, and both of the sibling's children are black.**
+  - Swap colors: the parent becomes black and the sibling red. Stop.
+5. **The node is on the left; the sibling's inner (left) child is red and its outer (right) child is black.**
+  - Make the sibling red and that inner child black.
+  - Rotate right at the sibling, so the red child is now on the outside.
+  - Keep checking.
+6. **The node is on the right; the sibling's inner (right) child is red and its outer (left) child is black.**
+  - The mirror of case 5: make the sibling red and that inner child black, then rotate left at the sibling.
+  - Keep checking.
 
 If none of cases 1, 3, or 4 stopped it, finish with:
 

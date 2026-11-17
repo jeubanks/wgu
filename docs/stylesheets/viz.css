@@ -128,7 +128,11 @@
 
 /* ---------- static figure frame ---------- */
 .md-typeset .viz-figure { border: 1px solid var(--viz-line); border-radius: .7rem; padding: .8rem 1rem; background: var(--viz-surface); }
-.md-typeset .viz-figure svg { width: 100%; max-width: 30rem; height: auto; display: block; margin: 0 auto; }
+.md-typeset .viz-figure { overflow-x: auto; }
+.md-typeset .viz-figure svg { width: 100%; max-width: 30rem; min-width: 16rem; height: auto; display: block; margin: 0 auto; }
+/* Set operations: one small figure per operation, side by side when there's room. */
+.md-typeset .viz-figure .viz-venns { display: flex; flex-wrap: wrap; gap: .4rem 1rem; justify-content: center; }
+.md-typeset .viz-figure .viz-venns svg { flex: 1 1 9rem; width: auto; min-width: 0; max-width: 13rem; margin: 0; }
 .md-typeset .viz-figure .viz-title { font-family: var(--wgu-display-font); font-weight: 600; font-size: .9rem; margin: 0 0 .3rem; }
 
 /* ---------- growth chart ---------- */
@@ -205,8 +209,18 @@
 .md-typeset .pq-opt.pq-opt-right { border-color: var(--viz-good); background: var(--viz-good-soft); font-weight: 600; }
 .md-typeset .pq-opt.pq-opt-wrong { border-color: var(--viz-bad); background: var(--viz-bad-soft); text-decoration: line-through; }
 .md-typeset .pq-answer { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; font-size: .72rem; }
-.md-typeset .pq-answer input { border: 1px solid var(--viz-line); background: var(--viz-surface); color: var(--viz-ink); border-radius: .4rem; padding: .3rem .5rem; font-family: var(--md-code-font-family); min-width: 14rem; }
+.md-typeset .pq-answer input { border: 1px solid var(--viz-line); background: var(--viz-surface); color: var(--viz-ink); border-radius: .4rem; padding: .3rem .5rem; font-family: var(--md-code-font-family); flex: 1 1 12rem; min-width: 0; max-width: 100%; }
 .md-typeset .pq-feedback p { margin: .4rem 0 0; font-size: .74rem; }
 .md-typeset .pq-verdict { font-weight: 600; }
 .md-typeset .pq-q.is-right .pq-verdict { color: var(--viz-good); }
 .md-typeset .pq-q.is-wrong .pq-verdict { color: var(--viz-bad); }
+
+/* ---------- Tables and chips on small screens ----------
+   Tighter cells so Big-O tables fit a phone without sideways scrolling. */
+@media (max-width: 44.9em) {
+  .md-typeset table:not([class]) th, .md-typeset table:not([class]) td { padding: .55em .6em; min-width: 3.5rem; }
+  .md-typeset table:not([class]) { font-size: .66rem; }
+  .md-typeset .viz-chip { font-size: .76em; padding: .15em .4em .15em .32em; gap: .25em; }
+  .md-typeset .viz-chip::before { width: .5em; height: .5em; }
+  .md-typeset .viz-figure { padding: .6rem .5rem; }
+}
