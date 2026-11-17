@@ -71,8 +71,10 @@ Run the same things locally before pushing. The accessibility check needs Playwr
            skip:
              "12.20": This one changes data, so do it on MySQL.
            changes: [7]                # sections whose exercises change data
-         quiz: 04-concepts-check.md    # interactive answer keys
+         quiz: 04-concepts-check.md    # interactive answer keys (a file, or a glob of pages)
          old_slugs: [x123]             # old URL paths that redirect here, after a rename
+         moved:                        # pages that moved inside the course
+           old-page.md: new/page.md    # its old URL redirects to the new one
    ```
 
    `hooks/courses.py` reads these; every hook that uses one says so in its docstring.
@@ -134,7 +136,7 @@ CREATE TABLE Guest (
 
 ## Quiz answer keys
 
-On the quiz page (`quiz:` in the course settings), each question part has a hidden comment right after it, with a machine-readable answer. `hooks/quiz.py` checks every key against the Markdown and `docs/javascripts/quiz.js` adds the controls.
+On a quiz page (`quiz:` in the course settings: one file, or a glob like C949's `"[0-9][0-9]-*.md"` for a question section on every chapter), each question part has a hidden comment right after it, with a machine-readable answer. `hooks/quiz.py` checks every key against the Markdown and `docs/javascripts/quiz.js` adds the controls.
 
 | Kind | Example | The learner gets |
 |---|---|---|
@@ -148,7 +150,7 @@ On the quiz page (`quiz:` in the course settings), each question part has a hidd
 
 - `|` separates accepted answers. Text answers ignore case and spaces.
 - Options are separated by commas, so an option can't contain one.
-- Saved answers are stored per page (`d427-quiz:04`). Renaming a part's id loses saved answers for that part.
+- Saved answers are stored per page, by the first two characters of its file name (`d427-quiz:04`), so quiz pages in one course must start differently. Renaming a part's id loses saved answers for that part.
 - Give every table a header for each column, including the label column ("Part"), for screen readers.
 
 ## Diagrams
@@ -202,11 +204,11 @@ LEFT: Caption for the LEFT JOIN tab.
 
 ## Progress tracking
 
-With `progress:` set, every exercise on the `pages` glob gets a **Done** checkbox, and the `overview` page gets a progress bar per page under its `## Contents` heading, plus a **Continue with ...** button to the first exercise not marked Done, and a **To review** list of exercises you missed (a failed Check, or a quiz question with a wrong part) until you get them right. `hooks/anchors.py` also adds one search entry per exercise, so searching its number finds it. A passing Check in a Try it box, or a fully answered quiz question, ticks the box. Progress is saved in the browser under `<slug>-progress`.
+With `progress:` set, every exercise on the `pages` glob gets a **Done** checkbox (exercises on other pages don't, so they can reuse labels), and the `overview` page gets a progress bar per page under its `## Contents` heading, plus a **Continue with ...** button to the first exercise not marked Done, and a **To review** list of exercises you missed (a failed Check, or a quiz question with a wrong part) until you get them right. `hooks/anchors.py` also adds one search entry per exercise, so searching its number finds it. A passing Check in a Try it box, or a fully answered quiz question, ticks the box. Progress is saved in the browser under `<slug>-progress`.
 
 ## Python courses (C949)
 
-C949's lessons are Python, so it has its own `build_solutions.py` (in the course folder) instead of a `solutions.sql`. Each lesson page `0N-*.md` pairs with `c949-practice/lessonN.py` and `c949-practice/solutions/lessonN.py`:
+C949 is a study guide first: one page per zyBooks chapter (`01-introduction.md` ... `21-recursion.md`), each explaining how things work, with Big-O tables and a **Questions** section of quiz items at the end. Its optional Python lessons live in `code/`, with their own `build_solutions.py` (in the course folder) instead of a `solutions.sql`. Each lesson page `code/0N-*.md` pairs with `c949-practice/lessonN.py` and `c949-practice/solutions/lessonN.py`:
 
 - **Exercises** use the same `- **N.M**` cards, with an `**In:**` line naming the function or variable to fill in. Trace exercises put the code to trace on the page.
 - **Solutions** are the solutions file's statements between its `exercises` (or `answers`) rule and its `checks` rule. A def or class belongs to the label its docstring starts with (`2.2 Reverse ...`); anything else belongs to the last label comment above it (`# 2.1 Trace ...`, or a bare `# [7.5]`).

@@ -1,10 +1,10 @@
-# C949 Data Structures and Algorithms I: Python Practice
+# Practice in code
 
-44 exercises in seven lessons: Big-O, linked lists, stacks and queues, hash tables, trees and heaps, searching and sorting, graphs, and tracing pseudocode by hand.
+Optional. The [study guide](../README.md) chapters are the main path; these lessons let you build the same structures in Python, if you want to. 44 exercises in seven lessons: Big-O, linked lists, stacks and queues, hash tables, trees and heaps, searching and sorting, graphs, and tracing pseudocode by hand.
 
 Each lesson page has a short intro, the lesson code, and the exercises. You write your answers in the matching `lessonN.py` file and run it to check them. Hints and solutions are folded under each exercise.
 
-## Contents
+## Lessons
 
 - **[Lesson 1: Big-O by experiment](01-big-o.md)**: timing code, classifying loops, recursion
 - **[Lesson 2: Linked lists, stacks, and queues](02-lists-stacks-queues.md)**
@@ -43,7 +43,7 @@ Then, for each lesson:
 1/5 passing
 ```
 
-Tick **Done** on an exercise once its line shows ✓. See [Python practice](c949-practice/README.md) for running the checks with pytest.
+See [Running the checks](../c949-practice/README.md) for running the checks with pytest.
 
 > [!TIP]
 > Do the paper traces on paper first. The checks tell you whether you're right, but working it out by hand is the skill you're practicing.
