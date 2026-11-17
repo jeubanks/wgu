@@ -1,18 +1,18 @@
 # 7. Heaps and treaps
 
-A heap keeps its largest (or smallest) item where you can grab it in O(1), and fixes itself in O(log n) after every change. That makes it the natural way to build a **priority queue**, and the engine of **heap sort**. A treap borrows the heap's rule to keep a BST balanced on average.
+A heap keeps its largest (or smallest) item where you can grab it in O(1), and fixes itself in O(log n) after every change. That makes a heap the usual way to build a **priority queue**, and it's the basis of **heap sort**. A treap borrows the heap's rule to keep a BST balanced on average.
 
 ## Heaps
 
 A **max-heap** is a **complete** binary tree ([chapter 5](05-trees.md#tree-shapes)) where every node's key is **greater than or equal to** its children's keys. Since that holds at every level, a node is also greater than or equal to everything below it, so the largest key is always at the root. A **min-heap** is the same with "less than or equal to", so the smallest is at the root.
 
-A heap is not a BST: there's no left-smaller, right-larger rule, only parent-versus-children. Searching a heap for an arbitrary key is O(n).
+A heap is not a BST. It has no left-smaller, right-larger rule. It only compares each parent with its children, so searching a heap for an arbitrary key is O(n).
 
-Because the tree is complete, a heap with N nodes has the smallest height possible, about log₂ N. Insert and remove both keep it complete, so it stays that short.
+Because the tree is complete, a heap with N nodes has the smallest possible height, about log₂ N. Insert and remove both keep the tree complete, so it stays that short.
 
 ### Stored in an array
 
-A complete tree has no gaps when read level by level, so a heap is stored in an array (a Python list) in that order: top to bottom, and left to right within each level. There are no node objects and no pointers. zyBooks puts the root at index 0, and moves between nodes with these formulas:
+A complete tree has no gaps when read level by level, so a heap is stored in an array (a Python list) in that order: top to bottom, and left to right within each level. There are no node objects and no pointers. zyBooks puts the root at index 0 and uses these formulas to move between nodes:
 
 | From index i | Index |
 |---|---|
@@ -31,13 +31,13 @@ index     0  1  2  3  4  5  6                        /      \
 Index 1 (45) has children at 3 and 4 (30 and 41), and its parent is at (1 − 1) // 2 = 0.
 
 - The parent formula is never used on the root. Index 0 has no parent.
-- A child index that is past the end of the array means that child doesn't exist. A node whose left child index is past the end is a leaf.
+- If a child index is past the end of the array, that child doesn't exist. A node whose left child index is past the end is a leaf.
 
 ### Insert: percolate up
 
-1. Append the new key to the end of the array. That's the next open spot on the bottom level, so the tree stays complete.
-2. While it's bigger than its parent, swap it with its parent.
-3. Stop when it's less than or equal to its parent, or it reaches the root.
+1. Append the new key to the end of the array. The end of the array is the next open spot on the bottom level, so the tree stays complete.
+2. While the new key is bigger than its parent, swap it with its parent.
+3. Stop when the new key is less than or equal to its parent, or when it reaches the root.
 
 zyBooks calls step 2 a **percolate-up**. Inserting 68 into the heap above:
 
@@ -54,10 +54,10 @@ Two swaps: `72 68 63 45 41 50 18 30`.
 
 A heap's remove always removes the root.
 
-1. Save the root. It's the answer.
+1. Save the root. It's the value you return.
 2. Pop the **last** item of the array and put it at the root. The array shrinks by one, and the tree stays complete.
-3. While it's smaller than one of its children, swap it with the **larger** child. Swapping with the larger child keeps that child bigger than its new sibling.
-4. Stop when it's greater than or equal to both children, or it has no children.
+3. While that item is smaller than one of its children, swap it with the **larger** child. Swapping with the larger child keeps the child that moves up bigger than its new sibling.
+4. Stop when the item is greater than or equal to both children, or when it has no children.
 
 zyBooks calls step 3 a **percolate-down**. Removing the max from `72 45 63 30 41 50 18`:
 
@@ -79,13 +79,13 @@ Each swap moves one level, and the tree has about log₂ n levels, so both opera
 
 ### Min-heaps
 
-A min-heap runs the same code with the comparisons flipped. Percolate up while the new key is **smaller** than its parent, and percolate down by swapping with the **smaller** child. A min-heap fits a queue where a lower number means more urgent, such as a support line where whoever has number 1 is served next.
+A min-heap runs the same code with the comparisons flipped. Percolate up while the new key is **smaller** than its parent, and percolate down by swapping with the **smaller** child. Use a min-heap when a lower number means more urgent, such as a support line that serves number 1 next.
 
 ## Heap sort
 
 ### Heapify: building a heap
 
-To turn a whole unsorted array into a max-heap, percolate **down** every internal node, starting with the internal node that has the largest index and working back to the root. Leaves are already heaps of one item, so they're skipped.
+**Heapify** turns a whole unsorted array into a max-heap. It percolates **down** every internal node (a node with at least one child), starting with the internal node that has the largest index and working back to the root. Each leaf is already a heap of one item, so heapify skips the leaves.
 
 - With N items, the largest internal node index is **N // 2 − 1**.
 - So heapify does N // 2 percolate-downs, one for each index from N // 2 − 1 down to 0.
@@ -100,13 +100,13 @@ percolate down i=1   15 30 40 22 11  9  7     22 swaps with its larger child, 30
 percolate down i=0   40 30 15 22 11  9  7     15 swaps with 40, then beats 9 and 7: stop
 ```
 
-It looks like n log n work, but most nodes are near the bottom and move only a little: building a heap this way is **O(n)**.
+Heapify looks like n log n work. But most nodes are near the bottom and move only a short distance, so building a heap this way is **O(n)**.
 
-An array sorted in descending order is already a max-heap, so heapify makes no swaps on it. An array sorted in ascending order is a min-heap, and isn't a max-heap unless all its values are equal.
+An array sorted in descending order is already a max-heap, so heapify makes no swaps on it. An array sorted in ascending order is a min-heap. It isn't a max-heap unless all its values are equal.
 
 ### Sorting
 
-Heap sort uses a max-heap inside the array being sorted. An **end index** marks where the heap part stops.
+Heap sort builds a max-heap inside the array it's sorting. An **end index** marks where the heap part of the array stops.
 
 1. Heapify the array. Set the end index to the last index, n − 1.
 2. Swap the root (the max) with the item at the end index. The max is now in its final place.
@@ -150,7 +150,7 @@ def heap_sort(items):
 - **Memory:** in place, O(1) extra. Two loops, no recursion.
 - **Stable:** no.
 - **Spot it in code:** a loop from `n // 2 - 1` down to 0, then a loop that swaps `items[0]` with `items[end]`.
-- **Descending order:** use a min-heap instead. The smallest goes to the end each round.
+- **Descending order:** use a min-heap instead. The smallest item goes to the end each round.
 
 ## Priority queues
 
@@ -159,7 +159,7 @@ A **priority queue** is a queue where every item has a priority, and higher-prio
 - **Enqueue** puts the new item behind every item of equal or higher priority, and ahead of every item of lower priority. So items with equal priority leave in the order they arrived (first in, first out).
 - **Dequeue** removes and returns the item at the front, which has the highest priority.
 
-What "higher priority" means is up to the queue. Often a **lower number means higher priority**: priority 1 is served before priority 4.
+Each queue decides what "higher priority" means. Often a **lower number means higher priority**, so priority 1 is served before priority 4.
 
 ```text
 lower number = higher priority          front -> end
@@ -178,9 +178,9 @@ dequeue: returns 2                      6 6' 9
 | IsEmpty | True if the queue has no items | O(1) |
 | GetLength | Return the number of items | O(1) |
 
-A priority queue is usually built on a heap, though it doesn't have to be. A sorted list would make dequeue O(1) but enqueue O(n); an unsorted list the reverse. A heap makes both O(log n). Use a max-heap when a bigger number means higher priority, and a min-heap when a smaller number does.
+A priority queue is usually built on a heap, though it doesn't have to be. With a sorted list, dequeue is O(1) but enqueue is O(n). An unsorted list is the reverse. A heap makes both O(log n). Use a max-heap when a bigger number means higher priority, and a min-heap when a smaller number does.
 
-A plain heap doesn't keep equal-priority items in arrival order. To get the first-in, first-out rule, store an arrival counter with each item and use it to break ties.
+A plain heap doesn't keep equal-priority items in arrival order. To get the first-in, first-out rule, store an arrival counter with each item and use the counter to break ties.
 
 ### Where the priority comes from
 
@@ -209,7 +209,7 @@ print(jobs.get())     # 4: removes and returns the smallest
 | `qsize()` | Return the number of items. |
 
 - `PriorityQueue` compares items with the `<` operator, so the smallest item comes out first.
-- `get()` on an empty queue doesn't return or raise. It waits for another thread to put an item, so a single-threaded program hangs. Check `qsize() > 0` before calling it.
+- Calling `get()` on an empty queue doesn't return anything or raise an error. It waits for another thread to put an item, so a single-threaded program hangs. Check `qsize() > 0` before you call `get()`.
 - To use a separate priority, put a tuple: `put((priority, item))`. Tuples compare by their first element first.
 
 To change the order, wrap each item in a class whose `__lt__` method defines what "comes first" means. This wrapper makes the **largest** value come out first:
@@ -228,20 +228,20 @@ for x in [8, 3, 11]:
 print(pq.get().value)   # 11
 ```
 
-The `heapq` module does the same job on a plain list, without a class. It's also a **min-heap**: `heapq.heappush(h, x)`, `heapq.heappop(h)` (removes the smallest), `heapq.heapify(lst)` in O(n), and `h[0]` to peek. For a max-heap, push negated values.
+The `heapq` module does the same job on a plain list, without a class. It's also a **min-heap**. Use `heapq.heappush(h, x)`, `heapq.heappop(h)` (removes the smallest), `heapq.heapify(lst)` in O(n), and `h[0]` to peek. For a max-heap, push negated values.
 
 ## Treaps
 
-A BST built from keys that arrive in random order stays close to balanced. Keys don't always arrive in random order, so a **treap** adds the randomness itself. The name is a mix of *tree* and *heap*.
+A BST built from keys that arrive in random order stays close to balanced. Keys don't always arrive in random order, so a **treap** adds the randomness itself. The name blends *tree* and *heap*.
 
 Each node has two values:
 
 - a **main key**, which follows the **BST** rule, and
 - a **priority**, a random number chosen when the node is inserted, which follows the **heap** rule.
 
-zyBooks uses a **max-heap** for the priorities, so the highest priority is at the root. This page follows that.
+zyBooks uses a **max-heap** for the priorities, so the highest priority is at the root. This page does the same.
 
-Moving a node up or down in a treap uses **rotations** ([chapter 6](06-balanced-trees.md#rotations)), never swaps. A swap would break the BST order. A rotation keeps it.
+A treap moves a node up or down with **rotations** ([chapter 6](06-balanced-trees.md#rotations)), never with swaps. A swap would break the BST order, and a rotation keeps it.
 
 ### Search
 
@@ -251,10 +251,10 @@ A treap is a BST, so search is a plain BST search by main key. The priorities ar
 
 1. Insert the key as a new leaf, using the BST rules.
 2. Give it a random priority.
-3. While its priority is higher than its parent's, **rotate at the parent** to move it up: a **right** rotation if it's a left child, a **left** rotation if it's a right child.
-4. Stop when the parent's priority is greater than or equal to the node's, or it reaches the root.
+3. While the new node's priority is higher than its parent's, **rotate at the parent** to move the node up. Use a **right** rotation if the node is a left child, and a **left** rotation if it's a right child.
+4. Stop when the parent's priority is greater than or equal to the node's, or when the node reaches the root.
 
-Each node below is written key:priority. Inserting J, which gets priority 82:
+Each node below is written key:priority. Here is the insert of J, which gets priority 82:
 
 ```text
 start                        J goes in as H's right child
@@ -283,10 +283,10 @@ J's parent is now M, with priority 90, so the insert is done after two left rota
 zyBooks removes a node by pushing it down to a leaf first:
 
 1. Set the node's priority to **−∞**, the lowest possible, so it belongs at the bottom.
-2. While it has a child, rotate at the node so its **higher-priority child** moves up into its place. With two children, that's a left rotation if the right child's priority is higher, and a right rotation if the left child's is. With one child, rotate that child up.
+2. While the node has a child, rotate at the node so its **higher-priority child** moves up into its place. With two children, use a left rotation if the right child's priority is higher, and a right rotation if the left child's is. With one child, rotate that child up.
 3. When the node is a leaf, cut it off.
 
-Moving the higher-priority child up keeps the heap rule: the child that comes up has a priority at least as high as the one that stays below it.
+Moving the higher-priority child up keeps the heap rule, because the child that comes up has a priority at least as high as the child that stays below it.
 
 Deleting E from the treap above:
 
@@ -306,11 +306,11 @@ children B:30 and H:40        left rotation at E            right rotation at E
 E is a leaf: remove it    M:90 ( J:82 ( H:40 ( B:30 ) ), T:75 )
 ```
 
-zyBooks also mentions a second way: do a normal BST delete (copy the successor in), then percolate down with rotations. Setting the priority to −∞ is simpler.
+zyBooks also mentions a second way. Do a normal BST delete (copy the successor in), then percolate down with rotations. Setting the priority to −∞ is simpler.
 
 ### Height
 
-Because the priorities are random, the tree's shape is as if the keys had been inserted in random order, whatever order they really came in. Keys inserted in sorted order won't build a chain unless the random priorities also happen to come out sorted. That makes the height O(log n) **on average**, with no balance factors or colors to maintain. The worst case is still O(n), but it's very unlikely.
+Because the priorities are random, the treap has the shape it would have if the keys had arrived in random order, whatever order they really came in. Keys inserted in sorted order won't build a chain unless the random priorities also happen to come out sorted. So the height is O(log n) **on average**, and there are no balance factors or colors to maintain. The worst case is still O(n), but it's very unlikely.
 
 <div class="viz" data-viz="treap" markdown>
 
@@ -377,7 +377,7 @@ A heap-based priority queue: enqueue and dequeue O(log n); peek, IsEmpty, and Ge
   <details>
   <summary>Answer</summary>
 
-  90 is removed. The last value, 50, moves to the root. Its children are 70 and 80; it swaps with the larger, 80. At index 2, it has no children left. **80 70 50 30 60**.
+  90 is removed. The last value, 50, moves to the root. Its children are 70 and 80, so it swaps with the larger, 80. At index 2, it has no children left. **80 70 50 30 60**.
 
   </details>
 
@@ -395,7 +395,7 @@ A heap-based priority queue: enqueue and dequeue O(log n); peek, IsEmpty, and Ge
   <summary>Answer</summary>
 
   - **a)** Percolate down index 2 (2 swaps with 8), index 1 (9 stays), then index 0 (3 swaps with 9, then with 7): **9 7 8 3 5 2**.
-  - **b)** **O(n)**, because most nodes sit near the bottom and barely move.
+  - **b)** **O(n)**, because most nodes sit near the bottom and move only a short distance.
 
   </details>
 
@@ -443,8 +443,8 @@ A heap-based priority queue: enqueue and dequeue O(log n); peek, IsEmpty, and Ge
   <summary>Answer</summary>
 
   - **a)** `heapq` is a min-heap, so it pops the smallest: **1**.
-  - **b)** **B.** Rotations move it up while keeping the BST order, until the heap order holds.
-  - **c)** Random priorities make the tree balanced on average, **O(log n)**, but nothing forbids a bad shape: **O(n)** in the worst case.
+  - **b)** **B.** Rotations move the node up, keeping the BST order, until the heap order holds.
+  - **c)** Random priorities keep the tree balanced on average, so search is **O(log n)**. Nothing prevents a bad shape, though, so the worst case is **O(n)**.
 
   </details>
 
@@ -503,7 +503,7 @@ A heap-based priority queue: enqueue and dequeue O(log n); peek, IsEmpty, and Ge
 
   - **a)** R > P, so go right. R < W, so go left. R < S, so go left. R becomes **S**'s left child.
   - **b)** 60 > 35, and R is a left child: **right rotation at S**. Now R is W's left child, and 60 > 50: **right rotation at W**. Now R is P's right child, and 95 ≥ 60: stop.
-  - **c)** R's parent is **P**. W came down to R's right, so R's right child is **W**, and S is still **W**'s left child. The tree is P:95 with children F:70 and R:60; R:60 has right child W:50; W:50 has left child S:35.
+  - **c)** R's parent is **P**. W came down to R's right, so R's right child is **W**, and S is still **W**'s left child. The tree is P:95 with children F:70 and R:60. R:60 has right child W:50, and W:50 has left child S:35.
 
   </details>
 

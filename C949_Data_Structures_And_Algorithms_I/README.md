@@ -1,8 +1,8 @@
 # WGU C949 Data Structures and Algorithms I: Study Guide
 
-A study guide for WGU's C949 Data Structures and Algorithms I that follows the zyBooks chapters. For each data structure and algorithm, it explains how it works, step by step, and what it costs: the Big-O in the best, average, and worst case. Each chapter ends with questions to check yourself.
+A study guide for WGU's C949 Data Structures and Algorithms I that follows the zyBooks chapters. It explains how each data structure and algorithm works, step by step, and what it costs: its Big-O in the best, average, and worst case. Each chapter ends with questions so you can check yourself.
 
-Read it online at **[jeubanks.github.io/wgu](https://jeubanks.github.io/wgu/c949/)**, where the questions check your answers and you can track which ones you've finished.
+You can read it online at **[jeubanks.github.io/wgu](https://jeubanks.github.io/wgu/c949/)**. On the site, the questions check your answers, and you can track which ones you've finished.
 
 <div class="viz" data-viz="cost-spectrum" markdown>
 
@@ -34,19 +34,19 @@ Chapter numbers match the zyBooks chapters.
 
 </div>
 
-**Reference:** the [Big-O cheat sheet](big-o.md) puts every structure and algorithm in the course on one printable page, with best, average, and worst cases.
+The [Big-O cheat sheet](big-o.md) puts every structure and algorithm in the course on one printable page, with best, average, and worst cases.
 
-**Checklist:** the [topic map](topics.md) lists every topic in the course study guide, by competency, with where it's covered here.
+The [topic map](topics.md) is a checklist. It lists every topic in the course study guide by competency and shows where this guide covers it.
 
-**Optional:** [Practice in code](code/README.md) has seven Python lessons where you build these structures yourself, with checks. Its Lesson 7, [tracing pseudocode](code/07-tracing.md), needs only paper and fits in anywhere.
+If you want more practice, the optional [Practice in code](code/README.md) section has seven Python lessons where you build these structures yourself and run checks on your code. Lesson 7, [tracing pseudocode](code/07-tracing.md), needs only paper, and you can do it at any point.
 
 ## How to use this guide
 
 1. Read a chapter here alongside the zyBooks chapter with the same number.
-2. Answer the questions at the end of the chapter without looking back. Each one tells you right away if you got it, and the folded **Answer** explains why.
+2. Answer the questions at the end of the chapter without looking back. Each one tells you right away whether you got it right, and the folded **Answer** explains why.
 3. Keep the [Big-O cheat sheet](big-o.md) open. Most questions come down to knowing what an operation costs and why.
 
-Big-O questions ask about the **best**, **average**, and **worst** case. For each operation, learn all three, and the situation that causes each one: "searching a BST is O(log n) on average, and O(n) when the keys went in already sorted."
+Big-O questions ask about the **best**, **average**, and **worst** case. For each operation, learn all three, along with the situation that causes each one: "searching a BST is O(log n) on average, and O(n) when the keys went in already sorted."
 
 ## Course competencies
 
@@ -56,11 +56,11 @@ The course is organized around three competencies:
 - Determines Data Structure Impact
 - Explains Algorithms
 
-The course materials show code as pseudocode or Python. The full topic list and zyBooks chapter map are in the course study guide in your WGU course resources. Take the course pre-assessment early, and use its coaching report to pick which chapters to focus on.
+The course materials show code as pseudocode or Python. You'll find the full topic list and the zyBooks chapter map in the course study guide, in your WGU course resources. Take the course pre-assessment early, and use its coaching report to decide which chapters to focus on.
 
 ## Recommended reading
 
-**[A Common-Sense Guide to Data Structures and Algorithms, Second Edition](https://pragprog.com/titles/jwdsal2/a-common-sense-guide-to-data-structures-and-algorithms-second-edition/)** by Jay Wengrow (The Pragmatic Bookshelf). It explains Big-O and the core data structures in plain English. The publisher sells the ebook DRM-free, and one purchase includes PDF and EPUB. The author has also published [Python-specific editions](https://www.commonsensedev.com/books), which match the language this course uses.
+**[A Common-Sense Guide to Data Structures and Algorithms, Second Edition](https://pragprog.com/titles/jwdsal2/a-common-sense-guide-to-data-structures-and-algorithms-second-edition/)** by Jay Wengrow (The Pragmatic Bookshelf). It explains Big-O and the core data structures in plain English. The publisher sells the ebook DRM-free, and one purchase includes both PDF and EPUB. The author has also published [Python-specific editions](https://www.commonsensedev.com/books), which use the same language as this course.
 
 ### EPUB readers
 
@@ -86,9 +86,9 @@ The course materials show code as pseudocode or Python. The full topic list and 
 
 ## Notes
 
-- The cheat sheet follows the course study guide's Big-O conventions, like O(n·k) for radix sort and O(n + k) for bucket and counting sort.
+- The cheat sheet uses the course study guide's Big-O conventions, such as O(n·k) for radix sort and O(n + k) for bucket and counting sort.
 - Topics come from the zyBooks chapters and the course study guide in your course resources. The [topic map](topics.md) shows where each study-guide topic is covered here.
-- Every lesson example and solution in `c949-practice/` was run against its checks (43 passing in `pytest --solutions`).
+- Every lesson example and solution in `c949-practice/` has been run against its checks (43 pass in `pytest --solutions`).
 - The WGU course study guide, Big-O worksheet, and other course PDFs belong to WGU and are not included here. Get them from your course resources.
 
 ## Contributing

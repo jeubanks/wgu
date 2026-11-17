@@ -1,8 +1,8 @@
 # Topic map
 
-Every topic in the C949 course study guide (in your WGU course resources), grouped by the course's three competencies, and where this guide covers it. Use it as a checklist: when you can explain a topic and work its questions without looking, move on.
+This page lists every topic in the C949 course study guide (in your WGU course resources), grouped by the course's three competencies, and shows where this guide covers each one. Use it as a checklist: once you can explain a topic and answer its questions without looking, move on.
 
-Topics marked *coming* are in chapters not written yet. Until then, the [Big-O cheat sheet](big-o.md) has their costs, and the optional [code lessons](code/README.md) build several of them.
+For a quick review of what each topic costs, use the [Big-O cheat sheet](big-o.md). For hands-on practice, the optional [code lessons](code/README.md) have you build several of these structures yourself.
 
 ## Explains Algorithms
 

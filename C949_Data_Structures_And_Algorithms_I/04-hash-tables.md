@@ -1,10 +1,10 @@
 # 4. Hash tables
 
-A hash table finds an item by its key in O(1) on average: it computes where the item belongs instead of searching for it. It's how Python's `dict` and `set` work, and the reason they're so fast.
+A hash table finds an item by its key in O(1) time on average. Instead of searching for the item, it computes where the item belongs. Python's `dict` and `set` are hash tables, which is why they're so fast.
 
 ## The map ADT
 
-A **map** (also called a dictionary or associative array) stores **key-value pairs** and looks up a value by its key. Keys are unique: putting a key that's already there replaces its value.
+A **map** (also called a dictionary or associative array) stores **key-value pairs** and looks up a value by its key. Keys are unique, so inserting a key that's already in the map replaces its value.
 
 | Operation | What it does |
 |---|---|
@@ -13,33 +13,33 @@ A **map** (also called a dictionary or associative array) stores **key-value pai
 | Remove(key) | Remove the pair |
 | Contains(key) | True if the key is in the map |
 
-A map can be built on a hash table (O(1) on average) or on a binary search tree (O(log n) on average, with keys kept in sorted order).
+You can build a map on a hash table (O(1) on average) or on a binary search tree (O(log n) on average, with the keys kept in sorted order).
 
 ## How a hash table works
 
 A hash table is an array of **buckets**. A **hash function** turns a key into a bucket index. The simplest one, the **modulo hash**, is `key % N`, where N is the number of buckets:
 
 - Insert 47 into a table of 10 buckets: 47 % 10 = 7, so it goes in bucket 7.
-- Searching for 47 computes the same index and looks only in bucket 7.
+- A search for 47 computes the same index and looks only in bucket 7.
 
-Two different keys can hash to the same bucket: 17 % 10 is 7 too. That's a **collision**, and it can't be avoided, because there are far more possible keys than buckets. A hash table needs a plan for collisions. There are two families: **chaining** and **open addressing** (probing).
+Two different keys can hash to the same bucket: 17 % 10 is also 7. That's called a **collision**. Collisions can't be avoided, because there are far more possible keys than buckets, so every hash table needs a way to handle them. The two families of approaches are **chaining** and **open addressing** (probing).
 
 ## Chaining
 
 With **chaining**, each bucket holds a list of the items that hashed to it.
 
-- Insert: hash the key, and add the item to that bucket's list (after checking the key isn't already there).
+- Insert: hash the key, check that the key isn't already in that bucket's list, and add the item to the list.
 - Search and remove: hash the key, and search only that bucket's list.
 
-With a good hash function, items spread evenly, the lists stay short, and each operation is O(1) on average. In the worst case, every key lands in the same bucket, and the table is one long list: O(n).
+With a good hash function, items spread evenly and the lists stay short, so each operation is O(1) on average. In the worst case, every key lands in the same bucket and the table becomes one long list, so each operation is O(n).
 
 ## Open addressing: probing
 
-With **open addressing**, each bucket holds at most one item. If a key's bucket is taken, the table **probes**: it tries other buckets in a fixed order until it finds a free one. Search follows the same order until it finds the key, or reaches a bucket that has never held anything.
+With **open addressing**, each bucket holds at most one item. If a key's bucket is taken, the table **probes**, which means it tries other buckets in a fixed order until it finds a free one. A search follows the same order until it finds the key or reaches a bucket that has never held anything.
 
 ### Linear probing
 
-Try the next bucket, then the one after that, wrapping around the end: bucket `(h + i) % N` for i = 0, 1, 2, ...
+Start at the key's home bucket h (the index the hash function gives). If it's taken, try the next bucket, then the one after that, wrapping around at the end of the array. The table tries bucket `(h + i) % N` for i = 0, 1, 2, ...
 
 Example: 10 buckets, h = key % 10. Insert 43, 13, 53, then 23:
 
@@ -50,20 +50,20 @@ Example: 10 buckets, h = key % 10. Insert 43, 13, 53, then 23:
 | 53 | 3 | 3, 4, 5 | 5 |
 | 23 | 3 | 3, 4, 5, 6 | 6 |
 
-Linear probing tends to build **clusters**: long runs of full buckets that keep growing, because any key that hashes into a cluster lands at its end.
+Linear probing tends to build **clusters**, which are long runs of full buckets. A cluster keeps growing, because any key that hashes into it lands at its end.
 
-**Removing needs care.** If 13 were removed and its bucket simply emptied, a search for 53 would start at 3, find bucket 4 empty, and wrongly stop. So buckets have two kinds of empty:
+Removing an item needs care. Suppose 13 is removed and its bucket is simply emptied. A search for 53 would start at bucket 3, find bucket 4 empty, and wrongly stop. To prevent this, buckets have two kinds of empty:
 
-- **Empty-since-start:** never used. A search can stop here: the key isn't in the table.
-- **Empty-after-removal:** an item was removed. A search keeps going past it, and an insert may reuse it.
+- **Empty-since-start:** the bucket has never been used. A search can stop here, because the key isn't in the table.
+- **Empty-after-removal:** an item was removed from the bucket. A search keeps going past it, and an insert may reuse it.
 
 ### Quadratic probing
 
-Jump farther each time, to break up clusters: bucket `(h + c1·i + c2·i²) % N` for i = 0, 1, 2, ..., where c1 and c2 are constants the table picks. With c1 = 1 and c2 = 1, the offsets from the home bucket are 0, 2, 6, 12, ...
+To break up clusters, jump farther each time. The table tries bucket `(h + c1·i + c2·i²) % N` for i = 0, 1, 2, ..., where c1 and c2 are constants the table picks. With c1 = 1 and c2 = 1, the offsets from the home bucket are 0, 2, 6, 12, ...
 
 ### Double hashing
 
-Use a **second hash function** to choose the step size: bucket `(h1(key) + i·h2(key)) % N`. Keys with the same home bucket usually have different steps, so they follow different paths. h2 must never return 0, or the probe would stay in one bucket. A common choice is `h2(key) = p − (key % p)` for a prime p smaller than N.
+Use a **second hash function** to choose the step size. The table tries bucket `(h1(key) + i·h2(key)) % N`. Keys with the same home bucket usually have different step sizes, so they follow different paths. h2 must never return 0, or the probe would stay in one bucket. A common choice is `h2(key) = p − (key % p)` for a prime p smaller than N.
 
 <div class="viz" data-viz="hash-probe" markdown>
 
@@ -73,12 +73,12 @@ Use a **second hash function** to choose the step size: bucket `(h1(key) + i·h2
 
 ## Resizing and the load factor
 
-The **load factor** is the number of items divided by the number of buckets. It measures how full the table is:
+The **load factor** is the number of items divided by the number of buckets. It measures how full the table is.
 
 - With chaining, it's the average list length. It can go above 1.
-- With probing, it can't go above 1, and probes get long as it nears 1.
+- With probing, it can't go above 1, and probe sequences get long as it gets close to 1.
 
-When the load factor passes a threshold (often around 0.75 for probing), the table **resizes**: it allocates a bigger array, usually a prime number about twice the old size, and **rehashes** every item into it. Items can't just be copied to the same index, because the index depends on N. A resize is O(n), but it's rare, so inserts stay O(1) on average.
+When the load factor passes a threshold (often around 0.75 for probing), the table **resizes**. It allocates a bigger array, usually a prime number of buckets about twice the old size, and **rehashes** every item into it. Items can't just be copied to the same index, because the index depends on N. A resize is O(n), but resizes are rare, so inserts stay O(1) on average.
 
 ## Hash functions
 
@@ -88,9 +88,11 @@ A good hash function is:
 - **Uniform:** keys spread evenly over the buckets, so collisions are rare.
 - **Fast** to compute, since it runs on every insert, search, and remove.
 
-- **Modulo hash:** `key % N`. Simple and fast. A prime N spreads keys better, since keys often share factors with a round number like 100.
+Three common hash functions:
+
+- **Modulo hash:** `key % N`. It's simple and fast. A prime N spreads keys better than a round number like 100, because keys often share factors with round numbers.
 - **Mid-square hash:** square the key, take some digits (or bits) from the middle of the result, and take that modulo N. The middle digits depend on every digit of the key. Example: 453² = 205209, and its middle two digits are 52.
-- **Multiplicative string hash:** start from an initial value, and for each character, multiply the hash so far by a constant and add the character's code: `hash = hash * multiplier + code(c)`. Then take it modulo N. Each character's position matters, so anagrams like "stop" and "pots" get different hashes.
+- **Multiplicative string hash:** start from an initial value, and for each character, multiply the hash so far by a constant and add the character's code: `hash = hash * multiplier + code(c)`. Then take the result modulo N. Each character's position affects the result, so anagrams like "stop" and "pots" get different hashes.
 
 ### Computing a modulo by hand
 
@@ -100,26 +102,26 @@ Questions often give a hash function like `key % 1009` and ask where a key goes.
 2. Keep the whole-number part: 3.
 3. Multiply it back and subtract: 3045 − 3 × 1009 = 3045 − 3027 = **18**.
 
-So key 3045 goes in bucket 18. (Equivalently: take the fractional part, 0.0178..., and multiply it by 1009, then round.)
+So key 3045 goes in bucket 18. (Another way: multiply the fractional part, 0.0178..., by 1009, then round.)
 
 ### Direct hashing
 
-**Direct hashing** uses the key itself as the index: `h(key) = key`. There are no collisions, and every operation is O(1) even in the worst case. But it only works when keys are small non-negative integers, and it needs one bucket for every possible key, which wastes memory when keys are spread out.
+**Direct hashing** uses the key itself as the index: `h(key) = key`. There are no collisions, and every operation is O(1) even in the worst case. Direct hashing only works when keys are small non-negative integers, though. It needs one bucket for every possible key, which wastes memory when the keys are spread out.
 
 ## Cryptographic and password hashing
 
-Hashing is also used for security, with different goals:
+Hashing is also used for security, where the goals are different:
 
-- A **cryptographic hash function** (like SHA-256) is **one-way**: easy to compute, but infeasible to reverse or to find two inputs with the same hash. A small change to the input changes the hash completely. It's used to check that a file wasn't altered, and in digital signatures.
-- **Password hashing:** a site stores the hash of each password, not the password. At login, it hashes what you typed and compares the hashes. A random **salt**, stored with each user, is added to the password before hashing, so two users with the same password get different hashes, and precomputed tables of common passwords don't work. Password hash functions (like bcrypt) are deliberately **slow**, to make guessing millions of passwords expensive.
+- A **cryptographic hash function** (like SHA-256) is **one-way**. It's easy to compute, but it's infeasible to reverse or to find two inputs with the same hash. A small change to the input changes the hash completely. Cryptographic hashes are used to check that a file wasn't altered, and in digital signatures.
+- **Password hashing:** a site stores the hash of each password instead of the password itself. At login, the site hashes what you typed and compares the two hashes. Before hashing, the site adds a random **salt** to the password and stores the salt with the user. The salt means two users with the same password get different hashes, and precomputed tables of common passwords don't work. Password hash functions (like bcrypt) are deliberately **slow**, to make guessing millions of passwords expensive.
 
 ## Python's dict and set
 
-A Python `dict` is a hash table using open addressing. `d[key]`, `d[key] = value`, `del d[key]`, and `key in d` are all O(1) on average. A `set` is the same, holding keys without values.
+A Python `dict` is a hash table using open addressing. `d[key]`, `d[key] = value`, `del d[key]`, and `key in d` are all O(1) on average. A `set` works the same way but holds keys without values.
 
-Keys must be **hashable**: immutable types like numbers, strings, and tuples. A list can't be a key, because changing it would change its hash and lose its bucket.
+Keys must be **hashable**, which means immutable types like numbers, strings, and tuples. A list can't be a key, because changing the list would change its hash, and the table would look in the wrong bucket.
 
-Checking `x in some_list` is O(n); checking `x in some_set` is O(1) on average. Turning a list into a set first is a common speedup when you check membership many times.
+Checking `x in some_list` is O(n). Checking `x in some_set` is O(1) on average. If you check membership many times, turning the list into a set first is a common speedup.
 
 ## Big-O summary
 
@@ -131,7 +133,7 @@ Checking `x in some_list` is O(n); checking `x in some_set` is O(1) on average. 
 | Resize (rehash) | O(n) | O(n) | O(n) |
 | Direct hashing, any operation | O(1) | O(1) | O(1) |
 
-The worst case happens when many keys collide: one long chain, or one long probe sequence. A poor hash function, or a table that's too full, makes it likely.
+The worst case happens when many keys collide and form one long chain or one long probe sequence. A poor hash function or a table that's too full makes this more likely.
 
 ## Questions
 
@@ -157,7 +159,7 @@ The worst case happens when many keys collide: one long chain, or one long probe
   <summary>Answer</summary>
 
   - **a)** 15 % 7 = 1, 22 % 7 = 1, 9 % 7 = 2, 30 % 7 = 2, 6 % 7 = 6.
-  - **b)** 2: bucket 1 holds 15 and 22, and the search only looks in that bucket.
+  - **b)** 2. Bucket 1 holds 15 and 22, and the search only looks in that bucket.
 
   </details>
 
@@ -190,8 +192,8 @@ The worst case happens when many keys collide: one long chain, or one long probe
   <details>
   <summary>Answer</summary>
 
-  - **a)** 41 → 1. 21 → 1 is taken, so 2. 31 → 1, 2 taken, so 3. 5 → 5. 11 → 1, 2, 3 taken, 4 is free.
-  - **b)** 4: buckets 1 (41), 2 (removed, keep going), 3 (31), and 4 (11).
+  - **a)** 41 → 1. 21 → 1 is taken, so 2. 31 → 1 and 2 are taken, so 3. 5 → 5. 11 → 1, 2, and 3 are taken, and 4 is free.
+  - **b)** 4. It looks at buckets 1 (41), 2 (removed, keep going), 3 (31), and 4 (11).
   - **c)** **B.** If it were marked empty-since-start, the search would stop at bucket 2 and wrongly report 11 missing.
 
   </details>
@@ -250,7 +252,7 @@ The worst case happens when many keys collide: one long chain, or one long probe
 
   - **a)** 12 / 16 = 0.75.
   - **b)** **B.** With `key % N`, a new N gives a new index.
-  - **c)** O(n): every item is rehashed once.
+  - **c)** O(n). Every item is rehashed once.
 
   </details>
 
@@ -273,7 +275,7 @@ The worst case happens when many keys collide: one long chain, or one long probe
 
   - Hash tables are O(1) on average and O(n) in the worst case, when every key collides.
   - Direct hashing has no collisions, so it's O(1) even in the worst case.
-  - A list is searched item by item, O(n). A set is a hash table, O(1) on average.
+  - A list is searched item by item, so it's O(n). A set is a hash table, so it's O(1) on average.
 
   </details>
 
@@ -326,8 +328,8 @@ The worst case happens when many keys collide: one long chain, or one long probe
   <details>
   <summary>Answer</summary>
 
-  - **a)** **B.** A cryptographic hash can't be reversed at all; the salt defends against lookups of precomputed hashes.
-  - **b)** **B.** A real user hashes one password once, so slowness costs them little, while an attacker trying millions of guesses pays it millions of times.
+  - **a)** **B.** A cryptographic hash can't be reversed at all. The salt protects against lookups in tables of precomputed hashes.
+  - **b)** **B.** A real user's password is hashed once per login, so the slowness costs them little. An attacker trying millions of guesses pays that cost millions of times.
 
   </details>
 
@@ -350,7 +352,7 @@ The worst case happens when many keys collide: one long chain, or one long probe
   <details>
   <summary>Answer</summary>
 
-  - **a)** 7777 ÷ 101 = 77 exactly, so the remainder is 0: bucket 0.
+  - **a)** 7777 ÷ 101 = 77 exactly, so the remainder is 0, and the key goes in bucket 0.
   - **b)** **B.** The same key would hash to a different bucket at a different time, so a stored key couldn't be found again.
 
   </details>

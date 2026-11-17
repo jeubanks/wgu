@@ -26,11 +26,11 @@ def linear_search(items, key):
 | Average | the key is somewhere in the middle | about n / 2 | O(n) |
 | Worst | the key is last, or missing | n | O(n) |
 
-Linear search works on any list, sorted or not. That's its strength: it needs nothing from the data.
+Linear search works on any list, sorted or not, because it needs nothing from the data.
 
 ### Binary search
 
-Binary search needs a **sorted** list. It compares the key with the middle item and throws away the half that can't hold it:
+Binary search needs a **sorted** list. It compares the key with the middle item, then throws away the half that can't hold the key:
 
 1. Set `low` to 0 and `high` to the last index.
 2. While `low <= high`: compute `mid = (low + high) // 2` and compare the key with `items[mid]`.
@@ -63,7 +63,7 @@ step 1   low 0, high 10   mid = (0 + 10) // 2 = 5    items[5] = 40   75 > 40, so
 step 2   low 6, high 10   mid = (6 + 10) // 2 = 8    items[8] = 75   found at index 8
 ```
 
-Two comparisons, where linear search needed nine. Each step halves the range that's left, so the number of steps is how many times n can be halved: binary search makes at most **⌊log₂ n⌋ + 1** comparisons.
+Binary search needed two comparisons here, where linear search would need nine. Each step halves the range that's left, so the number of steps is how many times n can be halved. Binary search makes at most **⌊log₂ n⌋ + 1** comparisons.
 
 | n | Most comparisons, linear search | Most comparisons, binary search |
 |---|---|---|
@@ -81,7 +81,7 @@ Two comparisons, where linear search needed nine. Each step halves the range tha
 
 ### Interpolation search
 
-Interpolation search is binary search that guesses smarter. Instead of the middle, it guesses where the key *should* be from its value, the way you'd open a phone book near the back for "W". On sorted data whose values are spread evenly, it takes O(log log n) steps on average. On lopsided data the guesses can be bad, and the worst case is O(n).
+Interpolation search is like binary search, but with a better guess. Instead of checking the middle, it uses the key's value to guess where the key *should* be, the way you'd open a phone book near the back for "W". On sorted data whose values are spread evenly, it takes O(log log n) steps on average. On lopsided data the guesses can be bad, and the worst case is O(n).
 
 ## Finding Big-O by tracing
 
@@ -140,7 +140,7 @@ The constant inside a loop doesn't matter. All three of these are O(n):
 | `for i in range(0, n, 2):` | n / 2 | O(n) |
 | `for i in range(3 * n):` | 3n | O(n) |
 
-A loop whose bound **isn't** n is constant, however big the number: `for i in range(10):` runs 10 times for any n, so it's **O(1)**.
+A loop whose bound **isn't** n is constant, however big the bound is: `for i in range(10):` runs 10 times for any n, so it's **O(1)**.
 
 ### Pattern 2: loops one after another
 
@@ -372,7 +372,7 @@ If you can count the steps for some n, count them again for 2n. How the count ch
 - **Non-comparison sort:** never compares two items. It looks inside each one instead, at its digits or its value range. Radix, counting, and bucket sort work this way, which is how they can run in close to O(n), but only on numbers (or things that can be turned into numbers).
 - **Fast sort:** zyBooks calls a sort *fast* when its average case is O(n log n) or better: quicksort, merge sort, heap sort, and radix sort. Selection, insertion, bubble, and shell sort are not.
 - **Stable:** items with equal keys stay in their original order. That matters when you sort by one field, then another.
-- **In place:** uses only O(1) extra memory (merge sort, which needs a second list, isn't).
+- **In place:** uses only O(1) extra memory. Merge sort needs a second list, so it isn't in place.
 
 ### Selection sort
 
@@ -386,7 +386,7 @@ pass 3    4  8 11 29 42 17
 ...
 ```
 
-It always scans the whole unsorted part to be sure it found the smallest, even when the list is already sorted: n − 1 + n − 2 + ... + 1 comparisons, every time.
+Selection sort always scans the whole unsorted part to be sure it found the smallest, even when the list is already sorted: n − 1 + n − 2 + ... + 1 comparisons, every time.
 
 - **Best, average, worst:** O(n²), O(n²), O(n²). There's no fast case.
 - **Spot it in code:** an inner loop that tracks the index of the smallest value (`index_smallest`), then one swap after the inner loop ends.
@@ -410,7 +410,7 @@ i = 3     4  8 17 29 42 11     8 moves left past 29 and 17
 
 ### Bubble sort
 
-Walk the list comparing neighbors, and swap any pair that's out of order. Each pass carries the largest remaining item to the end, like a bubble rising.
+Walk through the list comparing neighbors, and swap any pair that's out of order. Each pass carries the largest remaining item to the end, like a bubble rising.
 
 ```text
 start     29  4 17  8 42 11
@@ -424,7 +424,7 @@ pass 1     4 17  8 29 11 42     42 has bubbled to the end
 
 ### Shell sort
 
-Shell sort speeds up insertion sort by first sorting items that are far apart. With a **gap** of 3, it treats the list as 3 interleaved lists (indexes 0, 3, 6, ...; 1, 4, 7, ...; 2, 5, 8, ...) and insertion-sorts each one. Then it repeats with smaller gaps, and always ends with a gap of 1, which is a plain insertion sort on a list that's now nearly sorted, so it's quick.
+Shell sort speeds up insertion sort by first sorting items that are far apart. With a **gap** of 3, it treats the list as 3 interleaved lists (indexes 0, 3, 6, ...; 1, 4, 7, ...; 2, 5, 8, ...) and insertion-sorts each one. Then it repeats with smaller gaps. The last gap is always 1. That final pass is a plain insertion sort, and it's quick because the list is now nearly sorted.
 
 ```text
 start, gap 3    45 13 70  2 88 31 59  7 24
@@ -438,7 +438,7 @@ Any gaps work as long as the last is 1. zyBooks suggests powers of 2 minus 1, la
 - **Best:** O(n log n), on sorted input.
 - **Average:** about O(n^1.5) with gaps like these. It depends on the gaps.
 - **Worst:** O(n²), with poor gaps (such as halving the gap each time).
-- **Stable:** no: items jump over each other across the gap.
+- **Stable:** no, because items jump over each other across the gap.
 - **Spot it in code:** a `gap` or `interval` variable, and an insertion sort that steps by `gap` instead of 1.
 
 ### Quicksort
@@ -460,8 +460,8 @@ start    24  7 61 15 38  3 50       pivot = middle item = 15
          low passes high: done. Left part 3 7 15, right part 61 38 24 50
 ```
 
-- **Best and average:** O(n log n): good pivots split each range roughly in half, so there are about log n levels of partitioning, each O(n).
-- **Worst:** O(n²): every pivot is the smallest or largest value, so each partition only peels off one item. With a last-item pivot, an already sorted list does this. (The optional code lesson's quicksort uses the last item, which is why its demo slows down on sorted input.)
+- **Best and average:** O(n log n). Good pivots split each range roughly in half, so there are about log n levels of partitioning, each O(n).
+- **Worst:** O(n²), when every pivot is the smallest or largest value, so each partition only peels off one item. With a last-item pivot, an already sorted list does this. (The optional code lesson's quicksort uses the last item, which is why its demo slows down on sorted input.)
 - **Memory:** in place, plus O(log n) for the recursion on average.
 - **Stable:** no.
 - **Spot it in code:** the words `pivot` and `partition`, and two recursive calls on the parts.
@@ -556,7 +556,7 @@ Try selection, insertion, bubble, and merge sort on the [sorting bench above](#p
 
 ## Questions
 
-Trace each one before you answer. Each question has a count to work out and a Big-O to pick.
+Trace each one before you answer. Many questions ask you to work out a count and then pick a Big-O.
 
 - **11.1** Two blocks.
 

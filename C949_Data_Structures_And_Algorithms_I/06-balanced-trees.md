@@ -1,6 +1,6 @@
 # 6. Balanced trees
 
-A plain BST is only fast when it's bushy. Insert keys in sorted order and it becomes a chain, and every operation is O(n) ([chapter 5](05-trees.md#height-depends-on-insertion-order)). A **balanced** search tree checks its shape after every insert and remove, and fixes it with small local moves called **rotations**, so its height stays O(log n) no matter what order the keys arrive in.
+A plain BST is only fast when its height stays small. If you insert keys in sorted order, the tree becomes a chain, and every operation is O(n) ([chapter 5](05-trees.md#height-depends-on-insertion-order)). A **balanced** search tree checks its shape after every insert and remove, and fixes it with small local moves called **rotations**, so its height stays O(log n) no matter what order the keys arrive in.
 
 This page follows zyBooks chapter 6: AVL trees (the balance rule, rotations, insertion, removal) and red-black trees (the rules, rotations, insertion, removal), plus the subtree key counts the chapter's labs add. Both kinds of tree are BSTs, so search works exactly as before. Only insert and remove change.
 
@@ -245,9 +245,9 @@ zyBooks' red-black remove:
 3. Remove the node with the plain BST removal. It has at most one child here.
 4. If the root ended up red, color it black.
 
-Note the difference: zyBooks' AVL removal uses the successor, and its red-black removal uses the predecessor. Removing a red node never needs preparation, since it doesn't change any path's black count.
+zyBooks' AVL removal uses the successor, but its red-black removal uses the predecessor. Removing a red node never needs preparation, since it doesn't change any path's black count.
 
-Preparing to remove a black node checks six cases in order. "Sibling" means the node's sibling, and it's looked up again after any case that rotates.
+Preparing to remove a black node checks six cases in order. In the table, "sibling" means the sibling of the node being prepared. After any case that rotates, look the sibling up again.
 
 | Case | Condition | Action | Then |
 |---|---|---|---|

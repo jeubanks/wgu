@@ -8,7 +8,7 @@ For the Big-O of a recursive function, see [Pattern 10: recursion](11-algorithm-
 
 ## Recursive functions
 
-A **recursive function** is a function that calls itself. Each time it calls itself is a **recursive call**.
+A **recursive function** is a function that calls itself. A call the function makes to itself is a **recursive call**.
 
 ```python
 def ladder(rung):
@@ -30,13 +30,13 @@ ground
 
 `ladder(3)` prints its line and calls `ladder(2)`. That call prints and calls `ladder(1)`, which calls `ladder(0)`. `ladder(0)` prints `ground` and makes no call. Then each call finishes, from the last one back to the first. That's 4 calls in all for `ladder(3)`.
 
-A `for` loop would print the same lines with less fuss; `ladder` is here to show the mechanics. Recursion pays off on problems that contain smaller copies of themselves, like searching half a list or walking a tree.
+A `for` loop would print the same lines more simply. `ladder` is here to show how recursion works. Recursion pays off on problems that contain smaller copies of themselves, like searching half a list or walking a tree.
 
 ### Base case and recursive case
 
 Every recursive function has two parts:
 
-- The **base case** answers directly, with no recursive call. It's what stops the recursion.
+- The **base case** answers directly, with no recursive call. The base case is what stops the recursion.
 - The **recursive case** calls the function on a smaller problem, then uses that answer.
 
 In zyBooks' code the two parts are usually one if-else, with the base case first and the recursive calls under `else`. A function can have more than one base case.
@@ -48,7 +48,7 @@ def sum_to(n):
     return n + sum_to(n - 1)     # recursive case
 ```
 
-`sum_to(n)` adds 1 + 2 + ... + n. Each call waits for the call below it, then adds its own n. Calls go down; returns come back up:
+`sum_to(n)` adds 1 + 2 + ... + n. Each call waits for the call below it, then adds its own n. The calls go down, and the returns come back up:
 
 ```text
 sum_to(4)
@@ -65,7 +65,7 @@ returns 4 + 6 = 10
 
 Each line that starts with `returns` belongs to the call above it at the same indent. `sum_to(4)` makes 5 calls: n = 4, 3, 2, 1, 0.
 
-Two things make it work:
+Two things make `sum_to` work:
 
 - The recursive call gets a smaller n, so each call moves closer to the base case.
 - The base case catches every path. Here, every n that's 0 or more counts down to exactly 0.
@@ -74,7 +74,7 @@ Two things make it work:
 
 Each call to a function gets its own **stack frame**: a block of memory holding that call's parameters, local variables, and the place to return to. zyBooks describes this as each call getting its own namespace for its local variables. So the 5 calls to `sum_to` each have their own n, and changing one doesn't touch the others.
 
-The frames sit on the **call stack**. A call pushes a frame; a return pops it. The frame on top is the one running. The others are waiting for the call above them to return.
+The frames sit on the **call stack**. A call pushes a frame, and a return pops it. The frame on top belongs to the call that's running. The others are waiting for the call above them to return.
 
 At the deepest point of `sum_to(4)`:
 
@@ -95,7 +95,7 @@ Every frame takes memory, so a recursion d calls deep uses O(d) extra space, eve
 
 ## Recursive search
 
-Some algorithms are recursive by nature: a step of the algorithm is the whole algorithm again, on a smaller piece. zyBooks introduces this with a number-guessing game. Guess the middle of the range, hear "higher" or "lower", and play the same game again on the half that's left.
+Some algorithms are recursive by nature: one step of the algorithm is the whole algorithm again, on a smaller piece. zyBooks introduces the idea with a number-guessing game. You guess the middle of the range, hear "higher" or "lower", and play the same game again on the half that's left.
 
 ### Binary search
 
@@ -163,7 +163,7 @@ Four calls for three nodes: one per node, plus one for the `None` at the end. Se
 
 ## Adding output statements for debugging
 
-A bug in a recursive function is hard to see, because many calls are running at once. Printing what each call does helps. zyBooks adds a trick: pass an `indent` string that grows by a few spaces on each recursive call, and start every print with it. The output's indentation then shows how deep each line is.
+A bug in a recursive function is hard to see, because many calls are active at once. It helps to print what each call does. zyBooks adds a trick: pass an `indent` string that grows by a few spaces on each recursive call, and start every print with it. The output's indentation then shows how deep each line is.
 
 ```python
 def find_debug(items, target, low, high, indent=""):
@@ -211,14 +211,14 @@ If a base case returned the wrong value, you'd see it at the deepest `returning`
 Notes on the technique:
 
 - It needs one extra parameter, the indent.
-- Each call adds spaces when it passes the indent down. It never has to remove them: each call has its own `indent` variable, so the caller's is unchanged when the call returns.
+- Each call adds spaces when it passes the indent down. No call ever has to remove spaces, because each call has its own `indent` variable. The caller's `indent` is unchanged when the call returns.
 - Once the bug is fixed, you can turn the prints into comments instead of deleting them, so they're ready the next time something breaks. For bigger programs, Python's `logging` module can switch debug output on and off without editing the code.
 
 ## Creating a recursive function
 
 zyBooks builds a recursive function in two steps:
 
-1. **Write the base case**, and test it. It's the case that returns without a recursive call. Leave the recursive case as a placeholder for now.
+1. **Write the base case**, and test it. The base case is the one that returns without a recursive call. Leave the recursive case as a placeholder for now.
 2. **Write the recursive case**, and test again.
 
 For n factorial (n! = n × (n − 1) × ... × 1), step 1:
@@ -230,7 +230,7 @@ def _factorial(n):
     return 0                     # FIXME: recursive case
 ```
 
-Test it with 0 and 1. Both return 1. Then step 2 replaces the placeholder:
+Test the function with 0 and 1. Both return 1. Then step 2 replaces the placeholder:
 
 ```python
 def _factorial(n):
@@ -343,7 +343,7 @@ fib_fast(5, 0, 1)
 returns 5
 ```
 
-a and b walk along the sequence: (0, 1), (1, 1), (1, 2), (2, 3), (3, 5), (5, 8). When n reaches 0, a is the answer, and every call passes it straight up. n + 1 calls: O(n). Avoiding work on the same smaller problem twice is the idea behind [dynamic programming](01-introduction.md#dynamic-programming).
+a and b walk along the sequence: (0, 1), (1, 1), (1, 2), (2, 3), (3, 5), (5, 8). When n reaches 0, a is the answer, and every call passes it straight up. That's n + 1 calls: O(n). Avoiding work on the same smaller problem twice is the idea behind [dynamic programming](01-introduction.md#dynamic-programming).
 
 ### Greatest common divisor (GCD)
 
@@ -372,7 +372,7 @@ gcd(18, 30)
 returns 6
 ```
 
-4 calls. The numbers must both be at least 1: with a 0, the subtraction never makes them equal. zyBooks' program checks that before the first call, which is the outer function's job.
+That's 4 calls. Both numbers must be at least 1, because with a 0 the subtraction never makes them equal. zyBooks' program checks this before the first call, which is the outer function's job.
 
 Each call makes the larger number smaller, so `gcd(a, b)` makes at most max(a, b) calls. A faster form replaces subtraction with the remainder, `%`. It makes O(log n) calls for numbers up to n.
 
@@ -400,11 +400,11 @@ power(3, 4)
 returns 3 * 27 = 81
 ```
 
-exp + 1 calls: O(exp). Python's `**` and `math.pow()` do this for you; the recursive version is for practice.
+That's exp + 1 calls: O(exp). Python's `**` and `math.pow()` do this for you. The recursive version is for practice.
 
 ## Infinite recursion and stack overflow
 
-**Infinite recursion** happens when the calls never reach a base case. Two ways to cause it:
+**Infinite recursion** happens when the calls never reach a base case. There are two ways to cause it:
 
 - There's no base case at all.
 - There is one, but some inputs step over it.
@@ -418,7 +418,7 @@ def down_by_two(n):
 
 `down_by_two(4)` goes 4, 2, 0 and returns `"done"`. `down_by_two(5)` goes 5, 3, 1, −1, −3, ... It skips 0, and nothing else stops it.
 
-Each call adds a frame, and the stack has a limit. Running out is a **stack overflow**. Python stops it sooner, with a **recursion depth limit**:
+Each call adds a frame, and the stack has a size limit. Running out of stack space is a **stack overflow**. Python stops runaway recursion before that happens, with a **recursion depth limit**:
 
 - `sys.getrecursionlimit()` returns the limit, usually 1000.
 - `sys.setrecursionlimit()` changes it.
@@ -434,7 +434,7 @@ Even a correct function hits the limit if the input is big enough. `sum_to(5000)
 
 ## Work before and after the recursive call
 
-Where a print goes, relative to the recursive call, decides the order of the output.
+Where you put a print, before or after the recursive call, decides the order of the output.
 
 - Code **before** the call runs on the way **down**, in call order.
 - Code **after** the call runs on the way **back up**, in reverse order, since the deepest call finishes first.
@@ -461,7 +461,7 @@ up 3
 
 Each call prints its "down" line, then waits for the whole call below it to finish, then prints its "up" line. So the "up" lines come out reversed. One of zyBooks' labs prints a number pattern that falls and then climbs back the same way.
 
-This is also why a postorder tree traversal visits children before their parent: the visit is after both recursive calls.
+The same rule explains why a postorder tree traversal visits children before their parent: the visit comes after both recursive calls.
 
 ## Recursive exploration of all possibilities
 
@@ -548,11 +548,11 @@ Output:
 []
 ```
 
-Swapping the two recursive calls lists the subsets in a different order. It's the same 2ⁿ subsets either way.
+Swapping the two recursive calls lists the subsets in a different order. Either way, you get the same 2ⁿ subsets.
 
 ### Choosing k items
 
-To list every group of exactly k items, the base case becomes "k items picked". To avoid listing the same group twice in different orders, each call only picks from the items **after** the last one picked:
+To list every group of exactly k items, the base case becomes "k items picked". To avoid listing the same group twice in different orders, each call picks only from the items **after** the last one picked:
 
 ```python
 def choose(items, k, start, picked):
@@ -574,7 +574,7 @@ def choose(items, k, start, picked):
 ['y', 'z']
 ```
 
-zyBooks' shopping example fills a bag from a list of items, picking from **every** item not yet in the bag. That lists each group once for every order it can be picked in. For 2 of these 4 letters, it would print 4 × 3 = 12 lines, each group twice: `w x` and `x w`. Using `start` cuts it to the 6 groups above.
+zyBooks' shopping example fills a bag from a list of items, picking from **every** item not yet in the bag. That lists each group once for every order it can be picked in. For 2 of these 4 letters, it would print 4 × 3 = 12 lines, with each group twice, such as `w x` and `x w`. Using `start` cuts the output to the 6 groups above.
 
 | Picking k of n items | Count | Formula |
 |---|---|---|
@@ -583,11 +583,11 @@ zyBooks' shopping example fills a bag from a list of items, picking from **every
 
 ### All paths
 
-zyBooks' last example lists every route through a set of cities, with each route's total distance. A route that visits every city once is a permutation of the cities, so the code is the permutation function with a different base case: when every city is on the path, add up the distances between neighbors and print the total. With n cities there are n! routes, which is why checking every route only works for small n.
+zyBooks' last example lists every route through a set of cities, with each route's total distance. A route that visits every city once is a permutation of the cities. So the code is the permutation function with a different base case: when every city is on the path, add up the distances between neighboring cities and print the total. With n cities there are n! routes, which is why checking every route only works for small n.
 
 ## Recursion vs iteration
 
-Any recursive function can be rewritten with a loop, and the reverse. `sum_to` as a loop:
+Any recursive function can be rewritten with a loop, and any loop can be rewritten with recursion. Here is `sum_to` as a loop:
 
 ```python
 def sum_to_loop(n):

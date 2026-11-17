@@ -24,7 +24,7 @@ A **computational problem** has three parts:
 - **Question:** what you want to know about the input, which a computer can answer.
 - **Output:** the form the answer takes.
 
-Example: input, a list of temperatures. Question: how many of them are below freezing? Output: one integer.
+For example, the input is a list of temperatures, the question is how many of them are below freezing, and the output is one integer.
 
 ### Choosing a data structure
 
@@ -85,7 +85,7 @@ Algorithms are often grouped by the strategy they use:
 | **Hashing** | Turn data into a fixed-size value used as an index or fingerprint | Hash tables, password hashing |
 | **Encryption** | Turn data into a form only the right key can read | AES, RSA |
 
-Divide and conquer and dynamic programming both split a problem into subproblems. The difference: divide and conquer's parts don't overlap, so there's nothing to reuse; dynamic programming's do, so it stores answers.
+Divide and conquer and dynamic programming both split a problem into subproblems. In divide and conquer, the subproblems don't overlap, so there's nothing to reuse. In dynamic programming they do overlap, so it stores their answers.
 
 Many real problems reduce to a few well-known algorithms. Comparing two DNA samples for their longest shared stretch is a longest common substring problem. Checking whether a part number is in a sorted parts catalog is binary search. Finding the quickest walking route between two buildings is Dijkstra's shortest path on a graph of paths.
 
@@ -95,15 +95,15 @@ An algorithm's efficiency is usually measured by its runtime, and how that runti
 
 zyBooks calls an algorithm **efficient** when its runtime grows no faster than a polynomial in the input size: O(n), O(n²), O(n³), and so on. O(2ⁿ) is not efficient.
 
-**NP-complete** problems form a group for which nobody knows an efficient algorithm. Three facts define where they stand:
+**NP-complete** problems are a group of problems for which nobody knows an efficient algorithm. Three facts describe them:
 
 - Nobody has found an efficient algorithm for any NP-complete problem.
 - Nobody has proven that an efficient algorithm is impossible.
 - If an efficient algorithm is found for one NP-complete problem, every NP-complete problem can be solved efficiently.
 
-One NP-complete problem is the **clique** decision problem: given a graph and a number K, is there a group of K vertices that are all joined to each other? In a friendship network, that asks whether K people all know one another. Another is deciding whether a route through every city on a map exists that's shorter than a given length.
+One NP-complete problem is the **clique** decision problem: given a graph and a number K, is there a group of K vertices that are all joined to each other? In a friendship network, that asks whether K people all know one another. Another is deciding whether there's a route through every city on a map that's shorter than a given length.
 
-Knowing a problem is NP-complete tells a programmer to stop hunting for a fast exact algorithm. Instead, they write one that quickly finds a good answer that may not be the best: a heuristic.
+Once a programmer knows a problem is NP-complete, they can stop hunting for a fast exact algorithm. Instead, they write a heuristic: an algorithm that quickly finds a good answer that may not be the best.
 
 ## Data types, data structures, and ADTs
 
@@ -154,7 +154,7 @@ Two of these are easy to mix up by their rules on order and duplicates:
 
 Abstraction lets a programmer think about which ADT fits the job. Say a program keeps a playlist of the 10 most recent songs, adds each new song at one end, drops the oldest from the other, and sometimes shows the songs newest first. A queue handles adding and dropping, but a queue has no operation for walking through the items backward. A list does, so the list ADT is the better fit.
 
-Abstraction has a limit. The hidden structure decides the **runtime**, so you have to look inside to measure or speed it up. A list built on an array reads item i in O(1), and one built on a linked list takes O(n). The program's behavior is the same; its speed isn't.
+Abstraction doesn't hide everything. The hidden structure decides the **runtime**, so you have to look inside to measure or speed it up. A list built on an array reads item i in O(1), and one built on a linked list takes O(n). The program's behavior is the same; its speed isn't.
 
 ### ADTs in standard libraries
 
@@ -260,7 +260,7 @@ Example: the limit is 20 lb, and the items are 10 lb worth $50, 8 lb worth $48, 
 | 2 | 8 lb, $48 | 10 | Yes | 2 | $98 |
 | 3 | 6 lb, $42 | 2 | No: stop | 2 | $98 |
 
-The heuristic returns $98. The best load is 10 + 6 + 4 = 20 lb, worth $104. The heuristic is fast, and close, but not optimal.
+The heuristic returns $98. The best load is 10 + 6 + 4 = 20 lb, worth $104. The heuristic is fast and close to the best, but it isn't optimal.
 
 ### Self-adjusting heuristics
 
@@ -409,9 +409,9 @@ The largest entry is 3, in row 3 (the `A` of `BREAD`, counting from 0). The long
 
 The algorithm fills N × M entries, so it's O(NM) time. Storing the whole matrix is O(NM) space.
 
-**Space-saving version:** a row only ever looks at the row above it. So an implementation can keep a single row of M entries, plus three variables: the up-left value (saved before it's overwritten), the largest entry so far, and the row index where it was found. It still fills N × M entries, so the time stays O(NM), but the space drops to O(M). It still finds the substring's length and where it ends.
+A space-saving version uses the fact that each row only looks at the row above it. An implementation can keep a single row of M entries, plus three variables: the up-left value (saved before it's overwritten), the largest entry so far, and the row index where it was found. It still fills N × M entries, so the time stays O(NM), but the space drops to O(M). It still finds the substring's length and where the substring ends.
 
-One common use: comparing long DNA strings (made of the letters A, C, G, and T) to find shared stretches. Those strings can be billions of characters long, so both the O(NM) time and the space saving matter.
+One common use is comparing long DNA strings (made of the letters A, C, G, and T) to find shared stretches. Those strings can be billions of characters long, so both the O(NM) time and the space saving matter.
 
 ### Longest common subsequence
 
