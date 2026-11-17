@@ -225,6 +225,9 @@ The downside is extra bookkeeping. Every insert and remove that relinks a child 
 
 Removing 47 from the tree at the top, with parent references: 47's parent is 31, so the tree calls 31.replace_child(47, 52). 31's right pointer now goes to 52, and 52's parent becomes 31.
 
+> [!TIP]
+> [Python Tutor](https://pythontutor.com/visualize.html) can draw a small BST as you build it. Paste a `Node` class and a recursive insert, then step through to see which way each key goes and when the recursion returns.
+
 ## BST recursion
 
 Searching a tree comes down to searching one of its subtrees, so BST algorithms can be written recursively.

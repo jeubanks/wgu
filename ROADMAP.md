@@ -6,7 +6,6 @@ D427 is the model course. Once its patterns are settled, other courses reuse the
 
 ## Up next
 
-- [ ] **C949 Try it runner (Pyodide)**: run each code lesson's checks in the browser, and tick Done on a pass. About 10 MB from a CDN, so load it only when a Try it box opens.
 
 ## Backlog
 
@@ -30,6 +29,7 @@ Nothing here yet.
 
 ### Decided against
 
+- **C949 Python runner in the browser (Pyodide)**: too heavy (about 10 MB per page load). The Practice in code page links free sites instead: Python Tutor for tracing, GitHub Codespaces for running the lessons and pytest unchanged, plus Colab, Programiz, OnlineGDB, and Trinket.
 - **Self-host sql.js**: not needed. The runner loads it from cdnjs, pinned by hash and checked in CI.
 
 ### Parked
@@ -38,6 +38,7 @@ Nothing here yet.
 
 ## Done
 
+- C949: a Run Python online section on Practice in code (Python Tutor, GitHub Codespaces, Colab, Programiz, OnlineGDB, Trinket, with what each is good for), and Python Tutor tips in chapters 2, 5, and 21 for watching pointers, trees, and the call stack (#62)
 - C949 practice: a final practice page of 40 new questions mixing every chapter (written and independently verified by a workflow, one writer and one checker per chapter group), and a random practice quiz that builds 10 new questions each time from 12 generators (Big-O of code, Big-O facts, binary search mids, heap insert and remove, BST traversals, probing, sort passes, radix pass, stack and queue traces, BFS and DFS, recursion), with topic filters and instant feedback (#61)
 - C949 diagrams for chapters 9 and 10: a graph-search bench (BFS, stack DFS, recursive DFS, with the queue, stack, or call stack), a Dijkstra bench (one relaxation at a time, with distances, predecessors, and the shortest path), and a 2-3-4 tree bench (random inserts with preemptive splits, and search), each on setups the questions don't use (#59)
 - C949 aligned with zyBooks: chapters 1 and 5 to 8 checked against the zyBooks chapter text (conventions, missing topics, and wrong answers fixed, new questions added), new chapters 9 (graphs) and 10 (B-trees and 2-3-4 trees), and chapter 21 (recursion), which completes the guide. Written by a workflow of one agent per chapter, each followed by an independent agent that re-derived every answer in Python and checked the zyBooks fit and house rules (#58)

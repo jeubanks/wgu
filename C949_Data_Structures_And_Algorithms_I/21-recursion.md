@@ -93,6 +93,9 @@ The **depth of recursion** is how many calls have started but not yet returned. 
 
 Every frame takes memory, so a recursion d calls deep uses O(d) extra space, even when each call uses only O(1).
 
+> [!TIP]
+> To see the call stack for yourself, paste one of this chapter's functions into [Python Tutor](https://pythontutor.com/visualize.html) and step through it. It shows a new frame for every call, with that call's own variables, and removes the frame when the call returns.
+
 ## Recursive search
 
 Some algorithms are recursive by nature: one step of the algorithm is the whole algorithm again, on a smaller piece. zyBooks introduces the idea with a number-guessing game. You guess the middle of the range, hear "higher" or "lower", and play the same game again on the half that's left.
