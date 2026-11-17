@@ -34,9 +34,9 @@ Binary search needs a **sorted** list. It compares the key with the middle item 
 
 1. Set `low` to 0 and `high` to the last index.
 2. While `low <= high`: compute `mid = (low + high) // 2` and compare the key with `items[mid]`.
-    - Equal: found it at `mid`.
-    - The key is bigger: it can only be to the right, so `low = mid + 1`.
-    - The key is smaller: it can only be to the left, so `high = mid - 1`.
+  - Equal: found it at `mid`.
+  - The key is bigger: it can only be to the right, so `low = mid + 1`.
+  - The key is smaller: it can only be to the left, so `high = mid - 1`.
 3. If `low` passes `high`, the range is empty: the key isn't there.
 
 ```python

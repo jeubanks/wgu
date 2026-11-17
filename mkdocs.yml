@@ -202,6 +202,8 @@ nav:
       - 6. Balanced trees: c949/06-balanced-trees.md
       - 7. Heaps and treaps: c949/07-heaps-treaps.md
       - 8. Sets: c949/08-sets.md
+      - 9. Graphs: c949/09-graphs.md
+      - 10. B-trees: c949/10-b-trees.md
       - 11. Searching and algorithm analysis: c949/11-algorithm-analysis.md
       - 12–20. Programming concepts: c949/12-programming-concepts.md
       - Topic map: c949/topics.md

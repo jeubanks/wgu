@@ -133,7 +133,7 @@ Merge sort, quicksort, and binary search are **divide and conquer**: split the p
 | Dijkstra's shortest path | O((V + E) log V) with a binary-heap priority queue, O(V²) with an unsorted list | Greedy. No negative edge weights. |
 | Bellman-Ford shortest path | O(V·E) | Dynamic programming. Allows negative weights, and detects negative cycles. |
 | Topological sort | O(V + E) | Directed graphs with no cycles |
-| Prim's or Kruskal's minimum spanning tree | O(E log V) | Undirected, connected, weighted graphs |
+| Prim's or Kruskal's minimum spanning tree | O(E log V), also written O(E log E): the same class, since E < V² | Undirected, connected, weighted graphs |
 | Floyd-Warshall all-pairs shortest path | O(V³) | Every vertex to every other |
 
 | Representation | Space | Is there an edge from A to B? | List A's neighbors | Add a vertex | Remove a vertex |
