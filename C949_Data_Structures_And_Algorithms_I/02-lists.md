@@ -81,6 +81,9 @@ The extra pointer costs memory, and every insert or remove has to update pointer
 
 In a **circular** linked list, the tail's `next` points back to the head instead of null (and in a doubly-linked circular list, the head's `prev` points to the tail). The list has no end, so a traversal starts at the head and stops when it gets back to the head. Circular lists fit things that repeat in turns, like players in a game or a round-robin task scheduler.
 
+> [!TIP]
+> To watch pointers change, paste a small `Node` class and a few appends into [Python Tutor](https://pythontutor.com/visualize.html). It draws each node as a box and each `next` pointer as an arrow, and steps through one line at a time. It's free, with no account needed. The [Practice in code](code/README.md#run-python-online) page lists other free sites.
+
 ## Traversal
 
 **Traversal** visits every node once: start at `head`, process the node, move to `next`, and stop at null. It's O(n). A doubly-linked list can also be traversed in **reverse**, from `tail` along `prev`.
