@@ -26,7 +26,7 @@ A **graph** is a set of **vertices** (also called nodes) joined by **edges**. A 
 
 Every edge counts once, however you draw it. This graph has 7 vertices and 8 edges.
 
-With V vertices and at most one edge per pair, an undirected graph can have at most V(V − 1) / 2 edges: every vertex can connect to the V − 1 others, and each edge is counted from both ends. Four vertices allow at most 4 · 3 / 2 = 6 edges.
+With V vertices and at most one edge per pair, an undirected graph can have at most V(V − 1) / 2 edges: every vertex can connect to the V − 1 others, but that counts each edge twice, once from each end, so divide by 2. Four vertices allow at most 4 · 3 / 2 = 6 edges.
 
 ### Kinds of graphs
 
@@ -56,7 +56,7 @@ zyBooks 9.2 shows graphs modeling real systems. The pattern is always the same: 
 | Product recommendations | Products | Products that are often bought together | What to suggest next: the products adjacent to what you bought |
 | Social and professional networks | People | Friendships or business contacts | Who to introduce: people at distance 2 |
 
-A road map only needs a vertex where roads meet or where a trip can start or end. A long road with no intersections is one edge, however long it is.
+A road map only needs a vertex where roads meet or where a trip can start or end. A road with no intersections along it is one edge, however long it is.
 
 ## Representing a graph
 
@@ -100,7 +100,7 @@ A V × V grid of 0s and 1s. The entry in row X, column Y is 1 if there's an edge
 
 - An undirected graph's matrix is **symmetric**: row X, column Y matches row Y, column X.
 - **Space:** O(V²), however few edges there are. A graph with 10,000 vertices needs 100,000,000 entries, mostly 0s if the graph is sparse.
-- **Is there an edge from X to Y?** Look at one entry: O(1). That is the matrix's strength.
+- **Is there an edge from X to Y?** Look at one entry: O(1). This fast check is the matrix's main advantage.
 - The grid records which pairs are connected and nothing else. If each vertex also carries data, such as a city's population, keep the vertices in their own list beside the matrix.
 
 ### Adding and removing vertices and edges
@@ -121,7 +121,7 @@ zyBooks treats the matrix as a fixed two-dimensional array, which is why adding 
 
 A **graph traversal** visits every vertex in some order. To **visit** a vertex means to do something with it, like print it or add it to a list.
 
-**What BFS is for:** visiting vertices in order of their distance from a start vertex: the start, then everything 1 edge away, then 2 edges away, and so on. That makes it the way to find the fewest-edge path in an unweighted graph. Social networks use it to suggest people at distance 2. A peer-to-peer network uses it to find the nearest computer that has a file.
+**What BFS is for:** visiting vertices in order of their distance from a start vertex: the start, then everything 1 edge away, then 2 edges away, and so on. That makes BFS the way to find the fewest-edge path in an unweighted graph. Social networks use it to suggest people at distance 2. A peer-to-peer network uses it to find the nearest computer that has a file.
 
 **How it works** (zyBooks' version):
 
@@ -154,7 +154,7 @@ BFS order: A, B, C, D, E, F, G
 Distance:  0  1  1  2  2  3  4
 ```
 
-D is 2 edges from A along two different paths. BFS finds it once, at distance 2, and never again.
+D is 2 edges from A along two different paths. BFS discovers it only once, at distance 2.
 
 zyBooks points out that a BFS order isn't unique: vertices at the same distance can come out in any order, depending on the order of each adjacency list. The questions on this page always take neighbors in alphabetical order, so there is one right answer.
 
@@ -261,7 +261,7 @@ zyBooks 9.8. A **weighted graph** gives each edge a number: a cost, distance, ti
 
 - In a weighted graph, the **path length** is the **sum of the weights** along the path.
 - The **shortest path** is the one with the smallest sum. It can have more edges than another path.
-- Add up the weights on the way around a cycle and you get its **cycle length**. When that total is negative, the cycle is a **negative edge weight cycle**.
+- A cycle's **cycle length** is the sum of the weights around it. If that sum is negative, the cycle is a **negative edge weight cycle**.
 - If a negative cycle can be reached, **no shortest path exists**: every trip around the cycle makes the path shorter, forever.
 
 ```text
@@ -375,7 +375,7 @@ The list version is better for dense graphs, where E is close to V². The heap v
   - Go through **every vertex**, in some fixed order. For each edge out of it, relax the edge exactly as Dijkstra does.
 3. Then go through every edge one more time. If any edge can **still** shorten a distance, there's a negative cycle: return False. Otherwise return True.
 
-Why V − 1 passes? A shortest path without a cycle has at most V − 1 edges. Each pass is sure to fix at least one more edge of every shortest path, wherever the vertex order puts it.
+Why V − 1 passes? A shortest path without a cycle has at most V − 1 edges. Each pass is guaranteed to settle at least one more edge of every shortest path, whatever the vertex order.
 
 The final distances are the same for any vertex order. The table **after each pass** depends on the order, so zyBooks' questions always say which order to use.
 
@@ -476,7 +476,7 @@ Result: B, D, A, C, E, F
 
 With a queue instead of a stack, A would come out first: A, B, C, D, E, F. Both are valid.
 
-Many other books build a topological sort with DFS instead: run DFS, record each vertex when it **finishes** (after all its descendants), then reverse that list. It's also O(V + E).
+Many other books build a topological sort with DFS instead: run DFS, record each vertex when it **finishes** (after all its descendants), then reverse that list. That method is also O(V + E).
 
 | Case | Big-O | Why |
 |---|---|---|
@@ -550,7 +550,7 @@ Floyd-Warshall allows negative edge weights, but not negative cycles.
 4. For each vertex K, in order (the main loop):
   - For every pair (X, Y): if going from X to K, then K to Y, is shorter than the current (X, Y) entry, replace the entry with that sum.
 
-After the round for K, every entry is the shortest path that's allowed to pass through K and any vertex handled before it. After the last round, every path is allowed.
+After the round for K, every entry holds the length of the shortest path that may pass through K and any vertex handled before it. After the last round, every path is allowed.
 
 **A trace:**
 

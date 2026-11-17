@@ -1,6 +1,6 @@
 # 10. B-trees
 
-A B-tree lets each node hold several sorted keys and have several children, so the tree stays short and wide. Every leaf sits at the same depth, and the tree keeps that shape by splitting full nodes on the way down during an insert and by growing small nodes on the way down during a remove. zyBooks teaches the idea with the **2-3-4 tree**, a B-tree of order 4, and this page follows its rules and names.
+A B-tree lets each node hold several sorted keys and have several children, so the tree stays short and wide. Every leaf sits at the same depth. The tree keeps that shape in two ways: an insert splits full nodes on the way down, and a remove gives 1-key nodes more keys on the way down. zyBooks teaches the idea with the **2-3-4 tree**, a B-tree of order 4, and this page follows its rules and names.
 
 ## B-trees
 
@@ -72,7 +72,7 @@ Each level multiplies the number of keys a tree can hold by up to m. A full orde
 
 ## The 2-3-4 tree classes
 
-zyBooks builds its 2-3-4 tree in Python with two classes. The code isn't the point, but the method names show up in its explanations:
+zyBooks builds its 2-3-4 tree in Python with two classes. You don't need to know the code, but the method names show up in zyBooks' explanations:
 
 - **Node234** holds a list of 3 keys, a list of 4 children, and `key_count`, the number of keys in use.
 - **Tree234** holds the `root`. An empty tree's root is `None`.
@@ -134,7 +134,7 @@ search 65
 
 **What it's for:** add a new key and keep every 2-3-4 rule true.
 
-New keys always go into a **leaf**. A leaf with 3 keys has no room, so zyBooks makes sure that never happens by **splitting** full nodes on the way down.
+New keys always go into a **leaf**. A leaf with 3 keys has no room. zyBooks makes sure the insert never reaches a full leaf by **splitting** full nodes on the way down.
 
 ### The split operation
 

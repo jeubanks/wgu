@@ -1,6 +1,6 @@
 # 5. Trees
 
-A tree stores data in a hierarchy instead of a line. A binary search tree puts that shape to work: every comparison throws away one side of the tree, so a search can skip most of the data, the way binary search skips half a sorted list.
+A tree stores data in a hierarchy instead of a line. A binary search tree uses that shape to search quickly. Each comparison rules out one side of the tree, so a search skips most of the data, the way binary search skips half of a sorted list.
 
 This page follows zyBooks chapter 5: binary tree terms, where trees are used, binary search trees (search, insert, remove, traversal, height), parent references, recursion, and tries.
 
@@ -34,7 +34,7 @@ A **binary tree** is made of nodes, where each node has up to two children: a **
 
 A tree with just one node has height 0. That one node is both the root and a leaf. zyBooks gives an empty tree (no nodes) height −1, which is what the height algorithm below returns for a null subtree.
 
-Every tree is a subtree of itself: pick the root as node X.
+Every tree is a subtree of itself: it's the subtree rooted at its own root.
 
 ### Tree shapes
 
@@ -56,7 +56,7 @@ A complete tree has no gaps when you read it level by level, which is why a heap
 ## Where trees are used
 
 - **File systems:** the root directory is the root node. Files are always leaves. A directory is an internal node unless it's empty, and then it's a leaf too. A directory can hold any number of entries, so a file system tree isn't a binary tree: each node needs a variable number of children.
-- **Binary space partitioning (BSP):** a BSP tree splits a region of space into two parts, then splits each part again. Each node stores one region's boundary and the objects inside it. A game or graphics engine looks up the camera's position in the tree and skips every region the screen doesn't touch, so it only checks the nearby objects. The splits don't have to be down the middle, and it works in 3-D as well as 2-D.
+- **Binary space partitioning (BSP):** a BSP tree splits a region of space into two parts, then splits each part again. Each node stores one region's boundary and the objects inside it. A game or graphics engine looks up the camera's position in the tree and skips every region the screen doesn't touch, so it only checks the nearby objects. The splits don't have to be down the middle, and BSP works in 3-D as well as 2-D.
 - **Storing collections:** most trees in the course (BSTs, AVL and red-black trees, heaps) hold a collection of keys in a shape that makes search, insert, and remove fast.
 
 ## Binary search trees (BSTs)
@@ -81,7 +81,7 @@ search for 40:  62 → go left → 31 → go right → 47 → 40 < 47, go left �
 
 zyBooks says a search **visits** a node when it reads that node's key. The search for 52 visits 4 nodes. Each step goes down one level, so a search makes at most **height + 1** comparisons: O(h).
 
-A tree with the smallest possible height makes that number tiny. A BST of 1,000,000 nodes can have height 19, so a search needs at most 20 comparisons. A linked list of the same keys can need 1,000,000.
+A tree with the smallest possible height keeps that number small. A BST of 1,000,000 nodes can have height 19, so a search needs at most 20 comparisons. A linked list of the same keys can need 1,000,000.
 
 ### Successor and predecessor
 
@@ -218,7 +218,7 @@ zyBooks' chapter 5 covers those four. A fifth, **level order**, goes level by le
 
 A BST node can also store a **parent** reference. Balanced trees (chapter 6) use it to move up to a node's parent, grandparent, or sibling in O(1).
 
-The cost: every insert and remove that relinks a child also has to set that child's parent reference.
+The downside is extra bookkeeping. Every insert and remove that relinks a child also has to set that child's parent reference.
 
 - **Insert:** after making the new node a child of some node P, set the new node's parent to P. A new root gets parent null.
 - **Remove:** zyBooks uses a helper, **replace_child(current_child, new_child)**, on the removed node's parent. It swaps whichever child pointer points at current_child to point at new_child, and sets new_child's parent (when new_child isn't null). If the node being removed is the root, the new root's parent is set to null instead.
@@ -227,7 +227,7 @@ Removing 47 from the tree at the top, with parent references: 47's parent is 31,
 
 ## BST recursion
 
-Searching a tree is searching one of its subtrees, so BST algorithms can be written recursively.
+Searching a tree comes down to searching one of its subtrees, so BST algorithms can be written recursively.
 
 **Recursive search** takes a node and a key. It has two base cases:
 
@@ -302,7 +302,7 @@ Two nodes are removed, and `do` is still in the trie. Removing a string that isn
 
 ### Cost
 
-Each node finds a child by character in O(1) (a dictionary lookup). So insert, search, and remove are all **O(m)** for a string of length m, however many strings the trie holds. **Prefix search** is the strength: every word starting with `ca` is below the `c → a` path. That's how autocomplete and predictive text work.
+Each node finds a child by character in O(1) (a dictionary lookup). So insert, search, and remove are all **O(m)** for a string of length m, however many strings the trie holds. Tries are best at **prefix search**: every word starting with `ca` is below the `c → a` path. Autocomplete and predictive text work this way.
 
 ## Big-O summary
 

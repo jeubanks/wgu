@@ -1,6 +1,6 @@
 # 12–20. Programming concepts
 
-zyBooks chapters 12 to 20 teach Python itself: variables, types, branching, strings, loops, functions, lists and dictionaries, and classes. This page covers what the rest of the course leans on: reading code accurately (in Python, and the C-style syntax pseudocode often borrows), how languages handle types and memory, the basics of classes, and what Python's built-in operations cost.
+zyBooks chapters 12 to 20 teach Python itself: variables, types, branching, strings, loops, functions, lists and dictionaries, and classes. This page covers what the rest of the course relies on. You'll practice reading code accurately, in Python and in the C-style syntax that pseudocode often borrows. The page also covers how languages handle types and memory, the basics of classes, and what Python's built-in operations cost.
 
 ## Reading Python code
 
@@ -22,12 +22,12 @@ zyBooks chapters 12 to 20 teach Python itself: variables, types, branching, stri
 
 Two separate questions describe how a language treats types:
 
-- **Static or dynamic:** *when* is a variable's type (and, for fixed-size data, its memory) decided? **Statically**, before the program runs, at compile time: in C or Java, `int x = 10;` fixes x as an int. **Dynamically**, while it runs: in Python, `x = 10` and then `x = "ten"` is fine, and a list can grow at run time.
+- **Static or dynamic:** *when* is a variable's type (and, for fixed-size data, its memory) decided? A **statically** typed language decides before the program runs, at compile time: in C or Java, `int x = 10;` fixes x as an int. A **dynamically** typed language decides while the program runs: in Python, `x = 10` followed by `x = "ten"` is fine, and a list can grow at run time.
 - **Strong or weak:** does the language **convert** between types on its own? A **strongly** typed language refuses: in Python, `10 + "5"` is an error, and you must write `10 + int("5")`. A **weakly** typed language converts silently: in JavaScript, `10 + "5"` is the string `"105"`.
 
 Python is dynamically **and** strongly typed. Java is statically and strongly typed. JavaScript and PHP are dynamically and weakly typed.
 
-Memory follows the same split. **Static allocation** reserves a fixed amount of memory known before the program runs. **Dynamic allocation** reserves memory while it runs, on the heap (`malloc` in C, `new` in Java, and every object in Python), and releases it when it's no longer needed.
+Memory follows the same split. **Static allocation** reserves a fixed amount of memory known before the program runs. **Dynamic allocation** reserves memory while the program runs, on the heap (`malloc` in C, `new` in Java, and every object in Python), and releases it when it's no longer needed.
 
 ### Operators
 
@@ -36,7 +36,7 @@ Operators that trip people up:
 - `/` always gives a float: `7 / 2` is `3.5`. `//` is floor division: `7 // 2` is `3`. Binary search's `mid = (lo + hi) // 2` uses it.
 - `%` is the remainder: `7 % 2` is `1`. It's the modulo in hash functions and circular arrays.
 - `**` is a power: `2 ** 10` is `1024`.
-- `==` compares values. `is` checks whether two names refer to the same object, used for `x is None`.
+- `==` compares values. `is` checks whether two names refer to the same object. You'll see it in `x is None`.
 - **Compound assignment** updates a variable in place: `x += 3` means `x = x + 3`. The same works for `-=`, `*=`, `/=`, `//=`, `%=`, and `**=`.
 - C-style languages (and a lot of pseudocode) write `&&`, `||`, and `!` where Python writes `and`, `or`, and `not`.
 
@@ -68,7 +68,7 @@ else:
     ...
 ```
 
-Only the first branch whose condition is true runs. Indentation, not braces, shows what's inside.
+Only the first branch whose condition is true runs. Indentation shows which lines belong to each branch. Python doesn't use braces.
 
 Many other languages have a **switch** (or case) statement, which jumps to the branch whose value matches one expression. Each case usually ends with `break`; without it, execution falls through into the next case. Python 3.10 added a similar `match` statement.
 
@@ -134,7 +134,7 @@ Three ideas build on classes:
 ### Memory management
 
 - **Garbage collection:** the language finds objects nothing refers to any more and frees their memory automatically (Python, Java). In C, the programmer frees memory with `free`.
-- **Reference counting:** each object keeps a count of how many references point to it. When the count drops to zero, it's freed at once. Python does this, plus a garbage collector that catches objects that refer to each other in a cycle.
+- **Reference counting:** each object keeps a count of how many references point to it. When the count drops to zero, the object is freed at once. Python does this, plus a garbage collector that catches objects that refer to each other in a cycle.
 - **Sequential and linked allocation:** arrays take one block of memory, items side by side; linked lists take one small block per node, joined by pointers. [Chapter 2](02-lists.md#sequential-and-linked-allocation) compares them.
 
 ### Data flow diagrams
@@ -148,7 +148,7 @@ A **data flow diagram** (DFD) shows how data moves through a system, without any
 | **Data store** | An open-ended rectangle | The orders database, a cart |
 | **Data flow** | A labeled arrow | "Order details" from the customer to "Check out" |
 
-A DFD helps choose data structures: a store that's read by key many times suggests a hash table, and one whose items must stay in order suggests a list or a tree.
+A DFD can help you choose data structures. A store that's read by key many times suggests a hash table. A store whose items must stay in order suggests a list or a tree.
 
 ## What Python's built-ins cost
 

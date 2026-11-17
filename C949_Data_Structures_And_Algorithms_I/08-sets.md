@@ -1,14 +1,14 @@
 # 8. Sets
 
-A **set** holds distinct items with no particular order, and answers one question fast: is this item in it? Duplicates are ignored, and the classic set operations (union, intersection, difference) combine two sets into a new one.
+A **set** holds distinct items in no particular order. It's built to answer one question fast: is this item in the set? A set ignores duplicates. The classic set operations (union, intersection, difference) combine two sets into a new one.
 
 ## The set ADT
 
-A set ADT holds **distinct** elements: no element is ever in it twice. Adding an element that's already there does nothing, however many times you try.
+A set ADT (abstract data type) holds **distinct** elements, so no element is ever in it twice. Adding an element that's already there does nothing, however many times you try.
 
-- A set is **unordered**. Two sets with the same elements are **equal sets**, whatever order the elements were added in: {8, 3, 12} equals {12, 8, 3}.
+- A set is **unordered**. Two sets with the same elements are **equal sets**, whatever order the elements were added in. For example, {8, 3, 12} equals {12, 8, 3}.
 - A set's **length** is the number of elements in it. zyBooks also calls it the set's **cardinality**.
-- If a set doesn't contain some element, then either it was never added, or a remove came after the last add.
+- If a set doesn't contain an element, then either the element was never added, or it was removed after it was last added.
 
 The common operations, with zyBooks' names:
 
@@ -22,17 +22,17 @@ The common operations, with zyBooks' names:
 | union(other), intersection(other), difference(other) | Build and return a **new** set. Neither input changes. |
 | filter(predicate), map(function) | Build and return a new set from this one. |
 
-The ADT only says what each operation does. Its speed depends on the data structure underneath, and a set can be built on several (a hash table or a BST, below).
+The ADT only says what each operation does. How fast each operation runs depends on the data structure underneath. A set can be built on several structures, such as a hash table or a BST (both covered below).
 
 Compared with the other ADTs:
 
 - A **list** keeps order and allows duplicates.
 - A **bag** allows duplicates and counts them.
-- A **map** pairs each key with a value; a set is like a map's keys alone.
+- A **map** pairs each key with a value. A set is like a map's keys alone.
 
 ## Subsets
 
-S1 is a **subset** of S2 if S2 contains each of S1's elements. One element of S1 missing from S2 is enough to say no.
+S1 is a **subset** of S2 if S2 contains every one of S1's elements. If even one element of S1 is missing from S2, S1 is not a subset.
 
 ```text
 S2 = {6, 13, 21, 34, 40}
@@ -43,8 +43,8 @@ S2 itself      every element is in S2       → a subset of S2
 ```
 
 - Every set is a subset of itself, so two equal sets are subsets of each other.
-- If S1 is a subset of S2, S1 can't have more elements than S2: its length is ≤ S2's length.
-- To check, loop over S1 and look each element up in S2. The loop can stop at the first element that's missing.
+- If S1 is a subset of S2, S1 can't have more elements than S2. Its length is ≤ S2's length.
+- To check whether S1 is a subset, loop over S1 and look up each element in S2. The loop can stop at the first missing element.
 
 ## Set operations
 
@@ -64,9 +64,9 @@ With X = {7, 19, 23, 40} and Y = {19, 31, 40, 58}:
 | **Symmetric difference** | what's in exactly one of them | {7, 23, 31, 58} | `X ^ Y` |
 | **Subset** | is every item of one in the other? | {19, 40} ⊆ Y is true | `{19, 40} <= Y` or `.issubset(Y)` |
 
-zyBooks covers union, intersection, difference, and subset. Symmetric difference is an extra that Python provides.
+zyBooks covers union, intersection, difference, and subset. Python also provides symmetric difference.
 
-Union and intersection are **commutative**: X ∪ Y = Y ∪ X, and X ∩ Y = Y ∩ X. Difference is not: X − Y is {7, 23}, but Y − X is {31, 58}.
+Union and intersection are **commutative**, meaning the order of the two sets doesn't matter: X ∪ Y = Y ∪ X, and X ∩ Y = Y ∩ X. Difference is not commutative. X − Y is {7, 23}, but Y − X is {31, 58}.
 
 ### How zyBooks builds each result
 
@@ -96,7 +96,7 @@ A few rules follow from the definitions, for any sets X and Y:
 
 ## Filter and map
 
-Both build a new set from one set, by calling a function once on every element.
+Filter and map each build a new set from one set by calling a function once on every element.
 
 - **Filter** keeps the elements that pass a test. The test is a **filter predicate**: a function that takes an element and returns True (keep it) or False (leave it out).
 - **Map** applies a function F to every element and adds each returned value to the result.
@@ -119,27 +119,27 @@ What the results can look like, for a set of length N:
 
 - The function is called **exactly N times**, once per element, by both filter and map.
 - A filter's result is a subset of the original, with length anywhere from 0 to N.
-- A map's result has length from 1 to N when N ≥ 1. It's shorter than N when two elements map to the same value. It's empty only when the original set is empty.
+- A map's result has length from 1 to N when N ≥ 1. The result is shorter than N when two elements map to the same value. It's empty only when the original set is empty.
 
 ## Building a set
 
 ### On a hash table
 
-Store each item as a key in a hash table ([chapter 4](04-hash-tables.md)). Add, remove, and contains are each O(1) on average. Union and intersection loop over the items, checking membership in the other set:
+Store each item as a key in a hash table ([chapter 4](04-hash-tables.md)). Add, remove, and contains are each O(1) on average. Union and intersection loop over the items and check whether each one is in the other set:
 
 - Union of sets of sizes n and m: O(n + m).
-- Intersection X ∩ Y, the zyBooks way (loop over X): O(n). Python's built-in loops over the smaller set instead: O(min(n, m)).
-- Difference X − Y: loop over X: O(n).
+- Intersection X ∩ Y, the zyBooks way (loop over X): O(n). Python's built-in intersection loops over the smaller set instead: O(min(n, m)).
+- Difference X − Y, looping over X: O(n).
 
 The items come out in no useful order. Python's `set` works this way.
 
 ### On a binary search tree: the zyBooks Set class
 
-zyBooks builds its `Set` class on a binary search tree ([chapter 5](05-trees.md)), one element per node. It points out that real code would reach for a balanced BST ([chapter 6](06-balanced-trees.md)) or a hash table to get better speed, but a plain BST is enough to build every operation.
+zyBooks builds its `Set` class on a binary search tree ([chapter 5](05-trees.md)), one element per node. zyBooks notes that real code would use a balanced BST ([chapter 6](06-balanced-trees.md)) or a hash table for better speed. A plain BST is still enough to build every operation.
 
-**The key function.** You can pass the constructor a **get-key function**: given an element, it returns the key the BST sorts by. The BST compares keys with `<`, `>`, and `==`. With no argument, the default is `lambda el: el`, so each element is its own key. A set of student records could pass `lambda s: s.id` to key them by ID. The sets that union, intersection, and the others return use the same get-key function as the set they came from.
+**The key function.** You can pass the constructor a **get-key function**. Given an element, this function returns the key the BST sorts by. The BST compares keys with `<`, `>`, and `==`. With no argument, the default is `lambda el: el`, so each element is its own key. A set of student records could pass `lambda s: s.id` to key them by ID. The new sets returned by union, intersection, and the other operations use the same get-key function as the original set.
 
-**The nodes.** Each `BSTNode` stores its element in `data`, plus `left`, `right`, and **`parent`** references. The parent reference is what lets the class find a successor and iterate without recursion. Each node also has three helpers:
+**The nodes.** Each `BSTNode` stores its element in `data`, plus `left`, `right`, and **`parent`** references. The parent reference lets the class find a node's successor and iterate without recursion. Each node also has three helpers:
 
 - `count()` returns the number of nodes in its subtree, recursively.
 - `get_successor()` returns the node that comes next in sorted order (rules below).
@@ -159,7 +159,7 @@ The examples below use this tree, built by adding 30, 15, 45, 10, 20, 40, 50, 25
 
 #### add
 
-Search for the new element's key first. If it's found, return **False** and change nothing: that's how the set stays distinct. Otherwise insert a new leaf the usual BST way (smaller keys go left, others go right) and return **True**.
+First, search for the new element's key. If the key is found, return **False** and change nothing. That's how the set stays distinct. Otherwise, insert a new leaf the usual BST way (smaller keys go left, others go right) and return **True**.
 
 Adding 20 again to the tree above returns False, and the length stays 8.
 
@@ -170,7 +170,7 @@ Adding 20 again to the tree above returns False, and the length stays 8.
 | The node has | Its successor is |
 |---|---|
 | A right child | The leftmost node of its right subtree: go right once, then left as far as possible. |
-| No right child | Up the tree. Climb while the current node is its parent's **right** child. The first time you climb from a **left** child, that parent is the successor. If you reach the root without doing that, there's no successor: the node holds the largest key. |
+| No right child | Up the tree. Climb while the current node is its parent's **right** child. The first time you climb from a **left** child, that parent is the successor. If you reach the root without climbing from a left child, there's no successor, because the node holds the largest key. |
 
 Successor of 25, which has no right child:
 
@@ -180,13 +180,13 @@ Successor of 25, which has no right child:
 15 is 30's left child    → stop: the successor is 30
 ```
 
-Successor of 20: it has a right child, so go right to 25, then left as far as possible. 25 has no left child, so the successor is 25.
+Successor of 20: 20 has a right child, so go right to 25, then left as far as possible. 25 has no left child, so the successor is 25.
 
 #### Iterating
 
 `__iter__()` finds the minimum node (start at the root, go left until there's no left child) and returns a `BSTIterator` holding it. Each call to the iterator's `__next__()` (`next()` in Python before version 3) returns the current node's element, then moves to that node's successor. When the successor is `None`, iteration stops.
 
-The iterator only keeps one node reference at a time. It visits the elements in **ascending order of their keys**:
+The iterator keeps only one node reference at a time. It visits the elements in **ascending order of their keys**:
 
 ```text
 start at 10 → 15 → 20 → 25 → 30 → 40 → 45 → 50 → None: stop
@@ -194,7 +194,7 @@ start at 10 → 15 → 20 → 25 → 30 → 40 → 45 → 50 → None: stop
 
 #### remove
 
-`remove(key)` searches for the node, then removes it. A missing key does nothing. The node falls into one of four cases, checked in this order:
+`remove(key)` searches for the node with that key, then removes it. If the key is missing, nothing happens. The node falls into one of four cases, checked in this order:
 
 | Case | The node is | What happens |
 |---|---|---|
@@ -203,7 +203,7 @@ start at 10 → 15 → 20 → 25 → 30 → 40 → 45 → 50 → None: stop
 | 3 | A non-root node with a **left child only** | Its parent's `replace_child` swaps it for that left child. |
 | 4 | A non-root node with a **right child only**, or a **leaf** | Its parent's `replace_child` swaps it for that right child, which is `None` for a leaf. |
 
-The successor in case 1 has no left child (it's the leftmost node of a right subtree), so removing it is always case 4.
+The successor in case 1 has no left child, because it's the leftmost node of a right subtree. So removing the successor is always case 4.
 
 Removing 15 from the tree above:
 
@@ -225,7 +225,7 @@ copy 20 into the node that held 15
 - `__len__()` returns `storage_root.count()`, which visits every node: **O(n)**. The class doesn't keep a running count.
 - `union`, `intersection`, `difference`, `filter`, and `map` iterate over the set and call `add` (and `search` on the other set), exactly as in the tables above.
 
-With a balanced BST, add, remove, and contains are each O(log n). With the plain BST in zyBooks' class, they're O(h) for tree height h, which is O(n) when elements are added in sorted order. In exchange for being slower than hashing, the BST gives the elements in **sorted order**, and "the smallest element bigger than x" is a quick question.
+With a balanced BST, add, remove, and contains are each O(log n). With the plain BST in zyBooks' class, they're O(h) for tree height h, which is O(n) when elements are added in sorted order. A BST is slower than hashing. In exchange, it gives you the elements in **sorted order**, and it can quickly find "the smallest element bigger than x."
 
 ## Python's set
 
@@ -241,15 +241,15 @@ len(s)            # the set's length
 empty = set()     # {} would make an empty dict, not a set
 ```
 
-- A `for` loop over a set visits the items in **neither sorted order nor insertion order**. It follows the hash table's internal layout.
-- zyBooks' table of Python set operations says `remove` has no effect on a missing item. That's how the set ADT's remove behaves, and how Python's `discard` behaves. Python's `remove` raises `KeyError` instead.
-- Items must be hashable (immutable): numbers, strings, and tuples work; lists don't.
+- A `for` loop over a set visits the items in **neither sorted order nor insertion order**. The loop follows the hash table's internal layout.
+- zyBooks' table of Python set operations says `remove` has no effect on a missing item. That matches the set ADT's remove and Python's `discard`. Python's `remove` raises `KeyError` instead.
+- Items must be hashable (immutable). Numbers, strings, and tuples work. Lists don't.
 - `set(some_list)` removes duplicates from a list in O(n).
-- A `frozenset` is a set that can't change, so it can itself be a dict key or a set item.
+- A `frozenset` is a set that can't change. Because it can't change, it can be a dict key or an item in another set.
 
 ## Big-O summary
 
-n is the length of the set (X, for the two-set operations), and m is the length of the other set Y. The two-set rows assume zyBooks' algorithms above.
+Here n is the length of the set (X, for the two-set operations), and m is the length of the other set, Y. The two-set rows assume zyBooks' algorithms from above.
 
 | Operation | Hash-table set | Balanced-BST set |
 |---|---|---|
@@ -334,7 +334,7 @@ With zyBooks' plain (unbalanced) BST, replace each log with the tree's height, u
   <details>
   <summary>Answer</summary>
 
-  - **a)** **B.** Python's `remove` raises `KeyError` for a missing item; `discard` doesn't; adding an existing item changes nothing.
+  - **a)** **B.** Python's `remove` raises `KeyError` for a missing item. `discard` doesn't, and adding an existing item changes nothing.
   - **b)** The distinct values are 4, 2, and 9: **3**.
   - **c)** **B.** `{}` is an empty dict, and `[]` an empty list.
 
@@ -353,8 +353,8 @@ With zyBooks' plain (unbalanced) BST, replace each log with the tree's height, u
   <details>
   <summary>Answer</summary>
 
-  - Hashing makes contains and add O(1) on average; a balanced BST walks one path, O(log n).
-  - A hash table keeps no order, so its items must be sorted first: O(n log n). A BST's inorder traversal is already sorted: O(n).
+  - Hashing makes contains and add O(1) on average. A balanced BST walks one path from the root, so it's O(log n).
+  - A hash table keeps no order, so you must sort its items first: O(n log n). A BST's inorder traversal is already sorted: O(n).
 
   </details>
 

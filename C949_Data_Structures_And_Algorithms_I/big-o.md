@@ -1,8 +1,8 @@
 # Big-O cheat sheet
 
-Every data structure and algorithm in the course on one page. **Best**, **average**, and **worst** are running times; **space** is extra memory beyond the input. n is the number of items. In graphs, V is the number of vertices and E the number of edges.
+This page puts every data structure and algorithm in the course in one place. **Best**, **average**, and **worst** are running times; **space** is extra memory beyond the input. n is the number of items. In graphs, V is the number of vertices and E the number of edges.
 
-Sorts that don't compare items have a second size, k: the number of digits (radix sort), the range of values (counting sort), or the number of buckets (bucket sort). These follow the course study guide: radix sort is O(n·k) and bucket sort O(n + k). Some course worksheets drop the k and write O(n), which is the same thing when k is a small constant.
+Sorts that don't compare items use a second size, k. Depending on the sort, k is the number of digits (radix sort), the range of values (counting sort), or the number of buckets (bucket sort). This sheet follows the course study guide: radix sort is O(n·k) and bucket sort is O(n + k). Some course worksheets drop the k and write O(n). That's the same thing when k is a small constant.
 
 ## Growth rates, slowest to fastest
 
@@ -23,15 +23,15 @@ Sorts that don't compare items have a second size, k: the number of digits (radi
 
 </div>
 
-**Rules for working it out** (the [algorithm analysis page](11-algorithm-analysis.md) traces an example of each):
+**Rules for finding a Big-O** (the [algorithm analysis page](11-algorithm-analysis.md) traces an example of each):
 
 - Drop constant factors: O(3n²) is O(n²), and O(n + 10) is O(n).
-- Keep only the fastest-growing term: 5n³ + 2n² + 7 is O(n³), and 2ⁿ + n³ is O(2ⁿ), since exponentials beat any polynomial.
+- Keep only the fastest-growing term: 5n³ + 2n² + 7 is O(n³), and 2ⁿ + n³ is O(2ⁿ), since an exponential grows faster than any polynomial.
 - The base of a logarithm doesn't matter: O(log₂ n) and O(log₁₀ n) are both O(log n), because changing the base only multiplies by a constant.
 - Steps one after another add, and the biggest term wins: O(n) then O(n²) is O(n²).
 - Nested loops multiply: a loop over n inside a loop over n is O(n²). Over two different inputs, it's O(n·m).
-- A loop that halves (or doubles) its variable each pass runs O(log n) times.
-- A recursive function that calls itself once on n − 1 is O(n) deep. One that calls itself twice on n − 1 is O(2ⁿ).
+- A loop that halves (or doubles) its loop variable on each pass runs O(log n) times.
+- A recursive function that calls itself once on n − 1 goes O(n) calls deep. One that calls itself twice on n − 1 is O(2ⁿ).
 
 ## Lists, stacks, queues, and deques
 
@@ -63,7 +63,7 @@ Sorts that don't compare items have a second size, k: the number of digits (radi
 | Remove | O(1) | O(1) | O(n) |
 | Resize (rehash every item) | O(n) | O(n) | O(n) |
 
-The average case needs a good hash function and a low load factor. A Python `dict` or `set` is a hash table. A set built on a BST costs what the BST costs.
+The average case needs a good hash function and a low load factor. A Python `dict` or `set` is a hash table. A set built on a BST has the same costs as the BST.
 
 | Set operation (hash-table sets of sizes n and m) | Average |
 |---|---|
@@ -72,7 +72,7 @@ The average case needs a good hash function and a low load factor. A Python `dic
 | Intersection | O(min(n, m)): check each item of the smaller set |
 | Difference (A − B) | O(n) for A of size n |
 
-A **bag** (multiset) allows duplicates. Python's `collections.Counter` is one: adding and counting an item are O(1) on average.
+A **bag** (multiset) allows duplicates. Python's `collections.Counter` is a bag: adding and counting an item are O(1) on average.
 
 ## Trees and heaps
 
@@ -89,7 +89,7 @@ A tree with n nodes has height at least ⌊log₂ n⌋, and at most n − 1. Any
 
 A heap is stored in an array with no gaps. With the root at index 0, the children of index i are at 2i + 1 and 2i + 2, and its parent is at (i − 1) // 2. (With the root at index 1: children 2i and 2i + 1, parent i // 2.)
 
-For a heap you can step through, see [chapter 7](07-heaps-treaps.md#heaps).
+To step through a heap one operation at a time, see [chapter 7](07-heaps-treaps.md#heaps).
 
 <div class="viz" data-viz="tree-shapes" markdown>
 
@@ -122,23 +122,23 @@ For a heap you can step through, see [chapter 7](07-heaps-treaps.md#heaps).
 
 **Quickselect** (find the k-th smallest item): O(n) on average, O(n²) at worst.
 
-Merge sort, quicksort, and binary search are **divide and conquer**: split the problem, solve the parts, combine. Counting, radix, and bucket sort are **non-comparison** sorts: they never compare two items, which is how they beat O(n log n).
+Merge sort, quicksort, and binary search are **divide and conquer**: split the problem, solve the parts, combine. Counting, radix, and bucket sort are **non-comparison** sorts: they never compare two items, which is how they can run faster than O(n log n).
 
 ## Graphs
 
 | Algorithm | Time | Notes |
 |---|---|---|
-| Breadth-first search (BFS) | O(V + E) | A queue. Finds fewest-edge paths. |
-| Depth-first search (DFS) | O(V + E) | A stack, or recursion |
-| Dijkstra's shortest path | O((V + E) log V) with a binary-heap priority queue, O(V²) with an unsorted list | Greedy. No negative edge weights. |
-| Bellman-Ford shortest path | O(V·E) | Dynamic programming. Allows negative weights, and detects negative cycles. |
-| Topological sort | O(V + E) | Directed graphs with no cycles |
-| Prim's or Kruskal's minimum spanning tree | O(E log V), also written O(E log E): the same class, since E < V² | Undirected, connected, weighted graphs |
-| Floyd-Warshall all-pairs shortest path | O(V³) | Every vertex to every other |
+| Breadth-first search (BFS) | O(V + E) | Uses a queue. Finds the paths with the fewest edges. |
+| Depth-first search (DFS) | O(V + E) | Uses a stack, or recursion |
+| Dijkstra's shortest path | O((V + E) log V) with a binary-heap priority queue, O(V²) with an unsorted list | Greedy. Edge weights can't be negative. |
+| Bellman-Ford shortest path | O(V·E) | Dynamic programming. Allows negative weights and detects negative cycles. |
+| Topological sort | O(V + E) | For directed graphs with no cycles |
+| Prim's or Kruskal's minimum spanning tree | O(E log V), also written O(E log E): the same class, since E < V² | For undirected, connected, weighted graphs |
+| Floyd-Warshall all-pairs shortest path | O(V³) | From every vertex to every other vertex |
 
 | Representation | Space | Is there an edge from A to B? | List A's neighbors | Add a vertex | Remove a vertex |
 |---|---|---|---|---|---|
 | Adjacency list | O(V + E) | O(degree of A) | O(degree of A) | O(1) | O(V + E): its edges are in other vertices' lists |
 | Adjacency matrix | O(V²) | O(1) | O(V) | O(V²): copy into a bigger matrix | O(V²) |
 
-Adding or removing one edge is O(1) in a matrix, and O(1) to add in a list (removing it means finding it in the list).
+In a matrix, adding or removing one edge is O(1). In a list, adding an edge is O(1), but removing one means finding it in the list first.
