@@ -198,7 +198,7 @@ nav:
       - 2. Lists: c949/02-lists.md
       - 3. Stacks and queues: c949/03-stacks-queues.md
       - 4. Hash tables: c949/04-hash-tables.md
-      - 11. Algorithm analysis: c949/11-algorithm-analysis.md
+      - 11. Searching and algorithm analysis: c949/11-algorithm-analysis.md
       - 12–20. Programming concepts: c949/12-programming-concepts.md
       - Topic map: c949/topics.md
       - Big-O cheat sheet: c949/big-o.md
