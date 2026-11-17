@@ -111,6 +111,7 @@
 .viz .vz-hn text.note { fill: var(--viz-accent); font-size: 12px; font-weight: 600; }
 .viz .vz-hn.cur circle { stroke: var(--viz-accent); stroke-width: 3; fill: var(--viz-accent-soft); }
 .viz .vz-hn.cmp circle, .viz .vz-cell.cmp rect { stroke: var(--viz-warn); stroke-width: 3; }
+.viz .vz-hn.done circle { stroke: var(--viz-good); stroke-width: 3; fill: var(--viz-good-soft); }
 .viz .vz-edge { stroke: var(--viz-line); stroke-width: 2; }
 .viz .vz-bar rect { fill: var(--viz-muted); opacity: .55; transition: fill .15s, opacity .15s; }
 .viz .vz-bar.cmp rect { fill: var(--viz-warn); opacity: 1; }

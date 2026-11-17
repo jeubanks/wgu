@@ -224,6 +224,12 @@ zyBooks mentions, without teaching, a second way: go down to the leaf without sp
 
 **Big-O:** an insert always walks from the root to a leaf, and each split is O(1), so insert is **O(log n)** in the best, average, and worst case. (An insert that finds a duplicate in the root stops right away, but it adds nothing.)
 
+<div class="viz" data-viz="btree" markdown>
+
+*On the site, an interactive diagram here inserts random keys into a 2-3-4 tree with preemptive splits, and searches it step by step.*
+
+</div>
+
 ## Rotations and fusion
 
 Removal needs ways to give a node with only 1 key more keys. zyBooks uses two: rotation and fusion.

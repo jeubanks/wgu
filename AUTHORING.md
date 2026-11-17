@@ -242,7 +242,13 @@ Run `python3 build_solutions.py` in the course folder after changing a lesson or
 | `growth-chart` | The seven growth classes as n grows, linear or log scale, with a table view | Cheat sheet |
 | `cost-spectrum` | Steps for n = 1,000 in each growth class | C949 contents |
 | `chapter-map` | Turns the Markdown list inside it into picture cards (one drawing per chapter number) | C949 contents |
+| `bst` | Binary search tree: random inserts, search and remove by picking a key, animated traversals | C949 5 |
+| `avl` | The four AVL rotation cases, with balance factors | C949 6 |
+| `graph-search` | BFS, stack DFS, and recursive DFS on a 7-vertex graph, with the queue, stack, or call stack | C949 9 |
+| `dijkstra` | Dijkstra one relaxation at a time, with a distance and predecessor table and the shortest path | C949 9 |
+| `btree` | 2-3-4 tree: random inserts with preemptive splits, and search | C949 10 |
 | `allocation`, `huffman`, `tree-shapes` | Static drawings | C949 2, 1, cheat sheet |
+| `rb-tree`, `treap`, `set-ops` | Static drawings | C949 6, 7, 8 |
 
 - **Never let a bench answer a question.** Give each bench a setup the page's questions don't use (C949's hash bench has 13 buckets; its questions use 7, 10, and 11), and limit inputs where a question could be reproduced (the loop tracer stops at n = 16; question 11.5 asks about n = 32).
 - **Complexity chips:** on C949 pages, `viz.js` turns O(1), O(log n), O(n), O(n log n), O(n²), O(2ⁿ), and O(n!) in table cells into colored chips, one color per class, the same colors as the growth chart. Quiz tables and code are skipped.

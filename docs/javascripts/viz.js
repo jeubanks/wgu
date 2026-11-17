@@ -1004,6 +1004,254 @@
     });
   }
 
+
+  /* ---------------- graph helpers ---------------- */
+  function gNodeDraw(g, x, y, label, cls) {
+    var n = el("g", { class: "vz-hn" + (cls ? " " + cls : ""), transform: "translate(" + x + "," + y + ")" }, g);
+    el("circle", { r: 18 }, n); txt(n, 0, 6, String(label), { "text-anchor": "middle" });
+    return n;
+  }
+  function strip(g, x, y, label, items, mark) {
+    txt(g, x, y - 8, label, { class: "vz-cap" });
+    if (!items.length) { txt(g, x, y + 22, "(empty)", { class: "vz-cap" }); return; }
+    items.forEach(function (v, i) {
+      var c = el("g", { class: "vz-cell full" + (mark && mark[i] ? " " + mark[i] : "") }, g);
+      el("rect", { x: x + i * 36, y: y, width: 32, height: 32, rx: 5 }, c);
+      txt(c, x + i * 36 + 16, y + 21, String(v), { class: "v", "text-anchor": "middle" });
+    });
+  }
+
+  /* ---------------- BFS and DFS ---------------- */
+  function graphSearch(root) {
+    var P = { 1: [70, 70], 2: [200, 70], 3: [330, 70], 4: [70, 190], 5: [200, 190], 6: [330, 190], 7: [265, 270] };
+    var E = [[1, 2], [1, 4], [2, 3], [2, 5], [3, 6], [4, 5], [5, 6], [5, 7], [6, 7]];
+    var ADJ = {}; Object.keys(P).forEach(function (v) { ADJ[v] = []; });
+    E.forEach(function (e) { ADJ[e[0]].push(e[1]); ADJ[e[1]].push(e[0]); });
+    Object.keys(ADJ).forEach(function (v) { ADJ[v].sort(function (a, b) { return a - b; }); });
+    var B = bench(root, "Breadth-first and depth-first search", "Neighbors are taken in increasing order. Pick a search and a start vertex, then step.", "0 0 780 310", "An undirected graph with vertices 1 to 7 being searched");
+    var alg = field(B.controls, "Search", select([["bfs", "BFS (queue)"], ["dfs", "DFS (stack)"], ["rdfs", "DFS (recursive)"]], "bfs"));
+    var start = field(B.controls, "Start at", select(Object.keys(P).map(function (v) { return [v, v]; }), "1"));
+    spacer(B.controls);
+    var back = btn(B.controls, "← Back"), next = btn(B.controls, "Next step →", "primary"), play = btn(B.controls, "Play");
+    var orderEl = tallyRow(B.tally, "Vertices visited");
+    var svg = B.svg, frames = [], fi = 0, timer = null;
+    function build() {
+      frames = []; fi = 0;
+      var s = +start.value, visited = [], seen = {};
+      function snap(o) { frames.push(Object.assign({ visited: visited.slice(), seen: Object.assign({}, seen) }, o)); }
+      if (alg.value === "bfs") {
+        var q = [s]; seen[s] = true;
+        snap({ cur: null, box: q.slice(), boxLabel: "Queue (front on the left)", text: "Put " + s + " in the queue and mark it discovered.", code: "queue = [" + s + "]" });
+        while (q.length) {
+          var v = q.shift(); visited.push(v); var added = [];
+          ADJ[v].forEach(function (w) { if (!seen[w]) { seen[w] = true; q.push(w); added.push(w); } });
+          snap({ cur: v, box: q.slice(), boxLabel: "Queue (front on the left)", fresh: added,
+            text: "Dequeue and visit <b>" + v + "</b>. " + (added.length ? "Newly discovered neighbors go to the back of the queue: " + added.join(", ") + "." : "All its neighbors were already discovered."),
+            code: "visit " + v + (added.length ? "; enqueue " + added.join(", ") : "") });
+        }
+      } else if (alg.value === "dfs") {
+        var st = [s];
+        snap({ cur: null, box: st.slice(), boxLabel: "Stack (top on the right)", text: "Push " + s + " onto the stack.", code: "stack = [" + s + "]" });
+        while (st.length) {
+          var u = st.pop();
+          if (visited.indexOf(u) >= 0) { snap({ cur: u, skip: true, box: st.slice(), boxLabel: "Stack (top on the right)", text: "Pop " + u + ": already visited, so skip it.", code: "pop " + u + " (skip)" }); continue; }
+          visited.push(u); seen[u] = true;
+          ADJ[u].forEach(function (w) { st.push(w); });
+          snap({ cur: u, box: st.slice(), boxLabel: "Stack (top on the right)", fresh: ADJ[u].slice(),
+            text: "Pop and visit <b>" + u + "</b>, then push all its neighbors in order: " + ADJ[u].join(", ") + ". The last one pushed is popped next.", code: "visit " + u + "; push " + ADJ[u].join(", ") });
+        }
+      } else {
+        var calls = [];
+        snap({ cur: null, box: [], boxLabel: "Call stack (newest on the right)", text: "Call dfs(" + s + ").", code: "dfs(" + s + ")" });
+        (function dfs(v) {
+          calls.push(v);
+          if (visited.indexOf(v) >= 0) { snap({ cur: v, skip: true, box: calls.slice(), boxLabel: "Call stack (newest on the right)", text: "dfs(" + v + "): " + v + " is already visited. Return.", code: "return" }); calls.pop(); return; }
+          visited.push(v); seen[v] = true;
+          snap({ cur: v, box: calls.slice(), boxLabel: "Call stack (newest on the right)", text: "dfs(" + v + "): visit <b>" + v + "</b>, then call dfs on each neighbor in order: " + ADJ[v].join(", ") + ".", code: "visit " + v });
+          ADJ[v].forEach(function (w) { if (visited.indexOf(w) < 0) dfs(w); });
+          calls.pop();
+        })(s);
+        snap({ cur: null, box: [], boxLabel: "Call stack (newest on the right)", text: "Every call has returned.", code: "" });
+      }
+      var f = frames[frames.length - 1];
+      f.text += " <b>Visit order: " + f.visited.join(", ") + ".</b> Every vertex and edge was handled once: O(V + E).";
+      show();
+    }
+    function show() {
+      var f = frames[fi]; svg.textContent = "";
+      var gE = el("g", {}, svg), gN = el("g", {}, svg), gR = el("g", {}, svg);
+      E.forEach(function (e) { el("line", { class: "vz-edge", x1: P[e[0]][0], y1: P[e[0]][1], x2: P[e[1]][0], y2: P[e[1]][1] }, gE); });
+      Object.keys(P).forEach(function (v) {
+        v = +v; var cls = f.cur === v ? "cur" : f.visited.indexOf(v) >= 0 ? "done" : f.seen[v] ? "cmp" : "";
+        gNodeDraw(gN, P[v][0], P[v][1], v, cls);
+      });
+      strip(gR, 430, 70, f.boxLabel, f.box);
+      txt(gR, 430, 150, "Visit order", { class: "vz-cap" });
+      txt(gR, 430, 176, f.visited.join(", ") || "(none yet)", { class: "vz-lbl" });
+      txt(gR, 430, 230, "Key: blue ring = current, yellow ring = discovered (waiting),", { class: "vz-cap" });
+      txt(gR, 430, 248, "green = visited", { class: "vz-cap" });
+      B.say.innerHTML = f.text; B.code.textContent = f.code || ""; orderEl.textContent = f.visited.length;
+      next.disabled = fi >= frames.length - 1; back.disabled = fi <= 0;
+    }
+    function stop() { clearInterval(timer); timer = null; play.textContent = "Play"; }
+    next.addEventListener("click", function () { stop(); if (fi < frames.length - 1) { fi++; show(); } });
+    back.addEventListener("click", function () { stop(); if (fi > 0) { fi--; show(); } });
+    play.addEventListener("click", function () { if (timer) { stop(); return; } play.textContent = "Pause"; timer = setInterval(function () { if (fi >= frames.length - 1) { stop(); return; } fi++; show(); }, reduce ? 80 : 900); });
+    alg.addEventListener("change", function () { stop(); build(); });
+    start.addEventListener("change", function () { stop(); build(); });
+    build();
+  }
+
+  /* ---------------- Dijkstra ---------------- */
+  function dijkstra(root) {
+    var P = { 1: [60, 150], 2: [200, 60], 3: [200, 240], 4: [350, 60], 5: [350, 240], 6: [470, 150] };
+    var E = [[1, 2, 4], [1, 3, 1], [3, 2, 2], [2, 4, 5], [3, 4, 8], [3, 5, 3], [5, 4, 1], [4, 6, 2], [5, 6, 6]];
+    var V = Object.keys(P).map(Number);
+    var B = bench(root, "Dijkstra's shortest path, one relaxation at a time", "A directed graph with weights. Ties go to the lower-numbered vertex.", "0 0 780 300", "A weighted directed graph with vertices 1 to 6 and a distance table");
+    var start = field(B.controls, "Start at", select(V.map(function (v) { return [String(v), String(v)]; }), "1"));
+    var target = field(B.controls, "Show path to", select(V.map(function (v) { return [String(v), String(v)]; }), "6"));
+    spacer(B.controls);
+    var back = btn(B.controls, "← Back"), next = btn(B.controls, "Next step →", "primary"), play = btn(B.controls, "Play");
+    var relaxEl = tallyRow(B.tally, "Edges relaxed");
+    var svg = B.svg, mk = arrowMarker(svg, uid("dj"), "var(--viz-muted)"), mkH = arrowMarker(svg, uid("djh"), "var(--viz-accent)");
+    var frames = [], fi = 0, timer = null;
+    function fmtD(d) { return d === Infinity ? "∞" : String(d); }
+    function build() {
+      frames = []; fi = 0;
+      var s = +start.value, dist = {}, pred = {}, unv = V.slice(), done = [], relaxed = 0;
+      V.forEach(function (v) { dist[v] = Infinity; pred[v] = null; }); dist[s] = 0;
+      function snap(o) { frames.push(Object.assign({ dist: Object.assign({}, dist), pred: Object.assign({}, pred), done: done.slice(), relaxed: relaxed }, o)); }
+      snap({ text: "Every distance starts at ∞, except the start vertex " + s + ", at 0.", code: "dist[" + s + "] = 0" });
+      while (unv.length) {
+        unv.sort(function (a, b) { return dist[a] - dist[b] || a - b; });
+        var c = unv.shift(); done.push(c);
+        if (dist[c] === Infinity) { snap({ cur: c, text: "Remove " + c + ": its distance is ∞, so it can't be reached from " + s + ".", code: "" }); continue; }
+        snap({ cur: c, text: "Remove the unvisited vertex with the smallest distance: <b>" + c + "</b> (" + dist[c] + "). Now relax its outgoing edges.", code: "current = " + c });
+        E.filter(function (e) { return e[0] === c; }).forEach(function (e) {
+          var nd = dist[c] + e[2], better = nd < dist[e[1]], old = dist[e[1]];
+          relaxed += 1;
+          if (better) { dist[e[1]] = nd; pred[e[1]] = c; }
+          snap({ cur: c, edge: e, better: better, text: "Edge " + c + "→" + e[1] + " (weight " + e[2] + "): " + dist[c] + " + " + e[2] + " = " + nd + (better ? " beats " + fmtD(old) + ", so " + e[1] + "'s distance becomes " + nd + " and its predecessor " + c + "." : " doesn't beat " + fmtD(old) + ". No change."), code: "if " + dist[c] + " + " + e[2] + " < " + fmtD(old) + ": " + (better ? "update" : "keep") });
+        });
+      }
+      snap({ final: true, text: "Every vertex is done. Follow the predecessors back from the target to read its shortest path. With the unsorted list zyBooks uses, that's O(V²).", code: "" });
+      show();
+    }
+    function path(f, t) { var p = [], v = +t, guard = 0; if (f.dist[v] === Infinity) return []; while (v !== null && guard++ < 10) { p.unshift(v); v = f.pred[v]; } return p; }
+    function show() {
+      var f = frames[fi]; svg.textContent = "";
+      svg.appendChild(svg.querySelector("defs") || el("defs", {})); arrowMarker(svg, mk.slice(5, -1), "var(--viz-muted)"); arrowMarker(svg, mkH.slice(5, -1), "var(--viz-accent)");
+      var onPath = {}; if (f.final) { var pp = path(f, target.value); for (var i = 0; i + 1 < pp.length; i++) onPath[pp[i] + "-" + pp[i + 1]] = true; }
+      var gE = el("g", {}, svg), gN = el("g", {}, svg), gT = el("g", {}, svg);
+      E.forEach(function (e) {
+        var a = P[e[0]], b = P[e[1]], dx = b[0] - a[0], dy = b[1] - a[1], L = Math.sqrt(dx * dx + dy * dy), ux = dx / L, uy = dy / L;
+        var hot = f.edge === e || onPath[e[0] + "-" + e[1]];
+        el("line", { x1: a[0] + ux * 20, y1: a[1] + uy * 20, x2: b[0] - ux * 22, y2: b[1] - uy * 22, stroke: hot ? "var(--viz-accent)" : "var(--viz-muted)", "stroke-width": hot ? 3 : 1.6, "marker-end": hot ? mkH : mk }, gE);
+        var mx = (a[0] + b[0]) / 2 - uy * 12, my = (a[1] + b[1]) / 2 + ux * 12;
+        txt(gE, mx, my + 4, String(e[2]), { class: "vz-lbl", "text-anchor": "middle" });
+      });
+      V.forEach(function (v) { gNodeDraw(gN, P[v][0], P[v][1], v, f.cur === v ? "cur" : f.done.indexOf(v) >= 0 ? "done" : f.edge && f.edge[1] === v ? "cmp" : ""); });
+      var x0 = 540; txt(gT, x0, 40, "Vertex", { class: "vz-cap" }); txt(gT, x0 + 70, 40, "Distance", { class: "vz-cap" }); txt(gT, x0 + 150, 40, "Pred.", { class: "vz-cap" });
+      V.forEach(function (v, i) {
+        var y = 70 + i * 34, g = el("g", { class: "vz-cell full" + (f.edge && f.edge[1] === v && f.better ? " new" : "") }, gT);
+        el("rect", { x: x0 - 8, y: y - 20, width: 220, height: 30, rx: 5 }, g);
+        txt(g, x0, y, String(v), { class: "v" }); txt(g, x0 + 70, y, fmtD(f.dist[v]), { class: "v" }); txt(g, x0 + 150, y, f.pred[v] === null ? "–" : String(f.pred[v]), { class: "v" });
+      });
+      if (f.final) { var p2 = path(f, target.value); txt(gT, x0, 292, p2.length ? "Path to " + target.value + ": " + p2.join(" → ") + " (" + f.dist[+target.value] + ")" : target.value + " can't be reached", { class: "vz-lbl" }); }
+      B.say.innerHTML = f.text; B.code.textContent = f.code || ""; relaxEl.textContent = f.relaxed;
+      next.disabled = fi >= frames.length - 1; back.disabled = fi <= 0;
+    }
+    function stop() { clearInterval(timer); timer = null; play.textContent = "Play"; }
+    next.addEventListener("click", function () { stop(); if (fi < frames.length - 1) { fi++; show(); } });
+    back.addEventListener("click", function () { stop(); if (fi > 0) { fi--; show(); } });
+    play.addEventListener("click", function () { if (timer) { stop(); return; } play.textContent = "Pause"; timer = setInterval(function () { if (fi >= frames.length - 1) { stop(); return; } fi++; show(); }, reduce ? 80 : 1000); });
+    start.addEventListener("change", function () { stop(); build(); });
+    target.addEventListener("change", function () { show(); });
+    build();
+  }
+
+  /* ---------------- 2-3-4 tree ---------------- */
+  function btree(root) {
+    var B = bench(root, "2-3-4 tree: insert with preemptive split", "New keys are random. Full nodes on the way down split before the insert moves past them.", "0 0 780 260", "A 2-3-4 tree");
+    var ins = btn(B.controls, "Insert a random key", "primary");
+    var keySel = field(B.controls, "Key", select([], ""));
+    var find = btn(B.controls, "Search");
+    spacer(B.controls);
+    var reset = btn(B.controls, "Reset");
+    var splitsEl = tallyRow(B.tally, "Splits on the last insert");
+    var hEl = h("span", { class: "viz-lbl" }, B.tally, "");
+    var svg = B.svg, tree, busy = false;
+    function leaf(keys) { return { keys: keys.slice(), kids: [] }; }
+    function clone(n) { return { keys: n.keys.slice(), kids: n.kids.map(clone) }; }
+    function allKeys(n, out) { if (!n.kids.length) { out.push.apply(out, n.keys); return out; } n.keys.forEach(function (k, i) { allKeys(n.kids[i], out); out.push(k); }); allKeys(n.kids[n.kids.length - 1], out); return out; }
+    function height(n) { return n.kids.length ? 1 + height(n.kids[0]) : 0; }
+    function draw(t, hl, hlKey) {
+      svg.textContent = "";
+      var levels = [];
+      (function walk(n, d) { (levels[d] = levels[d] || []).push(n); n.kids.forEach(function (c) { walk(c, d + 1); }); })(t, 0);
+      var pos = new Map(), NW = function (n) { return 22 + n.keys.length * 30; };
+      var leaves = levels[levels.length - 1], totalW = leaves.reduce(function (a, n) { return a + NW(n) + 18; }, -18), x = 390 - totalW / 2;
+      leaves.forEach(function (n) { pos.set(n, { x: x + NW(n) / 2, y: 30 + (levels.length - 1) * 70 }); x += NW(n) + 18; });
+      for (var d = levels.length - 2; d >= 0; d--) levels[d].forEach(function (n) { var a = pos.get(n.kids[0]), b = pos.get(n.kids[n.kids.length - 1]); pos.set(n, { x: (a.x + b.x) / 2, y: 30 + d * 70 }); });
+      var gE = el("g", {}, svg), gN = el("g", {}, svg);
+      levels.forEach(function (lv) { lv.forEach(function (n) {
+        var p = pos.get(n), w = NW(n);
+        n.kids.forEach(function (c, i) { var q = pos.get(c); el("line", { class: "vz-edge", x1: p.x - w / 2 + 11 + i * 30, y1: p.y + 14, x2: q.x, y2: q.y - 14 }, gE); });
+        var g = el("g", { class: "vz-cell full" + (hl === n ? " cur" : "") }, gN);
+        el("rect", { x: p.x - w / 2, y: p.y - 15, width: w, height: 30, rx: 6 }, g);
+        n.keys.forEach(function (k, i) { txt(g, p.x - w / 2 + 26 + i * 30, p.y + 6, String(k), { class: "v", "text-anchor": "middle", "font-weight": k === hlKey ? 700 : 600, fill: k === hlKey ? "var(--viz-accent)" : "var(--viz-ink)" }); });
+      }); });
+      var ks = allKeys(tree, []); keySel.textContent = ""; ks.forEach(function (k) { var o = document.createElement("option"); o.value = k; o.textContent = k; keySel.appendChild(o); });
+      hEl.textContent = ks.length + " keys · height " + height(tree);
+    }
+    function say(t, c) { B.say.innerHTML = t; B.code.textContent = c || ""; }
+    function splitChild(parent, i) {
+      var c = parent.kids[i], mid = c.keys[1], L = { keys: [c.keys[0]], kids: c.kids.slice(0, 2) }, R = { keys: [c.keys[2]], kids: c.kids.slice(2) };
+      parent.keys.splice(i, 0, mid); parent.kids.splice(i, 1, L, R); return mid;
+    }
+    async function insert() {
+      if (busy) return;
+      var ks = allKeys(tree, []);
+      if (ks.length >= 18 || height(tree) >= 3) { say("This diagram holds 18 keys and 4 levels at most. Press Reset."); return; }
+      busy = true; var splits = 0; splitsEl.textContent = 0;
+      var have = {}; ks.forEach(function (k) { have[k] = true; }); var k; do { k = 1 + Math.floor(Math.random() * 98); } while (have[k]);
+      if (tree.keys.length === 3) {
+        var mid = tree.keys[1]; draw(tree, tree); say("Insert <b>" + k + "</b>. The root is full, so split it first: " + mid + " becomes a new root, and the tree grows one level.", "split root"); await sleep(1200);
+        tree = { keys: [], kids: [tree] }; splitChild(tree, 0); splits++; splitsEl.textContent = splits; draw(tree, tree); await sleep(1000);
+      }
+      var n = tree;
+      while (n.kids.length) {
+        var i = 0; while (i < n.keys.length && k > n.keys[i]) i++;
+        draw(tree, n); say("At [" + n.keys.join(" ") + "]: " + k + " goes to child " + i + ".", "next_node: child " + i); await sleep(900);
+        if (n.kids[i].keys.length === 3) {
+          var m = n.kids[i].keys[1]; draw(tree, n.kids[i]); say("That child [" + n.kids[i].keys.join(" ") + "] is full: split it. " + m + " moves up into this node.", "split child " + i); await sleep(1100);
+          splitChild(n, i); splits++; splitsEl.textContent = splits; draw(tree, n); await sleep(900);
+          i = 0; while (i < n.keys.length && k > n.keys[i]) i++;
+        }
+        n = n.kids[i];
+      }
+      n.keys.push(k); n.keys.sort(function (a, b) { return a - b; });
+      draw(tree, n, k);
+      say("The leaf has room: <b>" + k + "</b> goes in, in sorted order. " + (splits ? splits + " split" + (splits === 1 ? "" : "s") + " on the way down." : "No splits were needed.") + " All leaves stay at the same depth.", "leaf.insert(" + k + ")");
+      busy = false;
+    }
+    async function search() {
+      if (busy || !keySel.value) return; busy = true;
+      var k = +keySel.value, n = tree, steps = 0;
+      for (;;) {
+        steps++; var i = 0; while (i < n.keys.length && k > n.keys[i]) i++;
+        if (n.keys[i] === k) { draw(tree, n, k); say("Found <b>" + k + "</b> after visiting " + steps + " node" + (steps === 1 ? "" : "s") + ". A 2-3-4 tree's height is O(log n), so search is O(log n).", "found"); break; }
+        draw(tree, n); say("At [" + n.keys.join(" ") + "]: " + k + " is " + (i === 0 ? "smaller than " + n.keys[0] : i === n.keys.length ? "larger than " + n.keys[i - 1] : "between " + n.keys[i - 1] + " and " + n.keys[i]) + ", so go to child " + i + ".", "child " + i);
+        await sleep(900); n = n.kids[i];
+      }
+      busy = false;
+    }
+    function start() { tree = { keys: [25, 50], kids: [leaf([8, 14]), leaf([33]), leaf([61, 77, 90])] }; draw(tree); say("Each node holds 1 to 3 keys and has one more child than keys. Press Insert to add a random key; the right leaf is already full."); splitsEl.textContent = 0; }
+    ins.addEventListener("click", insert); find.addEventListener("click", search);
+    reset.addEventListener("click", function () { if (!busy) start(); });
+    start();
+  }
+
   /* ---------------- chapter cards ---------------- */
   var GLYPHS = {
     "01": function (s) { var P = [[110, 14], [60, 44], [160, 44], [130, 74], [190, 74]]; [[0, 1], [0, 2], [2, 3], [2, 4]].forEach(function (e) { line(s, P[e[0]][0], P[e[0]][1], P[e[1]][0], P[e[1]][1]); }); ["11", "S", "7", "M", "P"].forEach(function (v, i) { node(s, P[i][0], P[i][1], v); }); txt(s, 78, 26, "0", { class: "acc", "font-size": 11 }); txt(s, 140, 26, "1", { class: "acc", "font-size": 11 }); },
@@ -1047,7 +1295,8 @@
     "linked-list": linkedList, "stack-queue": stackQueue, "hash-probe": hashProbe, heap: heap, sort: sort,
     "loop-grid": loopGrid, "growth-chart": growthChart, "cost-spectrum": costSpectrum, "chapter-map": chapterMap,
     allocation: allocation, huffman: huffman, "tree-shapes": treeShapes,
-    bst: bst, avl: avl, "rb-tree": rbTree, treap: treap, "set-ops": setOps
+    bst: bst, avl: avl, "rb-tree": rbTree, treap: treap, "set-ops": setOps,
+    "graph-search": graphSearch, dijkstra: dijkstra, btree: btree
   };
   document.querySelectorAll(".viz[data-viz]").forEach(function (root) {
     var f = BUILDERS[root.getAttribute("data-viz")];

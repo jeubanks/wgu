@@ -232,6 +232,12 @@ Both orders are valid depth-first searches. Each goes as deep as it can before b
 | Finds the fewest-edge path? | Yes | No |
 | Time | O(V + E) | O(V + E) |
 
+<div class="viz" data-viz="graph-search" markdown>
+
+*On the site, an interactive diagram here steps through BFS, stack-based DFS, and recursive DFS on a 7-vertex graph, showing the queue or stack and the visit order.*
+
+</div>
+
 ## Directed graphs
 
 zyBooks 9.7. In a **directed graph**, each edge has a direction: it goes from a **starting vertex** to a **terminating vertex**. Draw it as an arrow.
@@ -351,6 +357,12 @@ W's distance drops to 0 after W was already removed, and W is never processed ag
 | Binary-heap priority queue (most other books) | O((V + E) log V) | O((V + E) log V) | O((V + E) log V) | Each removal and each distance update costs O(log V) |
 
 The list version is better for dense graphs, where E is close to V². The heap version is better for sparse graphs.
+
+<div class="viz" data-viz="dijkstra" markdown>
+
+*On the site, an interactive diagram here runs Dijkstra's algorithm one relaxation at a time on a 6-vertex weighted graph, with a distance and predecessor table.*
+
+</div>
 
 ## Bellman-Ford shortest path
 
