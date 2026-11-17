@@ -118,7 +118,7 @@ A heap is stored in an array with no gaps. With the root at index 0, the childre
 | Bubble | O(n) | O(n²) | O(n²) | O(1) | Yes | Swap out-of-order neighbors. Best case: sorted, with an early stop when a pass makes no swaps. |
 | Shell | O(n log n) | About O(n^1.5), depending on the gaps | O(n²) | O(1) | No | Insertion sort on items a gap apart, with shrinking gaps. Halving the gap each time can give the O(n²) worst case. |
 | Merge | O(n log n) | O(n log n) | O(n log n) | O(n) | Yes | Split in half, sort each half, merge |
-| Quicksort | O(n log n) | O(n log n) | O(n²) | O(log n) | No | Partition around a pivot. Worst case: the pivot is always the smallest or largest item. |
+| Quicksort | O(n log n) | O(n log n) | O(n²) | O(log n) | No | Partition around a pivot (zyBooks uses the middle element). Worst case: the pivot is always the smallest or largest item. |
 | Heap sort | O(n log n) | O(n log n) | O(n log n) | O(1) | No | Build a max-heap, then remove the max n times |
 | Counting | O(n + k) | O(n + k) | O(n + k) | O(n + k) | Yes | Count how many times each value occurs (k = range of values), then place items by their counts |
 | Radix | O(n·k) | O(n·k) | O(n·k) | O(n) | Yes | Sort by one digit at a time, least significant first, into 10 buckets (k = number of digits) |
