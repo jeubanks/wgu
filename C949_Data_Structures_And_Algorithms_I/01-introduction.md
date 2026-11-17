@@ -1,6 +1,6 @@
 # 1. Introduction to data structures and algorithms
 
-This chapter sets up the words the rest of the course uses: data structures, algorithms, abstract data types, and efficiency. It also introduces three ways of designing algorithms: compression with Huffman codes, greedy choices, and dynamic programming.
+This chapter sets up the words the rest of the course uses: what an algorithm is, the main kinds of algorithms, data types, data structures, abstract data types, and efficiency. It also works through three ways of designing algorithms: compression with Huffman codes, greedy choices, and dynamic programming.
 
 ## Data structures and algorithms
 
@@ -18,11 +18,62 @@ A **data structure** is a way of organizing data in memory so that some operatio
 
 An **algorithm** is a step-by-step procedure that solves a problem: searching, sorting, finding the shortest route. The two go together. An algorithm is written for a data structure, and the structure decides how fast the algorithm can be. Binary search is O(log n) on an array because it can jump to the middle item in one step. On a linked list, getting to the middle takes O(n) steps, so the same idea is no faster than reading every item.
 
+### What makes something an algorithm
+
+A procedure has to have all six of these properties to count as an algorithm:
+
+| Property | Meaning |
+|---|---|
+| **Finiteness** | It always stops after a finite number of steps. No endless loops. |
+| **Definiteness** | Every step is exact, with only one way to read it. |
+| **Input** | It takes zero or more inputs (most take at least one), from a defined set of allowed values. |
+| **Output** | It produces at least one output, clearly related to the input. |
+| **Effectiveness** | Every step is basic enough to actually carry out, in finite time. |
+| **Generality** | It solves a whole class of problems (sort *any* list), not one particular case. |
+
+Beyond those, a **good** algorithm is correct (right output for every valid input), simple, and easy to understand and maintain. It's modular (built from small, separate steps), robust (handles unexpected input sensibly), and extensible (others can build on it).
+
+### Kinds of algorithms
+
+Algorithms are often grouped by the strategy they use:
+
+| Kind | Strategy | Examples |
+|---|---|---|
+| **Brute force** | Try every possible answer | Checking every pair of items; trying every route |
+| **Recursive** | Solve a smaller copy of the same problem, down to a base case | Factorial, tree traversals |
+| **Backtracking** | Build an answer step by step, and undo a step when it leads to a dead end | Sudoku, mazes, the N-queens puzzle |
+| **Divide and conquer** | Split into independent parts, solve each, combine the results | Merge sort, quicksort, binary search |
+| **Greedy** | Take the best-looking choice at each step, never undo it | Huffman coding, Dijkstra's shortest path, making change |
+| **Dynamic programming** | Solve overlapping subproblems once each, and store the answers | Fibonacci with a table, longest common subsequence, Bellman-Ford |
+| **Randomized** | Use random choices as part of the method | Quicksort with a random pivot |
+| **Searching** | Find a target in a collection | Linear search, binary search |
+| **Sorting** | Put items in order | Insertion sort, merge sort |
+| **Hashing** | Turn data into a fixed-size value used as an index or fingerprint | Hash tables, password hashing |
+| **Encryption** | Turn data into a form only the right key can read | AES, RSA |
+
+Divide and conquer and dynamic programming both split a problem into subproblems. The difference: divide and conquer's parts don't overlap, so there's nothing to reuse; dynamic programming's do, so it stores answers.
+
 ### Efficiency
 
 An algorithm's efficiency is how its running time (or memory) grows as the input grows. It's written in Big-O, which keeps only the term that dominates for large inputs. The [Big-O cheat sheet](big-o.md) lists the growth rates and the rules for working one out.
 
 Some problems have no known efficient algorithm at all. **NP-complete** problems, like finding the shortest route that visits every city once, have no known algorithm that runs in polynomial time (O(n²), O(n³), and so on). Nobody has proven that none exists, either. For these, people settle for a heuristic: a fast answer that's good, but not guaranteed to be the best.
+
+## Data types, data structures, and ADTs
+
+These three ideas sit at different levels:
+
+| Level | What it describes | Examples |
+|---|---|---|
+| **Data type** | One kind of value, how it's stored, and what you can do with it. Built into the language. | `int`, `float`, `char`, `bool` |
+| **Data structure** | How many values are organized in memory, built from data types | Array, linked list, tree, hash table |
+| **Abstract data type** | Only the behavior: which operations exist and what they do, with no storage details | List, stack, queue, set, map |
+
+Data types come in a few flavors:
+
+- **Primitive:** single values the language provides: integers, floating-point numbers, characters, booleans.
+- **Composite:** built from other types. An array holds many values of one type. A **record** (a `struct` in C; a class, `namedtuple`, or `dataclass` in Python) holds named fields of different types, like a student's name, ID, and GPA.
+- **User-defined:** types the programmer makes, like classes and **enumerations**. An enumeration (`enum`) is a type with a fixed set of named constants, like `NORTH, EAST, SOUTH, WEST`. It makes code clearer and stops a variable from holding a value outside the set.
 
 ## Abstract data types (ADTs)
 
@@ -35,7 +86,7 @@ An **abstract data type** describes what a type of data does (its operations), n
 | Stack | Last in, first out: push and pop at the top | Linked list or array |
 | Queue | First in, first out: enqueue at the back, dequeue at the front | Linked list or array |
 | Deque | Push and pop at both ends | Linked list or array |
-| Bag | Items in no order, duplicates allowed | Array or linked list |
+| Bag (multiset) | Items in no order, duplicates allowed; count how many of each | Array, linked list, or hash table (Python's `collections.Counter`) |
 | Set | Distinct items in no order; is x in it? | Hash table or binary search tree |
 | Priority queue | Remove the highest-priority item first | Heap |
 | Dictionary (map) | Look up a value by its key | Hash table or binary search tree |
@@ -293,5 +344,82 @@ The bottom-right cell is the answer. Filling an n × m table is O(nm), where try
 
   - **a)** **B.**
   - **b)** **B.** Whether NP-complete problems have efficient algorithms is one of the big open questions in computer science.
+
+  </details>
+
+- **1.7** What makes an algorithm.
+
+  **a)** Which property does each description break?
+
+  | Description | Property it breaks |
+  |---|---|
+  | A loop that never stops for some inputs | |
+  | A step that says "pick a good number" | |
+  | A procedure that only works for the list [3, 1, 2] | |
+  | A procedure that finishes but never reports a result | |
+
+  <!-- answer:1.7a table [Finiteness, Definiteness, Input, Output, Effectiveness, Generality]: Finiteness; Definiteness; Generality; Output -->
+
+  **b)** Which kind of algorithm does each description fit?
+
+  | Description | Kind |
+  |---|---|
+  | Solves Sudoku by placing digits and undoing them when a rule breaks | |
+  | Sorts by splitting the list in half, sorting each half, and merging | |
+  | Tries every possible password until one works | |
+  | Fills a table with the answers to smaller subproblems and reuses them | |
+  | Always takes the largest coin that still fits | |
+
+  <!-- answer:1.7b table [Brute force, Backtracking, Divide and conquer, Greedy, Dynamic programming, Randomized]: Backtracking; Divide and conquer; Brute force; Dynamic programming; Greedy -->
+
+  <details>
+  <summary>Answer</summary>
+
+  - **a)** The endless loop breaks finiteness. "Pick a good number" isn't exact, so it breaks definiteness. Working for one list only breaks generality. No result breaks output.
+  - **b)** Sudoku with undo is backtracking. Split, sort, and merge is divide and conquer (merge sort). Trying every password is brute force. A table of subproblem answers is dynamic programming. Largest coin first is greedy.
+
+  </details>
+
+- **1.8** Data types, data structures, and ADTs.
+
+  **a)** Label each one.
+
+  | Name | Kind |
+  |---|---|
+  | `bool` | |
+  | Queue | |
+  | Linked list | |
+  | `float` | |
+  | Map | |
+  | Hash table | |
+
+  <!-- answer:1.8a table [Data type, Data structure, ADT]: Data type; ADT; Data structure; Data type; ADT; Data structure -->
+
+  **b)** A variable `direction` should only ever hold NORTH, EAST, SOUTH, or WEST. Which user-defined type fits?
+
+  A. A record
+
+  B. An enumeration
+
+  C. An array
+
+  <!-- answer:1.8b choice: B -->
+
+  **c)** Which describes a record?
+
+  A. A fixed group of named fields, which can have different types
+
+  B. A list of values that must all have the same type
+
+  C. A collection with no duplicates
+
+  <!-- answer:1.8c choice: A -->
+
+  <details>
+  <summary>Answer</summary>
+
+  - **a)** `bool` and `float` are data types. Queue and Map are ADTs: behavior only. Linked list and hash table are data structures: ways of storing data.
+  - **b)** **B.** An enumeration limits a variable to a fixed set of named constants.
+  - **c)** **A.** Option B describes an array, and C a set.
 
   </details>

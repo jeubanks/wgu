@@ -26,7 +26,9 @@ Nothing is stored side by side, so there's no way to jump to item i. Every opera
 - Empty list: point both `head` and `tail` at the new node.
 - Otherwise: set the new node's `next` to `head`, then move `head` to it.
 
-Both are O(1): a few pointer changes, however long the list is. Without a `tail` pointer, append would be O(n), because you'd walk the whole list to find the end.
+Both are O(1): a few pointer changes, however long the list is. Without a `tail` pointer, append is O(n), because you have to walk the whole list to find the end. Watch which kind of list a question describes: some materials assume a list with only a `head`.
+
+**Insert at position i** (rather than after a node you already have) is O(n): walk i nodes from the head first, then insert.
 
 ### Insert after
 
@@ -114,6 +116,13 @@ An **array-based list** keeps its items in an array, from index 0 up, plus a cou
 | Insert at index i | Shift items i and up one place right | O(n) |
 | Remove at index i | Shift every item after i one place left | O(n); removing the last item is O(1) |
 | Search | Check items in order | O(n) |
+
+### Sequential and linked allocation
+
+These two kinds of list show the two ways memory can be laid out:
+
+- **Sequential allocation** (arrays): items sit next to each other in one block. Any item's address is the block's start plus i times the item size, so reading item i is O(1). But the block has a fixed size, and inserting in the middle means shifting.
+- **Linked allocation** (linked lists): each node is allocated on its own, anywhere in memory, and holds a pointer to the next. The list grows one node at a time with no copying, and inserts need no shifting, but finding item i means following i pointers.
 
 Doubling when the array is full makes resizes rare: after a resize to size 2n, the next n appends cost O(1) each. Averaged over all appends, each one is O(1). That's called **amortized** O(1), and it's how Python's `list.append` works.
 
@@ -296,5 +305,29 @@ Doubling when the array is full makes resizes rare: after a resize to size 2n, t
 
   - **a)** **B.** Each node in a descending list is smaller than everything sorted so far, so its place is found at the head in one step. An already-sorted list is the slow case here: each node walks the whole sorted part.
   - **b)** O(n²).
+
+  </details>
+
+- **2.7** Allocation and missing tail pointers.
+
+  **a)** A singly-linked list keeps only a `head` pointer, no `tail`. What is the Big-O of appending an item?
+
+  <!-- answer:2.7a blanks: O(n) -->
+
+  **b)** Which kind of allocation does each describe?
+
+  | Description | Allocation |
+  |---|---|
+  | Item i's address is computed from the start address and i | |
+  | Each item is stored on its own, with a pointer to the next | |
+  | Growing past the reserved space means copying everything to a new block | |
+
+  <!-- answer:2.7b-d table [Sequential, Linked]: Sequential; Linked; Sequential -->
+
+  <details>
+  <summary>Answer</summary>
+
+  - **a)** O(n): without `tail`, the only way to find the last node is to walk from the head.
+  - **b)** Computed addresses and copying to a bigger block are sequential allocation (arrays). Separately stored nodes with pointers are linked allocation.
 
   </details>

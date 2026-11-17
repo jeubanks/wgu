@@ -14,11 +14,13 @@ Chapter numbers match the zyBooks chapters.
 - **[2. Lists](02-lists.md)**: singly- and doubly-linked lists, circular lists, dummy nodes, array-based lists
 - **[3. Stacks and queues](03-stacks-queues.md)**: stacks, queues, and deques, built on linked lists and on arrays
 - **[4. Hash tables](04-hash-tables.md)**: chaining, linear and quadratic probing, double hashing, resizing, hash functions
-- **[12–20. Python refresher](12-python-refresher.md)**: reading Python code, and what Python's lists, dicts, and sets cost
+- **[12–20. Programming concepts](12-programming-concepts.md)**: reading code, static and dynamic typing, operators, loops, classes, memory management, data flow diagrams, and what Python's lists, dicts, and sets cost
 
 Chapters 5 to 11 (trees, balanced trees, heaps and treaps, sets, graphs, B-trees, searching and sorting) and 21 (recursion) are coming next.
 
 **Reference:** the [Big-O cheat sheet](big-o.md) puts every structure and algorithm in the course on one printable page, with best, average, and worst cases.
+
+**Checklist:** the [topic map](topics.md) lists every topic in the course study guide, by competency, with where it's covered here.
 
 **Optional:** [Practice in code](code/README.md) has seven Python lessons where you build these structures yourself, with checks. Its Lesson 7, [tracing pseudocode](code/07-tracing.md), needs only paper and fits in anywhere.
 
@@ -58,7 +60,7 @@ The course materials show code as pseudocode or Python. The full topic list and 
 ```
 .
 ├── README.md                        # This page: the guide's contents
-├── 01-introduction.md … 12-python-refresher.md
+├── 01-introduction.md … 12-programming-concepts.md
 │                                    # Chapter pages: how it works, Big-O, questions
 ├── big-o.md                         # Big-O cheat sheet
 ├── code/                            # Optional Python lessons (pages)
@@ -68,7 +70,8 @@ The course materials show code as pseudocode or Python. The full topic list and 
 
 ## Notes
 
-- Following the course's Big-O worksheet, the cheat sheet lists radix sort as O(n) and bucket sort's average case as O(n). Textbooks often write O(nk) and O(n + k).
+- The cheat sheet follows the course study guide's Big-O conventions, like O(n·k) for radix sort and O(n + k) for bucket and counting sort.
+- Topics come from the zyBooks chapters and the course study guide in your course resources. The [topic map](topics.md) shows where each study-guide topic is covered here.
 - Every lesson example and solution in `c949-practice/` was run against its checks (43 passing in `pytest --solutions`).
 - The WGU course study guide, Big-O worksheet, and other course PDFs belong to WGU and are not included here. Get them from your course resources.
 

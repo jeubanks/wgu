@@ -193,7 +193,8 @@ nav:
       - 2. Lists: c949/02-lists.md
       - 3. Stacks and queues: c949/03-stacks-queues.md
       - 4. Hash tables: c949/04-hash-tables.md
-      - 12–20. Python refresher: c949/12-python-refresher.md
+      - 12–20. Programming concepts: c949/12-programming-concepts.md
+      - Topic map: c949/topics.md
       - Big-O cheat sheet: c949/big-o.md
       - Tracing pseudocode: c949/code/07-tracing.md
       - Practice in code:

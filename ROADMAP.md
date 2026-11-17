@@ -6,8 +6,8 @@ D427 is the model course. Once its patterns are settled, other courses reuse the
 
 ## Up next
 
-- [ ] **C949 chapters 5 to 8**: trees, balanced trees (AVL, red-black), heaps and treaps, sets. Same shape as chapters 1 to 4: how each operation works, Big-O best/average/worst, and questions.
-- [ ] **C949 chapters 9 to 11 and 21**: graphs, B-trees (2-3-4 trees), searching and algorithm analysis (all the sorts), recursion. Fold the Lesson 7 pseudocode tracing drills into chapters 11 and 21.
+- [ ] **C949 chapters 5 to 8**: trees, balanced trees (AVL, red-black), heaps and treaps, sets. Same shape as chapters 1 to 4: how each operation works, Big-O best/average/worst, and questions. From the course study guide, cover: full, complete, perfect, and balanced trees; BST removal (0, 1, 2 children); traversal orders with NLR/LNR/LRN; red-black properties; heap percolate up/down, child and parent indexes, heapify O(n); set union, intersection, difference. Update the [topic map](C949_Data_Structures_And_Algorithms_I/topics.md) as each lands.
+- [ ] **C949 chapters 9 to 11 and 21**: graphs, B-trees (2-3-4 trees, order m), searching and algorithm analysis, recursion. From the course study guide, cover: graph operations and their costs, Dijkstra (greedy) vs Bellman-Ford (dynamic programming); interpolation search; tracing binary search's mid values; all ten sorts including counting sort, and how to recognize each one in code; recursion's base case, recursive case, and call stack (factorial trace). Fold the Lesson 7 pseudocode tracing drills into chapters 11 and 21.
 - [ ] **C949 step-by-step pictures**: diagrams for list inserts and removes, probing, BST and AVL operations, heap percolation. They must not show a question's answer.
 - [ ] **C949 Try it runner (Pyodide)**: run each code lesson's checks in the browser, and tick Done on a pass. About 10 MB from a CDN, so load it only when a Try it box opens.
 
@@ -41,7 +41,7 @@ Nothing here yet.
 
 ## Done
 
-- C949 is now a study guide that follows the zyBooks chapters: chapters 1 to 4 and a Python refresher (12 to 20), each explaining how every structure and operation works, with Big-O best/average/worst and interactive questions that tick Done; a Big-O cheat sheet for the whole course; the Python lessons moved to an optional Practice in code section, with redirects from their old URLs. The quiz hook now takes a glob of pages (#54)
+- C949 is now a study guide that follows the zyBooks chapters and covers the course study guide's topics (a topic map lists each one by competency, with where it's covered): chapters 1 to 4 and a programming-concepts page (12 to 20), each explaining how every structure and operation works, with Big-O best/average/worst and interactive questions that tick Done; a Big-O cheat sheet for the whole course, following the course study guide's conventions (radix O(n·k), counting and bucket O(n + k)); the Python lessons moved to an optional Practice in code section, with redirects from their old URLs. The quiz hook now takes a glob of pages (#54)
 - The course is C949, not D949: renamed the folder (`C949_Data_Structures_And_Algorithms_I`), its slug and URLs (`/wgu/c949/`), and every mention, including the social card. Old `/wgu/d949/...` links redirect to the new pages, anchors included (`old_slugs` in mkdocs.yml, `hooks/redirects.py`) (#53)
 - C949 exercise pages: an overview with a progress bar per lesson, and one page per lesson (short intro, folded lesson code, exercise cards with Done boxes). Hints and solutions are generated from `c949-practice/solutions/` by `build_solutions.py`, which CI keeps in sync; CI also runs `pytest --solutions`. Lesson 7 has its own pseudocode, and 3.6, 5.7, and 6.6 have written answers, so nothing points to the WGU guide for content (#53)
 - 11.25: name a CHECK inside CREATE TABLE, then change its rule (DROP CHECK + ADD CONSTRAINT under the same name, in one ALTER TABLE) (#52)

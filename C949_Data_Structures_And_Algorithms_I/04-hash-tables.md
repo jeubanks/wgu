@@ -76,11 +76,25 @@ When the load factor passes a threshold (often around 0.75 for probing), the tab
 
 ## Hash functions
 
-A good hash function is fast, and spreads keys evenly over the buckets, so collisions are rare.
+A good hash function is:
+
+- **Deterministic:** the same key always gives the same index. Otherwise a stored key could never be found again.
+- **Uniform:** keys spread evenly over the buckets, so collisions are rare.
+- **Fast** to compute, since it runs on every insert, search, and remove.
 
 - **Modulo hash:** `key % N`. Simple and fast. A prime N spreads keys better, since keys often share factors with a round number like 100.
 - **Mid-square hash:** square the key, take some digits (or bits) from the middle of the result, and take that modulo N. The middle digits depend on every digit of the key. Example: 453² = 205209, and its middle two digits are 52.
 - **Multiplicative string hash:** start from an initial value, and for each character, multiply the hash so far by a constant and add the character's code: `hash = hash * multiplier + code(c)`. Then take it modulo N. Each character's position matters, so anagrams like "stop" and "pots" get different hashes.
+
+### Computing a modulo by hand
+
+Questions often give a hash function like `key % 1009` and ask where a key goes. On a calculator without a `%` key:
+
+1. Divide: 3045 ÷ 1009 = 3.0178...
+2. Keep the whole-number part: 3.
+3. Multiply it back and subtract: 3045 − 3 × 1009 = 3045 − 3027 = **18**.
+
+So key 3045 goes in bucket 18. (Equivalently: take the fractional part, 0.0178..., and multiply it by 1009, then round.)
 
 ### Direct hashing
 
@@ -308,5 +322,29 @@ The worst case happens when many keys collide: one long chain, or one long probe
 
   - **a)** **B.** A cryptographic hash can't be reversed at all; the salt defends against lookups of precomputed hashes.
   - **b)** **B.** A real user hashes one password once, so slowness costs them little, while an attacker trying millions of guesses pays it millions of times.
+
+  </details>
+
+- **4.8** Hash functions by hand.
+
+  **a)** A table uses `key % 101`. Which bucket does key 7777 go in?
+
+  <!-- answer:4.8a blanks: 0 -->
+
+  **b)** Which property would a hash function lack if it used the current time as part of the index?
+
+  A. Uniform
+
+  B. Deterministic
+
+  C. Fast
+
+  <!-- answer:4.8b choice: B -->
+
+  <details>
+  <summary>Answer</summary>
+
+  - **a)** 7777 ÷ 101 = 77 exactly, so the remainder is 0: bucket 0.
+  - **b)** **B.** The same key would hash to a different bucket at a different time, so a stored key couldn't be found again.
 
   </details>
