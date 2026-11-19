@@ -6,6 +6,8 @@ A graph stores items and the connections between them, with no top, no bottom, a
 
 A **graph** is a set of **vertices** (also called nodes) joined by **edges**. A vertex is an item, like a city or a person. An edge is a connection between two vertices, like a road or a friendship.
 
+A road map is a good picture to keep in mind. The towns are the vertices and the roads are the edges. Most graph questions are map questions: can I get from here to there, which towns are next to this one, and what is the shortest trip?
+
 <!-- figure
 nodes: A 0 0, B 1 0, C 0 1, D 1 1, E 0 2, F 1 2, G 2 2
 edges: A-B, A-C, B-D, C-D, C-E, D-F, E-F, F-G
@@ -31,7 +33,7 @@ edges: A-B, A-C, B-D, C-D, C-E, D-F, E-F, F-G
 
 Every edge counts once, however you draw it. This graph has 7 vertices and 8 edges.
 
-With V vertices and at most one edge per pair, an undirected graph can have at most V(V − 1) / 2 edges: every vertex can connect to the V − 1 others, but that counts each edge twice, once from each end, so divide by 2. Four vertices allow at most 4 · 3 / 2 = 6 edges.
+An undirected graph with V vertices, and at most one edge per pair, can have at most V(V − 1) / 2 edges, because every vertex can connect to the V − 1 others, which gives V(V − 1). But that counts each edge twice, once from each end, so divide by 2. For example, four vertices allow at most 4 · 3 / 2 = 6 edges.
 
 ### Kinds of graphs
 
@@ -65,7 +67,12 @@ A road map only needs a vertex where roads meet or where a trip can start or end
 
 ## Representing a graph
 
-There are two standard ways to store a graph. An adjacency list gives each vertex a list of its neighbors. An adjacency matrix keeps a grid with one cell for every pair of vertices. Both examples below use this small undirected graph:
+There are two standard ways to store a graph:
+
+- An **adjacency list** gives each vertex a list of its neighbors, like each person keeping their own contact list.
+- An **adjacency matrix** keeps a grid with one cell for every pair of vertices, like a chart with a row and a column for every city, with a mark in the box when a road runs directly between the two.
+
+Both examples below use this small undirected graph:
 
 <!-- figure
 nodes: P 0 0, Q 1 0, R 0 1, S 1 1
@@ -144,7 +151,11 @@ A **graph traversal** visits every vertex in some order. To **visit** a vertex m
   1. Dequeue a vertex and **visit** it.
   2. For each of its neighbors that hasn't been discovered yet, mark it discovered and enqueue it.
 
-A queue is first in, first out, so every vertex 1 edge away comes out before any vertex 2 edges away. The vertices waiting in the queue are called the **frontier**: discovered but not yet visited. Marking a vertex discovered when it's enqueued, rather than when it's visited, stops it from being enqueued twice.
+Think of a ripple spreading out from a stone dropped in a pond. BFS reaches the closest ring first, then the next ring out.
+
+- A queue is first in, first out, like a line at a store. So every vertex 1 edge away comes out before any vertex 2 edges away.
+- The vertices waiting in the queue are called the **frontier**. They have been discovered but not yet visited.
+- Mark a vertex discovered as soon as you enqueue it. If you waited until you visit it, it could be enqueued twice.
 
 **A trace** on the graph from the start of the chapter, starting at A. Neighbors are taken in alphabetical order.
 
@@ -179,6 +190,27 @@ BFS order: A, B, C, D, E, F, G. Each vertex's distance from A:
 
 D is 2 edges from A along two different paths. BFS discovers it only once, at distance 2.
 
+If you keep only the edge that discovered each vertex, you get a **BFS tree**. Each level of the tree is one distance from A:
+
+<!-- figure
+levels: distance 0 | distance 1 | distance 2 | distance 3 | distance 4
+nary: A{B{D{F{G}}}, C{E}}
+-->
+```text
+            A            distance 0
+          /   \
+         B     C         distance 1
+         |     |
+         D     E         distance 2
+         |
+         F               distance 3
+         |
+         G               distance 4
+```
+<!-- /figure -->
+
+Two edges are left out: C–D, because B discovered D first, and E–F, because D discovered F first.
+
 A BFS order isn't unique: vertices at the same distance can come out in any order, depending on the order of each adjacency list. The questions on this page always take neighbors in alphabetical order, so there is one right answer.
 
 | Case | Big-O | Why |
@@ -188,7 +220,7 @@ A BFS order isn't unique: vertices at the same distance can come out in any orde
 
 ## Depth-first search (DFS)
 
-**What DFS is for:** exploring as far as possible down one path before backing up and trying another. It's used to find whether a path exists, to detect cycles, to explore mazes, and (in other books) to build a topological sort.
+**What DFS is for:** exploring as far as possible down one path before backing up and trying another. Picture walking through a maze. You follow one hallway until it dead-ends, then walk back to the last fork and try the next hallway. DFS is used to find whether a path exists, to detect cycles, to explore mazes, and (in other books) to build a topological sort.
 
 ### DFS with a stack (zyBooks' version)
 
@@ -333,7 +365,7 @@ For each vertex, Dijkstra's algorithm works out two things:
 - **distance:** the length of the shortest path from the start.
 - **predecessor:** the vertex just before it on that path.
 
-Dijkstra's algorithm settles the vertices one at a time, closest first. Each time a vertex is settled, use its distance to try to shorten the distances of its neighbors.
+Dijkstra's algorithm visits the vertices one at a time, closest first. Once a vertex is visited, its distance is final. Then the algorithm uses that distance to try to shorten the distances of the vertex's neighbors.
 
 **How it works** (zyBooks keeps the unvisited vertices in a plain list):
 
@@ -341,9 +373,12 @@ Dijkstra's algorithm settles the vertices one at a time, closest first. Each tim
 2. Put every vertex in a list of **unvisited** vertices.
 3. While unvisited vertices remain:
   1. Remove the unvisited vertex with the **smallest** distance. Call it the current vertex.
-  2. For each edge out of the current vertex: add the current vertex's distance to the edge's weight. If that total beats the neighbor's distance, update the neighbor's distance, and set its predecessor to the current vertex.
+  2. For each edge out of the current vertex, add the current vertex's distance to the edge's weight. If that total is smaller than the neighbor's distance, update the neighbor's distance and set its predecessor to the current vertex.
 
-Step 3.2 is called **relaxing** an edge: checking whether the edge gives its end vertex a shorter path, and updating it if so. To read a path afterward, start at the destination and follow predecessors back to the start, then reverse the list. A vertex whose distance is still ∞ (predecessor None) can't be reached from the start.
+Step 3.2 is called **relaxing** an edge. You check whether the edge gives its end vertex a shorter path, and update the vertex if it does.
+
+- To read a path afterward, start at the destination and follow the predecessors back to the start. Then reverse the list.
+- A vertex whose distance is still ∞ (predecessor None) can't be reached from the start.
 
 **A trace.** A directed graph, starting at S:
 
@@ -373,9 +408,25 @@ Edges: S→A 4, S→B 1, B→A 2, B→C 5, B→D 8, A→C 1, C→D 3.
 
 Predecessors: A ← B, B ← S, C ← A, D ← C. Following them back from D gives D ← C ← A ← B ← S, so the path is S → B → A → C → D, length 7.
 
+The predecessor edges alone form a tree that holds the shortest path from S to every vertex:
+
+<!-- figure
+caption: Only the predecessor edges
+nodes: S 0 0.7, A 1.3 0, B 1.3 1.4, C 2.6 0, D 3.9 0.7
+edges: S>B 1, B>A 2, A>C 1, C>D 3
+-->
+```text
+              A ---1---> C ---3---> D
+              ^
+              2
+              |
+   S ---1---> B
+```
+<!-- /figure -->
+
 The direct edge S → A costs 4, but S → B → A costs only 3. Dijkstra's algorithm finds it because it handles B (distance 1) before A.
 
-**Why it's greedy:** every round it takes the closest unvisited vertex and treats that distance as final. With no negative weights that's safe: any other route to that vertex has to go through vertices that are already at least as far away.
+**Why it's greedy:** a **greedy** algorithm makes the choice that looks best right now and never undoes it. Every round, Dijkstra's algorithm takes the closest unvisited vertex and treats that distance as final. With no negative weights that's safe. Any other route to that vertex has to go through vertices that are already at least as far away, and adding more edges can't make the trip shorter.
 
 ### Negative edge weights break Dijkstra
 
@@ -492,6 +543,8 @@ After the V − 1 = 3 passes (order A, B, C, D), the distances are A 0, B −2, 
 
 **What it's for:** ordering the vertices of a **directed acyclic graph** so that for every edge X → Y, X comes before Y. If edges mean "must happen before," a topological sort is an order you can do the tasks in: course prerequisites, build steps, a recipe.
 
+Getting dressed is a small example. Socks must go on before shoes, and a shirt before a jacket. "Socks, shirt, shoes, jacket" works, and so does "shirt, socks, jacket, shoes." Putting shoes before socks does not.
+
 - The graph must be **directed** (an undirected edge has no "before") and **acyclic** (in a cycle, every vertex would have to come before itself).
 - It doesn't need weights.
 - A DAG usually has **several** valid topological sorts.
@@ -538,6 +591,22 @@ Edges: A→C, B→C, B→D, C→E, D→E, E→F. Incoming-edge counts: A 0, B 0,
 
 Result: B, D, A, C, E, F.
 
+Lay the vertices out in that order and every edge points to the right:
+
+<!-- figure
+caption: B, D, A, C, E, F in a row
+nodes: B 0 0, D 1 0, A 2 0, C 3 0, E 4 0, F 5 0
+edges: B>D, B>C ~-90, D>E ~90, A>C, C>E, E>F
+-->
+```text
+     +-----------------------+
+     |                       v
+     B ----> D       A ----> C ----> E ----> F
+             |                       ^
+             +---------------------->+
+```
+<!-- /figure -->
+
 With a queue instead of a stack, A would come out first: A, B, C, D, E, F. Both are valid.
 
 Many other books build a topological sort with DFS instead: run DFS, record each vertex when it **finishes** (after all its descendants), then reverse that list. That method is also O(V + E).
@@ -549,15 +618,19 @@ Many other books build a topological sort with DFS instead: run DFS, record each
 
 The last vertex in the result has no outgoing edges, and the first one has no incoming edges.
 
+**Common mistake:** thinking a DAG has only one correct topological sort. Any order where every edge points forward is valid. The algorithm's choice of queue or stack only decides which valid order you get.
+
 ## Minimum spanning tree
 
-**What it's for:** connecting every vertex of a **weighted, connected, undirected** graph using the cheapest possible set of edges, like laying the least cable to connect every building. The result is a **minimum spanning tree (MST)**:
+**What it's for:** connecting every vertex of a **weighted, connected, undirected** graph using the cheapest possible set of edges. Think of a town that has to pave enough roads to link every house, while paving the fewest total miles. The result is a **minimum spanning tree (MST)**:
 
 - **spanning:** it reaches every vertex.
 - **tree:** no cycles, so it has exactly **V − 1** edges.
 - **minimum:** the smallest possible **sum of edge weights**.
 
 If the graph is disconnected, no spanning tree exists. When several edges share a weight, there can be more than one MST, all with the same total.
+
+**Common mistake:** treating an MST as a map of shortest paths. The MST keeps the total cheap, but the path between two vertices inside it can be longer than their shortest path. Take a triangle with X–Y 2, Y–Z 2, and X–Z 3. The MST is X–Y and Y–Z (total 4), so inside the tree X to Z costs 4. The direct edge X–Z costs only 3.
 
 ### Kruskal's algorithm (the one zyBooks uses)
 
@@ -597,6 +670,23 @@ edges: A-B 4, A-C 1, B-C 3, B-D 2, C-D 7, C-E 6, D-E 5
 
 The tree is AC, BD, BC, DE: 4 edges for 5 vertices, total weight 1 + 2 + 3 + 5 = 11.
 
+<!-- figure
+caption: The minimum spanning tree
+nodes: A 0.6 0, B 0 1, C 1.2 1, D 0 2.1, E 1.2 2.1
+edges: A-C 1, B-C 3, B-D 2, D-E 5
+-->
+```text
+       A
+         \ 1
+          \
+    B --3-- C
+    |
+    2
+    |
+    D --5-- E
+```
+<!-- /figure -->
+
 Kruskal's algorithm is **greedy**: it always grabs the cheapest edge that doesn't make a cycle, and never takes one back. The lightest edge in the graph is always in the tree.
 
 | Case | Big-O | Why |
@@ -622,7 +712,7 @@ Floyd-Warshall starts with only the direct edges. Then, one vertex K at a time, 
 4. For each vertex K, in order (the main loop):
   - For every pair (X, Y): if going from X to K, then K to Y, is shorter than the current (X, Y) entry, replace the entry with that sum.
 
-After the round for K, every entry holds the length of the shortest path that may pass through K and any vertex handled before it. After the last round, every path is allowed.
+After the round for K, every entry holds the length of the shortest path that may stop along the way only at K and the vertices handled before it. After the last round, a path may stop at any vertex, so every entry is the true shortest distance.
 
 **A trace:**
 

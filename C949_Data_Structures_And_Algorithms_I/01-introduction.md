@@ -4,7 +4,7 @@ This chapter sets up the words the rest of the course uses: what an algorithm is
 
 ## Data structures and algorithms
 
-A **data structure** is a way of laying data out in memory, together with the operations that work on that layout. A row of numbered boxes is one layout; a chain of nodes, each pointing to the next, is another. Typical operations read or change an item, look for an item, add one, or take one out. The basic structures in this course:
+A **data structure** is a way of laying data out in memory, together with the operations that work on that layout. A row of numbered boxes is one layout. A chain of nodes, each pointing to the next, is another. In a library, books on numbered shelves are easy to reach by number, while a trail where each book holds a slip naming the next book has to be followed in order. Typical operations read or change an item, look for an item, add one, or take one out. The basic structures in this course:
 
 | Data structure | How it's organized |
 |---|---|
@@ -42,7 +42,20 @@ array after:    [K, P, M, R, T, W, Z]
 ```
 <!-- /figure -->
 
-A linked list needs no shifting. Make a node for M, point it at R, then point P's node at M. The other nodes don't move. Inserting at the end of an array needs no shifts, and inserting at the front of an array shifts every item.
+A linked list needs no shifting. Make a node for M, point it at R, then point P's node at M. The other nodes don't move:
+
+<!-- figure
+nodes: K 0 0, P 1 0, R 2 0, T 3 0, W 4 0, Z 5 0, M 1.5 0.8
+edges: K>P, P>M, M>R, R>T, T>W, W>Z
+-->
+```text
+K → P     R → T → W → Z
+     ↘   ↗
+       M
+```
+<!-- /figure -->
+
+Where you insert in an array matters too. Inserting at the end needs no shifts. Inserting at the front shifts every item.
 
 ### Algorithms for data structures
 
@@ -51,9 +64,9 @@ The algorithm for an operation depends on the structure. Appending to an array a
 - **Array append:** make the array one element larger, then put the new item in the last element.
 - **Linked list append:** if the list is empty, point both the head and the tail at the new node. Otherwise, point the tail node's next reference at the new node, then point the tail at the new node. Either way, add 1 to the stored length.
 
-Algorithms also use data structures to hold their own working data. A program that reports the three highest test scores might keep a short list of the best scores so far, sorted from high to low. Each new score that beats the last one in the list replaces it, and the list is sorted again.
+Algorithms also use data structures to hold their own working data. Say a program reports the three highest test scores. It can keep a short list of the best three so far, sorted from high to low. When a new score beats the lowest of the three, the new score replaces it, and the list is sorted again.
 
-The structure decides how fast an algorithm can be. Binary search is O(log n) on a sorted array because it can jump to the middle item in one step. On a linked list, getting to the middle takes O(n) steps, so the same idea is no faster than reading every item.
+The structure decides how fast an algorithm can be. Binary search is O(log n) on a sorted array because it can jump to the middle item in one step. (Big-O describes how the work grows as the input grows; [Efficiency and hard problems](#efficiency-and-hard-problems) below explains it.) On a linked list, getting to the middle takes O(n) steps, so the same idea is no faster than reading every item.
 
 ### What makes something an algorithm
 
@@ -99,7 +112,7 @@ Many real problems reduce to a few well-known algorithms. Comparing two DNA samp
 
 An algorithm's efficiency is usually measured by its runtime, and how that runtime grows as the input grows. It's written in Big-O, which keeps only the term that dominates for large inputs. The [Big-O cheat sheet](big-o.md) lists the growth rates and the rules for working one out.
 
-An algorithm is called **efficient** when its runtime grows no faster than a polynomial in the input size: O(n), O(n²), O(n³), and so on. O(2ⁿ) is not efficient. The line sits there because exponential growth gets out of hand fast: adding one item to the input doubles a 2ⁿ runtime, while it barely changes n³.
+An algorithm is called **efficient** when its runtime grows no faster than a polynomial in the input size: O(n), O(n²), O(n³), and so on. O(2ⁿ) is not efficient. Polynomial is the cutoff because exponential growth gets out of hand fast. Adding one item to the input doubles a 2ⁿ runtime, while it barely changes n³. For 30 items, n³ is 27,000 steps, but 2ⁿ is over a billion.
 
 **NP-complete** problems are a group of problems for which nobody knows an efficient algorithm. Three facts describe them:
 
@@ -107,7 +120,7 @@ An algorithm is called **efficient** when its runtime grows no faster than a pol
 - Nobody has proven that an efficient algorithm is impossible.
 - If an efficient algorithm is found for one NP-complete problem, every NP-complete problem can be solved efficiently.
 
-One NP-complete problem is the **clique** decision problem: given a graph and a number K, is there a group of K vertices that are all joined to each other? In a friendship network, that asks whether K people all know one another. Another is deciding whether there's a route through every city on a map that's shorter than a given length.
+One NP-complete problem is the **clique** decision problem. (A decision problem is one with a yes-or-no answer.) Given a graph and a number K, is there a group of K vertices that are all joined to each other? In a friendship network, that asks whether K people all know one another. Another is deciding whether there's a route through every city on a map that's shorter than a given length.
 
 Once a programmer knows a problem is NP-complete, they can stop hunting for a fast exact algorithm. Instead, they write a heuristic: an algorithm that quickly finds a good answer that may not be the best.
 
@@ -123,13 +136,15 @@ These three ideas sit at different levels:
 
 Data types come in a few flavors:
 
-- **Primitive:** single values the language provides: integers, floating-point numbers, characters, booleans.
+- **Primitive:** single values built into the language, such as integers, floating-point numbers, characters, and booleans.
 - **Composite:** built from other types. An array holds many values of one type. A **record** (a `struct` in C; a class, `namedtuple`, or `dataclass` in Python) holds named fields of different types, like a student's name, ID, and GPA.
 - **User-defined:** types the programmer makes, like classes and **enumerations**. An enumeration (`enum`) is a type with a fixed set of named constants, like `NORTH, EAST, SOUTH, WEST`. It makes code clearer and stops a variable from holding a value outside the set.
 
 ## Abstract data types (ADTs)
 
-An **abstract data type** is defined by what you can ask it to do, not by how it does it. A list ADT promises "append, remove, search, and keep items in order". It says nothing about arrays or nodes. A data structure is one way to build it, and the same ADT can be built on different structures. Code that calls the ADT's operations works the same whichever one is underneath, so the programmer doesn't need to know which it is.
+An **abstract data type** is defined only by what you can ask it to do. How it does the work is left open. A list ADT promises "append, remove, search, and keep items in order". It says nothing about arrays or nodes.
+
+A data structure is one way to build an ADT, and the same ADT can be built on different structures. Code that calls the ADT's operations works the same whichever one is underneath, so the programmer doesn't need to know which it is.
 
 The common ADTs, and the structures each is usually built on:
 
@@ -145,7 +160,7 @@ The common ADTs, and the structures each is usually built on:
 | Priority queue | A queue where higher-priority items sit closer to the front | Heap |
 | Dictionary (map) | Associates (maps) keys with values | Hash table, binary search tree |
 
-Two of these are easy to mix up by their rules on order and duplicates:
+Four of them are easy to mix up. Their rules on order and duplicates tell them apart:
 
 | ADT | Ordered? | Duplicates? |
 |---|---|---|
@@ -156,15 +171,15 @@ Two of these are easy to mix up by their rules on order and duplicates:
 
 ### Abstraction
 
-**Abstraction** lets you use a thing through a simple outside view and ignore how it works inside. An ADT is an example: its operations are the outside view, and the data structure is the hidden inside. Code that uses a stack only calls push and pop, so the stack can switch from a linked list to an array without that code changing.
+**Abstraction** lets you use a thing through a simple outside view and ignore how it works inside. A TV remote is one: you press "volume up" without knowing anything about the circuits. An ADT is another: its operations are the outside view, and the data structure is the hidden inside. Code that uses a stack only calls push and pop, so the stack can switch from a linked list to an array without that code changing.
 
-Abstraction lets a programmer think about which ADT fits the job. Say a program keeps a playlist of the 10 most recent songs, adds each new song at one end, drops the oldest from the other, and sometimes shows the songs newest first. A queue handles adding and dropping, but a queue has no operation for walking through the items backward. A list does, so the list ADT is the better fit.
+Abstraction lets a programmer think about which ADT fits the job. Say a program keeps a playlist of the 10 most recent songs. It adds each new song at one end, drops the oldest from the other, and sometimes shows the songs newest first. A queue handles adding and dropping, but a queue has no operation for walking through the items backward. A list does, so the list ADT is the better fit.
 
 Abstraction doesn't hide everything. The hidden structure decides the **runtime**, so you have to look inside to measure or speed it up. A list built on an array reads item i in O(1), and one built on a linked list takes O(n). The program's behavior is the same; its speed isn't.
 
 ### ADTs in standard libraries
 
-You rarely have to build common ADTs yourself: each major language ships them in its standard library. In some languages you choose the structure behind an ADT; in others the library makes that choice.
+You rarely have to build common ADTs yourself. Each major language ships them in its standard library. In some languages you choose the structure behind an ADT. In others the library makes that choice.
 
 | Language | Library | Some of the ADTs it provides |
 |---|---|---|
@@ -174,9 +189,9 @@ You rarely have to build common ADTs yourself: each major language ships them in
 
 ## Huffman compression
 
-**Compression** rewrites data so it needs fewer bits, which saves disk space and transfer time. The trick is to spend few bits on common items and more bits on rare ones.
+**Compression** rewrites data so it needs fewer bits, which saves disk space and transfer time. It spends few bits on common items and more bits on rare ones. Morse code works the same way: E, the most common letter in English, is a single dot, while a rare letter like Q takes four symbols.
 
-Uncompressed text in ASCII uses 8 bits for every character. A compression **dictionary** lists a code for each character, made for this particular text. **Huffman coding** builds that dictionary with a binary tree.
+Uncompressed text in ASCII uses 8 bits for every character. A compression **dictionary** lists a code for each character. It's made for one particular text, so a character that's common in that text gets a short code. **Huffman coding** builds that dictionary with a binary tree.
 
 How to build the codes:
 
@@ -268,11 +283,23 @@ The heuristic returns $98. The best load is 10 + 6 + 4 = 20 lb, worth $104. The 
 
 ### Self-adjusting heuristics
 
-A **self-adjusting heuristic** reshapes a data structure in response to the operations done on it. AVL trees and red-black trees rebalance themselves this way as items are added and removed (chapter 6).
+A **self-adjusting heuristic** reshapes a data structure in response to the operations done on it. AVL trees and red-black trees, two kinds of search tree covered in chapter 6, rebalance themselves this way as items are added and removed.
 
-The **move-to-front** heuristic speeds up repeated searches in a list. After a linear search finds an item, move it to the front. Items searched for often then sit near the front, where they're found in few comparisons.
+The **move-to-front** heuristic speeds up repeated searches in a list. After a linear search (checking items one by one from the front) finds an item, move it to the front. Items searched for often then sit near the front, where they're found in few comparisons. It's like keeping the tools you use most at the front of a drawer.
 
-Example: the list is `8, 3, 6, 1, 9`.
+Example: the list is `8, 3, 6, 1, 9`. Searching for 1 takes 4 comparisons, then 1 jumps to the front:
+
+<!-- figure
+row: before | 8 3 6 *1 9 | 1 found on the 4th comparison
+row: after | *1 8 3 6 9 | 1 moved to the front; the rest keep their order
+-->
+```text
+before:  8, 3, 6, [1], 9     1 found on the 4th comparison
+after:  [1], 8, 3, 6, 9      1 moved to the front; the rest keep their order
+```
+<!-- /figure -->
+
+The full run of three searches:
 
 | Search for | List before | Comparisons | List after |
 |---|---|---|---|
@@ -284,7 +311,7 @@ It works best when the same keys are searched for again and again. If every sear
 
 ## Greedy algorithms
 
-A **greedy algorithm** builds an answer one step at a time, always taking the option that looks best right now, and never going back. Because it ignores what a choice does to the options left later, the result is sometimes optimal and sometimes not.
+A **greedy algorithm** builds an answer one step at a time. At each step it takes the option that looks best right now, and it never goes back. It ignores what a choice does to the options left later, so the result is sometimes optimal and sometimes not.
 
 ### Making change
 
@@ -338,7 +365,27 @@ In the **activity selection problem**, each activity has a start time and a fini
 
 An activity that starts at the exact moment the current one finishes doesn't conflict.
 
-Example, already sorted by finish time:
+Example, already sorted by finish time. In the drawing, each row is one activity and each box is one hour it uses. Chosen activities are highlighted, and skipped ones are faded:
+
+<!-- figure
+row: hour | 1 2 3 4 5 6 7 8 9
+row: A | *A *A · · · · · · · | chosen
+row: B | · .B .B .B · · · · · | overlaps A
+row: C | · · · *C *C · · · · | chosen
+row: D | · · · · · *D *D · · | chosen
+row: E | · · · · .E .E .E .E · | overlaps D
+row: F | · · · · · · · *F *F | chosen
+-->
+```text
+hour  1  2  3  4  5  6  7  8  9
+A    [A][A]                          chosen
+B       (B)(B)(B)                    overlaps A
+C             [C][C]                 chosen
+D                   [D][D]           chosen
+E                (E)(E)(E)(E)        overlaps D
+F                         [F][F]     chosen
+```
+<!-- /figure -->
 
 | Activity | Start | Finish | Current finishes at | Chosen? |
 |---|---|---|---|---|
@@ -353,7 +400,7 @@ The answer is A, C, D, F: 4 activities. The activity that finishes first is alwa
 
 ## Dynamic programming
 
-**Dynamic programming** breaks a problem into smaller pieces, saves the answer to each piece the first time it's worked out, and builds the full answer from those saved results. It pays off when the same pieces would otherwise be worked out again and again.
+**Dynamic programming** breaks a problem into smaller pieces. It saves the answer to each piece the first time it's worked out, and builds the full answer from those saved results. It pays off when the same pieces would otherwise be worked out again and again. It's like writing a sum on scratch paper so you can reuse it instead of adding the numbers up again.
 
 Splitting a problem into subproblems alone isn't dynamic programming. Merge sort splits too, but it never reuses an answer.
 
@@ -417,7 +464,7 @@ After 5 passes (n − 1 passes for n = 6), `current` holds F(6) = 8. Each number
 
 A **substring** is a run of characters next to each other: `REA` is a substring of `BREAD`. The **longest common substring** of two strings is the longest substring that appears in both. `BREAD` and `TREAT` share runs such as `RE`, `EA`, and `REA`, and the longest is `REA`.
 
-The idea behind the algorithm: a shared run that ends at some pair of matching characters is one character longer than the shared run ending just before them. In `BREAD` and `TREAT`, the run ending at the two `A`s is `REA`, which is the run ending at the two `E`s (`RE`) plus one. So if you record, for every pair of positions, how long a shared run ends there, each answer comes from one you already have.
+A shared run that ends at some pair of matching characters is one character longer than the shared run ending just before them. In `BREAD` and `TREAT`, the run ending at the two `A`s is `REA`, which is the run ending at the two `E`s (`RE`) plus one. So if you record, for every pair of positions, how long a shared run ends there, each answer comes from one you already have.
 
 Those answers go in a matrix of integers, with one row per character of the first string (N rows) and one column per character of the second (M columns). The entry at row i, column j is the length of the longest common substring that **ends** at character i of the first string and character j of the second.
 
@@ -426,7 +473,9 @@ Fill the matrix one row at a time, top to bottom, left to right within each row:
 1. If the two characters **match**, the entry is 1 + the entry diagonally up and to the left. The up-left entry is the run ending one character earlier in both strings, and this match extends it. Use 0 for an up-left entry that's outside the matrix (row 0 or column 0).
 2. If they **don't match**, the entry is 0, because no shared run can end on two different characters.
 
-The **largest entry** is the length of the longest common substring. Its row is where the substring ends in the first string, so the substring is the characters ending there, counting back by the length. If two entries tie for largest, there are two longest common substrings. zyBooks' code (the version the practice questions follow) updates the largest entry only when a new entry is strictly larger, so it returns the first one it finds (the one ending in the earliest row).
+The **largest entry** is the length of the longest common substring. Its row is where the substring ends in the first string. To read the substring, count back that many characters from that row.
+
+If two entries tie for largest, there are two longest common substrings. zyBooks' code (the version the practice questions follow) updates the largest entry only when a new entry is strictly larger. So it returns the first one it finds, the one ending in the earliest row.
 
 `BREAD` (rows) against `TREAT` (columns):
 
@@ -465,6 +514,17 @@ The method builds the same N × M matrix as the substring algorithm, with one ru
 2. If they **don't match**, the entry is the larger of the entry above and the entry to the left. At least one of the two characters can't end the subsequence, so drop one or the other and keep whichever choice did better.
 
 A mismatch no longer resets to 0, because a subsequence is allowed to skip characters. Use 0 for any entry outside the matrix. Entries never get smaller moving right or down, so the largest entry is the bottom-right one, and it's the LCS length.
+
+The two matrices side by side:
+
+| Feature | Longest common substring | Longest common subsequence |
+|---|---|---|
+| Gaps allowed? | No, one unbroken run | Yes, characters can be skipped |
+| Match | 1 + up-left | 1 + up-left |
+| Mismatch | 0 | Larger of above and left |
+| Where the answer is | The largest entry, anywhere | The bottom-right entry |
+
+A common mistake is mixing the two words up. A sub**string** is like a phrase cut from a sentence, with nothing left out. A sub**sequence** is like reading only some of the words, still in their order.
 
 `CART` (rows) against `CHAT` (columns):
 

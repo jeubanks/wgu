@@ -6,6 +6,8 @@ This chapter covers three things, in the order the course's chapter 11 takes the
 2. **Finding Big-O by tracing:** count how many times the busiest line of code runs, as a formula in n, then keep only the part that grows fastest. Ten worked patterns, from a single loop to recursion.
 3. **Sorting:** how each of the ten sorts works, what it costs in the best, average, and worst case, and how to recognize it in code.
 
+**Big-O** describes how the work grows as the input grows. It ignores the exact count and keeps only the shape. O(n) means that doubling the input roughly doubles the work. O(n²) means that doubling the input roughly quadruples it.
+
 ## Searching
 
 ### Linear search
@@ -26,7 +28,7 @@ def linear_search(items, key):
 | Average | the key is somewhere in the middle | about n / 2 | O(n) |
 | Worst | the key is last, or missing | n | O(n) |
 
-Linear search works on any list, sorted or not, because it needs nothing from the data.
+Linear search works on any list, sorted or not, because it needs nothing from the data. It's how you'd look for one name on a sign-up sheet that isn't in any order: read down from the top.
 
 ### Binary search
 
@@ -142,7 +144,7 @@ return total             # 1 time
 
 The loop body runs once per item: n times. The other lines run once. Total: n + n + 2 = 2n + 2, which is **O(n)**.
 
-The constant inside a loop doesn't matter. All three of these are O(n):
+A constant multiplier on the loop's length doesn't matter. All three of these are O(n):
 
 | Loop | Times the body runs | Big-O |
 |---|---|---|
@@ -385,6 +387,28 @@ If you can count the steps for some n, count them again for 2n. How the count ch
 - **Stable:** items with equal keys stay in their original order. That matters when you sort by one field, then another. For example, sort people by name, then stably by age: people of the same age stay in name order.
 - **In place:** uses only O(1) extra memory. Merge sort needs a second list, so it isn't in place.
 
+Here is what stable means, on a list where two items share the key 5. The letters only tell the two 5s apart; the sort looks at the numbers:
+
+<!-- figure
+row: start | *5a 2 *5b 1
+row: stable | 1 2 *5a *5b | 5a still comes before 5b
+row: not stable | 1 2 *5b *5a | allowed to swap the two 5s
+-->
+```text
+start         5a  2 5b  1
+stable         1  2 5a 5b     5a still comes before 5b
+not stable     1  2 5b 5a     allowed to swap the two 5s
+```
+<!-- /figure -->
+
+A common mistake is to mix up **stable** and **in place**. Stable is about the order of equal keys. In place is about extra memory. A sort can have one without the other:
+
+| Sort | Stable | In place |
+|---|---|---|
+| Insertion | Yes | Yes |
+| Merge | Yes | No |
+| Heap | No | Yes |
+
 ### Selection sort
 
 Find the smallest item in the unsorted part, and swap it to the front of that part. The sorted part grows by one item per pass.
@@ -446,6 +470,28 @@ start     29  4 17  8 42 11
 pass 1     4 17  8 29 11 42     42 has bubbled to the end
 ```
 <!-- /figure -->
+
+Inside that first pass, one neighbor pair at a time (the highlighted pair is the one just compared):
+
+<!-- figure
+row: start | 29 4 17 8 42 11
+row: 29 and 4 | *4 *29 17 8 42 11 | out of order: swap
+row: 29 and 17 | 4 *17 *29 8 42 11 | swap
+row: 29 and 8 | 4 17 *8 *29 42 11 | swap
+row: 29 and 42 | 4 17 8 *29 *42 11 | in order: no swap
+row: 42 and 11 | 4 17 8 29 *11 *42 | swap: 42 reaches the end
+-->
+```text
+start         29  4 17  8 42 11
+29 and 4       4 29 17  8 42 11     out of order: swap
+29 and 17      4 17 29  8 42 11     swap
+29 and 8       4 17  8 29 42 11     swap
+29 and 42      4 17  8 29 42 11     in order: no swap
+42 and 11      4 17  8 29 11 42     swap: 42 reaches the end
+```
+<!-- /figure -->
+
+The larger item of each pair keeps moving right, so whatever is largest gets carried all the way to the end.
 
 - **Best:** O(n), but only for the version that stops when a pass makes no swaps (the list is sorted). Without that check, it's O(n²) every time.
 - **Average and worst:** O(n²).
@@ -527,6 +573,23 @@ merge    take 4, 8, 11, 17, 29, 42 (the smaller front item each time)
 ```
 <!-- /figure -->
 
+Merge sort is O(n log n) because of how the splits stack up. With 8 items, each level halves the pieces, so there are log₂ 8 = 3 levels of splitting below the full list. On the way back up, each level merges all 8 items once, so each level costs O(n):
+
+<!-- figure
+nary: "38 16 27 5 49 12 31 8"{"38 16 27 5"{"38 16"{38, 16}, "27 5"{27, 5}}, "49 12 31 8"{"49 12"{49, 12}, "31 8"{31, 8}}}
+levels: 1 list of 8 | 2 halves of 4 | 4 pieces of 2 | 8 single items
+-->
+```text
+               38 16 27 5 49 12 31 8               1 list of 8
+            ┌───────────┴───────────┐
+       38 16 27 5              49 12 31 8          2 halves of 4
+       ┌────┴────┐             ┌────┴────┐
+     38 16      27 5         49 12      31 8       4 pieces of 2
+     ┌─┴─┐      ┌─┴─┐        ┌─┴─┐      ┌─┴─┐
+    38   16    27    5      49   12    31    8     8 single items
+```
+<!-- /figure -->
+
 - **Best, average, worst:** O(n log n), always: log n levels of splitting, and each level merges n items in total.
 - **Memory:** O(n) extra, for the merged lists. It doesn't sort in place.
 - **Stable:** yes, when ties take the left item first.
@@ -540,7 +603,25 @@ A max-heap always keeps its largest item at the root, so it can hand you the lar
 2. Swap the root, the largest item left, with the last item of the heap. That item is now in its final place, and the heap is one item shorter.
 3. Percolate the new root down to repair the heap (O(log n)), and repeat step 2 until the heap is empty.
 
-Step 2 runs n times at O(log n) each, so the sorting phase is O(n log n).
+One round of steps 2 and 3, on the max-heap `42 29 17 8 4 11`:
+
+<!-- figure
+index: yes
+row: max-heap | *42 29 17 8 4 11 | the largest item is at the root, index 0
+row: swap root and last | *11 29 17 8 4 *42 | 42 is now in its final place
+row: percolate 11 down | 29 11 17 8 4 .42 | 11 swaps with its bigger child, 29: a heap again
+-->
+```text
+index                  0  1  2  3  4  5
+max-heap              42 29 17  8  4 11     the largest item is at the root, index 0
+swap root and last    11 29 17  8  4 42     42 is now in its final place
+percolate 11 down     29 11 17  8  4 42     11 swaps with its bigger child, 29: a heap again
+```
+<!-- /figure -->
+
+42 is no longer part of the heap (it's faded in the drawing). The next round swaps 29 to index 4, and so on, filling the list from the back.
+
+Steps 2 and 3 repeat about n times, and each percolate-down is O(log n), so the sorting phase is O(n log n).
 
 - **Best, average, worst:** O(n log n).
 - **Memory:** in place. **Stable:** no.

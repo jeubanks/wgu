@@ -1,10 +1,10 @@
 # 8. Sets
 
-A **set** holds distinct items in no particular order. Think of the list of students who turned in homework: a name is either on it or not, and writing a name twice doesn't count it twice. A set is built to answer one question fast: is this item in the set? A set ignores duplicates. The classic set operations (union, intersection, difference) combine two sets into a new one.
+A **set** holds distinct items in no particular order. Think of the list of students who turned in homework: a name is either on it or not, and writing a name twice doesn't count it twice. A set is built to answer one question fast: is this item in the set? You'd use one to track which usernames are taken, or which web pages a program has already visited. The classic set operations (union, intersection, difference) combine two sets into a new one.
 
 ## The set ADT
 
-A set ADT (abstract data type) holds **distinct** elements, so no element is ever in it twice. Adding an element that's already there does nothing, however many times you try.
+An ADT (abstract data type) describes what a structure does, without saying how it's stored. The set ADT holds **distinct** elements, so no element is ever in it twice. Adding an element that's already there does nothing, however many times you try.
 
 - A set is **unordered**. Two sets with the same elements are **equal sets**, whatever order the elements were added in. For example, {8, 3, 12} equals {12, 8, 3}.
 - A set's **length** is the number of elements in it. Its formal name is the set's **cardinality**. {8, 3, 12} has length 3.
@@ -26,9 +26,14 @@ The ADT only says what each operation does. How fast each operation runs depends
 
 Compared with the other ADTs:
 
-- A **list** keeps order and allows duplicates.
-- A **bag** allows duplicates and counts them.
-- A **map** pairs each key with a value. A set is like a map's keys alone.
+| ADT | Keeps order? | Allows duplicates? | Stores |
+|---|---|---|---|
+| **List** | yes | yes | items |
+| **Bag** | no | yes, and counts them | items |
+| **Set** | no | no | items |
+| **Map** | no | no duplicate keys | key–value pairs |
+
+A set is like a map's keys alone.
 
 ## Subsets
 
@@ -67,6 +72,8 @@ With X = {7, 19, 23, 40} and Y = {19, 31, 40, 58}:
 The course covers union, intersection, difference, and subset. Symmetric difference is an extra one that Python provides.
 
 Union and intersection are **commutative**, meaning the order of the two sets doesn't matter: X ∪ Y = Y ∪ X, and X ∩ Y = Y ∩ X. Difference is not commutative. X − Y is {7, 23}, but Y − X is {31, 58}.
+
+Common mistake: reading X − Y as "everything the two sets don't share." That's the symmetric difference. X − Y keeps only elements from X, so nothing from Y ever appears in it.
 
 ### How zyBooks builds each result
 
@@ -134,7 +141,12 @@ The items come out in no useful order. Python's `set` works this way.
 
 zyBooks builds its `Set` class on a binary search tree ([chapter 5](05-trees.md)), one element per node. Real code would use a balanced BST ([chapter 6](06-balanced-trees.md)) or a hash table for better speed. A plain BST is still enough to build every operation, and it keeps the elements in sorted order.
 
-**The key function.** A BST needs something to compare, but set elements can be whole records. So you can pass the constructor a **get-key function**. Given an element, this function returns the key the BST sorts by. The BST compares keys with `<`, `>`, and `==`. With no argument, the default is `lambda el: el`, so each element is its own key. A set of student records could pass `lambda s: s.id` to key them by ID. The new sets returned by union, intersection, and the other operations use the same get-key function as the original set.
+**The key function.** A BST needs something to compare, but set elements can be whole records. So you can pass the constructor a **get-key function**. Given an element, this function returns the key the BST sorts by. The BST compares keys with `<`, `>`, and `==`.
+
+- With no argument, the default is `lambda el: el`, so each element is its own key.
+- A set of student records could pass `lambda s: s.id` to key them by ID.
+
+The new sets returned by union, intersection, and the other operations use the same get-key function as the original set.
 
 **The nodes.** Each `BSTNode` stores its element in `data`, plus `left`, `right`, and **`parent`** references. The parent reference lets the class find a node's successor and iterate without recursion. Each node also has three helpers:
 
@@ -163,6 +175,26 @@ tree: 30{15{10, 20{, 25}}, 45{40, 50}}
 First, search for the new element's key. If the key is found, return **False** and change nothing. That's how the set stays distinct. Otherwise, insert a new leaf the usual BST way (smaller keys go left, others go right) and return **True**.
 
 Adding 20 again to the tree above returns False, and the length stays 8.
+
+Adding 35 instead returns True. The search goes 30 → 45 → 40, and 40 has no left child, so 35 becomes 40's left child:
+
+<!-- figure
+tree: Before :: 30{15{10, 20{, 25}}, 45{40, 50}}
+tree: After add(35): the search path is highlighted :: 30@h{15{10, 20{, 25}}, 45@h{40@h{35@h}, 50}}
+flow: yes
+-->
+```text
+before                            after add(35)
+
+          30                                30
+        /    \                            /      \
+      15      45                        15        45
+     /  \     / \                      /  \       /  \
+   10   20   40  50                  10   20     40   50
+          \                                 \    /
+          25                                25  35
+```
+<!-- /figure -->
 
 #### Successor
 
@@ -193,7 +225,7 @@ Successor of 20: 20 has a right child, so go right to 25, then left as far as po
 
 #### Iterating
 
-`__iter__()` finds the minimum node (start at the root, go left until there's no left child) and returns a `BSTIterator` holding it. Each call to the iterator's `__next__()` (`next()` in Python before version 3) returns the current node's element, then moves to that node's successor. When the successor is `None`, iteration stops.
+`__iter__()` finds the minimum node: start at the root and go left until there's no left child. It returns a `BSTIterator` holding that node. Each call to the iterator's `__next__()` (`next()` in Python before version 3) returns the current node's element, then moves to that node's successor. When the successor is `None`, iteration stops.
 
 The iterator keeps only one node reference at a time. It visits the elements in **ascending order of their keys**:
 
@@ -218,7 +250,7 @@ start at 10 → 15 → 20 → 25 → 30 → 40 → 45 → 50 → None: stop
 
 The successor in case 1 has no left child, because it's the leftmost node of a right subtree. So removing the successor is always case 4.
 
-Removing 15 from the tree above:
+Removing 15 from the original tree (without 35):
 
 1. 15 has two children: case 1.
 2. The successor of 15: go right to 20, which has no left child, so it's 20. Save 20.

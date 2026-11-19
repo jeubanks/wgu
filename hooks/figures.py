@@ -418,7 +418,7 @@ def draw_graph(nodes_spec, edges_spec, mid):
 
 # ---------------------------------------------------------------- list, heap, array
 def draw_list(values, double, mid):
-    bw, bh, gap = 46, 34, 40
+    bw, bh, gap = max(46, max(_w(v) for v in values) + 18), 34, 40
     x0, y = 12, 44
     n = len(values)
     W = x0 + n * (bw + gap) + 40 + (52 if double else 0)
@@ -497,9 +497,11 @@ def draw_array(values, steps):
         for name, i in (("low", lo), ("high", hi), ("mid", md)):
             marks.setdefault(i, []).append(name)
         for i, names in marks.items():
-            out.append(text(x0 + i * cw + cw / 2, y + 46, " ".join(names), "dsf-acc", size=11))
+            # one label per line, so two markers on the same cell don't run into a neighbor's
+            for k, name in enumerate(names):
+                out.append(text(x0 + i * cw + cw / 2, y + 46 + 12 * k, name, "dsf-acc", size=11))
         desc.append(f"{lab}: low {lo}, high {hi}, mid {md} (value {values[md]})")
-        y += 62
+        y += 62 + 12 * (max(len(v) for v in marks.values()) - 1)
     label = f"Sorted array {', '.join(values)} at indexes 0 to {n - 1}. " + ". ".join(desc) + "."
     return x0 + n * cw + 10, y - 6, "".join(out), label
 
