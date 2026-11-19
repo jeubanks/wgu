@@ -1,6 +1,6 @@
 # 9. Graphs
 
-A graph stores items and the connections between them, with no top, no bottom, and no fixed order. Lists, trees, and heaps are all special graphs. This chapter covers how to store a graph, how to walk through one (BFS and DFS), and the classic graph algorithms in zyBooks chapter 9: shortest paths, topological sort, minimum spanning trees, and all-pairs shortest paths.
+A graph stores items and the connections between them, with no top, no bottom, and no fixed order. Lists, trees, and heaps are all special graphs. This chapter covers how to store a graph, how to walk through one (BFS and DFS), and the classic graph algorithms: shortest paths, topological sort, minimum spanning trees, and all-pairs shortest paths.
 
 ## Graph basics
 
@@ -52,7 +52,7 @@ A tree is a connected, acyclic, undirected graph. A tree with n nodes always has
 
 ## Where graphs are used
 
-zyBooks 9.2 shows graphs modeling real systems. The pattern is always the same: decide what the vertices are and what the edges are.
+Many real systems are graphs once you decide two things: what the vertices are, and what the edges are. After that, a question about the system becomes a question about paths or neighbors.
 
 | Application | Vertices | Edges | Question the graph answers |
 |---|---|---|---|
@@ -65,7 +65,7 @@ A road map only needs a vertex where roads meet or where a trip can start or end
 
 ## Representing a graph
 
-zyBooks 9.3 and 9.4 cover the two standard ways to store a graph. Both use this small undirected graph:
+There are two standard ways to store a graph. An adjacency list gives each vertex a list of its neighbors. An adjacency matrix keeps a grid with one cell for every pair of vertices. Both examples below use this small undirected graph:
 
 <!-- figure
 nodes: P 0 0, Q 1 0, R 0 1, S 1 1
@@ -93,12 +93,12 @@ Each vertex keeps a list of the vertices adjacent to it.
 In an undirected graph, every edge shows up **twice**: P–Q puts Q in P's list and P in Q's list.
 
 - **Space:** O(V + E). One list per vertex, one entry per edge end.
-- **Is there an edge from X to Y?** Walk X's list. That's O(degree of X), and a vertex can have up to V − 1 neighbors, so zyBooks calls it O(V).
+- **Is there an edge from X to Y?** Walk X's list. That's O(degree of X). A vertex can have up to V − 1 neighbors, so the worst case is O(V).
 - Most real graphs are sparse, so the adjacency list is the usual choice.
 
 ### Adjacency matrix
 
-A V × V grid of 0s and 1s. The entry in row X, column Y is 1 if there's an edge from X to Y.
+Give the grid one row and one column per vertex, so V vertices make a V × V grid. The entry in row X, column Y is 1 if there's an edge from X to Y, and 0 if there isn't.
 
 <!-- figure
 grid: P Q R S / P: 0 *1 *1 0 / Q: *1 0 *1 0 / R: *1 *1 0 0 / S: 0 0 0 0
@@ -129,7 +129,7 @@ grid: P Q R S / P: 0 *1 *1 0 / Q: *1 0 *1 0 / R: *1 *1 0 0 / S: 0 0 0 0
 | List all neighbors of X | O(degree of X) | O(V): scan the whole row |
 | Space | O(V + E) | O(V²) |
 
-zyBooks treats the matrix as a fixed two-dimensional array, which is why adding or removing a vertex means building a new one.
+These costs assume, as zyBooks does, that the matrix is a fixed-size two-dimensional array. It can't grow or shrink in place, so adding or removing a vertex means building a new one.
 
 ## Breadth-first search (BFS)
 
@@ -137,14 +137,14 @@ A **graph traversal** visits every vertex in some order. To **visit** a vertex m
 
 **What BFS is for:** visiting vertices in order of their distance from a start vertex: the start, then everything 1 edge away, then 2 edges away, and so on. That makes BFS the way to find the fewest-edge path in an unweighted graph. Social networks use it to suggest people at distance 2. A peer-to-peer network uses it to find the nearest computer that has a file.
 
-**How it works** (zyBooks' version):
+**How it works:**
 
 1. Put the start vertex in a queue and mark it **discovered**.
 2. While the queue isn't empty:
   1. Dequeue a vertex and **visit** it.
   2. For each of its neighbors that hasn't been discovered yet, mark it discovered and enqueue it.
 
-zyBooks calls the vertices waiting in the queue the **frontier**: discovered but not yet visited. Marking a vertex discovered when it's enqueued stops it from being enqueued twice.
+A queue is first in, first out, so every vertex 1 edge away comes out before any vertex 2 edges away. The vertices waiting in the queue are called the **frontier**: discovered but not yet visited. Marking a vertex discovered when it's enqueued, rather than when it's visited, stops it from being enqueued twice.
 
 **A trace** on the graph from the start of the chapter, starting at A. Neighbors are taken in alphabetical order.
 
@@ -179,7 +179,7 @@ BFS order: A, B, C, D, E, F, G. Each vertex's distance from A:
 
 D is 2 edges from A along two different paths. BFS discovers it only once, at distance 2.
 
-zyBooks points out that a BFS order isn't unique: vertices at the same distance can come out in any order, depending on the order of each adjacency list. The questions on this page always take neighbors in alphabetical order, so there is one right answer.
+A BFS order isn't unique: vertices at the same distance can come out in any order, depending on the order of each adjacency list. The questions on this page always take neighbors in alphabetical order, so there is one right answer.
 
 | Case | Big-O | Why |
 |---|---|---|
@@ -218,7 +218,7 @@ Every remaining pop is already visited. DFS order (stack): A, C, E, F, G, D, B.
 
 ### Recursive DFS
 
-zyBooks also gives a recursive version that uses the call stack instead of an explicit one:
+DFS can also be written recursively. The call stack then does the job of the explicit stack:
 
 1. If the vertex has already been visited, return right away.
 2. Otherwise, visit it, then call DFS on each neighbor, in adjacency-list order.
@@ -271,7 +271,7 @@ Both orders are valid depth-first searches. Each goes as deep as it can before b
 
 ## Directed graphs
 
-zyBooks 9.7. In a **directed graph**, each edge has a direction: it goes from a **starting vertex** to a **terminating vertex**. Draw it as an arrow.
+Some connections only go one way. A web page can link to another page that never links back. In a **directed graph**, each edge has a direction: it goes from a **starting vertex** to a **terminating vertex**. Draw it as an arrow.
 
 <!-- figure
 nodes: K 0 0, L 1.5 0, M 1.5 1, N 0 1, O 3 1
@@ -293,7 +293,7 @@ edges: K>L, L>M, M>N, N>K, M>O
 
 ## Weighted graphs
 
-zyBooks 9.8. A **weighted graph** gives each edge a number: a cost, distance, time, or capacity. It can be directed or undirected.
+Often a connection has a cost, like the miles of a road. A **weighted graph** gives each edge a number: a cost, distance, time, or capacity. It can be directed or undirected.
 
 - In a weighted graph, the **path length** is the **sum of the weights** along the path.
 - The **shortest path** is the one with the smallest sum. It can have more edges than another path.
@@ -315,7 +315,7 @@ P → R directly costs 7. P → Q → R costs 2 + 2 = 4: the shorter path, even 
 
 ## The Graph class in zyBooks
 
-zyBooks 9.9 builds the Python classes that every algorithm in the rest of the chapter uses. You don't need to memorize the code. The ideas that matter:
+zyBooks' Python code stores a graph in a few small classes, and every algorithm in the rest of the chapter uses them. You don't need to memorize the code. The ideas that matter:
 
 - A **Vertex** holds only a label.
 - An **Edge** holds a from-vertex, a to-vertex, and a weight. Every Edge is **directed**.
@@ -333,7 +333,9 @@ For each vertex, Dijkstra's algorithm works out two things:
 - **distance:** the length of the shortest path from the start.
 - **predecessor:** the vertex just before it on that path.
 
-**How it works** (zyBooks' version):
+Dijkstra's algorithm settles the vertices one at a time, closest first. Each time a vertex is settled, use its distance to try to shorten the distances of its neighbors.
+
+**How it works** (zyBooks keeps the unvisited vertices in a plain list):
 
 1. Set every vertex's distance to ∞ and its predecessor to None. Set the start vertex's distance to 0.
 2. Put every vertex in a list of **unvisited** vertices.
@@ -341,7 +343,7 @@ For each vertex, Dijkstra's algorithm works out two things:
   1. Remove the unvisited vertex with the **smallest** distance. Call it the current vertex.
   2. For each edge out of the current vertex: add the current vertex's distance to the edge's weight. If that total beats the neighbor's distance, update the neighbor's distance, and set its predecessor to the current vertex.
 
-Step 3.2 is called **relaxing** an edge. To read a path afterward, start at the destination and follow predecessors back to the start, then reverse the list. A vertex whose distance is still ∞ (predecessor None) can't be reached from the start.
+Step 3.2 is called **relaxing** an edge: checking whether the edge gives its end vertex a shorter path, and updating it if so. To read a path afterward, start at the destination and follow predecessors back to the start, then reverse the list. A vertex whose distance is still ∞ (predecessor None) can't be reached from the start.
 
 **A trace.** A directed graph, starting at S:
 
@@ -419,7 +421,9 @@ The list version is better for dense graphs, where E is close to V². The heap v
 
 **What it's for:** the same job as Dijkstra (shortest paths from one start vertex), but it **allows negative edge weights**, and it **detects negative cycles**.
 
-**How it works** (zyBooks' version):
+Bellman-Ford doesn't choose vertices carefully the way Dijkstra does. It relaxes every edge in the graph, then does it again, and keeps going. Each round lets the correct distances spread one more edge out from the start.
+
+**How it works** (zyBooks' code always makes all the passes):
 
 1. Set every distance to ∞ and every predecessor to None. Set the start vertex's distance to 0.
 2. Repeat **V − 1** times (the main iterations):
@@ -428,7 +432,7 @@ The list version is better for dense graphs, where E is close to V². The heap v
 
 Why V − 1 passes? A shortest path without a cycle has at most V − 1 edges. Each pass is guaranteed to settle at least one more edge of every shortest path, whatever the vertex order.
 
-The final distances are the same for any vertex order. The table **after each pass** depends on the order, so zyBooks' questions always say which order to use.
+The final distances are the same for any vertex order. The table **after each pass** depends on the order, so a question about an in-between pass always says which order to use.
 
 **A trace** on the graph that fooled Dijkstra, starting at X, processing vertices in the order V, W, X, Y, Z:
 
@@ -494,7 +498,9 @@ After the V − 1 = 3 passes (order A, B, C, D), the distances are A 0, B −2, 
 
 To check an ordering, look at every edge X → Y. If X comes before Y for all of them, the ordering is valid. One edge going backward makes it invalid.
 
-**How it works** (zyBooks' version, which other books call **Kahn's algorithm**):
+A vertex with no incoming edges has nothing that must come before it, so it can go first. Take it out of the graph, and some other vertex may lose its last incoming edge, so it can go next.
+
+**How it works** (other books call it **Kahn's algorithm**):
 
 1. Count each vertex's incoming edges (its in-degree).
 2. Put every vertex with a count of 0 into a collection.
@@ -502,7 +508,7 @@ To check an ordering, look at every edge X → Y. If X comes before Y for all of
   1. Remove a vertex and add it to the result.
   2. For each of its outgoing edges, subtract 1 from the to-vertex's count. If the count reaches 0, add that vertex to the collection.
 
-zyBooks says the collection can be a queue, a stack, or a set: any of them gives a valid result. **zyBooks' code uses a stack** (a Python list, `pop()` from the end), filled first in the graph's vertex order. That choice decides which valid ordering comes out.
+The collection can be a queue, a stack, or a set: any of them gives a valid result. **zyBooks' code uses a stack** (a Python list, `pop()` from the end), filled first in the graph's vertex order. That choice decides which valid ordering comes out.
 
 **A trace:**
 
@@ -555,6 +561,8 @@ If the graph is disconnected, no spanning tree exists. When several edges share 
 
 ### Kruskal's algorithm (the one zyBooks uses)
 
+Kruskal's algorithm goes through the edges from cheapest to most expensive and keeps each one unless it would close a loop with edges already kept.
+
 1. Put every edge in a priority queue (or a sorted list), lowest weight first.
 2. Start with each vertex in its own set. Each set is a group of vertices already connected by chosen edges.
 3. While edges remain: remove the lightest edge. If its two vertices are in **different** sets, add the edge to the tree and merge the two sets. If they're in the **same** set, skip it: it would close a cycle.
@@ -606,7 +614,7 @@ O(E log E) is the same as O(E log V), the form on the [cheat sheet](big-o.md#gra
 
 ### Floyd-Warshall
 
-Floyd-Warshall allows negative edge weights, but not negative cycles.
+Floyd-Warshall starts with only the direct edges. Then, one vertex K at a time, it asks of every pair X and Y: "Is a detour through K shorter than the best path so far?" Floyd-Warshall allows negative edge weights, but not negative cycles.
 
 1. Fill the matrix with ∞.
 2. Set every entry from a vertex to itself to 0.
@@ -651,7 +659,7 @@ B and C have no path back to A, so their A column stays ∞.
 
 ### Rebuilding a path from the matrix
 
-zyBooks rebuilds a path backward from the destination. To find the path from S to T:
+The matrix stores only lengths, so the path has to be rebuilt from them, working backward from the destination. To find the path from S to T:
 
 1. Start at T.
 2. Look at each edge U → (current vertex). If the distance from S to U, plus the edge's weight, equals the distance from S to the current vertex, that edge is on the path. Move to U.

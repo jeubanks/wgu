@@ -1,10 +1,12 @@
 # 10. B-trees
 
-A B-tree lets each node hold several sorted keys and have several children, so the tree stays short and wide. Every leaf sits at the same depth. The tree keeps that shape in two ways: an insert splits full nodes on the way down, and a remove gives 1-key nodes more keys on the way down. zyBooks teaches the idea with the **2-3-4 tree**, a B-tree of order 4, and this page follows its rules and names.
+A B-tree lets each node hold several sorted keys and have several children, so the tree stays short and wide. Every leaf sits at the same depth. The tree keeps that shape in two ways: an insert splits full nodes on the way down, and a remove gives 1-key nodes more keys on the way down. This page teaches the idea with the **2-3-4 tree**, a B-tree of order 4. B-tree names and rules vary between books, so where zyBooks differs from others, the page says so.
 
 ## B-trees
 
-A **B-tree of order m** is a search tree where:
+A BST node holds one key, which splits the search two ways: smaller goes left, larger goes right. A B-tree node can hold several sorted keys, which split the search several ways. A node holding 12 and 28 sends a search three ways: below 12, between 12 and 28, or above 28. More ways out of each node means fewer levels to get through.
+
+The precise rules: a **B-tree of order m** is a search tree where:
 
 - A node holds up to **m − 1 keys** and has up to **m children**. The order is the largest number of children a node can have.
 - All keys are distinct.
@@ -48,7 +50,7 @@ A **2-3-4 tree** is a B-tree of order 4. Each node has 1, 2, or 3 keys, and an i
 | 2 | 3 | 3-node |
 | 3 | 4 | 4-node, also called **full** |
 
-A **leaf** has no children. zyBooks numbers the keys and children in a node from 0:
+A **leaf** has no children. Keys and children in a node are numbered from 0. Child i holds the keys that fall between key i − 1 and key i, so each child sits in the gap between two keys:
 
 <!-- figure
 btree: 20 40 60{"child 0: < 20"@x, "child 1: 20 to 40"@x, "child 2: 40 to 60"@x, "child 3: > 60"@x}
@@ -71,9 +73,9 @@ A **subtree** is one node plus everything below it. Cut out any node of a 2-3-4 
 
 ### Height
 
-zyBooks counts height in edges, as in [chapter 5](05-trees.md#binary-trees): a tree that is only a root has height 0. Every leaf is at the same depth, so that depth is the height.
+Height is counted in edges, as in [chapter 5](05-trees.md#binary-trees): a tree that is only a root has height 0. Every leaf is at the same depth, so that depth is the height.
 
-A 2-3-4 tree of height h holds between 2^(h+1) − 1 keys (every node a 2-node) and 4^(h+1) − 1 keys (every node full). For height 2, that's 7 to 63 keys. Either way the height grows like log n, so the height is **O(log n)**.
+A 2-3-4 tree of height h holds between 2^(h+1) − 1 keys (every node a 2-node) and 4^(h+1) − 1 keys (every node full). To see where the smaller number comes from, take height 2 with every node a 2-node: 1 node on the top level, 2 on the next, 4 on the bottom, each holding 1 key, so 1 + 2 + 4 = 7 keys. With every node full, the levels have 1, 4, and 16 nodes of 3 keys each: 21 × 3 = 63 keys. So for height 2, that's 7 to 63 keys. Either way the height grows like log n, so the height is **O(log n)**.
 
 ### Why use a higher order?
 
@@ -81,7 +83,7 @@ Each level multiplies the number of keys a tree can hold by up to m. A full orde
 
 ## The 2-3-4 tree classes
 
-zyBooks builds its 2-3-4 tree in Python with two classes. You don't need to know the code, but the method names show up in zyBooks' explanations:
+The course materials build a 2-3-4 tree in Python with two classes. You don't need to know the code, but the method names come up when the algorithms are explained:
 
 - **Node234** holds a list of 3 keys, a list of 4 children, and `key_count`, the number of keys in use.
 - **Tree234** holds the `root`. An empty tree's root is `None`.
@@ -94,9 +96,9 @@ zyBooks builds its 2-3-4 tree in Python with two classes. You don't need to know
 
 ## Search
 
-**What it's for:** find the node that holds a key, or report that no node does.
+Search finds the node that holds a key, or reports that no node does. It works like a BST search with more choices at each node. If the key isn't in the node, find the gap between keys where it would fit, and go down the child in that gap.
 
-**How it works,** starting at the root:
+Starting at the root:
 
 1. If the node is `None`, the key isn't in the tree. Return `None`.
 2. If the node holds the key, return the node.
@@ -109,7 +111,7 @@ zyBooks builds its 2-3-4 tree in Python with two classes. You don't need to know
 | the node has 2 keys, or key < key 2 | child 2 |
 | none of the above | child 3 |
 
-zyBooks writes the search recursively, with a helper that takes the key and the current node. A loop works the same way.
+The "has 1 key" and "has 2 keys" checks stop the search from comparing against key slots the node isn't using. The search can be written recursively, with a helper that takes the key and the current node, or as a loop. Both visit the same nodes.
 
 **Trace.** Search this tree for 45, then for 65:
 
@@ -148,13 +150,13 @@ btree: 50{30{10 20, 40 45}, 70{60, 80 90}}
 
 ## Insert
 
-**What it's for:** add a new key and keep every 2-3-4 rule true.
+Insert adds a new key and keeps every 2-3-4 rule true.
 
-New keys always go into a **leaf**. A leaf with 3 keys has no room. zyBooks makes sure the insert never reaches a full leaf by **splitting** full nodes on the way down.
+New keys always go into a **leaf**, because adding a key to an internal node would also need a new child to go with it. A leaf with 3 keys has no room. To make sure the insert never reaches a full leaf, it **splits** full nodes on the way down.
 
 ### The split operation
 
-Splitting a full node (keys 0, 1, 2 and children 0 to 3):
+A split breaks one full node into two 1-key nodes and sends the middle key up to the parent. The middle key goes up because it's the one key that belongs between the two halves. Splitting a full node (keys 0, 1, 2 and children 0 to 3):
 
 1. Key 0 becomes a new node, with children 0 and 1.
 2. Key 2 becomes a new node, with children 2 and 3.
@@ -184,7 +186,7 @@ before                                after the split, then 35 added
 
 ### Insert with preemptive split
 
-zyBooks calls its algorithm the **preemptive split** insertion scheme. Starting at the root:
+This algorithm is the **preemptive split** insertion scheme. "Preemptive" means it splits a full node as soon as it sees one, before knowing whether the split is needed. Starting at the root:
 
 1. If the tree is empty, make a root holding the key. Done.
 2. If the current node already holds the key, stop: duplicates aren't inserted.
@@ -264,11 +266,11 @@ zyBooks mentions, without teaching, a second way: go down to the leaf without sp
 
 ## Rotations and fusion
 
-Removal needs ways to give a node with only 1 key more keys. zyBooks uses two: rotation and fusion.
+Taking the only key out of a node would leave it empty. A node also needs a key to spare when one of its children has to borrow from it. So as removal walks down the tree, it gives each 1-key node it passes through more keys first. There are two ways to do that: rotation and fusion.
 
 ### Rotation
 
-A 2-3-4 **rotation** moves one key between two adjacent siblings by way of their parent. Three nodes change, and no node is created or deleted.
+A 2-3-4 **rotation** is borrowing a key from a sibling that has one to spare. The key can't jump straight across, because it would land on the wrong side of the parent key that separates the two siblings. So the sibling's key moves up into the parent, and that parent key moves down into the other sibling. Three nodes change, and no node is created or deleted.
 
 - A **right rotation on a node**: the node loses its largest key, which moves up into the parent. The parent key between the node and its **right** sibling moves down into that right sibling, as its new key 0. The node's last child moves over to become the right sibling's new child 0.
 - A **left rotation on a node**: the node loses its smallest key, which moves up into the parent. The parent key between the node and its **left** sibling moves down into that left sibling, as its new last key. The node's child 0 moves over to become the left sibling's new last child.
@@ -365,7 +367,7 @@ zyBooks checks the left sibling first. A node with a 2-key sibling on each side 
 
 ### Remove with preemptive merge
 
-A key can only be removed directly from a **leaf that has at least 2 keys**. zyBooks' **preemptive merge** scheme makes sure of that by merging every 1-key node it visits on the way down:
+A key can only be removed directly from a **leaf that has at least 2 keys**. From a 1-key leaf, removal would leave an empty node. From an internal node, it would leave two children with no key between them. The **preemptive merge** scheme handles both. It merges every 1-key node it visits on the way down, and it swaps an internal key for a leaf key:
 
 1. **Special case:** if the root is a leaf with 1 key, remove the key by setting the root to `None` (or report that the key isn't there).
 2. Start at the root. At each node:

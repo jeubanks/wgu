@@ -4,15 +4,19 @@ A heap keeps its largest (or smallest) item where you can grab it in O(1), and f
 
 ## Heaps
 
+Picture a company org chart where every boss earns at least as much as the people reporting to them. You can't tell who earns more between two people on different branches, but you know the top boss earns the most. A heap is that idea applied to keys.
+
 A **max-heap** is a **complete** binary tree ([chapter 5](05-trees.md#tree-shapes)) where every node's key is **greater than or equal to** its children's keys. Since that holds at every level, a node is also greater than or equal to everything below it, so the largest key is always at the root. A **min-heap** is the same with "less than or equal to", so the smallest is at the root.
 
-A heap is not a BST. It has no left-smaller, right-larger rule. It only compares each parent with its children, so searching a heap for an arbitrary key is O(n).
+A heap is not a BST. It has no left-smaller, right-larger rule. It only compares each parent with its children, so a search can't tell which branch to skip. Searching a heap for an arbitrary key is O(n).
 
 Because the tree is complete, a heap with N nodes has the smallest possible height, about log₂ N. Insert and remove both keep the tree complete, so it stays that short.
 
 ### Stored in an array
 
-A complete tree has no gaps when read level by level, so a heap is stored in an array (a Python list) in that order: top to bottom, and left to right within each level. There are no node objects and no pointers. zyBooks puts the root at index 0 and uses these formulas to move between nodes:
+A complete tree has no gaps when read level by level, so a heap is stored in an array (a Python list) in that order: top to bottom, and left to right within each level. There are no node objects and no pointers. Instead, simple arithmetic on an index finds a node's children or parent. Each level holds twice as many nodes as the one above, so a node's children sit at about twice its index.
+
+The root goes at index 0, as in zyBooks. (Some books start the root at index 1, which changes every formula, so check which one a question uses.) With the root at 0:
 
 | From index i | Index |
 |---|---|
@@ -39,11 +43,13 @@ Index 1 (45) has children at 3 and 4 (30 and 41), and its parent is at (1 − 1)
 
 ### Insert: percolate up
 
+The new key goes in at the bottom, so the tree stays complete. Then it climbs, trading places with its parent, until it sits under something at least as big.
+
 1. Append the new key to the end of the array. The end of the array is the next open spot on the bottom level, so the tree stays complete.
 2. While the new key is bigger than its parent, swap it with its parent.
-3. Stop when the new key is less than or equal to its parent, or when it reaches the root.
+3. Stop when the new key is less than or equal to its parent, or when it reaches the root. The rest of the heap was already in order, so once the new key stops, the whole tree is a heap again.
 
-zyBooks calls step 2 a **percolate-up**. Inserting 68 into the heap above:
+Step 2 is called a **percolate-up**. Inserting 68 into the heap above:
 
 <!-- figure
 index: yes
@@ -63,14 +69,14 @@ Two swaps: `72 68 63 45 41 50 18 30`.
 
 ### Remove the max: percolate down
 
-A heap's remove always removes the root.
+A heap's remove always removes the root. Taking the root leaves a hole at the top. The last item fills it, because the last item is the only one that can leave without opening a gap in the tree. That item is usually small, so it then sinks back down.
 
 1. Save the root. It's the value you return.
 2. Pop the **last** item of the array and put it at the root. The array shrinks by one, and the tree stays complete.
 3. While that item is smaller than one of its children, swap it with the **larger** child. Swapping with the larger child keeps the child that moves up bigger than its new sibling.
 4. Stop when the item is greater than or equal to both children, or when it has no children.
 
-zyBooks calls step 3 a **percolate-down**. Removing the max from `72 45 63 30 41 50 18`:
+Step 3 is called a **percolate-down**. Removing the max from `72 45 63 30 41 50 18`:
 
 <!-- figure
 index: yes
@@ -103,9 +109,14 @@ A min-heap runs the same code with the comparisons flipped. Percolate up while t
 
 ### Heapify: building a heap
 
-**Heapify** turns a whole unsorted array into a max-heap. It percolates **down** every internal node (a node with at least one child), starting with the internal node that has the largest index and working back to the root. Each leaf is already a heap of one item, so heapify skips the leaves.
+**Heapify** turns a whole unsorted array into a max-heap. Inserting the items one at a time would work too, but heapify is faster: it works from the bottom up.
 
-- With N items, the largest internal node index is **N // 2 − 1**.
+1. Skip the leaves. Each leaf is already a heap of one item.
+2. Percolate **down** every internal node (a node with at least one child). Start with the internal node that has the largest index and work back to index 0, the root.
+
+Working bottom up matters. A percolate-down only works when both subtrees below the node are already heaps, and going from the largest index to the smallest guarantees that.
+
+- With N items, the largest internal node index is **N // 2 − 1**. That's the parent of the last item, at index N − 1.
 - So heapify does N // 2 percolate-downs, one for each index from N // 2 − 1 down to 0.
 - With 1 item, the largest internal node index is −1. There are no internal nodes, so heapify does nothing.
 
@@ -132,7 +143,7 @@ An array sorted in descending order is already a max-heap, so heapify makes no s
 
 ### Sorting
 
-Heap sort builds a max-heap inside the array it's sorting. An **end index** marks where the heap part of the array stops.
+Heap sort keeps removing the max and putting it at the back of the array. Each removal shrinks the heap by one slot, and that freed slot is exactly where the removed max belongs. The heap fills the front of the array and the sorted items grow from the back. An **end index** marks where the heap part of the array stops.
 
 1. Heapify the array. Set the end index to the last index, n − 1.
 2. Swap the root (the max) with the item at the end index. The max is now in its final place.
@@ -180,7 +191,7 @@ def heap_sort(items):
 
 ## Priority queues
 
-A **priority queue** is a queue where every item has a priority, and higher-priority items sit closer to the front. zyBooks defines it like this:
+Think of a hospital emergency room. The most urgent patient is seen first, and patients who are equally urgent are seen in the order they arrived. A **priority queue** works the same way. Every item has a priority, and higher-priority items sit closer to the front. Its two main operations:
 
 - **Enqueue** puts the new item behind every item of equal or higher priority, and ahead of every item of lower priority. So items with equal priority leave in the order they arrived (first in, first out).
 - **Dequeue** removes and returns the item at the front, which has the highest priority.
@@ -216,7 +227,7 @@ A plain heap doesn't keep equal-priority items in arrival order. To get the firs
 
 ## Priority queues in Python
 
-zyBooks uses the `PriorityQueue` class from the `queue` module:
+Python's `queue` module has a ready-made `PriorityQueue` class. It's the one the course materials use:
 
 ```python
 from queue import PriorityQueue
@@ -266,15 +277,17 @@ Each node has two values:
 - a **main key**, which follows the **BST** rule, and
 - a **priority**, a random number chosen when the node is inserted, which follows the **heap** rule.
 
-zyBooks uses a **max-heap** for the priorities, so the highest priority is at the root. This page does the same.
+The priorities form a **max-heap**, so the highest priority is at the root. Some books use a min-heap for the priorities instead. zyBooks uses a max-heap, and so does this page.
 
-A treap moves a node up or down with **rotations** ([chapter 6](06-balanced-trees.md#rotations)), never with swaps. A swap would break the BST order, and a rotation keeps it.
+A treap moves a node up or down with **rotations** ([chapter 6](06-balanced-trees.md#rotations)), never with swaps. Swapping a parent and child would put the keys out of BST order. A rotation changes which node is the parent while keeping the keys in order.
 
 ### Search
 
 A treap is a BST, so search is a plain BST search by main key. The priorities are ignored.
 
 ### Insert
+
+The new node goes in where a BST would put it, at the bottom. Its random priority may be higher than its parent's, which breaks the heap rule, so it rotates upward until the rule holds again.
 
 1. Insert the key as a new leaf, using the BST rules.
 2. Give it a random priority.
@@ -315,7 +328,7 @@ J's parent is now M, with priority 90, so the insert is done after two left rota
 
 ### Delete
 
-zyBooks removes a node by pushing it down to a leaf first:
+A leaf is easy to remove: just cut it off. So deletion first pushes the node down until it's a leaf. This is the method zyBooks teaches:
 
 1. Set the node's priority to **−∞**, the lowest possible, so it belongs at the bottom.
 2. While the node has a child, rotate at the node so its **higher-priority child** moves up into its place. With two children, use a left rotation if the right child's priority is higher, and a right rotation if the left child's is. With one child, rotate that child up.
@@ -349,7 +362,7 @@ E is a leaf: remove it    M:90 ( J:82 ( H:40 ( B:30 ) ), T:75 )
 ```
 <!-- /figure -->
 
-zyBooks also mentions a second way. Do a normal BST delete (copy the successor in), then percolate down with rotations. Setting the priority to −∞ is simpler.
+There is a second way. Do a normal BST delete (copy the successor in), then percolate down with rotations. Setting the priority to −∞ is simpler, and it's the method the questions here use.
 
 ### Height
 

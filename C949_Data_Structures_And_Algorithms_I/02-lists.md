@@ -1,10 +1,19 @@
 # 2. Lists
 
-A **list** is an ADT for items kept in order. (An ADT, or abstract data type, is defined by the operations it supports. How the data is stored is left open.) A list's operations are append (add at the end), prepend (add at the front), insert after an item, remove, search, and traverse (visit every item in order). This chapter builds a list two ways, with linked nodes and with an array. The two ways have very different costs.
+A **list** holds items in a set order, like a to-do list where you can add a task at the bottom, slip one in at the top, or cross one off the middle. Its operations are:
+
+- append: add at the end
+- prepend: add at the front
+- insert after an item
+- remove
+- search
+- traverse: visit every item in order
+
+A list is an **ADT** (abstract data type): it's defined by those operations, and how the items are stored is left open. This chapter builds a list two ways, with linked nodes and with an array. The two ways make different operations cheap, so their costs differ a lot.
 
 ## Singly-linked lists
 
-A singly-linked list is a chain of **nodes**. Each node holds one item (its data) and a pointer to the next node. The list keeps a `head` pointer to the first node and a `tail` pointer to the last. The last node's next pointer is null.
+A singly-linked list works like a scavenger hunt: each clue tells you where the next one is, and you can only find clue 4 by following clues 1, 2, and 3. Each clue is a **node**. A node holds one item (its data) and a pointer to the next node. The list keeps a `head` pointer to the first node and a `tail` pointer to the last. The last node's next pointer is null.
 
 <!-- figure
 list: 3 8 5 2
@@ -28,7 +37,7 @@ The nodes aren't stored side by side in memory, so you can't jump straight to it
 **Prepend** (add at the front):
 
 - Empty list: point both `head` and `tail` at the new node.
-- Otherwise: set the new node's `next` to `head`, then move `head` to it.
+- Otherwise: set the new node's `next` to `head`, then move `head` to it. Linking the new node first keeps hold of the old first node; moving `head` first would lose it.
 
 Both are O(1): they take a few pointer changes, however long the list is. Without a `tail` pointer, append is O(n), because you have to walk the whole list to find the end. Check which kind of list a question describes. Some materials assume a list with only a `head`.
 
@@ -42,7 +51,7 @@ Both are O(1): they take a few pointer changes, however long the list is. Withou
 2. Set `curNode.next` to `newNode`.
 3. If `curNode` was the tail, move `tail` to `newNode`.
 
-The order of steps 1 and 2 matters. If you do step 2 first, you lose the rest of the list. When you already have `curNode`, InsertAfter is O(1). Finding `curNode` first (by searching for a value) is O(n).
+The order of steps 1 and 2 matters. `curNode.next` is the only pointer to the rest of the list. If you do step 2 first, it's overwritten before `newNode` copies it, and nothing points to the rest of the list anymore. When you already have `curNode`, InsertAfter is O(1). Finding `curNode` first (by searching for a value) is O(n).
 
 ### Search
 
@@ -53,7 +62,9 @@ The order of steps 1 and 2 matters. If you do step 2 first, you lose the rest of
 
 ### Remove
 
-In a singly-linked list, each node points only forward. To remove a node, you change the node **before** it. zyBooks writes this as **RemoveAfter(curNode)**: remove the node after `curNode` (or the head, when `curNode` is null).
+To take a node out of the chain, the node before it has to point past it, to the node after it. In `3 → 8 → 5`, removing 8 means changing 3's `next` to point at 5. In a singly-linked list each node points only forward, so you can't get from 8 back to 3. That's why removal is written in terms of the node **before** the one removed.
+
+zyBooks names this operation **RemoveAfter(curNode)**: remove the node after `curNode`, or the head when `curNode` is null. Other books often write `remove(node)` instead, but the questions here use RemoveAfter.
 
 - Removing the head: move `head` to `head.next`. If the list is now empty, set `tail` to null too.
 - Removing the node after `curNode`: set `curNode.next` to the node after that. If the removed node was the tail, move `tail` to `curNode`.
@@ -68,7 +79,7 @@ If you have the node before it, removal is O(1). Removing the **last** node is s
 
 ## Doubly-linked lists
 
-A **doubly-linked list** gives each node two pointers: `next` and `prev`. The head's `prev` and the tail's `next` are null.
+A **doubly-linked list** fixes the "can't go back" problem by giving each node two pointers: `next` to the node after it and `prev` to the node before it. The head's `prev` and the tail's `next` are null.
 
 <!-- figure
 list: 3 8 5 2
@@ -84,7 +95,14 @@ The extra pointer costs memory, and every insert or remove has to update pointer
 - **Remove(curNode)** is O(1) for any node you have, including the tail, because the node knows its own predecessor (the node before it). Set `pred.next = succ` and `succ.prev = pred`, where `pred` and `succ` are the nodes before and after `curNode`. If `curNode` was the head or tail, move `head` or `tail` instead.
 - You can traverse backward, from `tail` along the `prev` pointers.
 
-**InsertAfter(curNode, newNode)** sets four pointers: `newNode.next = succ`, `newNode.prev = curNode`, `curNode.next = newNode`, and `succ.prev = newNode`.
+**InsertAfter(curNode, newNode)** puts `newNode` between `curNode` and its successor `succ` (the node that was `curNode.next`). Each of the two links between them is replaced by two, so four pointers change:
+
+1. `newNode.next = succ`
+2. `newNode.prev = curNode`
+3. `curNode.next = newNode`
+4. `succ.prev = newNode`
+
+If `curNode` is the tail, there is no `succ`: skip step 4 and move `tail` to `newNode`.
 
 ## Circular lists
 
@@ -99,25 +117,29 @@ In a **circular** linked list, the tail's `next` points back to the head instead
 
 ## Sorting linked lists
 
-**Insertion sort** works on a linked list without moving any data. It unlinks each node and relinks it in its correct place in the sorted part.
+**Insertion sort** grows a sorted part at the front of the list one node at a time. Each step takes the next unsorted node and puts it where it belongs in the sorted part. On a linked list no data moves: the node is unlinked and relinked in its new place.
 
-- **Doubly-linked:** like the array version, each node is compared backward from its old position. Best case O(n) when the list is already sorted; average and worst O(n²).
-- **Singly-linked:** you can't walk backward, so each node's place is found by searching forward from the head. That flips the best and worst cases. An **already sorted** list is a worst case, O(n²), because every node walks the whole sorted part. A list in **descending** order is the best case, O(n), because every node goes to the front.
+How each node finds its place depends on which way you can walk:
 
-Algorithms that jump straight to positions by index, like quicksort and shell sort, are a poor fit for linked lists. **Merge sort** works well on them.
+- **Doubly-linked:** like the array version, each node is compared backward from its old position, toward the head. Best case O(n) when the list is already sorted, since each node is checked against its neighbor once and stays put. Average and worst O(n²).
+- **Singly-linked:** you can't walk backward, so each node's place is found by searching forward from the head. That flips the best and worst cases.
+  - An **already sorted** list is a worst case, O(n²). Each node is larger than everything sorted so far, so its search walks the whole sorted part.
+  - A list in **descending** order is the best case, O(n). Each node is smaller than everything sorted so far, so its place is at the front and the search stops after one step.
+
+Algorithms that jump straight to positions by index, like quicksort and shell sort, are a poor fit for linked lists, because each jump means walking from the head. **Merge sort** works well on them: it only ever reads lists from front to back.
 
 ## Dummy nodes
 
 A **dummy node** (also called a sentinel) is a node with no real data that always sits at the front of the list, even when the list is "empty". The real items start at `dummy.next`.
 
-With a dummy node, `head` never changes and is never null. Append, prepend, and remove then need no special cases for an empty list or for removing the first item, because every real node has a node before it. A doubly-linked list can use a dummy at each end.
+With a dummy node, `head` never changes and is never null. Append, prepend, and remove then need no special cases for an empty list or for removing the first item, because every real node has a node before it. For example, removing the first real item is just RemoveAfter(dummy), the same code that removes any other item. Without the dummy, it would need its own branch that moves `head`. A doubly-linked list can use a dummy at each end.
 
 ## Recursion on linked lists
 
 A linked list has a recursive shape: a list is either empty, or a node followed by a smaller list. That means you can write list algorithms recursively:
 
 - **Search:** if the node is null, the item isn't there. If the node holds the item, return it. Otherwise, search starting from `node.next`.
-- **Print in reverse:** print the rest of the list (recursively), then print this node. The calls go all the way to the end before anything prints.
+- **Print in reverse:** print the rest of the list (recursively), then print this node. The calls go all the way to the end before anything prints. For `3 → 8 → 5`, the call for 3 waits on the call for 8, which waits on the call for 5. The 5 call prints first, then 8, then 3.
 
 Each call handles one node, so both take O(n) time. They also use O(n) stack space for the calls.
 
@@ -135,14 +157,14 @@ An **array-based list** keeps its items in an array, from index 0 up, plus a cou
 | Remove at index i | Shift every item after i one place left | O(n); removing the last item is O(1) |
 | Search | Check items in order | O(n) |
 
+Doubling the array when it's full makes resizes rare. After a resize to size 2n, the next n appends cost O(1) each. The O(n) copy is spread over those n cheap appends, adding about one copy to each. Averaged over all appends, each one costs O(1). That average is called **amortized** O(1), and it's how Python's `list.append` works.
+
 ### Sequential and linked allocation
 
 Arrays and linked lists show the two ways to lay out a list in memory:
 
 - **Sequential allocation** (arrays): items sit next to each other in one block. Any item's address is the block's start plus i times the item size, so reading item i is O(1). But the block has a fixed size, and inserting in the middle means shifting.
 - **Linked allocation** (linked lists): each node is allocated on its own, anywhere in memory, and holds a pointer to the next. The list grows one node at a time with no copying, and inserts need no shifting, but finding item i means following i pointers.
-
-Doubling the array when it's full makes resizes rare. After a resize to size 2n, the next n appends cost O(1) each. Averaged over all appends, each one costs O(1). That average is called **amortized** O(1), and it's how Python's `list.append` works.
 
 <div class="viz" data-viz="allocation" markdown>
 

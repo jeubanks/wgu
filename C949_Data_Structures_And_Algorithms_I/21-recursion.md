@@ -2,7 +2,7 @@
 
 A recursive function solves a problem by calling itself on a smaller copy of the same problem. Each call shrinks the problem a little, until one call gets a version so small it can answer directly. Then the answers pass back up, one call at a time.
 
-This page follows zyBooks chapter 21: recursive functions, recursive search, debugging with output statements, creating a recursive function, recursive math functions, and exploring all possibilities. It adds the call stack, infinite recursion, and recursion vs loops, which the course study guide also lists.
+This page follows the course's chapter 21: recursive functions, recursive search, debugging with output statements, creating a recursive function, recursive math functions, and exploring all possibilities. It adds the call stack, infinite recursion, and recursion vs loops, which the course study guide also lists.
 
 For the Big-O of a recursive function, see [Pattern 10: recursion](11-algorithm-analysis.md#pattern-10-recursion) in chapter 11. For more tracing practice, the optional code lesson [Tracing pseudocode](code/07-tracing.md) has drills that need only paper.
 
@@ -39,7 +39,7 @@ Every recursive function has two parts:
 - The **base case** answers directly, with no recursive call. The base case is what stops the recursion.
 - The **recursive case** calls the function on a smaller problem, then uses that answer.
 
-In zyBooks' code the two parts are usually one if-else, with the base case first and the recursive calls under `else`. A function can have more than one base case.
+The two parts are usually written as one if-else, with the base case first and the recursive calls under `else`. The base case goes first so it's checked before any further call is made. A function can have more than one base case.
 
 ```python
 def sum_to(n):
@@ -80,7 +80,9 @@ Two things make `sum_to` work:
 
 ### The call stack
 
-Each call to a function gets its own **stack frame**: a block of memory holding that call's parameters, local variables, and the place to return to. zyBooks describes this as each call getting its own namespace for its local variables. So the 5 calls to `sum_to` each have their own n, and changing one doesn't touch the others.
+How can 5 calls to `sum_to` be active at once, each with a different n? Because every call gets its own copy of its variables.
+
+Each call to a function gets its own **stack frame**: a block of memory holding that call's parameters, local variables, and the place to return to. (In Python terms, each call has its own namespace for its local variables.) So the 5 calls to `sum_to` each have their own n, and changing one doesn't touch the others.
 
 The frames sit on the **call stack**. A call pushes a frame, and a return pops it. The frame on top belongs to the call that's running. The others are waiting for the call above them to return.
 
@@ -115,11 +117,11 @@ Every frame takes memory, so a recursion d calls deep uses O(d) extra space, eve
 
 ## Recursive search
 
-Some algorithms are recursive by nature: one step of the algorithm is the whole algorithm again, on a smaller piece. zyBooks introduces the idea with a number-guessing game. You guess the middle of the range, hear "higher" or "lower", and play the same game again on the half that's left.
+Some algorithms are recursive by nature: one step of the algorithm is the whole algorithm again, on a smaller piece. A number-guessing game shows the idea. Someone picks a number from 1 to 100. You guess the middle, 50, hear "higher" or "lower", and play the same game again on the half that's left.
 
 ### Binary search
 
-Binary search on a sorted list works the same way. Check the middle item. If it isn't the target, search only the half the target could be in. zyBooks' version passes the current window as `low` and `high`, and has two base cases:
+Binary search on a sorted list works the same way. Check the middle item. If it isn't the target, search only the half the target could be in. Versions of recursive binary search differ in small ways. This is zyBooks' version, which the practice questions use. It passes the current window as `low` and `high`, and has two base cases:
 
 ```python
 def find(items, target, low, high):
@@ -163,7 +165,7 @@ Each call halves the window, so binary search makes about log₂ n calls: O(log 
 
 ### Recursion on a linked list
 
-A linked list is a node followed by a smaller linked list, so it fits recursion too. One of zyBooks' labs prints a list this way. This function counts the nodes:
+A linked list is a node followed by a smaller linked list, so it fits recursion too. To count the nodes, count 1 for this node and let a recursive call count the rest:
 
 ```python
 def count_nodes(node):
@@ -196,7 +198,7 @@ Four calls for three nodes: one per node, plus one for the `None` at the end. Se
 
 ## Adding output statements for debugging
 
-A bug in a recursive function is hard to see, because many calls are active at once. It helps to print what each call does. zyBooks adds a trick: pass an `indent` string that grows by a few spaces on each recursive call, and start every print with it. The output's indentation then shows how deep each line is.
+A bug in a recursive function is hard to see, because many calls are active at once. It helps to print what each call does. But plain prints from all those calls run together, and you can't tell which call printed what. The fix is to pass an `indent` string that grows by a few spaces on each recursive call, and start every print with it. The output's indentation then shows how deep each line is.
 
 ```python
 def find_debug(items, target, low, high, indent=""):
@@ -249,10 +251,12 @@ Notes on the technique:
 
 ## Creating a recursive function
 
-zyBooks builds a recursive function in two steps:
+Build a recursive function in two steps:
 
 1. **Write the base case**, and test it. The base case is the one that returns without a recursive call. Leave the recursive case as a placeholder for now.
 2. **Write the recursive case**, and test again.
+
+The base case comes first because every recursive call ends there. If it returns the wrong value, every answer built on top of it is wrong too.
 
 For n factorial (n! = n × (n − 1) × ... × 1), step 1:
 
@@ -315,7 +319,7 @@ The check runs once, not on every call. The inner function can also take extra p
 
 ### Before you write one
 
-zyBooks suggests asking two questions first:
+Ask two questions first:
 
 - Does the problem have a natural recursive solution? n! = n × (n − 1)! does. A formula with no smaller copy of itself inside doesn't.
 - Is the recursive solution better than a loop? For factorial, no: a loop is just as short and uses less memory. For binary search, the recursive version is often easier to follow.
@@ -364,7 +368,7 @@ fib(1)=1  fib(0)=0
 
 That repeated work grows fast. The number of calls roughly doubles each time n goes up by 1 or 2: O(2ⁿ). Chapter 11's [Pattern 10](11-algorithm-analysis.md#pattern-10-recursion) counts it.
 
-zyBooks also prints the sequence one step at a time by passing the last two numbers down to the next call. Passing them down removes the second call:
+A faster version walks along the sequence instead. Each call passes the last two numbers down to the next call, so no call ever needs a second recursive call to get them:
 
 ```python
 def fib_fast(n, a=0, b=1):
@@ -401,10 +405,14 @@ a and b walk along the sequence: (0, 1), (1, 1), (1, 2), (2, 3), (3, 5), (5, 8).
 
 ### Greatest common divisor (GCD)
 
-The **GCD** of two positive whole numbers is the largest number that divides both evenly. Euclid's method, from around 300 BC, in the subtraction form zyBooks uses:
+The **GCD** of two positive whole numbers is the largest number that divides both evenly. For 18 and 30 it's 6: 6 divides both, and nothing bigger does.
+
+Euclid's method, from around 300 BC, finds it by subtraction. Many books use a remainder form instead (see the end of this section). This page and the practice questions use the subtraction form:
 
 - If the two numbers are equal, that number is the GCD. (Base case.)
 - Otherwise, subtract the smaller from the larger, and find the GCD of the new pair. (Recursive case.)
+
+Subtracting is safe because any number that divides both a and b also divides a − b, and any number that divides both b and a − b also divides a. So the two pairs have exactly the same common divisors, and the same GCD, and the numbers keep shrinking until they meet.
 
 ```python
 def gcd(a, b):
@@ -433,7 +441,7 @@ returns 6
 ```
 <!-- /figure -->
 
-That's 4 calls. Both numbers must be at least 1, because with a 0 the subtraction never makes them equal. zyBooks' program checks this before the first call, which is the outer function's job.
+That's 4 calls. Both numbers must be at least 1, because with a 0 the subtraction never makes them equal. Check this once, before the first call, which is the outer function's job.
 
 Each call makes the larger number smaller, so `gcd(a, b)` makes at most max(a, b) calls. A faster form replaces subtraction with the remainder, `%`. It makes O(log n) calls for numbers up to n.
 
@@ -494,7 +502,7 @@ Each call adds a frame, and the stack has a size limit. Running out of stack spa
 - Going past it raises `RecursionError`, a kind of `RuntimeError`:
 
 ```text
-RecursionError: maximum recursion depth exceeded in comparison
+RecursionError: maximum recursion depth exceeded
 ```
 
 The fix is a base case that catches every path: `if n <= 0:` stops both 0 and −1.
@@ -528,7 +536,7 @@ up 2
 up 3
 ```
 
-Each call prints its "down" line, then waits for the whole call below it to finish, then prints its "up" line. So the "up" lines come out reversed. One of zyBooks' labs prints a number pattern that falls and then climbs back the same way.
+Each call prints its "down" line, then waits for the whole call below it to finish, then prints its "up" line. So the "up" lines come out reversed. A number pattern that counts down and then climbs back up, like `3 2 1 1 2 3`, works the same way.
 
 The same rule explains why a postorder tree traversal visits children before their parent: the visit comes after both recursive calls.
 
@@ -586,7 +594,7 @@ rqp
 
 3! = 6 lines. The order follows the input: everything starting with `p` comes first, because the loop tries index 0 first.
 
-zyBooks' word-scrambling example works on strings, the same way. Its shopping and travel examples use lists instead: move an item from the remaining list to the chosen list, recurse, then move it back. Putting it back undoes the choice so the loop can try the next item. Making a new list or string for each call, as `arrange` does, gets the same effect without undoing anything.
+Scrambling the letters of a word works on strings, the same way. Picking items or cities usually uses lists instead: move an item from the remaining list to the chosen list, recurse, then move it back. Putting it back undoes the choice so the loop can try the next item. Making a new list or string for each call, as `arrange` does, gets the same effect without undoing anything.
 
 ### Subsets
 
@@ -661,7 +669,7 @@ zyBooks' shopping example fills a bag from a list of items, picking from **every
 
 ### All paths
 
-zyBooks' last example lists every route through a set of cities, with each route's total distance. A route that visits every city once is a permutation of the cities. So the code is the permutation function with a different base case: when every city is on the path, add up the distances between neighboring cities and print the total. With n cities there are n! routes, which is why checking every route only works for small n.
+A classic problem of this kind lists every route through a set of cities, with each route's total distance. A route that visits every city once is a permutation of the cities. So the code is the permutation function with a different base case: when every city is on the path, add up the distances between neighboring cities and print the total. With n cities there are n! routes, which is why checking every route only works for small n.
 
 ## Recursion vs iteration
 

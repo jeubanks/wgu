@@ -1,6 +1,11 @@
 # 12–20. Programming concepts
 
-zyBooks chapters 12 to 20 teach Python itself: variables, types, branching, strings, loops, functions, lists and dictionaries, and classes. This page covers what the rest of the course relies on. You'll practice reading code accurately, in Python and in the C-style syntax that pseudocode often borrows. The page also covers how languages handle types and memory, the basics of classes, and what Python's built-in operations cost.
+Chapters 12 to 20 of the course textbook teach Python itself: variables, types, branching, strings, loops, functions, lists and dictionaries, and classes. This page covers the parts the rest of the course relies on:
+
+- reading code accurately, in Python and in the C-style syntax that pseudocode often borrows
+- how languages handle types and memory
+- the basics of classes
+- what Python's built-in operations cost
 
 ## Reading Python code
 
@@ -20,14 +25,21 @@ zyBooks chapters 12 to 20 teach Python itself: variables, types, branching, stri
 
 ### Static and dynamic, strong and weak
 
-Two separate questions describe how a language treats types:
+Two separate questions describe how a language treats types. A language gets one answer to each, so the two pairs combine in any way.
 
-- **Static or dynamic:** *when* is a variable's type (and, for fixed-size data, its memory) decided? A **statically** typed language decides before the program runs, at compile time: in C or Java, `int x = 10;` fixes x as an int. A **dynamically** typed language decides while the program runs: in Python, `x = 10` followed by `x = "ten"` is fine, and a list can grow at run time.
-- **Strong or weak:** does the language **convert** between types on its own? A **strongly** typed language refuses: in Python, `10 + "5"` is an error, and you must write `10 + int("5")`. A **weakly** typed language converts silently: in JavaScript, `10 + "5"` is the string `"105"`.
+- **Static or dynamic:** *when* is a variable's type (and, for fixed-size data, its memory) decided?
+  - A **statically** typed language decides before the program runs, at compile time. In C or Java, `int x = 10;` fixes x as an int, and x can never hold a string.
+  - A **dynamically** typed language decides while the program runs. In Python, `x = 10` followed by `x = "ten"` is fine, and a list can grow at run time.
+- **Strong or weak:** does the language **convert** between types on its own?
+  - A **strongly** typed language refuses. In Python, `10 + "5"` is an error, and you must write `10 + int("5")`.
+  - A **weakly** typed language converts silently. In JavaScript, `10 + "5"` is the string `"105"`.
 
 Python is dynamically **and** strongly typed. Java is statically and strongly typed. JavaScript and PHP are dynamically and weakly typed.
 
-Memory follows the same split. **Static allocation** reserves a fixed amount of memory known before the program runs. **Dynamic allocation** reserves memory while the program runs, on the heap (`malloc` in C, `new` in Java, and every object in Python), and releases it when it's no longer needed.
+Memory has the same before-or-during split as static and dynamic typing:
+
+- **Static allocation** reserves a fixed amount of memory, known before the program runs. A C array declared as `int scores[100];` always takes room for 100 ints.
+- **Dynamic allocation** reserves memory while the program runs, on the heap (`malloc` in C, `new` in Java, and every object in Python), and releases it when it's no longer needed. A Python list that grows to hold a million items gets that memory only as it grows.
 
 ### Operators
 
@@ -40,7 +52,7 @@ Operators that trip people up:
 - **Compound assignment** updates a variable in place: `x += 3` means `x = x + 3`. The same works for `-=`, `*=`, `/=`, `//=`, `%=`, and `**=`.
 - C-style languages (and a lot of pseudocode) write `&&`, `||`, and `!` where Python writes `and`, `or`, and `not`.
 
-**Precedence**, highest first. Operators on the same line go left to right, except `**`, which goes right to left:
+**Precedence** decides which operator in an expression runs first when there are no parentheses, the way multiplication comes before addition in math. In this table, a lower level number runs first. Operators on the same line go left to right, except `**`, which goes right to left:
 
 | Level | Operators |
 |---|---|
@@ -70,7 +82,7 @@ else:
 
 Only the first branch whose condition is true runs. Indentation shows which lines belong to each branch. Python doesn't use braces.
 
-Many other languages have a **switch** (or case) statement, which jumps to the branch whose value matches one expression. Each case usually ends with `break`; without it, execution falls through into the next case. Python 3.10 added a similar `match` statement.
+Many other languages have a **switch** (or case) statement. It computes one expression, then jumps to the case whose value matches. Each case usually ends with `break`. Without it, execution **falls through**: it keeps going and runs the next case's code too, even though that case's value didn't match. Python 3.10 added a similar `match` statement.
 
 ### Loops and range
 
@@ -100,11 +112,17 @@ def total(items):
     return items[0] + total(items[1:])
 ```
 
-A function without a `return` gives back `None`. A recursive function needs a base case that stops it, and each call must get closer to it.
+This function adds up a list by adding the first item to the total of the rest. A recursive function needs a base case that stops it, and each call must get closer to it. Here each call passes a list one item shorter, so the calls end at the empty list:
+
+- `total([4, 5])` is `4 + total([5])`
+- `total([5])` is `5 + total([])`
+- `total([])` is `0`, the base case
+
+So `total([4, 5])` is 4 + 5 + 0 = 9. A function without a `return` gives back `None`.
 
 ### Classes
 
-Data structures are written as classes. `__init__` runs when an object is created, and `self` is the object itself:
+A class is a template for making objects that hold related data together. Data structures are written as classes: a linked list node holds a value and a link to the next node. `__init__` runs when an object is created, and `self` is the object being set up:
 
 ```python
 class Node:
@@ -116,7 +134,7 @@ head = Node(3)
 head.next = Node(8)            # 3 → 8
 ```
 
-Variables hold **references** to objects. `a = head` doesn't copy the node; `a` and `head` now name the same node, and changing `a.data` changes `head.data`.
+Variables hold **references** to objects, like an address written on a slip of paper. `a = head` copies the address, so there is still only one node. `a` and `head` now name the same node, and changing `a.data` changes `head.data`.
 
 The parts of a class:
 
@@ -127,8 +145,8 @@ The parts of a class:
 
 Three ideas build on classes:
 
-- **Inheritance:** a new class is based on an existing one, and gets its attributes and methods: `class Dog(Animal):`.
-- **Encapsulation:** hiding an object's internals so other code goes through its methods. C++ and Java use `private`, `protected`, and `public`. Python uses naming conventions: `_balance` means "internal", and `__balance` is name-mangled to make it harder to reach from outside.
+- **Inheritance:** a new class is based on an existing one, and gets its attributes and methods without rewriting them: `class Dog(Animal):`.
+- **Encapsulation:** hiding an object's internals so other code goes through its methods. The methods can then check every change, so outside code can't put the object in a bad state. C++ and Java use `private`, `protected`, and `public`. Python uses naming conventions: `_balance` means "internal", and `__balance` is name-mangled to make it harder to reach from outside.
 - **Polymorphism:** one call works on different classes, each with its own version. If `Dog` and `Cat` both override `Animal.speak()`, then `animal.speak()` runs whichever one the object really is.
 
 ### Memory management
@@ -177,7 +195,7 @@ A DFD can help you choose data structures. A store that's read by key many times
 Two consequences to watch for in code:
 
 - **Slices hide work.** `total(items[1:])` above copies the rest of the list on every call, so the whole function is O(n²), not O(n). Passing an index instead keeps it O(n).
-- **Strings are immutable.** Building a string with `s = s + c` in a loop copies it every time: O(n²) overall. `"".join(pieces)` is O(n).
+- **Strings are immutable.** `s = s + c` can't add to `s` in place. It builds a new string and copies all of `s` into it. Doing that in a loop copies the growing string every time: O(n²) overall. `"".join(pieces)` works out the total length once and copies each piece once, so it's O(n).
 
 ## Questions
 
