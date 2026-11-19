@@ -639,7 +639,11 @@ The LCS length is 3 (`CAT`). Like the substring matrix, it's O(NM) time. Trying 
   <summary>Answer</summary>
 
   - **a)** **C.** Option A is greedy.
-  - **b)** 4, for example `AANA`. A length of 5 would have to be all of `ATANA`, but `BANANA` has no T.
+  - **b)** **4**, for example `AANA`. A subsequence keeps the letters in order but can skip letters in between, so it doesn't have to be one unbroken run:
+    - In `BANANA`, `AANA` uses the A at index 1, the A at 3, the N at 4, and the A at 5, skipping the B and the first N.
+    - In `ATANA`, it uses the A at 0, the A at 2, the N at 3, and the A at 4, skipping the T.
+    - A length of 5 would have to be all of `ATANA`, but `BANANA` has no T.
+    - Don't confuse this with the longest common **substring**, which must be unbroken: that's `ANA`, length 3.
   - **c)** O(nm): one cell per pair of positions, each filled in O(1).
   - **d)** 3. F(5) calls F(4) and F(3). F(4) calls F(3) and F(2). Each of the two F(3) calls makes one F(2) call, so F(2) is computed 1 + 2 = 3 times. The stored-terms version computes it once.
 
