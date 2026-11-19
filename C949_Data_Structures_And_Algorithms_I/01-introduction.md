@@ -357,11 +357,39 @@ Splitting a problem into subproblems alone isn't dynamic programming. Merge sort
 
 ### Fibonacci numbers
 
-zyBooks numbers the terms from 0: F(0) = 0, F(1) = 1, and F(n) = F(n − 1) + F(n − 2).
+The Fibonacci sequence starts with 0 and 1. Every number after that is the sum of the two numbers before it:
 
-Plain recursion recomputes the same terms many times. Computing F(6) recursively makes 25 calls:
+<!-- figure
+row: position | 0 1 2 3 4 5 6 7
+row: value | 0 1 1 2 3 5 8 13 | 1 + 2 = 3, 2 + 3 = 5, and so on
+-->
+```text
+position  0  1  2  3  4  5  6  7
+value     0  1  1  2  3  5  8  13
+```
+<!-- /figure -->
 
-| Term | Times it's computed for F(6) |
+We count positions from 0, so F(0) = 0, F(1) = 1, F(2) = 1, and F(6) = 8. As a rule: F(n) = F(n − 1) + F(n − 2), for any n of 2 or more.
+
+**The slow way: plain recursion.** Code that follows the rule directly calls itself twice, once for each of the two numbers before. Those two calls each make two more calls, and some of them ask for the same number. Here are the calls for F(4). The highlighted F(2) is worked out twice, from scratch both times:
+
+<!-- figure
+nary: F(4){F(3){F(2)@h{F(1), F(0)}, F(1)}, F(2)@h{F(1), F(0)}}
+-->
+```text
+            F(4)
+          /      \
+      F(3)        F(2)
+     /    \      /    \
+  F(2)   F(1)  F(1)  F(0)
+  /  \
+F(1) F(0)
+```
+<!-- /figure -->
+
+That's 9 calls to get F(4). Each step up roughly doubles the work: F(6) takes 25 calls, and F(20) takes over 20,000. The number of calls grows exponentially: O(2ⁿ).
+
+| Number | Times it's worked out when computing F(6) |
 |---|---|
 | F(5) | 1 |
 | F(4) | 2 |
@@ -370,20 +398,18 @@ Plain recursion recomputes the same terms many times. Computing F(6) recursively
 | F(1) | 8 |
 | F(0) | 5 |
 
-The number of calls grows exponentially: O(2ⁿ).
+**The fast way: dynamic programming.** Work forward from the start instead, and write each number down once. To get the next number you only need the last two, so keep just those two: `previous` and `current`. Each pass adds them to get `next`, then slides forward one place.
 
-The dynamic programming version keeps only the two most recent terms, `previous` and `current`, and loops from 1 up to n − 1. Each pass computes `next = previous + current`, then shifts: `previous` takes `current`'s value and `current` takes `next`'s.
-
-| Pass i | next | previous after | current after |
+| Pass | next = previous + current | previous after | current after |
 |---|---|---|---|
 | (start) | | 0 | 1 |
-| 1 | 1 | 1 | 1 |
-| 2 | 2 | 1 | 2 |
-| 3 | 3 | 2 | 3 |
-| 4 | 5 | 3 | 5 |
-| 5 | 8 | 5 | 8 |
+| 1 | 0 + 1 = 1 | 1 | 1 |
+| 2 | 1 + 1 = 2 | 1 | 2 |
+| 3 | 1 + 2 = 3 | 2 | 3 |
+| 4 | 2 + 3 = 5 | 3 | 5 |
+| 5 | 3 + 5 = 8 | 5 | 8 |
 
-F(6) = 8, after n − 1 = 5 passes. Each term is computed once, so the loop is O(n).
+After 5 passes (n − 1 passes for n = 6), `current` holds F(6) = 8. Each number is worked out exactly once, so this is O(n) time, and keeping only two numbers is O(1) space.
 
 ### Longest common substring
 
