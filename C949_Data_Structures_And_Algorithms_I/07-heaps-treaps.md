@@ -1,14 +1,30 @@
 # 7. Heaps and treaps
 
-A heap keeps its largest (or smallest) item where you can grab it in O(1), and fixes itself in O(log n) after every change. That makes a heap the usual way to build a **priority queue**, and it's the basis of **heap sort**. A treap borrows the heap's rule to keep a BST balanced on average.
+A heap keeps its largest (or smallest) item where you can grab it in O(1), and fixes itself in O(log n) after every change. That makes a heap the usual way to build a **priority queue**, a waiting line where the most urgent item always leaves first. A heap is also the basis of **heap sort**. A treap borrows the heap's rule to keep a BST balanced on average.
 
 ## Heaps
 
 Picture a company org chart where every boss earns at least as much as the people reporting to them. You can't tell who earns more between two people on different branches, but you know the top boss earns the most. A heap is that idea applied to keys.
 
-A **max-heap** is a **complete** binary tree ([chapter 5](05-trees.md#tree-shapes)) where every node's key is **greater than or equal to** its children's keys. Since that holds at every level, a node is also greater than or equal to everything below it, so the largest key is always at the root. A **min-heap** is the same with "less than or equal to", so the smallest is at the root.
+A **max-heap** is a **complete** binary tree ([chapter 5](05-trees.md#tree-shapes)) where every node's key is **greater than or equal to** its children's keys. (Complete means every level is full except maybe the bottom one, which fills from the left.) That rule holds at every level. So a node is also greater than or equal to everything below it, and the largest key is always at the root. A **min-heap** is the same with "less than or equal to", so the smallest is at the root.
 
-A heap is not a BST. It has no left-smaller, right-larger rule. It only compares each parent with its children, so a search can't tell which branch to skip. Searching a heap for an arbitrary key is O(n).
+A heap is not a BST. It has no left-smaller, right-larger rule. It only compares each parent with its children, so a search can't tell which branch to skip. Searching a heap for an arbitrary key is O(n). Here are the same seven keys arranged both ways:
+
+<!-- figure
+tree: Max-heap: each parent ≥ its children :: 70{40{10, 30}, 60{20, 50}}
+tree: BST: left smaller, right larger :: 40{20{10, 30}, 60{50, 70}}
+-->
+```text
+max-heap                         BST
+         70                              40
+       /    \                          /    \
+     40      60                      20      60
+    /  \    /  \                    /  \    /  \
+  10   30  20   50                10   30  50   70
+```
+<!-- /figure -->
+
+In the heap, 30 is on the left side of the root and 20 is on the right, even though 30 is bigger. A BST would never allow that. You only know each parent beats its own children.
 
 Because the tree is complete, a heap with N nodes has the smallest possible height, about log₂ N. Insert and remove both keep the tree complete, so it stays that short.
 
@@ -40,6 +56,7 @@ Index 1 (45) has children at 3 and 4 (30 and 41), and its parent is at (1 − 1)
 
 - The parent formula is never used on the root. Index 0 has no parent.
 - If a child index is past the end of the array, that child doesn't exist. A node whose left child index is past the end is a leaf.
+- Common mistake: using 2i and 2i + 1 for the children. Those are the formulas for a root at index 1. With the root at 0, index 0's children are 1 and 2, so the formulas must add 1 and 2.
 
 ### Insert: percolate up
 
@@ -109,12 +126,12 @@ A min-heap runs the same code with the comparisons flipped. Percolate up while t
 
 ### Heapify: building a heap
 
-**Heapify** turns a whole unsorted array into a max-heap. Inserting the items one at a time would work too, but heapify is faster: it works from the bottom up.
+**Heapify** turns a whole unsorted array into a max-heap. Inserting the items one at a time would work too, but heapify is faster. It works from the bottom of the tree up.
 
 1. Skip the leaves. Each leaf is already a heap of one item.
 2. Percolate **down** every internal node (a node with at least one child). Start with the internal node that has the largest index and work back to index 0, the root.
 
-Working bottom up matters. A percolate-down only works when both subtrees below the node are already heaps, and going from the largest index to the smallest guarantees that.
+The order matters. A percolate-down only works when both subtrees below the node are already heaps. Going from the largest index to the smallest makes sure the lower subtrees are fixed first.
 
 - With N items, the largest internal node index is **N // 2 − 1**. That's the parent of the last item, at index N − 1.
 - So heapify does N // 2 percolate-downs, one for each index from N // 2 − 1 down to 0.
@@ -143,7 +160,9 @@ An array sorted in descending order is already a max-heap, so heapify makes no s
 
 ### Sorting
 
-Heap sort keeps removing the max and putting it at the back of the array. Each removal shrinks the heap by one slot, and that freed slot is exactly where the removed max belongs. The heap fills the front of the array and the sorted items grow from the back. An **end index** marks where the heap part of the array stops.
+Heap sort is worth knowing because it sorts inside the array itself and is O(n log n) even on its worst input. Quicksort can slow to O(n²), and merge sort needs a second array.
+
+Heap sort keeps removing the max and putting it at the back of the array. Each removal shrinks the heap by one slot, and that freed slot is exactly where the removed max belongs. The heap fills the front of the array, and the sorted items grow from the back. An **end index** marks where the heap part of the array stops.
 
 1. Heapify the array. Set the end index to the last index, n − 1.
 2. Swap the root (the max) with the item at the end index. The max is now in its final place.
@@ -160,6 +179,31 @@ Sorting the heap built above, `40 30 15 22 11 9 7`:
 | 3 | 15 and 7 | `11 7 9` | `15 22 30 40` |
 | 2 | 11 and 9 | `9 7` | `11 15 22 30 40` |
 | 1 | 9 and 7 | `7` | `9 11 15 22 30 40` |
+
+The same rounds drawn as one array. The faded cells on the right are the sorted part, which grows by one cell each round:
+
+<!-- figure
+index: yes
+row: start | 40 30 15 22 11 9 7 | the whole array is the heap
+row: end 6 | 30 22 15 7 11 9 .40
+row: end 5 | 22 11 15 7 9 .30 .40
+row: end 4 | 15 11 9 7 .22 .30 .40
+row: end 3 | 11 7 9 .15 .22 .30 .40
+row: end 2 | 9 7 .11 .15 .22 .30 .40
+row: end 1 | 7 .9 .11 .15 .22 .30 .40 | sorted
+-->
+```text
+index     0  1  2  3  4  5  6
+start    40 30 15 22 11  9  7     the whole array is the heap
+end 6    30 22 15  7 11  9 [40]
+end 5    22 11 15  7  9 [30 40]
+end 4    15 11  9  7 [22 30 40]
+end 3    11  7  9 [15 22 30 40]
+end 2     9  7 [11 15 22 30 40]
+end 1     7 [ 9 11 15 22 30 40]   sorted
+(brackets mark the sorted part)
+```
+<!-- /figure -->
 
 ```python
 def percolate_down(items, i, size):
@@ -185,7 +229,8 @@ def heap_sort(items):
 - **Calls to percolate_down:** n // 2 for heapify, plus n − 1 for the sorting loop. With 7 items, that's 3 + 6 = 9.
 - **Best, average, worst:** O(n log n): n − 1 removals, each O(log n).
 - **Memory:** in place, O(1) extra. Two loops, no recursion.
-- **Stable:** no.
+- **Stable:** no. Equal keys can come out in a different order than they went in.
+- **Common mistake:** "in place" and "stable" are different properties. Heap sort is in place (no second array) but not stable.
 - **Spot it in code:** a loop from `n // 2 - 1` down to 0, then a loop that swaps `items[0]` with `items[end]`.
 - **Descending order:** use a min-heap instead. The smallest item goes to the end each round.
 
@@ -216,7 +261,15 @@ A trace, where a lower number means higher priority. The second 6 is written 6�
 | IsEmpty | True if the queue has no items | O(1) |
 | GetLength | Return the number of items | O(1) |
 
-A priority queue is usually built on a heap, though it doesn't have to be. With a sorted list, dequeue is O(1) but enqueue is O(n). An unsorted list is the reverse. A heap makes both O(log n). Use a max-heap when a bigger number means higher priority, and a min-heap when a smaller number does.
+A priority queue is usually built on a heap, though it doesn't have to be. Here is how the choices compare:
+
+| Built on | Enqueue | Dequeue |
+|---|---|---|
+| Sorted list | O(n): walk to the right spot and insert | O(1): take the front |
+| Unsorted list | O(1): add to the end | O(n): scan for the highest priority |
+| Heap | O(log n) | O(log n) |
+
+The lists make one operation cheap and the other slow. A heap keeps both fast. Use a max-heap when a bigger number means higher priority, and a min-heap when a smaller number does.
 
 A plain heap doesn't keep equal-priority items in arrival order. To get the first-in, first-out rule, store an arrival counter with each item and use the counter to break ties.
 
@@ -270,7 +323,9 @@ The `heapq` module does the same job on a plain list, without a class. It's also
 
 ## Treaps
 
-A BST built from keys that arrive in random order stays close to balanced. Keys don't always arrive in random order, so a **treap** adds the randomness itself. The name blends *tree* and *heap*.
+A treap is a BST that stays balanced on average with very little extra code. It needs no balance factors and no colors, only one random number per node.
+
+A BST built from keys that arrive in random order stays close to balanced. Keys don't always arrive in random order. Sorted keys, for example, build a BST that is one long chain. So a **treap** adds the randomness itself. The name blends *tree* and *heap*.
 
 Each node has two values:
 
@@ -279,7 +334,24 @@ Each node has two values:
 
 The priorities form a **max-heap**, so the highest priority is at the root. Some books use a min-heap for the priorities instead. zyBooks uses a max-heap, and so does this page.
 
-A treap moves a node up or down with **rotations** ([chapter 6](06-balanced-trees.md#rotations)), never with swaps. Swapping a parent and child would put the keys out of BST order. A rotation changes which node is the parent while keeping the keys in order.
+A treap moves a node up or down with **rotations** ([chapter 6](06-balanced-trees.md#rotations)), never with swaps. Swapping a parent and child would put the keys out of BST order. A rotation changes which node is the parent while keeping the keys in order. Here K:80 is a right child that needs to move above D:50:
+
+<!-- figure
+tree: Before: 80 > 50 breaks the heap rule :: D:50{A:20, K:80{G:10, P:30}}
+tree: After a left rotation at D :: K:80{D:50{A:20, G:10}, P:30}
+flow: yes
+-->
+```text
+before: 80 > 50                 after a left rotation at D
+       D:50                              K:80
+      /    \                            /    \
+   A:20    K:80          →           D:50    P:30
+           /   \                    /    \
+        G:10   P:30              A:20    G:10
+```
+<!-- /figure -->
+
+K moved up and D moved down to K's left. G was K's left child, and it moves over to become D's right child. The keys still read A D G K P in order, and every parent's priority now beats its children's.
 
 ### Search
 
@@ -328,7 +400,7 @@ J's parent is now M, with priority 90, so the insert is done after two left rota
 
 ### Delete
 
-A leaf is easy to remove: just cut it off. So deletion first pushes the node down until it's a leaf. This is the method zyBooks teaches:
+A leaf is easy to remove, because nothing hangs below it. So deletion first pushes the node down until it's a leaf. This is the method zyBooks teaches:
 
 1. Set the node's priority to **−∞**, the lowest possible, so it belongs at the bottom.
 2. While the node has a child, rotate at the node so its **higher-priority child** moves up into its place. With two children, use a left rotation if the right child's priority is higher, and a right rotation if the left child's is. With one child, rotate that child up.
@@ -366,7 +438,7 @@ There is a second way. Do a normal BST delete (copy the successor in), then perc
 
 ### Height
 
-Because the priorities are random, the treap has the shape it would have if the keys had arrived in random order, whatever order they really came in. Keys inserted in sorted order won't build a chain unless the random priorities also happen to come out sorted. So the height is O(log n) **on average**, and there are no balance factors or colors to maintain. The worst case is still O(n), but it's very unlikely.
+The priorities are random. So the treap has the shape it would have if the keys had arrived in random order, whatever order they really came in. Keys inserted in sorted order won't build a chain unless the random priorities also happen to come out sorted. The height is O(log n) **on average**, and there are no balance factors or colors to maintain. The worst case is still O(n), but it's very unlikely.
 
 <div class="viz" data-viz="treap" markdown>
 

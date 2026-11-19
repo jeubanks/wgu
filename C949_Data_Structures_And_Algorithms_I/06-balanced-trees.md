@@ -6,7 +6,7 @@ This page follows zyBooks chapter 6. It covers two kinds of balanced tree, AVL t
 
 ## Rotations
 
-Picture a node with a child below it. A **rotation** swaps their levels: the child moves up into the node's place, and the node moves down to become the child's child. The keys stay in BST order, so the tree is still a valid BST afterward. Rotations are the one tool both AVL and red-black trees use to fix their shape.
+Picture a node with a child below it. A **rotation** swaps their levels: the child moves up into the node's place, and the node moves down to become the child's child. It's like picking up a mobile by a lower piece: that piece becomes the top, and the old top hangs down on the other side. The keys stay in BST order, so the tree is still a valid BST afterward. Rotations are the one tool both AVL and red-black trees use to fix their shape.
 
 We say a rotation is done **at** the node that moves down.
 
@@ -48,7 +48,9 @@ left rotation at X
 <!-- /figure -->
 
 - Keys are in the same order before and after: A < X < B < Y < C.
-- The middle subtree B changes parents: it was X's right child and becomes Y's left child (or the reverse). It has to move, because the node that moved up needs that child slot for the node that moved down. B's keys (between X and Y) fit exactly in the slot the moving-up node left empty.
+- The middle subtree B changes parents. In the right rotation it goes from X's right child to Y's left child, and the left rotation does the reverse.
+  - It has to move because the node moving up needs that slot for the node moving down.
+  - B's keys are all between X and Y, so they fit exactly in the slot the moved-up node left empty.
 - Whatever pointed to the rotated node (its parent, or the tree's root) now points to the child that moved up.
 - Only a few pointers change, so a rotation is **O(1)**.
 
@@ -59,6 +61,8 @@ In code, a right rotation at a node takes three steps:
 3. Make the node's parent point to the old left child. If the node was the root, the old left child becomes the root.
 
 A left rotation is the mirror image.
+
+A common mistake is mixing up the name and the direction. A rotation is named for the way the node at the top moves. In a right rotation the top node moves down to the right, and its **left** child comes up.
 
 ## AVL trees
 
@@ -71,6 +75,11 @@ To measure the lean at a node, subtract the two heights. This number is the node
 > balance factor = height of the left subtree − height of the right subtree
 
 A one-node subtree has height 0, and a missing (null) subtree counts as height **−1**. Using −1 keeps the counting consistent: a leaf's height is one more than its (missing) children's, so −1 + 1 = 0.
+
+Two common mistakes:
+
+- Counting nodes instead of edges. Height counts the edges on the longest path down, so a leaf is 0, not 1.
+- Subtracting in the wrong order. It's always left minus right, so a node whose right side is taller gets a negative number.
 
 In an AVL tree every balance factor is −1, 0, or 1. A positive number means the left side is taller, and a negative number means the right side is. A node at **+2** leans too far left; at **−2**, too far right. One such node anywhere means the whole tree isn't an AVL tree.
 
@@ -100,9 +109,27 @@ tree: 50 ^+2{30 ^−1{20 ^0, 40 ^−1{, 45 ^0}}, 70 ^0}
 
 Measuring a subtree's height from scratch means visiting every node in it. To avoid that, each AVL node stores its own subtree **height**. Then a balance factor takes O(1) to compute: read the two children's heights (−1 for a null child) and subtract.
 
-A node's height is the larger of its children's heights, plus 1. When a node is inserted or removed, only the nodes on the path from its parent up to the root have a changed subtree, so only their heights can change. They're updated in that order, bottom up, because each one is computed from its children's heights, and those must already be right.
+A node's height is the larger of its children's heights, plus 1. When a node is inserted or removed, only the nodes on the path from its parent up to the root have a changed subtree, so only their heights can change. Update them bottom up, in that order. Each height comes from the children's heights, so the children have to be right first.
 
 Example: a tree has 26 at the root, with 12 and 38 as leaves. Insert 31 as 38's left child.
+
+<!-- figure
+tree: Before :: 26 ^h=1{12 ^h=0, 38 ^h=0}
+tree: After inserting 31 :: 26 ^h=2{12 ^h=0, 38@h ^h=1{31@h ^h=0}}
+flow: yes
+-->
+```text
+before                    after inserting 31
+
+     26 (h=1)                  26 (h=2)
+    /       \                 /       \
+12 (h=0)  38 (h=0)       12 (h=0)   38 (h=1)
+                                     /
+                                 31 (h=0)
+```
+<!-- /figure -->
+
+Only 38 and 26, on the path above the new leaf, changed height.
 
 | Node | Height | Balance factor |
 |---|---|---|
@@ -133,7 +160,7 @@ Rebalancing one node:
 
 The child's sign tells you the shape. When it matches the node's sign, the path to the new key is a straight line, and one rotation fixes it. When the signs are opposite, the path is a zigzag. The first rotation turns the zigzag into a straight line, and the second fixes the line.
 
-The rebalance code only checks for the zigzag. If the child leans the opposite way from the node, it does the double rotation, and otherwise a single one. So a child at 0 also gets a single rotation. That can't happen right after an insert, but it can after a removal.
+The rebalance code checks only for the zigzag. If the heavy child leans the opposite way from the node, it does the double rotation. Otherwise it does a single one, so a heavy child at 0 also gets a single rotation. A child at 0 can't happen right after an insert, but it can after a removal (the removal trace below shows one).
 
 **Trace:** insert 50, 30, 70, 20, 40, 45 into an empty AVL tree.
 
@@ -176,7 +203,7 @@ Removal follows the same plan as insert: take the node out the usual BST way, th
 1. Remove the node as in any BST. For a node with **two children**, zyBooks uses the **successor**: copy the successor's key into the node, then remove the successor node (which has at most one child).
 2. Walk from the removed node's **parent** up to the root, and rebalance each node, the same way as for insert.
 
-Unlike insert, removal can need rotations at several nodes on the way up. After a removal, a rotation can leave its subtree one level shorter than before, and that shorter subtree can make a node higher up lean by 2. Every node with a balance factor of ±2 gets its rotations. It's still one rebalance per level, so removal is **O(log n)** time and **O(1)** extra space.
+Unlike insert, removal can need rotations at several nodes on the way up. After a removal, a rotation can leave its subtree one level shorter than before. That shorter subtree can then make a node higher up lean by 2. A common mistake is to stop after the first rotation. Keep climbing, and rotate at every node with a balance factor of ±2. It's still one rebalance per level, so removal is **O(log n)** time and **O(1)** extra space.
 
 **Trace:** start from the AVL tree below and remove 10.
 
@@ -203,6 +230,22 @@ before                after removing 10
 5. 20 had no parent, so the walk ends. Balance factors: 30 is +1, 20 is −1, 25 and 35 are 0.
 
 From the same starting tree, removing **20** instead uses the successor. Go right once to 30, then left as far as possible, to 25. 25 is copied into the root, and the old 25 leaf is removed. Rebalancing 30 (balance factor −1) and then the root (−1) needs no rotations.
+
+<!-- figure
+tree: Before: the successor of 20 is 25 :: 20@h{10, 30@h{25@h, 35}}
+tree: After removing 20 :: 25{10, 30{, 35}}
+flow: yes
+-->
+```text
+before (successor of 20 is 25)      after removing 20
+
+     20                                  25
+    /  \                                /  \
+  10    30                            10    30
+       /  \                                   \
+     25    35                                  35
+```
+<!-- /figure -->
 
 ### How tall can an AVL tree get?
 
@@ -242,7 +285,7 @@ Every path from 13 down to a null leaf has **3** black nodes: 13, one of 1, 11, 
 
 Coloring every node black only works when every null leaf is at the same depth. Most BSTs can't be made red-black trees that way.
 
-Rules 3 and 5 together keep the tree balanced enough. Every path has the same number of blacks (rule 5), and at most one red can follow each black (rule 3). So the shortest possible path is all black, and the longest alternates red and black, which makes it at most twice as long. So the height is at most **2 log₂(n + 1)**: O(log n).
+Rules 3 and 5 together keep the tree balanced enough. Every path has the same number of blacks (rule 5), and at most one red can follow each black (rule 3). The shortest possible path is all black. The longest alternates black and red, so it's at most twice as long. That keeps the height at most **2 log₂(n + 1)**, which is O(log n).
 
 ### Rotations in a red-black tree
 
@@ -252,17 +295,71 @@ Red-black trees use the same left and right rotations as AVL trees, done "at" a 
 
 Insert the key as in any BST (the tree keeps distinct keys), color the new node **red**, and then balance it. The new node is red because a red node doesn't change any path's black count, so rule 5 still holds. Only rules 2 and 3 can break: the root might be red, or the new red node might sit under a red parent.
 
-The balance steps look at the node, its **parent**, its **grandparent** (the parent's parent), and its **uncle** (the parent's sibling). Check them in order:
+The balance steps use family-tree names for the nodes around the new one (N):
+
+- its **parent** (P),
+- its **grandparent** (G), the parent's parent,
+- its **uncle** (U), the parent's sibling: the grandparent's other child.
+
+<!-- figure
+title: The nodes the balance steps look at
+tree: G ^grandparent{P ^parent{N ^new}, U ^uncle}
+-->
+```text
+          G   grandparent
+         / \
+parent  P   U   uncle
+       /
+      N   new node
+```
+<!-- /figure -->
+
+Check the steps in order:
 
 1. If the node is the root, color it black. Done.
 2. If the parent is black, nothing is broken. Done.
-3. If the parent **and** the uncle are both red: color the parent and uncle black, and the grandparent red. Each path through the grandparent still has the same black count, since one black moved down from the grandparent onto both of its children. The grandparent may now be a red node under a red parent, so balance the grandparent with these same steps. Done.
-4. The uncle is black or null, so recoloring alone can't fix things, and rotations are needed. If the node and its parent form a **zigzag**, first straighten it with a rotation at the parent. The old parent ends up below the node, so treat the old parent as "the node" for step 5.
+3. If the parent **and** the uncle are both red, recolor:
+  - Color the parent and uncle black, and the grandparent red.
+  - Every path through the grandparent keeps the same black count, because one black moved down from the grandparent onto both of its children.
+  - The grandparent may now be a red node under a red parent, so run these same steps on the grandparent. Done.
+4. Otherwise the uncle is black or null. Recoloring alone can't fix this, so rotations are needed. First check for a **zigzag**: the node and its parent are on opposite sides (one is a left child, the other a right child). Straighten a zigzag with a rotation at the parent. The old parent ends up below the node, so treat the old parent as "the node" for step 5.
   - The node is a right child and the parent is a left child: rotate **left** at the parent.
   - The node is a left child and the parent is a right child: rotate **right** at the parent.
-5. Now the node, parent, and grandparent form a straight line. Color the parent black and the grandparent red. Then, if the node is a left child, rotate **right** at the grandparent; otherwise rotate **left** at the grandparent. The black parent moves up to the top of this small subtree, with a red node on each side, so no red has a red child and the black counts are unchanged.
+5. Now the node, parent, and grandparent form a straight line. Color the parent black and the grandparent red. Then, if the node is a left child, rotate **right** at the grandparent. Otherwise rotate **left** at the grandparent.
+  - The black parent moves up to the top of this small subtree, with a red node on each side.
+  - No red has a red child now, and the black counts are unchanged.
 
-So an insert needs either recoloring only, one rotation (a straight line), or two rotations (a zigzag).
+Here are steps 4 and 5 on a zigzag, with the letters from above. The uncle is null, which counts as black, so it isn't drawn.
+
+<!-- figure
+tree: Zigzag: N is a right child, P a left child :: G@b{P@r{, N@r}}
+tree: Step 4: rotate left at P. Now P is the node :: G@b{N@r{P@r}}
+tree: Step 5: recolor, rotate right at G :: N@b{P@r, G@r}
+flow: yes
+-->
+```text
+zigzag               step 4: rotate left     step 5: recolor,
+                     at P (P is the node)    rotate right at G
+
+      G (B)                G (B)                  N (B)
+     /                    /                      /     \
+  P (R)                N (R)                  P (R)   G (R)
+      \                /
+     N (R)          P (R)
+```
+<!-- /figure -->
+
+A straight line skips step 4 and goes directly to the step 5 rotation. This is the same idea as an AVL tree's single and double rotations.
+
+| Situation | Fix | Rotations |
+|---|---|---|
+| The node is the root | Color it black | 0 |
+| The parent is black | Nothing | 0 |
+| Parent and uncle both red | Parent and uncle black, grandparent red, then repeat at the grandparent | 0 |
+| Uncle black or null, straight line | Parent black, grandparent red, rotate at the grandparent | 1 |
+| Uncle black or null, zigzag | Rotate at the parent, then the straight-line fix | 2 |
+
+A common mistake is deciding by the parent's color alone. Once the parent is red, it's the **uncle's** color that picks between recoloring and rotating.
 
 **Trace:** insert 8, 4, 6, 2, 1 into an empty red-black tree.
 
@@ -273,6 +370,26 @@ So an insert needs either recoloring only, one rotation (a straight line), or tw
 | 6 | 6 is 4's right child; 4 is red and 8's left child. Uncle: null (black). Zigzag: rotate left at 4, so 4 is now below 6. Color 6 black and 8 red. 4 is a left child, so rotate right at 8. | 6B, children 4R and 8R |
 | 2 | 2 is 4's left child. Parent 4 and uncle 8 are both red: color them black and 6 red. Balance 6: it's the root, so color it black. | 6B, children 4B and 8B; 2R under 4 |
 | 1 | 1 is 2's left child. Parent 2 is red, uncle (4's right child) is null. Straight line: color 2 black and 4 red. 1 is a left child, so rotate right at 4. | below |
+
+<!-- figure
+title: The tree after each of the first four inserts
+tree: After 8 :: 8@b
+tree: After 4 :: 8@b{4@r}
+tree: After 6 :: 6@b{4@r, 8@r}
+tree: After 2 :: 6@b{4@b{2@r}, 8@b}
+-->
+```text
+after 8     after 4      after 6           after 2
+
+ 8 (B)       8 (B)        6 (B)              6 (B)
+             /           /     \            /     \
+          4 (R)       4 (R)   8 (R)      4 (B)   8 (B)
+                                         /
+                                      2 (R)
+```
+<!-- /figure -->
+
+After inserting 1:
 
 <!-- figure
 tree: 6@b{2@b{1@r, 4@r}, 8@b}
@@ -301,7 +418,32 @@ The steps:
 
 Watch the direction: zyBooks' AVL removal uses the successor, but its red-black removal uses the predecessor. Removing a red node never needs preparation.
 
-Preparing to remove a black node checks six cases in order. Below, "sibling" means the sibling of the node being prepared. The sibling's side of the tree is where a missing black can be made up from, which is why most cases look at it. After any case that rotates, look the sibling up again, since the rotation gives the node a new sibling.
+Preparing to remove a black node checks six cases in order. Most cases look at the node's **sibling**, the other child of its parent, because the sibling's side is where a spare black can come from. A few terms first:
+
+- The sibling's two children are its **inner** and **outer** children. The inner one sits on the side closer to the node. When the node is a left child, the sibling is on the right, so the sibling's left child is inner and its right child is outer. When the node is a right child, it's the reverse.
+- To rotate "in the node's direction" means a left rotation when the node is a left child, and a right rotation when it's a right child. Either way the node moves down a level.
+- A null child counts as black in every check.
+
+<!-- figure
+title: Names used when preparing node N, a left child
+tree: P ^parent{N ^node, S ^sibling{I ^inner, O ^outer}}
+-->
+```text
+            P   parent
+          /   \
+  node   N     S   sibling
+              / \
+     inner   I   O   outer
+```
+<!-- /figure -->
+
+The cases do one of three things:
+
+- Find a red node nearby and turn it black, so it stands in for the black being removed (case 4, and the final steps).
+- Push the shortage up to the parent when no red is nearby (case 3).
+- Rearrange the tree so one of the first two can happen (cases 2, 5, and 6).
+
+After any case that rotates, look the sibling up again, since the rotation gives the node a new sibling. Forgetting this is a common mistake.
 
 1. **The node is red, or it's the root.**
   - Do nothing, and stop.
@@ -328,9 +470,33 @@ If none of cases 1, 3, or 4 stopped it, the sibling now has a red outer child. T
 1. Give the sibling the parent's color, then make the parent black.
 2. Make the sibling's outer child black (its right child when the node is on the left, its left child when the node is on the right), and rotate at the parent in the node's direction. The sibling moves up into the parent's place.
 
-A null child counts as black in every check.
+| Case | When | What to do | Then |
+|---|---|---|---|
+| 1 | The node is red, or it's the root | Nothing | Stop |
+| 2 | The sibling is red | Sibling black, parent red, rotate at the parent in the node's direction | Keep checking |
+| 3 | Parent black, sibling's children both black | Sibling red | Prepare the parent, and stop here |
+| 4 | Parent red, sibling's children both black | Parent black, sibling red | Stop |
+| 5 | Node on the left, sibling's inner child red and outer child black | Sibling red, inner child black, rotate right at the sibling | Keep checking |
+| 6 | Node on the right, sibling's inner child red and outer child black | Sibling red, inner child black, rotate left at the sibling | Keep checking |
+| Final steps | No case stopped | Sibling takes the parent's color, parent and outer child black, rotate at the parent in the node's direction | Done |
 
 **Trace 1:** remove 20 from a tree of three black nodes: 30 at the root, 20 and 40 as its children.
+
+<!-- figure
+tree: Before :: 30@b{20@b, 40@b}
+tree: After case 3 (40 turns red) :: 30@b{20@b, 40@r}
+tree: After removing 20 :: 30@b{, 40@r}
+flow: yes
+-->
+```text
+before              after case 3         after removing 20
+                    (40 turns red)
+
+    30 (B)              30 (B)               30 (B)
+   /      \            /      \                    \
+20 (B)  40 (B)      20 (B)  40 (R)                40 (R)
+```
+<!-- /figure -->
 
 1. 20 is black, so prepare it. Case 1: no, it's black and has a parent.
 2. Case 2: the sibling 40 is black. No.
@@ -372,7 +538,7 @@ Removal is **O(log n)**: a walk down, then at most a few recolorings and rotatio
 
 Suppose you want the 4th smallest key in a BST. Without extra information you'd do an inorder walk and count. If each node also knows how many keys are under it, you can jump straight there.
 
-The chapter's labs add this **subtree key count** to each node of an AVL tree and a red-black tree: how many keys sit in the subtree below and including that node. A node's count is 1 + its left child's count + its right child's count (a null child counts 0). A leaf's count is 1.
+The chapter's labs add this **subtree key count** to each node of an AVL tree and a red-black tree: how many keys sit in the subtree below and including that node. A node's count is 1 + its left child's count + its right child's count (a null child counts 0). A leaf's count is 1. For example, a node whose left subtree holds 2 keys and whose right subtree holds 1 key has a count of 1 + 2 + 1 = 4.
 
 Like an AVL height, the counts have to be updated after anything that changes a subtree: an insert, a remove, or a rotation.
 

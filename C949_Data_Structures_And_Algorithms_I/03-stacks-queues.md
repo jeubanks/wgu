@@ -2,6 +2,18 @@
 
 Stacks and queues are lists that let you add and remove items only at the ends. Limiting them this way makes each operation O(1), and you always know the order the items will come out in.
 
+The difference between them is which end items come out of. Here are the same three items, A, B, and C, added in that order to each:
+
+<!-- figure
+row: stack | A B *C | Pop takes C, the newest (the top)
+row: queue | *A B C | Dequeue takes A, the oldest (the front)
+-->
+```text
+stack   A  B [C]    Pop takes C, the newest (the top)
+queue  [A] B  C     Dequeue takes A, the oldest (the front)
+```
+<!-- /figure -->
+
 ## The stack ADT
 
 A **stack** is **last in, first out** (LIFO). The item you remove is always the one added most recently, like the top plate on a stack of plates. Push 1, then 2, then 3, and the first Pop gives back 3, the next gives 2, and the last gives 1.
@@ -19,6 +31,17 @@ Popping or peeking an empty stack is an error. Stacks show up wherever the most 
 ### Stacks built on linked lists
 
 Use the list's **head** as the top of the stack. Push and pop both happen at the top, so the top must be an end where removing is cheap. In a singly-linked list, removing the head is O(1). Removing the tail is O(n), because you have to walk from the head to find the node before the tail.
+
+<!-- figure
+title: A linked stack after pushing 1, then 6, then 8: the head is the top
+list: 8 6 1
+-->
+```text
+top = head              tail
+    ↓                     ↓
+   [8] → [6] → [1] → null
+```
+<!-- /figure -->
 
 - Push: prepend the new node. O(1).
 - Pop: remove the head node and return its data. O(1).
@@ -58,7 +81,18 @@ A queue works at both ends: items go in at one end and come out at the other. En
 - Enqueue: append. O(1) with a tail pointer.
 - Dequeue: remove the head. O(1).
 
-Adding at either end of a singly-linked list with a tail pointer is O(1), but only the head can be removed in O(1). So the removing end, the front of the queue, goes at the head. If you swapped the ends, dequeue would have to remove the tail, which is O(n) in a singly-linked list.
+Adding at either end of a singly-linked list with a tail pointer is O(1). Removing is O(1) only at the head. So the removing end, the front of the queue, goes at the head. If you swapped the ends, dequeue would have to remove the tail, which is O(n) in a singly-linked list.
+
+<!-- figure
+title: A linked queue after enqueuing 1, then 6, then 8: dequeue at the head, enqueue at the tail
+list: 1 6 8
+-->
+```text
+front = head      back = tail
+    ↓                 ↓
+   [1] → [6] → [8] → null
+```
+<!-- /figure -->
 
 ### Queues built on arrays
 
@@ -68,13 +102,15 @@ Dequeuing from index 0 of an array would shift every other item left, which is O
 - Enqueue puts the new item at `(front + length) % size`, then adds 1 to `length`.
 - Dequeue takes the item at `front`, sets `front` to `(front + 1) % size`, and subtracts 1 from `length`.
 
-The `%` (remainder) operator makes the index wrap back to 0: an index one past the last slot has remainder 0 when divided by the size. For example, with an array of size 5:
+The `%` (remainder) operator makes the index wrap back to 0. With an array of size 5, the last slot is index 4, and one past it is 5 % 5 = 0, the first slot. Here is a short run on that size-5 array:
 
 | Step | front | length | Array (index 0 to 4) |
 |---|---|---|---|
 | Start | 3 | 2 | `_ _ _ A B` |
 | Enqueue C: goes to (3 + 2) % 5 = 0 | 3 | 3 | `C _ _ A B` |
 | Dequeue: takes A, front becomes 4 | 4 | 2 | `C _ _ _ B` |
+
+A common mistake is to assume the items start at index 0, as in an array-based stack. In a circular array they start at `front`, so the next free slot is `(front + length) % size`.
 
 Every operation is O(1), and nothing ever shifts. When `length` reaches the array's size, the queue is full. A bounded queue refuses the new item. An unbounded queue allocates a bigger array and copies the items over in queue order, starting from `front`.
 
@@ -86,7 +122,12 @@ Every operation is O(1), and nothing ever shifts. When `length` reaches the arra
 
 ## The deque ADT
 
-A **deque** (double-ended queue, pronounced "deck") lets you add and remove at **both** ends. Its operations are PushFront, PushBack, PopFront, PopBack, PeekFront, and PeekBack. A deque can act as either a stack or a queue. If you build it on a doubly-linked list or a circular array, all of these operations are O(1).
+A **deque** (double-ended queue, pronounced "deck") lets you add and remove at **both** ends. Its operations are PushFront, PushBack, PopFront, PopBack, PeekFront, and PeekBack. If you build it on a doubly-linked list or a circular array, all of these operations are O(1).
+
+A deque can act as either a stack or a queue:
+
+- Use only PushBack and PopBack, and it behaves as a stack.
+- Use only PushBack and PopFront, and it behaves as a queue.
 
 A typical use is checking whether a word is a palindrome (the same forwards and backwards):
 
@@ -94,14 +135,28 @@ A typical use is checking whether a word is a palindrome (the same forwards and 
 2. PopFront one letter and PopBack one letter, and compare them.
 3. If they differ, the word isn't a palindrome. If they match, repeat step 2 until one letter or none is left.
 
-For "level", the pairs are l and l, then e and e, and the middle v is left over, so it's a palindrome.
+For "level", the pairs are l and l, then e and e, and the middle v is left over, so it's a palindrome:
+
+<!-- figure
+row: start | l e v e l
+row: pop both ends | .l e v e .l | l and l match
+row: pop both ends | .l .e v .e .l | e and e match
+row: one left | .l .e *v .e .l | palindrome
+-->
+```text
+start            l  e  v  e  l
+pop both ends    -  e  v  e  -     l and l match
+pop both ends    -  -  v  -  -     e and e match
+one left         -  - [v] -  -     palindrome
+```
+<!-- /figure -->
 
 ## Stacks and queues in Python
 
 - A Python `list` makes a good **stack**: `append(x)` pushes, `pop()` pops from the end, and `items[-1]` peeks. All three are O(1) (append is amortized).
 - A Python `list` makes a poor **queue**: `pop(0)` removes the first item and shifts all the others left, which is O(n).
 - For a queue or a deque, use `collections.deque`: `append`, `appendleft`, `pop`, and `popleft` are all O(1).
-- The `queue` module's `Queue` class is a FIFO queue built for passing work safely between threads. `put(x)` enqueues and `get()` dequeues.
+- The `queue` module's `Queue` class is a FIFO queue built for passing work safely between threads (parts of one program that run at the same time). `put(x)` enqueues and `get()` dequeues.
 
 ## Big-O summary
 

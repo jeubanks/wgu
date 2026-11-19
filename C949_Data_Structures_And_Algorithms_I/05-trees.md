@@ -1,6 +1,6 @@
 # 5. Trees
 
-A tree stores data in a hierarchy instead of a line. A binary search tree uses that shape to search quickly. Each comparison rules out one side of the tree, so a search skips most of the data, the way binary search skips half of a sorted list.
+A tree stores data in a hierarchy instead of a line. A family tree is a good picture of one: one ancestor at the top, their children below, and the grandchildren below them. A binary search tree uses that shape to search quickly. Each comparison rules out one side of the tree, so a search skips most of the data, the way binary search skips half of a sorted list.
 
 This page follows chapter 5 of the course text: binary tree terms, where trees are used, binary search trees (search, insert, remove, traversal, height), parent references, recursion, and tries.
 
@@ -41,6 +41,8 @@ A tree with just one node has height 0. That one node is both the root and a lea
 
 Every tree is a subtree of itself: it's the subtree rooted at its own root.
 
+Common mistake: counting nodes instead of edges. Depth and height both count **edges**. The path 62 → 31 → 47 → 52 has 4 nodes but 3 edges, so 52's depth is 3. A second mix-up is between the two words. Depth belongs to one node and is measured down from the root. Height belongs to a whole tree or subtree: the most edges on any path from its root down to a leaf.
+
 ### Tree shapes
 
 <div class="viz" data-viz="tree-shapes" markdown>
@@ -61,7 +63,7 @@ Full is about each node (0 or 2 children). Complete is about the whole shape (no
 ## Where trees are used
 
 - **File systems:** the root directory is the root node. Files are always leaves. A directory is an internal node unless it's empty, and then it's a leaf too. A directory can hold any number of entries, so a file system tree isn't a binary tree: each node needs a variable number of children.
-- **Binary space partitioning (BSP):** a BSP tree splits a region of space into two parts, then splits each part again. Each node stores one region's boundary and the objects inside it. A game or graphics engine looks up the camera's position in the tree and skips every region the screen doesn't touch, so it only checks the nearby objects. The splits don't have to be down the middle, and BSP works in 3-D as well as 2-D.
+- **Binary space partitioning (BSP):** a BSP tree splits a region of space into two parts, then splits each part again, and so on. Each node stores one region's boundary and the objects inside it. A game or graphics engine finds the camera's position in the tree. It then skips every region the screen doesn't touch, so it only checks the nearby objects. The splits don't have to be down the middle, and BSP works in 3-D as well as 2-D.
 - **Storing collections:** most trees in the course (BSTs, AVL and red-black trees, heaps) hold a collection of keys in a shape that makes search, insert, and remove fast.
 
 ## Binary search trees (BSTs)
@@ -71,7 +73,7 @@ A **binary search tree** is a binary tree with an ordering rule, for every node:
 - every key in its **left** subtree is **smaller**, and
 - every key in its **right** subtree is **larger**.
 
-This rule is what makes search fast. At any node, one comparison tells you which side the key must be on, so you never look at the other side.
+This rule is what makes search fast. At any node, one comparison tells you which side the key must be on, so you never look at the other side. It works like looking up a name in a phone book. You open to the middle, see whether the name comes before or after that page, and ignore the other half.
 
 The rule covers every key in each subtree, all the way down. In the tree above, 52 is in the left subtree of 62, so it must be less than 62, and it is. It's also in the right subtree of 31 and of 47, so it must be greater than both, and it is.
 
@@ -94,7 +96,7 @@ search for 40:  62 → go left → 31 → go right → 47 → 40 < 47, go left �
 - **Search for 52:** 52 < 62, go left to 31. 52 > 31, go right to 47. 52 > 47, go right: 52 found.
 - **Search for 40:** 40 < 62, go left to 31. 40 > 31, go right to 47. 40 < 47, go left: a null child, so 40 isn't in the tree.
 
-A search **visits** a node when it reads that node's key. The search for 52 visits 4 nodes. Each step goes down one level, and a path from the root has at most height + 1 nodes. So a search makes at most **height + 1** comparisons: O(h).
+A search **visits** a node when it reads that node's key. The search for 52 visits 4 nodes. Each step goes down one level, and a path from the root has at most height + 1 nodes. So a search makes at most **height + 1** comparisons: O(h), where h is the tree's height.
 
 A tree with the smallest possible height keeps that number small. A BST of 1,000,000 nodes can have height 19, so a search needs at most 20 comparisons. A linked list of the same keys can need 1,000,000.
 
@@ -118,6 +120,24 @@ In the tree above:
 - Predecessor of 73: no left subtree. Go up to 84 (came from its left), to 62 (came from its **right**). **62.**
 - Successor of 96: it's the largest key, so none.
 
+The climb for the successor of 52 (case 2), highlighted:
+
+<!-- figure
+tree: Climb from 52 until you arrive from a left child :: 62@h{31@h{15, 47@h{, 52@h}}, 84{73, 96}}
+-->
+```text
+climb from 52 until you arrive from a left child (* = on the path)
+
+              62*           ← 31 is 62's left child: stop, the successor is 62
+            /    \
+          31*     84        ← 47 is 31's right child: keep climbing
+         /  \    /  \
+       15   47* 73   96     ← 52 is 47's right child: keep climbing
+              \
+               52*          ← start
+```
+<!-- /figure -->
+
 ### Insert
 
 Search for the new key. Where the search steps off the tree, put the new node there, as a leaf.
@@ -127,6 +147,24 @@ Inserting 40 into the tree above:
 1. 40 < 62, and 62 has a left child: move to 31.
 2. 40 > 31, and 31 has a right child: move to 47.
 3. 40 < 47, and 47's left child is null: 40 becomes 47's left child.
+
+<!-- figure
+tree: Before :: 62{31{15, 47{, 52}}, 84{73, 96}}
+tree: After inserting 40: the search path is highlighted :: 62@h{31@h{15, 47@h{40@h, 52}}, 84{73, 96}}
+flow: yes
+-->
+```text
+before                              after inserting 40
+
+         62                                  62
+       /    \                              /    \
+     31      84                          31      84
+    /  \    /  \                        /  \    /  \
+  15   47  73   96                    15   47  73   96
+         \                                /  \
+          52                            40    52
+```
+<!-- /figure -->
 
 Inserting into an empty tree makes the new node the root.
 
@@ -156,6 +194,32 @@ Removing each node from the tree above, starting fresh each time:
   3. Remove the old 47 from the right subtree. It has one child, 52, so 52 moves up into its place.
 
   Preorder afterward: 62, 47, 15, 52, 84, 73, 96.
+
+In the 31 example, the successor happens to be 31's right child. Usually it sits deeper. Removing the root 62 from the starting tree shows that case:
+
+1. Find the successor: right once to 84, then left as far as possible, to 73.
+2. Copy 73 into the root's node.
+3. Remove the old 73. It's a leaf, so 84's left pointer becomes null.
+
+<!-- figure
+tree: Before: 62 has two children. Its successor is 73 :: 62@h{31{15, 47{, 52}}, 84@h{73@h, 96}}
+tree: After: 73 copied into the root, and the old 73 leaf removed :: 73@h{31{15, 47{, 52}}, 84{, 96}}
+flow: yes
+-->
+```text
+before (* = path to the successor)  after removing 62
+
+         62*                                 73
+       /    \                              /    \
+     31      84*                         31      84
+    /  \    /  \                        /  \       \
+  15   47  73*  96                    15   47       96
+         \                                   \
+          52                                  52
+```
+<!-- /figure -->
+
+Common mistake: in the two-children case, moving a child up into the removed node's place. A child keeps its own subtrees, so the removed node's other subtree has nowhere to go. The successor fits because it's larger than every key on the left and smaller than every other key on the right. (In the 31 example, 47 is both 31's right child and its successor, because 47 has no left child.)
 
 In the worst case, remove walks from the root to a leaf to find the node, then down again to find the successor. That's still O(h) time, with O(1) extra space.
 
@@ -221,7 +285,7 @@ Tracing it on the tree at the top of the page. Each call finishes after both of 
 
 A **traversal** visits every node once: O(n). To **visit** a node means to do something with it: print its key, add it to a list, count it. The action can be passed in as a **visitor** object, so one traversal function can print, count, or collect without being rewritten.
 
-The name says where the node itself goes:
+The name says where the node itself goes. *Pre* means before its subtrees, *in* means between them, and *post* means after them:
 
 | Traversal | Order | For the tree at the top of the page |
 |---|---|---|
@@ -243,7 +307,7 @@ A BST node can also store a **parent** reference. Balanced trees (chapter 6) use
 The downside is extra bookkeeping. Every insert and remove that relinks a child also has to set that child's parent reference.
 
 - **Insert:** after making the new node a child of some node P, set the new node's parent to P. A new root gets parent null.
-- **Remove:** it uses a helper, **replace_child(current_child, new_child)**, on the removed node's parent. It swaps whichever child pointer points at current_child to point at new_child, and sets new_child's parent (when new_child isn't null). If the node being removed is the root, the new root's parent is set to null instead.
+- **Remove:** it calls a helper, **replace_child(current_child, new_child)**, on the removed node's parent. The helper finds the child pointer that points at current_child and points it at new_child instead. It also sets new_child's parent (when new_child isn't null). If the node being removed is the root, the new root's parent is set to null instead.
 
 Removing 47 from the tree at the top, with parent references: 47's parent is 31, so the tree calls 31.replace_child(47, 52). 31's right pointer now goes to 52, and 52's parent becomes 31.
 
@@ -269,9 +333,9 @@ Otherwise it calls itself on the left child (key is smaller) or the right child 
 
 ## Tries
 
-A **trie** (said "try"), also called a **prefix tree**, stores a set of strings. Each node below the root stands for one character, and a node has at most one child per character. A string is a path from the root. Strings that start the same share the start of their path.
+A **trie** (said "try"), also called a **prefix tree**, stores a set of strings. It's built for questions like "which words start with `ca`?", the question a phone's autocomplete asks as you type. Each node below the root stands for one character, and a node has at most one child per character. A string is a path from the root. Strings that start the same share the start of their path.
 
-The trie needs some way to mark where a word ends. Otherwise, after inserting `dog`, it couldn't tell whether `do` is also a word. In zyBooks, each string's end is marked by its own **terminal node**: an extra child, with no character, under the string's last character. Every inserted string has exactly one terminal node, and zyBooks counts the terminal nodes as nodes. (Many other books mark the end with a flag on the last character's node instead, which adds no nodes.)
+The trie needs some way to mark where a word ends. Otherwise, after inserting `dog`, it couldn't tell whether `do` is also a word. In zyBooks, each string's end is marked by its own **terminal node**. A terminal node is an extra child, with no character, under the string's last character. Every inserted string has exactly one terminal node, and zyBooks counts the terminal nodes as nodes. (Many other books mark the end with a flag on the last character's node instead, which adds no nodes.)
 
 <!-- figure
 nary: Words cat, car, cart, do, dog. $ marks the end of a word :: root{c{a{t{$}, r{$, t{$}}}}, d{o{$, g{$}}}}
@@ -309,6 +373,24 @@ Inserting `card` into the trie above:
 
 Two new nodes. Inserting a string that's already in the trie makes none.
 
+<!-- figure
+nary: After inserting card. The new nodes are highlighted :: root{c{a{t{$}, r{$, t{$}, d@h{$@h}}}}, d{o{$, g{$}}}}
+-->
+```text
+            (root)
+           /      \
+          c        d
+          |        |
+          a        o
+         / \      / \
+        t   r    $   g
+        |  /|\       |
+        $ $ t d      $
+            | |
+            $ $        new: d and the $ under it
+```
+<!-- /figure -->
+
 ### Search
 
 Start at the root and follow one child per character. If a child is missing, the string isn't there. After the last character, return the terminal child, or null if there is none.
@@ -317,7 +399,13 @@ Searching the trie above for `ca` reaches the `a` node, but `a` has no terminal 
 
 ### Remove
 
-Removing a string deletes its terminal node, then deletes each node above it, bottom up, that is left with no children. It stops at the first node that still has a child, because that node is part of another string. It never deletes the root. The recursive version works like this: go down one character per call, remove the terminal node at the bottom, then on the way back up remove any child that now has 0 children.
+Removing a string works from the bottom up:
+
+- Delete the string's terminal node.
+- Then delete each node above it that is left with no children.
+- Stop at the first node that still has a child, because that node is part of another string. The root is never deleted.
+
+The recursive version goes down one character per call and removes the terminal node at the bottom. Then, on the way back up, each call removes its child if that child now has 0 children.
 
 Removing `dog` from the trie above:
 
@@ -328,6 +416,28 @@ Removing `dog` from the trie above:
 5. Back at the root: its child `d` still has a child, so keep it.
 
 Two nodes are removed, and `do` is still in the trie. Removing a string that isn't there changes nothing.
+
+<!-- figure
+nary: Before: the nodes that go are highlighted :: root{c{a{t{$}, r{$, t{$}}}}, d{o{$, g@h{$@h}}}}
+nary: After removing dog :: root{c{a{t{$}, r{$, t{$}}}}, d{o{$}}}
+flow: yes
+-->
+```text
+before (g and its $ go)             after removing dog
+
+        (root)                             (root)
+       /      \                           /      \
+      c        d                         c        d
+      |        |                         |        |
+      a        o                         a        o
+     / \      / \                       / \       |
+    t   r    $   g                     t   r      $
+    |  / \       |                     |  / \
+    $ $   t      $                     $ $   t
+          |                                  |
+          $                                  $
+```
+<!-- /figure -->
 
 ### Cost
 

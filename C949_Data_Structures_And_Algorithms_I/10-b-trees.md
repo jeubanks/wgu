@@ -1,10 +1,30 @@
 # 10. B-trees
 
-A B-tree lets each node hold several sorted keys and have several children, so the tree stays short and wide. Every leaf sits at the same depth. The tree keeps that shape in two ways: an insert splits full nodes on the way down, and a remove gives 1-key nodes more keys on the way down. This page teaches the idea with the **2-3-4 tree**, a B-tree of order 4. B-tree names and rules vary between books, so where zyBooks differs from others, the page says so.
+A B-tree lets each node hold several sorted keys and have several children, so the tree stays short and wide. Databases and file systems use B-trees to find records on disk with only a few reads. Every leaf sits at the same depth. The tree keeps that shape in two ways: an insert splits full nodes on the way down, and a remove gives 1-key nodes more keys on the way down. This page teaches the idea with the **2-3-4 tree**, a B-tree of order 4. B-tree names and rules vary between books, so where zyBooks differs from others, the page says so.
 
 ## B-trees
 
 A BST node holds one key, which splits the search two ways: smaller goes left, larger goes right. A B-tree node can hold several sorted keys, which split the search several ways. A node holding 12 and 28 sends a search three ways: below 12, between 12 and 28, or above 28. More ways out of each node means fewer levels to get through.
+
+A library works the same way. A directory board at the entrance lists which call numbers each aisle holds, so one look tells you which aisle to walk to. A B-tree node is that board: several ranges, each pointing to one child.
+
+The same seven keys as a BST and as a 2-3-4 tree (a B-tree whose nodes hold up to 3 keys, explained below):
+
+<!-- figure
+tree: BST: height 2 :: 40{20{10, 30}, 60{50, 70}}
+btree: 2-3-4 tree: height 1 :: 20 40 60{10, 30, 50, 70}
+-->
+```text
+BST: height 2                     2-3-4 tree: height 1
+         40                              20   40   60
+       /    \                          /    |    |    \
+     20      60                      10    30   50    70
+    /  \    /  \
+  10   30  50   70
+```
+<!-- /figure -->
+
+The BST needs 3 levels. The 2-3-4 tree needs 2, because each node holds more keys. With millions of keys, that difference grows to many levels.
 
 The precise rules: a **B-tree of order m** is a search tree where:
 
@@ -75,7 +95,35 @@ A **subtree** is one node plus everything below it. Cut out any node of a 2-3-4 
 
 Height is counted in edges, as in [chapter 5](05-trees.md#binary-trees): a tree that is only a root has height 0. Every leaf is at the same depth, so that depth is the height.
 
-A 2-3-4 tree of height h holds between 2^(h+1) − 1 keys (every node a 2-node) and 4^(h+1) − 1 keys (every node full). To see where the smaller number comes from, take height 2 with every node a 2-node: 1 node on the top level, 2 on the next, 4 on the bottom, each holding 1 key, so 1 + 2 + 4 = 7 keys. With every node full, the levels have 1, 4, and 16 nodes of 3 keys each: 21 × 3 = 63 keys. So for height 2, that's 7 to 63 keys. Either way the height grows like log n, so the height is **O(log n)**.
+A 2-3-4 tree of height h holds:
+
+- at least 2^(h+1) − 1 keys, when every node is a 2-node, and
+- at most 4^(h+1) − 1 keys, when every node is full.
+
+Height 1 shows both ends. With 2-nodes only, there are 1 + 2 = 3 nodes of 1 key each: 3 keys, and 2^2 − 1 = 3. With full nodes only, there are 1 + 4 = 5 nodes of 3 keys each: 15 keys, and 4^2 − 1 = 15.
+
+<!-- figure
+btree: Fewest keys at height 1: 3 :: 20{10, 30}
+btree: Most keys at height 1: 15 :: 40 80 120{10 20 30, 50 60 70, 90 100 110, 130 140 150}
+-->
+```text
+fewest keys at height 1: 3
+
+        20
+      /    \
+    10      30
+
+most keys at height 1: 15
+
+                      40     80     120
+               /         |       |          \
+       10 20 30    50 60 70   90 100 110   130 140 150
+```
+<!-- /figure -->
+
+Height 2 works the same way. With 2-nodes only, the levels have 1, 2, and 4 nodes of 1 key each: 1 + 2 + 4 = 7 keys. With full nodes only, the levels have 1, 4, and 16 nodes of 3 keys each: 21 × 3 = 63 keys. So for height 2, that's 7 to 63 keys. Either way the height grows like log n, so the height is **O(log n)**.
+
+Common mistake: height counts edges, not levels. A tree of height h has h + 1 levels of nodes, which is why the formulas use h + 1.
 
 ### Why use a higher order?
 
@@ -184,6 +232,24 @@ before                                after the split, then 35 added
 
 40 moved up into the parent. 30 and 50 became separate nodes. Then 35 continued down to the node holding 30.
 
+A root split has no parent to receive the middle key, so the middle key becomes a new root. Splitting a full root (11 22 33):
+
+<!-- figure
+btree: Before: a full root :: 11 22 33
+btree: After: 22 is the new root :: 22{11, 33}
+flow: yes
+-->
+```text
+before: a full root            after: 22 is the new root
+
+    11  22  33          →              22
+                                     /    \
+                                   11      33
+```
+<!-- /figure -->
+
+The tree went from one node to three, and its height went from 0 to 1.
+
 ### Insert with preemptive split
 
 This algorithm is the **preemptive split** insertion scheme. "Preemptive" means it splits a full node as soon as it sees one, before knowing whether the split is needed. Starting at the root:
@@ -270,7 +336,7 @@ Taking the only key out of a node would leave it empty. A node also needs a key 
 
 ### Rotation
 
-A 2-3-4 **rotation** is borrowing a key from a sibling that has one to spare. The key can't jump straight across, because it would land on the wrong side of the parent key that separates the two siblings. So the sibling's key moves up into the parent, and that parent key moves down into the other sibling. Three nodes change, and no node is created or deleted.
+A 2-3-4 **rotation** borrows a key from a sibling that has one to spare. The key can't jump straight across, because it would land on the wrong side of the parent key that separates the two siblings. So the sibling's key moves up into the parent, and that parent key moves down into the other sibling. Three nodes change, and no node is created or deleted.
 
 - A **right rotation on a node**: the node loses its largest key, which moves up into the parent. The parent key between the node and its **right** sibling moves down into that right sibling, as its new key 0. The node's last child moves over to become the right sibling's new child 0.
 - A **left rotation on a node**: the node loses its smallest key, which moves up into the parent. The parent key between the node and its **left** sibling moves down into that left sibling, as its new last key. The node's child 0 moves over to become the left sibling's new last child.
@@ -352,6 +418,16 @@ fuse the root
 zyBooks' root fusion reuses the root node, so no new node is created. Each fusion is **O(1)**.
 
 Names differ between books here. zyBooks' **fusion** is what most other books call a **merge**. zyBooks uses the word **merge** for the bigger step in the next section.
+
+Rotation and fusion compared:
+
+| Feature | Rotation | Fusion |
+|---|---|---|
+| Used when | a sibling has a key to spare | the siblings have 1 key each |
+| Keys that move | one up from the sibling, one down from the parent | two siblings' keys plus one parent key, into one node |
+| Node count | stays the same | drops by 1 (by 2 in a root fusion) |
+| Height | never changes | drops by 1 only in a root fusion |
+| Cost | O(1) | O(1) |
 
 ## Remove
 

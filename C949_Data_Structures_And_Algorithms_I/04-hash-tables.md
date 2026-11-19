@@ -17,16 +17,27 @@ You can build a map on a hash table (O(1) on average) or on a binary search tree
 
 ## How a hash table works
 
-A hash table is an array of **buckets**. A **hash function** turns a key into a bucket index. The simplest one, the **modulo hash**, is `key % N`, where N is the number of buckets:
+A hash table is an array of **buckets**, where each bucket is one slot of the array. A **hash function** turns a key into a bucket index. It works like a library's call numbers: the number on a book tells you which shelf to walk to, so you never scan the whole library.
+
+The simplest hash function, the **modulo hash**, is `key % N`, where N is the number of buckets:
 
 - Insert 47 into a table of 10 buckets: 47 % 10 = 7, so it goes in bucket 7.
 - A search for 47 computes the same index and looks only in bucket 7.
 
-Two different keys can hash to the same bucket: 17 % 10 is also 7. That's called a **collision**. Collisions can't be avoided, because there are far more possible keys than buckets, so every hash table needs a way to handle them. The two families of approaches are **chaining** and **open addressing** (probing).
+Two different keys can hash to the same bucket: 17 % 10 is also 7. That's called a **collision**. There are far more possible keys than buckets, so collisions can't be avoided. Every hash table needs a way to handle them. The two families of approaches are **chaining** and **open addressing** (probing).
 
 ## Chaining
 
 With **chaining**, each bucket holds a list of the items that hashed to it. With 10 buckets, 47 and 17 both hash to 7, so bucket 7 holds the list 47, 17.
+
+<!-- figure
+title: Bucket 7's chain: 47 was inserted first, then 17
+list: 47 17
+-->
+```text
+bucket 7:  [47] → [17] → null
+```
+<!-- /figure -->
 
 - Insert: hash the key, check that the key isn't already in that bucket's list, and add the item to the list.
 - Search and remove: hash the key, and search only that bucket's list.
@@ -35,7 +46,16 @@ With a good hash function, items spread evenly and the lists stay short, so each
 
 ## Open addressing: probing
 
-With **open addressing**, each bucket holds at most one item. If a key's bucket is taken, the table **probes**, which means it tries other buckets in a fixed order until it finds a free one. A search follows the same order until it finds the key or reaches a bucket that has never held anything. It can stop at that bucket because an insert of the key would have stopped there too: if the key were in the table, the search would have reached it before this bucket.
+With **open addressing**, each bucket holds at most one item. If a key's bucket is taken, the table **probes**, which means it tries other buckets in a fixed order until it finds a free one.
+
+A search follows the same order until it finds the key or reaches a bucket that has never held anything. It can stop at that never-used bucket. When the key was inserted, it went into the first free bucket along this same path. So if the key were in the table, the search would have found it before getting this far.
+
+| Feature | Chaining | Open addressing |
+|---|---|---|
+| What a bucket holds | A list of any length | At most one item |
+| On a collision | Add to that bucket's list | Probe for another free bucket |
+| Load factor (below) | Can go above 1 | Can't go above 1 |
+| Removing an item | Remove it from the list | Mark the bucket empty-after-removal |
 
 ### Linear probing
 
@@ -50,12 +70,42 @@ Example: 10 buckets, h = key % 10. Insert 43, 13, 53, then 23:
 | 53 | 3 | 3, 4, 5 | 5 |
 | 23 | 3 | 3, 4, 5, 6 | 6 |
 
+<!-- figure
+index: yes
+row: insert 43 | .– .– .– *43 .– .– .– .– .– .– | home bucket 3 is free
+row: insert 13 | .– .– .– 43 *13 .– .– .– .– .– | 3 is taken, so 4
+row: insert 53 | .– .– .– 43 13 *53 .– .– .– .– | 3 and 4 are taken, so 5
+row: insert 23 | .– .– .– 43 13 53 *23 .– .– .– | 3 to 5 are taken, so 6
+-->
+```text
+index        0  1  2  3  4  5  6  7  8  9
+insert 43    -  -  - 43  -  -  -  -  -  -    home bucket 3 is free
+insert 13    -  -  - 43 13  -  -  -  -  -    3 is taken, so 4
+insert 53    -  -  - 43 13 53  -  -  -  -    3 and 4 are taken, so 5
+insert 23    -  -  - 43 13 53 23  -  -  -    3 to 5 are taken, so 6
+```
+<!-- /figure -->
+
 Linear probing tends to build **clusters**, which are long runs of full buckets, like buckets 3 to 6 above. Any key that hashes anywhere into a cluster walks past its end and lands in the next free bucket. That makes the cluster one bucket longer, which makes it even more likely to catch the next key.
 
 Removing an item needs care. In the table above, suppose 13 is removed and bucket 4 is simply emptied. A search for 53 would start at bucket 3, find bucket 4 empty, and wrongly stop, even though 53 is in bucket 5. To prevent this, buckets have two kinds of empty:
 
 - **Empty-since-start:** the bucket has never been used. A search can stop here, because the key isn't in the table.
 - **Empty-after-removal:** an item was removed from the bucket. A search keeps going past it, and an insert may reuse it.
+
+Here is the search for 53 after 13 is removed and its bucket is marked as removed:
+
+<!-- figure
+index: yes
+row: remove 13 | .– .– .– 43 R 53 23 .– .– .– | R: empty-after-removal
+row: search for 53 | .– .– .– *43 *R *53 23 .– .– .– | check 43, pass R, find 53
+-->
+```text
+index          0  1  2  3  4  5  6  7  8  9
+remove 13      -  -  - 43  R 53 23  -  -  -    R: empty-after-removal
+search for 53  -  -  -[43][R][53] 23  -  -  -    check 43, pass R, find 53
+```
+<!-- /figure -->
 
 ### Quadratic probing
 
@@ -94,7 +144,21 @@ When the load factor passes a threshold (often around 0.75 for probing), the tab
 1. Allocate a bigger array, usually a prime number of buckets about twice the old size.
 2. **Rehash** every item: run the hash function again with the new N, and insert the item at the new index.
 
-Items can't just be copied to the same index, because the index depends on N. With `key % N`, key 17 is in bucket 7 of a 10-bucket table, but in bucket 17 of a 23-bucket table. A resize is O(n), but resizes are rare, so inserts stay O(1) on average.
+Items can't just be copied to the same index, because the index depends on N. With `key % N`, key 17 is in bucket 7 of a 10-bucket table, but in bucket 17 of a 23-bucket table. A smaller case: keys 5, 12, 13, and 14 fill 4 of 5 buckets (load factor 0.8), so the table grows to 11 buckets, the first prime after 2 × 5:
+
+<!-- figure
+index: yes
+row: N = 5 | *5 .– *12 *13 *14 | 5 % 5 = 0, 12 % 5 = 2, 13 % 5 = 3, 14 % 5 = 4
+row: N = 11 | .– *12 *13 *14 .– *5 .– .– .– .– .– | 12 % 11 = 1, 13 % 11 = 2, 14 % 11 = 3, 5 % 11 = 5
+-->
+```text
+index      0  1  2  3  4  5  6  7  8  9 10
+N = 5      5  - 12 13 14                     5 % 5 = 0, 12 % 5 = 2, 13 % 5 = 3, 14 % 5 = 4
+N = 11     - 12 13 14  -  5  -  -  -  -  -   12 % 11 = 1, 13 % 11 = 2, 14 % 11 = 3, 5 % 11 = 5
+```
+<!-- /figure -->
+
+Every key moved. A resize is O(n), but resizes are rare, so inserts stay O(1) on average.
 
 ## Hash functions
 
@@ -129,8 +193,11 @@ So key 3045 goes in bucket 18. (Another way: multiply the fractional part, 0.017
 
 Hashing is also used for security, where the goals are different:
 
-- A **cryptographic hash function** (like SHA-256) is **one-way**. It's easy to compute, but it's infeasible to reverse or to find two inputs with the same hash. A small change to the input changes the hash completely. Cryptographic hashes are used to check that a file wasn't altered, and in digital signatures.
-- **Password hashing:** a site stores the hash of each password instead of the password itself. At login, the site hashes what you typed and compares the two hashes. Before hashing, the site adds a random **salt** to the password and stores the salt with the user. The salt means two users with the same password get different hashes, and precomputed tables of common passwords don't work. Password hash functions (like bcrypt) are deliberately **slow**, to make guessing millions of passwords expensive.
+- A **cryptographic hash function** (like SHA-256) is **one-way**. It's easy to compute, but in practice nobody can reverse it or find two inputs with the same hash. A small change to the input changes the hash completely. Cryptographic hashes are used to check that a file wasn't altered, and in digital signatures.
+- **Password hashing:** a site stores the hash of each password instead of the password itself. At login, the site hashes what you typed and compares the two hashes.
+  - Before hashing, the site adds a random **salt** (a few extra random characters) to the password, and stores the salt with the user.
+  - The salt means two users with the same password get different hashes. It also defeats precomputed tables, which are lists of hashes of common passwords worked out ahead of time.
+  - Password hash functions (like bcrypt) are deliberately **slow**, to make guessing millions of passwords expensive.
 
 ## Python's dict and set
 

@@ -13,7 +13,7 @@ Chapters 12 to 20 of the course textbook teach Python itself: variables, types, 
 
 | Type | Example | Notes |
 |---|---|---|
-| `int` | `42`, `-7` | Any size; no overflow |
+| `int` | `42`, `-7` | Any size; no overflow (a value too big to store) |
 | `float` | `3.5`, `1e-3` | |
 | `bool` | `True`, `False` | |
 | `str` | `"cat"`, `'cat'` | Immutable: methods return a new string |
@@ -28,7 +28,7 @@ Chapters 12 to 20 of the course textbook teach Python itself: variables, types, 
 Two separate questions describe how a language treats types. A language gets one answer to each, so the two pairs combine in any way.
 
 - **Static or dynamic:** *when* is a variable's type (and, for fixed-size data, its memory) decided?
-  - A **statically** typed language decides before the program runs, at compile time. In C or Java, `int x = 10;` fixes x as an int, and x can never hold a string.
+  - A **statically** typed language decides before the program runs, at compile time (when the code is translated for the machine). In C or Java, `int x = 10;` fixes x as an int, and x can never hold a string.
   - A **dynamically** typed language decides while the program runs. In Python, `x = 10` followed by `x = "ten"` is fine, and a list can grow at run time.
 - **Strong or weak:** does the language **convert** between types on its own?
   - A **strongly** typed language refuses. In Python, `10 + "5"` is an error, and you must write `10 + int("5")`.
@@ -39,7 +39,7 @@ Python is dynamically **and** strongly typed. Java is statically and strongly ty
 Memory has the same before-or-during split as static and dynamic typing:
 
 - **Static allocation** reserves a fixed amount of memory, known before the program runs. A C array declared as `int scores[100];` always takes room for 100 ints.
-- **Dynamic allocation** reserves memory while the program runs, on the heap (`malloc` in C, `new` in Java, and every object in Python), and releases it when it's no longer needed. A Python list that grows to hold a million items gets that memory only as it grows.
+- **Dynamic allocation** reserves memory while the program runs, and releases it when it's no longer needed. The memory comes from the **heap**, a pool the program draws from as it goes (`malloc` in C, `new` in Java, and every object in Python). This heap is unrelated to the heap data structure. A Python list that grows to hold a million items gets that memory only as it grows.
 
 ### Operators
 
@@ -69,6 +69,20 @@ Operators that trip people up:
 
 So `2 + 3 * 4` is 14, `6 / 2 * 3` is 9.0 (left to right), and `-3 ** 2` is −9, because `**` binds tighter than the minus sign.
 
+One way to picture precedence is as a tree. The operator that runs first sits lowest, and each operator works on the results below it. For `7 - 2 * 3`, the `*` runs first and gives 6, then `7 - 6` gives 1:
+
+<!-- figure
+nary: -{7, *{2, 3}}
+-->
+```text
+      -
+     / \
+    7   *
+       / \
+      2   3
+```
+<!-- /figure -->
+
 ### Branching
 
 ```python
@@ -82,7 +96,7 @@ else:
 
 Only the first branch whose condition is true runs. Indentation shows which lines belong to each branch. Python doesn't use braces.
 
-Many other languages have a **switch** (or case) statement. It computes one expression, then jumps to the case whose value matches. Each case usually ends with `break`. Without it, execution **falls through**: it keeps going and runs the next case's code too, even though that case's value didn't match. Python 3.10 added a similar `match` statement.
+Many other languages have a **switch** (or case) statement. It computes one expression, then jumps to the case whose value matches. Each case usually ends with `break`. Without it, execution **falls through**: it keeps going and runs the next case's code too, even though that case's value didn't match. For example, if case 1 has no `break` and the value is 1, case 1's code runs and then case 2's code runs as well. Python 3.10 added a similar `match` statement.
 
 ### Loops and range
 
@@ -95,9 +109,9 @@ Many other languages have a **switch** (or case) statement. It computes one expr
 | `range(1, 10, 3)` | 1, 4, 7 |
 | `range(5, 0, -1)` | 5, 4, 3, 2, 1 |
 
-So `for i in range(n)` runs n times. Pseudocode often says "for i from 1 to 10", which includes 10: watch for the difference when tracing.
+So `for i in range(n)` runs n times. Pseudocode often says "for i from 1 to 10", which includes 10. A common mistake when tracing is to include the stop value: `range(1, 10)` ends at 9.
 
-A `while` loop runs as long as its condition is true, and checks it before each pass, so it can run zero times. A **do-while** loop (in C, C++, and Java, not Python) checks *after* each pass, so its body always runs at least once.
+A `while` loop runs as long as its condition is true, and checks it before each pass, so it can run zero times. For example, `while x > 100:` with x = 5 never runs its body. A **do-while** loop (in C, C++, and Java, not Python) checks *after* each pass, so its body always runs at least once.
 
 - `break` leaves the loop at once.
 - `continue` skips the rest of this pass and goes on to the next one.
@@ -118,11 +132,28 @@ This function adds up a list by adding the first item to the total of the rest. 
 - `total([5])` is `5 + total([])`
 - `total([])` is `0`, the base case
 
+The calls go down to the base case, and the sums come back up:
+
+<!-- figure
+call: total([4, 5]) | | 4 + 5 = 9
+call: >total([5]) | | 5 + 0 = 5
+call: >>total([]) | base case | 0
+-->
+```text
+total([4, 5])
+  total([5])
+    total([])
+    returns 0
+  returns 5 + 0 = 5
+returns 4 + 5 = 9
+```
+<!-- /figure -->
+
 So `total([4, 5])` is 4 + 5 + 0 = 9. A function without a `return` gives back `None`.
 
 ### Classes
 
-A class is a template for making objects that hold related data together. Data structures are written as classes: a linked list node holds a value and a link to the next node. `__init__` runs when an object is created, and `self` is the object being set up:
+A class is a template for making objects that hold related data together, the way one blueprint can build many houses. Data structures are written as classes: a linked list node holds a value and a link to the next node. `__init__` runs when an object is created, and `self` is the object being set up:
 
 ```python
 class Node:
@@ -146,8 +177,21 @@ The parts of a class:
 Three ideas build on classes:
 
 - **Inheritance:** a new class is based on an existing one, and gets its attributes and methods without rewriting them: `class Dog(Animal):`.
-- **Encapsulation:** hiding an object's internals so other code goes through its methods. The methods can then check every change, so outside code can't put the object in a bad state. C++ and Java use `private`, `protected`, and `public`. Python uses naming conventions: `_balance` means "internal", and `__balance` is name-mangled to make it harder to reach from outside.
-- **Polymorphism:** one call works on different classes, each with its own version. If `Dog` and `Cat` both override `Animal.speak()`, then `animal.speak()` runs whichever one the object really is.
+- **Encapsulation:** hiding an object's internals so other code goes through its methods. The methods can then check every change, so outside code can't put the object in a bad state.
+  - C++ and Java use `private`, `protected`, and `public`.
+  - Python uses naming conventions: `_balance` means "internal". `__balance` is name-mangled: Python quietly renames it, which makes it harder to reach from outside.
+- **Polymorphism:** one call works on different classes, each with its own version. To **override** a method is to write a new version of it in a child class. If `Dog` and `Cat` both override `Animal.speak()`, then `animal.speak()` runs whichever one the object really is.
+
+<!-- figure
+title: Dog and Cat both inherit from Animal, and each overrides speak()
+nary: Animal{Dog, Cat}
+-->
+```text
+       Animal
+       /    \
+     Dog    Cat
+```
+<!-- /figure -->
 
 ### Memory management
 
@@ -194,7 +238,7 @@ A DFD can help you choose data structures. A store that's read by key many times
 
 Two consequences to watch for in code:
 
-- **Slices hide work.** `total(items[1:])` above copies the rest of the list on every call, so the whole function is O(n²), not O(n). Passing an index instead keeps it O(n).
+- **Slices hide work.** `lst[a:b]` copies b − a items. A slice inside a loop or a recursive call pays for that copy on every pass, so count it when you add up the work.
 - **Strings are immutable.** `s = s + c` can't add to `s` in place. It builds a new string and copies all of `s` into it. Doing that in a loop copies the growing string every time: O(n²) overall. `"".join(pieces)` works out the total length once and copies each piece once, so it's O(n).
 
 ## Questions

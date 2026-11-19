@@ -84,7 +84,7 @@ How can 5 calls to `sum_to` be active at once, each with a different n? Because 
 
 Each call to a function gets its own **stack frame**: a block of memory holding that call's parameters, local variables, and the place to return to. (In Python terms, each call has its own namespace for its local variables.) So the 5 calls to `sum_to` each have their own n, and changing one doesn't touch the others.
 
-The frames sit on the **call stack**. A call pushes a frame, and a return pops it. The frame on top belongs to the call that's running. The others are waiting for the call above them to return.
+The frames sit on the **call stack**. Think of a stack of plates: each new call puts a plate on top, and only the top plate can come off. A call **pushes** a frame (adds it on top), and a return **pops** it (takes it off the top). The frame on top belongs to the call that's running. The others are waiting for the call above them to return.
 
 At the deepest point of `sum_to(4)`:
 
@@ -198,7 +198,14 @@ Four calls for three nodes: one per node, plus one for the `None` at the end. Se
 
 ## Adding output statements for debugging
 
-A bug in a recursive function is hard to see, because many calls are active at once. It helps to print what each call does. But plain prints from all those calls run together, and you can't tell which call printed what. The fix is to pass an `indent` string that grows by a few spaces on each recursive call, and start every print with it. The output's indentation then shows how deep each line is.
+A bug in a recursive function is hard to see, because many calls are active at once. Printing what each call does helps. But plain prints from all those calls run together, and you can't tell which call printed what.
+
+The fix is an `indent` string:
+
+- Pass it as an extra parameter, and start every print with it.
+- On each recursive call, pass it down with a few more spaces.
+
+The output's indentation then shows how deep each line is.
 
 ```python
 def find_debug(items, target, low, high, indent=""):
@@ -240,6 +247,25 @@ returning -1
 - The calls go down: windows 0 to 7, 0 to 3, 2 to 3, then 2 to 2.
 - The window 2 to 3 keeps mid (index 2) in its lower half, so the last window is 2 to 2.
 - The -1 then comes back up through every level.
+
+The same four windows, drawn on the list. Cells outside each window fade:
+
+<!-- figure
+array: 4 9 15 23 31 42 57 68
+step: find(0, 7) | 0 7 3
+step: find(0, 3) | 0 3 1
+step: find(2, 3) | 2 3 2
+step: find(2, 2) | 2 2 2
+-->
+```text
+index        0   1   2   3   4   5   6   7
+items        4   9  15  23  31  42  57  68
+find(0, 7)   [ whole list ]  mid 3: 23   10 < 23, lower half keeps mid: 0 to 3
+find(0, 3)   [0 to 3]        mid 1: 9    10 > 9, upper half: 2 to 3
+find(2, 3)   [2 to 3]        mid 2: 15   10 < 15, lower half keeps mid: 2 to 2
+find(2, 2)   [2 to 2]        mid 2: 15   not 10, and low == high: not found
+```
+<!-- /figure -->
 
 If a base case returned the wrong value, you'd see it at the deepest `returning` line, and you'd see it carried up through the others.
 
@@ -493,7 +519,18 @@ def down_by_two(n):
     return down_by_two(n - 2)
 ```
 
-`down_by_two(4)` goes 4, 2, 0 and returns `"done"`. `down_by_two(5)` goes 5, 3, 1, −1, −3, ... It skips 0, and nothing else stops it.
+`down_by_two(4)` goes 4, 2, 0 and returns `"done"`. `down_by_two(5)` goes 5, 3, 1, −1, −3, ... It skips 0, and nothing else stops it. On a number line, the highlighted cells are the values each call gets:
+
+<!-- figure
+row: start at 4 | 5 *4 3 *2 1 *0 −1 −2 −3 | lands on 0: stops
+row: start at 5 | *5 4 *3 2 *1 0 *−1 −2 *−3 | jumps over 0: never stops
+-->
+```text
+               5  4  3  2  1  0 −1 −2 −3
+start at 4        4     2     0              lands on 0: stops
+start at 5     5     3     1    −1    −3 ... jumps over 0: never stops
+```
+<!-- /figure -->
 
 Each call adds a frame, and the stack has a size limit. Running out of stack space is a **stack overflow**. Python stops runaway recursion before that happens, with a **recursion depth limit**:
 
@@ -536,7 +573,26 @@ up 2
 up 3
 ```
 
-Each call prints its "down" line, then waits for the whole call below it to finish, then prints its "up" line. So the "up" lines come out reversed. A number pattern that counts down and then climbs back up, like `3 2 1 1 2 3`, works the same way.
+Each call prints its "down" line, then waits for the whole call below it to finish, then prints its "up" line. So the "up" lines come out reversed:
+
+<!-- figure
+call: echo(3) | prints down 3, then up 3 |
+call: >echo(2) | prints down 2, then up 2 |
+call: >>echo(1) | prints down 1, then up 1 |
+call: >>>echo(0) | base case: prints nothing |
+-->
+```text
+echo(3)              prints down 3
+  echo(2)            prints down 2
+    echo(1)          prints down 1
+      echo(0)        base case: prints nothing
+    back in echo(1): prints up 1
+  back in echo(2):   prints up 2
+back in echo(3):     prints up 3
+```
+<!-- /figure -->
+
+The "down" lines print in call order, top to bottom. The "up" lines print as the calls finish, bottom to top. A number pattern that counts down and then climbs back up, like `3 2 1 1 2 3`, works the same way.
 
 The same rule explains why a postorder tree traversal visits children before their parent: the visit comes after both recursive calls.
 

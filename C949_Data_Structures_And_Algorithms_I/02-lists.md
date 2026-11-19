@@ -9,7 +9,7 @@ A **list** holds items in a set order, like a to-do list where you can add a tas
 - search
 - traverse: visit every item in order
 
-A list is an **ADT** (abstract data type): it's defined by those operations, and how the items are stored is left open. This chapter builds a list two ways, with linked nodes and with an array. The two ways make different operations cheap, so their costs differ a lot.
+A list is an **ADT** (abstract data type): it's defined by those operations, and how the items are stored is left open. This chapter builds a list two ways, with linked nodes and with an array. Each way makes different operations cheap, and the [Big-O summary](#big-o-summary) at the end puts their costs side by side.
 
 ## Singly-linked lists
 
@@ -51,7 +51,20 @@ Both are O(1): they take a few pointer changes, however long the list is. Withou
 2. Set `curNode.next` to `newNode`.
 3. If `curNode` was the tail, move `tail` to `newNode`.
 
-The order of steps 1 and 2 matters. `curNode.next` is the only pointer to the rest of the list. If you do step 2 first, it's overwritten before `newNode` copies it, and nothing points to the rest of the list anymore. When you already have `curNode`, InsertAfter is O(1). Finding `curNode` first (by searching for a value) is O(n).
+Inserting 10 after the node holding 2, in `6 → 2 → 7`:
+
+<!-- figure
+nodes: 6 0 0, 2 1 0, 7 2.4 0, 10 1.7 0.8
+edges: 6>2, 2>10, 10>7
+-->
+```text
+6 → 2       7
+     ↘     ↗
+       10
+```
+<!-- /figure -->
+
+Step 1 points 10 at 7, and step 2 points 2 at 10. The order of these two steps matters. `curNode.next` is the only pointer to the rest of the list. If you do step 2 first, it's overwritten before `newNode` copies it, and nothing points to the rest of the list anymore. When you already have `curNode`, InsertAfter is O(1). Finding `curNode` first (by searching for a value) is O(n).
 
 ### Search
 
@@ -68,6 +81,21 @@ zyBooks names this operation **RemoveAfter(curNode)**: remove the node after `cu
 
 - Removing the head: move `head` to `head.next`. If the list is now empty, set `tail` to null too.
 - Removing the node after `curNode`: set `curNode.next` to the node after that. If the removed node was the tail, move `tail` to `curNode`.
+
+RemoveAfter(the node holding 6), in `6 → 2 → 7`, makes 6 point past 2:
+
+<!-- figure
+nodes: 6 0 0, 2 1 0, 7 2 0
+edges: 6>7 ~-46, 2>7
+-->
+```text
+┌──────────┐
+│          ↓
+6    2  →  7
+```
+<!-- /figure -->
+
+Nothing points to 2 anymore, so it's out of the list. Its own `next` still points at 7, but no walk from `head` ever reaches it.
 
 If you have the node before it, removal is O(1). Removing the **last** node is still O(n), even with a `tail` pointer. The new tail is the node before the old one, and the only way to find that node is to walk from the head.
 
@@ -106,7 +134,7 @@ If `curNode` is the tail, there is no `succ`: skip step 4 and move `tail` to `ne
 
 ## Circular lists
 
-In a **circular** linked list, the tail's `next` points back to the head instead of null (and in a doubly-linked circular list, the head's `prev` points to the tail). The list has no end, so a traversal starts at the head and stops when it gets back to the head. Circular lists fit things that repeat in turns, like players in a game or a round-robin task scheduler.
+In a **circular** linked list, the tail's `next` points back to the head instead of null. In a doubly-linked circular list, the head's `prev` also points to the tail. The list has no end, so a traversal starts at the head and stops when it gets back to the head. Circular lists fit things that repeat in turns, like players in a game or a round-robin task scheduler.
 
 > [!TIP]
 > To watch pointers change, paste a small `Node` class and a few appends into [Python Tutor](https://pythontutor.com/visualize.html). It draws each node as a box and each `next` pointer as an arrow, and steps through one line at a time. It's free, with no account needed. The [Practice in code](code/README.md#run-python-online) page lists other free sites.
@@ -117,7 +145,7 @@ In a **circular** linked list, the tail's `next` points back to the head instead
 
 ## Sorting linked lists
 
-**Insertion sort** grows a sorted part at the front of the list one node at a time. Each step takes the next unsorted node and puts it where it belongs in the sorted part. On a linked list no data moves: the node is unlinked and relinked in its new place.
+**Insertion sort** grows a sorted part at the front of the list one node at a time. Each step takes the next unsorted node and puts it where it belongs in the sorted part, the way you'd sort a hand of cards by sliding each new card into place. On a linked list no data moves: the node is unlinked and relinked in its new place.
 
 How each node finds its place depends on which way you can walk:
 
@@ -130,9 +158,19 @@ Algorithms that jump straight to positions by index, like quicksort and shell so
 
 ## Dummy nodes
 
-A **dummy node** (also called a sentinel) is a node with no real data that always sits at the front of the list, even when the list is "empty". The real items start at `dummy.next`.
+A **dummy node** (also called a sentinel) is a node with no real data that always sits at the front of the list, even when the list is "empty". The real items start at `dummy.next`. Here the list holds 6 and 2:
 
-With a dummy node, `head` never changes and is never null. Append, prepend, and remove then need no special cases for an empty list or for removing the first item, because every real node has a node before it. For example, removing the first real item is just RemoveAfter(dummy), the same code that removes any other item. Without the dummy, it would need its own branch that moves `head`. A doubly-linked list can use a dummy at each end.
+<!-- figure
+list: dummy 6 2
+-->
+```text
+ head               tail
+  ↓                  ↓
+[dummy] → [6] → [2] → null
+```
+<!-- /figure -->
+
+With a dummy node, `head` never changes and is never null. Append, prepend, and remove then need no special cases for an empty list or for removing the first item. Every real node has a node before it. For example, removing the first real item is just RemoveAfter(dummy), the same code that removes any other item. Without the dummy, it would need its own branch that moves `head`. A doubly-linked list can use a dummy at each end.
 
 ## Recursion on linked lists
 
@@ -141,11 +179,42 @@ A linked list has a recursive shape: a list is either empty, or a node followed 
 - **Search:** if the node is null, the item isn't there. If the node holds the item, return it. Otherwise, search starting from `node.next`.
 - **Print in reverse:** print the rest of the list (recursively), then print this node. The calls go all the way to the end before anything prints. For `3 → 8 → 5`, the call for 3 waits on the call for 8, which waits on the call for 5. The 5 call prints first, then 8, then 3.
 
+  <!-- figure
+  call: printReverse(3) | | prints 3 last
+  call: >printReverse(8) | | prints 8 second
+  call: >>printReverse(5) | | prints 5 first
+  call: >>>printReverse(null) | base case | prints nothing
+  -->
+  ```text
+  printReverse(3)                         prints 3 last
+    printReverse(8)                       prints 8 second
+      printReverse(5)                     prints 5 first
+        printReverse(null)   base case    prints nothing
+  ```
+  <!-- /figure -->
+
 Each call handles one node, so both take O(n) time. They also use O(n) stack space for the calls.
 
 ## Array-based lists
 
 An **array-based list** keeps its items in an array, from index 0 up, plus a count of how many there are. The array is usually bigger than the count, so there's room to grow.
+
+An array-based list has two different counts. The array's **size** (also called its capacity) is how many slots it has. The list's **length** is how many of those slots hold items. An array of size 6 might hold a list of length 3, with 3 empty slots at the end.
+
+Adding at the front is slow because every item has to move over first:
+
+<!-- figure
+index: yes
+row: before | B C D · · | prepend A
+row: after | *A B C D · | D, C, B each shifted right one place, back to front (3 shifts)
+-->
+```text
+index:    0  1  2  3  4
+before:  [B, C, D, ·, ·]     prepend A
+shift D, C, B right one place each   (3 shifts)
+after:   [A, B, C, D, ·]
+```
+<!-- /figure -->
 
 | Operation | How | Cost |
 |---|---|---|
