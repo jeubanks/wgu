@@ -15,11 +15,15 @@ A **B-tree of order m** is a search tree where:
 
 An order 3 B-tree, so each node has 1 or 2 keys and up to 3 children:
 
+<!-- figure
+btree: 12 28{4 9, 17, 33 40}
+-->
 ```text
               12   28
            /     |     \
         4  9    17     33  40
 ```
+<!-- /figure -->
 
 - The root has 2 keys, so it has 3 children.
 - 4 and 9 are below 12, 17 is between 12 and 28, and 33 and 40 are above 28.
@@ -46,6 +50,10 @@ A **2-3-4 tree** is a B-tree of order 4. Each node has 1, 2, or 3 keys, and an i
 
 A **leaf** has no children. zyBooks numbers the keys and children in a node from 0:
 
+<!-- figure
+btree: 20 40 60{"child 0: < 20"@x, "child 1: 20 to 40"@x, "child 2: 40 to 60"@x, "child 3: > 60"@x}
+title: Keys 0, 1, 2 hold 20, 40, 60, and child i sits between key i − 1 and key i
+-->
 ```text
               key 0     key 1     key 2
            [   20    |   40    |   60   ]
@@ -53,6 +61,7 @@ A **leaf** has no children. zyBooks numbers the keys and children in a node from
       child 0     child 1    child 2    child 3
       (< 20)     (20 to 40) (40 to 60)  (> 60)
 ```
+<!-- /figure -->
 
 - A node with 1 key uses key 0 and children 0 and 1.
 - A node with 2 keys uses keys 0 and 1 and children 0, 1, and 2.
@@ -104,6 +113,9 @@ zyBooks writes the search recursively, with a helper that takes the key and the 
 
 **Trace.** Search this tree for 45, then for 65:
 
+<!-- figure
+btree: 50{30{10 20, 40 45}, 70{60, 80 90}}
+-->
 ```text
                    50
                /        \
@@ -111,19 +123,23 @@ zyBooks writes the search recursively, with a helper that takes the key and the 
           /    \        /    \
       10 20   40 45    60    80 90
 ```
+<!-- /figure -->
 
-```text
-search 45
-  node (50)       45 ≠ 50.  45 < 50, so go to child 0
-  node (30)       45 ≠ 30.  not < 30, and the node has 1 key, so go to child 1
-  node (40 45)    45 = key 1. Found: return this node.     3 nodes visited
+**Search 45:** 3 nodes visited.
 
-search 65
-  node (50)       65 ≠ 50.  not < 50, 1 key, so go to child 1
-  node (70)       65 ≠ 70.  65 < 70, so go to child 0
-  node (60)       65 ≠ 60.  it's a leaf, so its child 1 is None
-  None            return None: 65 isn't in the tree.       3 nodes visited
-```
+| Node | Compare | Next |
+|---|---|---|
+| (50) | 45 ≠ 50, and 45 < 50 | child 0 |
+| (30) | 45 ≠ 30, and 45 isn't < 30. The node has 1 key | child 1 |
+| (40 45) | 45 = key 1 | found: return this node |
+
+**Search 65:** 3 nodes visited.
+
+| Node | Compare | Next |
+|---|---|---|
+| (50) | 65 ≠ 50, and 65 isn't < 50. The node has 1 key | child 1 |
+| (70) | 65 ≠ 70, and 65 < 70 | child 0 |
+| (60) | 65 ≠ 60. It's a leaf, so its child 1 is None | None: 65 isn't in the tree |
 
 **Big-O:**
 
@@ -150,6 +166,11 @@ The split returns the node that received the middle key, and the insert continue
 
 A non-root split. Inserting 35 reaches the full node (30 40 50) and splits it first:
 
+<!-- figure
+btree: Before :: 20 60{5, 30 40 50, 80}
+btree: After the split, then 35 added :: 20 40 60{5, 30 35, 50, 80}
+flow: yes
+-->
 ```text
 before                                after the split, then 35 added
 
@@ -157,6 +178,7 @@ before                                after the split, then 35 added
       /    |      \                     /    |    |    \
      5  30 40 50   80                  5  30 35   50    80
 ```
+<!-- /figure -->
 
 40 moved up into the parent. 30 and 50 became separate nodes. Then 35 continued down to the node holding 30.
 
@@ -179,6 +201,15 @@ A full node is split even when the new key's leaf has room. That's what makes th
 
 **Trace.** Insert 30, 10, 50, 20, 40, 70, 60, 80, 90, 45 into an empty 2-3-4 tree:
 
+<!-- figure
+btree: Insert 30, 10, 50: one leaf fills up :: 10 30 50
+btree: Insert 20: the root is full, so it splits and 30 moves up. 20 goes left :: 30{10 20, 50}
+btree: Insert 40 and 70: both go into the right leaf, which fills up :: 30{10 20, 40 50 70}
+btree: Insert 60: (40 50 70) is full, so it splits and 50 moves up. 60 goes right :: 30 50{10 20, 40, 60 70}
+btree: Insert 80: it goes into the right leaf :: 30 50{10 20, 40, 60 70 80}
+btree: Insert 90: (60 70 80) is full, so it splits and 70 moves up :: 30 50 70{10 20, 40, 60, 80 90}
+btree: Insert 45: the root is full, so it splits first and 50 becomes the new root. The leaf (40) had room, but the full root splits anyway :: 50{30{10 20, 40 45}, 70{60, 80 90}}
+-->
 ```text
 insert 30, 10, 50     a single leaf fills up:        10 30 50
 
@@ -215,6 +246,7 @@ insert 45             the ROOT is full: split it, 50 becomes the new root.
                           /    \        /    \
                       10 20   40 45    60    80 90
 ```
+<!-- /figure -->
 
 Four splits in all. Only the last one split the root, so the height went from 1 to 2 there.
 
@@ -243,13 +275,35 @@ A 2-3-4 **rotation** moves one key between two adjacent siblings by way of their
 
 The node being rotated must have at least 2 keys, so it still has one afterward.
 
+<!-- figure
+title: Right rotation on (10 20 30)
+btree: Before :: 40{10 20 30, 50}
+btree: After :: 30{10 20, 40 50}
+flow: yes
+-->
 ```text
-right rotation on (10 20 30)                left rotation on (50 60)
+right rotation on (10 20 30)
 
-        40                  30                    40                   50
-      /    \       →      /    \                /    \       →       /    \
- 10 20 30   50         10 20   40 50          10    50 60         10 40    60
+        40                  30
+      /    \       →      /    \
+ 10 20 30   50         10 20   40 50
 ```
+<!-- /figure -->
+
+<!-- figure
+title: Left rotation on (50 60)
+btree: Before :: 40{10, 50 60}
+btree: After :: 50{10 40, 60}
+flow: yes
+-->
+```text
+left rotation on (50 60)
+
+        40                   50
+      /    \       →       /    \
+    10    50 60         10 40    60
+```
+<!-- /figure -->
 
 The name says which way the key travels: in a right rotation, a key ends up in the right sibling. These are different from BST rotations in [chapter 6](06-balanced-trees.md#rotations), which move a parent and child up and down. Other books call this step **borrowing**, a **transfer**, or **redistribution**.
 
@@ -261,6 +315,11 @@ When neither sibling has a key to spare, **fusion** combines three keys into one
 
 **Non-root fusion.** The parent must have at least 2 keys, so it still has one after giving one up. The fused node takes the left sibling's two children and the right sibling's two children, in order.
 
+<!-- figure
+btree: Before :: 30 70{10, 50, 90}
+btree: Fuse 10 and 50 :: 70{10 30 50, 90}
+flow: yes
+-->
 ```text
 fuse 10 and 50
 
@@ -268,11 +327,17 @@ fuse 10 and 50
       /    |    \          →          /    \
     10    50     90             10 30 50     90
 ```
+<!-- /figure -->
 
 The parent lost 30, and the tree has one node fewer.
 
 **Root fusion.** When the root has 1 key and both of its children have 1 key each, all three keys go into the root, and the root takes the four grandchildren as its children. This is the only way a 2-3-4 tree gets shorter: the height drops by 1.
 
+<!-- figure
+btree: Before :: 40{20, 60}
+btree: Fuse the root :: 20 40 60
+flow: yes
+-->
 ```text
 fuse the root
 
@@ -280,6 +345,7 @@ fuse the root
       /    \           →        20  40  60
     20      60
 ```
+<!-- /figure -->
 
 zyBooks' root fusion reuses the root node, so no new node is created. Each fusion is **O(1)**.
 
@@ -315,6 +381,9 @@ The root is never merged, so it's the only node on the removal path that can sti
 
 **Trace.** Start from this tree, then remove 50, then remove 30:
 
+<!-- figure
+btree: 50{25{10 15, 30}, 75{60 65, 80 90}}
+-->
 ```text
                    50
                /        \
@@ -322,34 +391,42 @@ The root is never merged, so it's the only node on the removal path that can sti
           /    \        /    \
       10 15    30    60 65   80 90
 ```
+<!-- /figure -->
 
+**Remove 50:**
+
+1. The root (50) holds 50 and is internal. The successor is the smallest key to the right of 50: 60. Save 60, then remove 60 starting from the root.
+2. Root (50): 60 isn't here. Go to child 1.
+3. Node (75) has 1 key and isn't the root: merge. It has no right sibling, and its left sibling (25) has 1 key, so fuse. The parent is the root with 1 key, so this is a root fusion. The root becomes (25 50 75).
+4. Root (25 50 75): 60 isn't here. 50 < 60 < 75: go to child 2.
+5. Node (60 65) holds 60 and is a leaf: remove it. The node becomes (65).
+6. Find 50 again (now in the root) and overwrite it with 60.
+
+<!-- figure
+btree: After removing 50 :: 25 60 75{10 15, 30, 65, 80 90}
+-->
 ```text
-remove 50
-  root (50)       holds 50, internal. Successor = smallest key right of 50 = 60.
-                  Save 60, then remove 60 starting from the root:
-    root (50)     60 not here. Go to child 1.
-    node (75)     1 key, not the root: merge. No right sibling, and the left
-                  sibling (25) has 1 key, so fuse. The parent is the root with
-                  1 key: root fusion. Root becomes (25 50 75).
-    root (25 50 75)  60 not here. 50 < 60 < 75: go to child 2.
-    node (60 65)  holds 60 and is a leaf: remove it. Node becomes (65).
-  Find 50 again (now in the root) and overwrite it with 60.
-
                 25   60   75
              /     |    |     \
          10 15    30    65    80 90
+```
+<!-- /figure -->
 
-remove 30
-  root            30 not here. 25 < 30 < 60: go to child 1.
-  node (30)       1 key: merge. Left sibling (10 15) has 2 keys:
-                  right rotation on (10 15). 15 moves up, 25 moves down.
-                  Root becomes (15 60 75), node becomes (25 30).
-  node (25 30)    holds 30 and is a leaf: remove it.
+**Remove 30:**
 
+1. Root: 30 isn't here. 25 < 30 < 60: go to child 1.
+2. Node (30) has 1 key: merge. Its left sibling (10 15) has 2 keys, so do a right rotation on (10 15): 15 moves up and 25 moves down. The root becomes (15 60 75), and the node becomes (25 30).
+3. Node (25 30) holds 30 and is a leaf: remove it.
+
+<!-- figure
+btree: After removing 30 :: 15 60 75{10, 25, 65, 80 90}
+-->
+```text
                 15   60   75
              /     |    |     \
            10     25    65    80 90
 ```
+<!-- /figure -->
 
 The first removal shrank the tree (root fusion), and the second used a rotation.
 
@@ -391,6 +468,12 @@ For a B-tree of a larger order m, each node holds up to m − 1 keys, so a step 
 
 - **10.2** Valid 2-3-4 trees.
 
+  <!-- figure
+  btree: Tree A :: 30 60{10 20, 40, 70{65, 80}}
+  btree: Tree B :: 25 50{5 15, 35 45}
+  btree: Tree C :: 40{10 20 30, 55 70}
+  btree: Tree D :: 20 45{5 10, 25 50, 60 75}
+  -->
   ```text
   Tree A                          Tree B
 
@@ -406,6 +489,7 @@ For a B-tree of a larger order m, each node holds up to m − 1 keys, so a step 
          /      \                      /    |     \
     10 20 30    55 70               5 10  25 50   60 75
   ```
+  <!-- /figure -->
 
   **a)** Which tree is a valid 2-3-4 tree?
 
@@ -436,6 +520,9 @@ For a B-tree of a larger order m, each node holds up to m − 1 keys, so a step 
 
 - **10.3** Search this 2-3-4 tree.
 
+  <!-- figure
+  btree: 40{15 25{5 10, 20, 30 35}, 60 75 90{45 50, 65 70, 80, 95}}
+  -->
   ```text
                          40
                 /                  \
@@ -443,6 +530,7 @@ For a B-tree of a larger order m, each node holds up to m − 1 keys, so a step 
           /   |    \          /    |     |    \
        5 10   20   30 35   45 50  65 70  80    95
   ```
+  <!-- /figure -->
 
   **a)** Searching for 70 reaches the node (60 75 90). Which of its children does the search visit next?
 
@@ -501,6 +589,9 @@ For a B-tree of a larger order m, each node holds up to m − 1 keys, so a step 
   - 2: the root is full: split, 24 becomes the new root over (12) and (30). Split 4. Then (12)'s child (3 6 9) is full: split, 6 moves up into (12), giving (6 12). Split 5. 2 goes into (3), giving (2 3).
   - **a)** **24**. **b)** **6 12**. **c)** Height **2**: root, one middle level, leaves. **d)** **5** splits.
 
+  <!-- figure
+  btree: 24{6 12{2 3, 9, 15 18}, 30{27, 33 36}}
+  -->
   ```text
                        24
                  /            \
@@ -508,16 +599,21 @@ For a B-tree of a larger order m, each node holds up to m − 1 keys, so a step 
            /   |    \         /    \
         2 3    9   15 18    27     33 36
   ```
+  <!-- /figure -->
 
   </details>
 
 - **10.5** Preemptive split. Start from this 2-3-4 tree each time.
 
+  <!-- figure
+  btree: 20 50{5 10, 30 35 40, 60 70}
+  -->
   ```text
             20      50
          /      |       \
       5 10   30 35 40   60 70
   ```
+  <!-- /figure -->
 
   **a)** Insert 38. What keys are in the root afterward? Separate them with spaces.
 
@@ -548,11 +644,15 @@ For a B-tree of a larger order m, each node holds up to m − 1 keys, so a step 
 
 - **10.6** Merges. Start from this 2-3-4 tree each time.
 
+  <!-- figure
+  btree: 30 50 70{10, 40, 60 65, 80}
+  -->
   ```text
              30     50     70
           /      |      |      \
         10      40    60 65     80
   ```
+  <!-- /figure -->
 
   Which operation does a zyBooks merge use on each node?
 
@@ -580,6 +680,9 @@ For a B-tree of a larger order m, each node holds up to m − 1 keys, so a step 
 
 - **10.7** Remove 40 from this 2-3-4 tree with zyBooks' preemptive merge.
 
+  <!-- figure
+  btree: 40 70{20{10, 30}, 55{50, 60}, 85 95{80, 90, 99}}
+  -->
   ```text
                    40      70
               /        |        \
@@ -587,6 +690,7 @@ For a B-tree of a larger order m, each node holds up to m − 1 keys, so a step 
            /  \       /  \     /   |    \
          10    30   50    60  80   90    99
   ```
+  <!-- /figure -->
 
   **a)** Which key replaces 40?
 
@@ -621,6 +725,9 @@ For a B-tree of a larger order m, each node holds up to m − 1 keys, so a step 
   - Then 40 is found in the root and overwritten with 50.
   - **d)** The root is **50 85**. **e)** Its child 1 is **70**, with children (55 60) and (80).
 
+  <!-- figure
+  btree: 50 85{20{10, 30}, 70{55 60, 80}, 95{90, 99}}
+  -->
   ```text
                    50      85
               /        |        \
@@ -628,6 +735,7 @@ For a B-tree of a larger order m, each node holds up to m − 1 keys, so a step 
            /  \       /  \      /   \
          10    30  55 60  80   90    99
   ```
+  <!-- /figure -->
 
   </details>
 

@@ -224,3 +224,35 @@
   .md-typeset .viz-chip::before { width: .5em; height: .5em; }
   .md-typeset .viz-figure { padding: .6rem .5rem; }
 }
+
+/* ---- Drawn figures from hooks/figures.py (trees, B-trees, graphs, lists, arrays) ---- */
+.md-typeset .dsf { display: block; border: 1px solid var(--viz-line); border-radius: .7rem; padding: .7rem .8rem; margin: 1em 0; background: var(--viz-surface); overflow-x: auto; }
+.md-typeset .dsf-title { display: block; font-family: var(--wgu-display-font); font-weight: 600; font-size: .85rem; margin: 0 0 .4rem; }
+.md-typeset .dsf-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; justify-content: safe center; gap: .6rem 1.4rem; }
+.md-typeset .dsf-panel { display: flex; flex-direction: column; align-items: center; align-items: safe center; min-width: 0; max-width: 100%; }
+.md-typeset .dsf-svg { display: block; max-width: 100%; height: auto; }
+.md-typeset .dsf-pcap { font-size: .68rem; color: var(--viz-muted); text-align: center; margin-top: .25rem; max-width: 22rem; }
+.md-typeset .dsf-flow { font-size: 1.2rem; color: var(--viz-muted); }
+.md-typeset .dsf-step { display: flex; align-items: center; gap: 1.2rem; min-width: 0; max-width: 100%; }
+.dsf-svg text { font-family: var(--md-text-font-family, Inter), sans-serif; font-size: 13px; }
+.dsf-svg .dsf-t { fill: var(--viz-ink); font-weight: 600; }
+.dsf-svg .dsf-cap { fill: var(--viz-muted); font-weight: 500; }
+.dsf-svg .dsf-acc, .dsf-svg .dsf-note { fill: var(--viz-accent); font-weight: 600; }
+.dsf-svg .dsf-n { fill: var(--viz-surface-2); stroke: var(--viz-ink); stroke-width: 1.5; }
+.dsf-svg .dsf-tri { fill: var(--viz-surface-2); stroke: var(--viz-muted); stroke-width: 1.5; stroke-linejoin: round; }
+.dsf-svg .dsf-e { stroke: var(--viz-muted); stroke-width: 1.6; fill: none; }
+.dsf-svg .dsf-div { stroke: var(--viz-line); stroke-width: 1.2; }
+.dsf-svg .dsf-head { fill: var(--viz-muted); }
+.dsf-svg .dsf-wbg { fill: var(--viz-surface); stroke: var(--viz-line); stroke-width: 1; }
+.dsf-svg .dsf-w { fill: var(--viz-ink); font-weight: 600; }
+/* Red-black nodes keep their real colors in both themes: near-black and red, white keys. */
+.dsf-svg .dsf-red { fill: #c0292b; stroke: #c0292b; }
+.dsf-svg .dsf-black { fill: #1d1d22; stroke: var(--viz-ink); }
+.dsf-svg .dsf-on { fill: #fff; }
+.dsf-svg .dsf-fade { opacity: .35; }
+.dsf-svg .dsf-fadet { opacity: .45; }
+.dsf-svg .dsf-hit { fill: color-mix(in srgb, var(--viz-accent) 22%, var(--viz-surface)); stroke: var(--viz-accent); stroke-width: 2; }
+.dsf-svg .dsf-dash { stroke-dasharray: 3 3; }
+.dsf-svg .dsf-split { stroke: var(--viz-accent); stroke-width: 2; stroke-dasharray: 4 3; }
+.dsf-svg .dsf-sq { stroke-width: 1; }
+.dsf-svg .dsf-eh { stroke: var(--viz-accent); stroke-width: 2.6; }

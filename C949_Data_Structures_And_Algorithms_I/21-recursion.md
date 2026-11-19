@@ -50,6 +50,13 @@ def sum_to(n):
 
 `sum_to(n)` adds 1 + 2 + ... + n. Each call waits for the call below it, then adds its own n. The calls go down, and the returns come back up:
 
+<!-- figure
+call: sum_to(4) | | 4 + 6 = 10
+call: >sum_to(3) | | 3 + 3 = 6
+call: >>sum_to(2) | | 2 + 1 = 3
+call: >>>sum_to(1) | | 1 + 0 = 1
+call: >>>>sum_to(0) | base case | 0
+-->
 ```text
 sum_to(4)
   sum_to(3)
@@ -62,8 +69,9 @@ sum_to(4)
   returns 3 + 3 = 6
 returns 4 + 6 = 10
 ```
+<!-- /figure -->
 
-Each line that starts with `returns` belongs to the call above it at the same indent. `sum_to(4)` makes 5 calls: n = 4, 3, 2, 1, 0.
+Each call's return value sits beside it, on the way back up. `sum_to(4)` makes 5 calls: n = 4, 3, 2, 1, 0.
 
 Two things make `sum_to` work:
 
@@ -78,6 +86,14 @@ The frames sit on the **call stack**. A call pushes a frame, and a return pops i
 
 At the deepest point of `sum_to(4)`:
 
+<!-- figure
+frame: sum_to(0) | n = 0 | top: running now
+frame: sum_to(1) | n = 1 | waiting for sum_to(0)
+frame: sum_to(2) | n = 2 | waiting for sum_to(1)
+frame: sum_to(3) | n = 3 | waiting for sum_to(2)
+frame: sum_to(4) | n = 4 | waiting for sum_to(3)
+frame: the code that called sum_to(4) | |
+-->
 ```text
 sum_to(0)   n = 0   ← top: running now
 sum_to(1)   n = 1   waiting for sum_to(0)
@@ -86,6 +102,7 @@ sum_to(3)   n = 3   waiting for sum_to(2)
 sum_to(4)   n = 4   waiting for sum_to(3)
 (the code that called sum_to(4))
 ```
+<!-- /figure -->
 
 `sum_to(0)` returns 0 and its frame pops. `sum_to(1)` is on top again, finishes 1 + 0, returns, and pops. This repeats until `sum_to(4)` returns 10 and the stack is back where it started.
 
@@ -120,6 +137,11 @@ The first call covers the whole list: `find(items, target, 0, len(items) - 1)`.
 
 Searching `[4, 9, 15, 23, 31, 42, 57, 68]` for 57:
 
+<!-- figure
+call: find(low=0, high=7) | mid = 3, items[mid] = 23 | 6
+call: >find(low=4, high=7) | mid = 5, items[mid] = 42 | 6
+call: >>find(low=6, high=7) | mid = 6, items[mid] = 57: found | 6
+-->
 ```text
 find(low=0, high=7)   mid=3, items[mid]=23
   find(low=4, high=7)   mid=5, items[mid]=42
@@ -128,6 +150,7 @@ find(low=0, high=7)   mid=3, items[mid]=23
   returns 6
 returns 6
 ```
+<!-- /figure -->
 
 57 > 23, so search 4 to 7. 57 > 42, so search 6 to 7. The middle is 57: found at index 6, after 3 calls. Each call passes the answer straight up.
 
@@ -151,6 +174,12 @@ def count_nodes(node):
 
 On a list `k → e → y`:
 
+<!-- figure
+call: count_nodes(k) | | 1 + 2 = 3
+call: >count_nodes(e) | | 1 + 1 = 2
+call: >>count_nodes(y) | | 1 + 0 = 1
+call: >>>count_nodes(None) | base case | 0
+-->
 ```text
 count_nodes(k)
   count_nodes(e)
@@ -161,6 +190,7 @@ count_nodes(k)
   returns 1 + 1 = 2
 returns 1 + 2 = 3
 ```
+<!-- /figure -->
 
 Four calls for three nodes: one per node, plus one for the `None` at the end. Searching a list for a value is the same shape, with a second base case for finding it. [Chapter 5](05-trees.md#bst-recursion) does the same on binary search trees.
 
@@ -244,6 +274,13 @@ def _factorial(n):
 
 Tracing `_factorial(5)`:
 
+<!-- figure
+call: _factorial(5) | | 5 * 24 = 120
+call: >_factorial(4) | | 4 * 6 = 24
+call: >>_factorial(3) | | 3 * 2 = 6
+call: >>>_factorial(2) | | 2 * 1 = 2
+call: >>>>_factorial(1) | base case | 1
+-->
 ```text
 _factorial(5)
   _factorial(4)
@@ -256,6 +293,7 @@ _factorial(5)
   returns 4 * 6 = 24
 returns 5 * 24 = 120
 ```
+<!-- /figure -->
 
 5 calls, and 5! = 120.
 
@@ -306,6 +344,9 @@ def fib(n):
 
 Each call makes **two** calls, so the calls form a tree instead of a line. The call tree for `fib(4)`, with what each call returns:
 
+<!-- figure
+nary: fib(4)=3{fib(3)=2{fib(2)=1{fib(1)=1, fib(0)=0}, fib(1)=1}, fib(2)=1{fib(1)=1, fib(0)=0}}
+-->
 ```text
                        fib(4)=3
                  /                 \
@@ -315,6 +356,7 @@ Each call makes **two** calls, so the calls form a tree instead of a line. The c
      /      \
 fib(1)=1  fib(0)=0
 ```
+<!-- /figure -->
 
 - Read it top-down for the order of calls: `fib(4)` calls `fib(3)` first, and `fib(3)` finishes all of its calls before `fib(2)` on the right starts.
 - Read it bottom-up for the returns: each node adds its two children's values.
@@ -331,6 +373,14 @@ def fib_fast(n, a=0, b=1):
     return fib_fast(n - 1, b, a + b)
 ```
 
+<!-- figure
+call: fib_fast(5, 0, 1) | | 5
+call: >fib_fast(4, 1, 1) | | 5
+call: >>fib_fast(3, 1, 2) | | 5
+call: >>>fib_fast(2, 2, 3) | | 5
+call: >>>>fib_fast(1, 3, 5) | | 5
+call: >>>>>fib_fast(0, 5, 8) | base case: a is the answer | 5
+-->
 ```text
 fib_fast(5, 0, 1)
   fib_fast(4, 1, 1)
@@ -345,6 +395,7 @@ fib_fast(5, 0, 1)
   returns 5
 returns 5
 ```
+<!-- /figure -->
 
 a and b walk along the sequence: (0, 1), (1, 1), (1, 2), (2, 3), (3, 5), (5, 8). When n reaches 0, a is the answer, and every call passes it straight up. That's n + 1 calls: O(n). Avoiding work on the same smaller problem twice is the idea behind [dynamic programming](01-introduction.md#dynamic-programming).
 
@@ -364,6 +415,12 @@ def gcd(a, b):
     return gcd(a - b, b)
 ```
 
+<!-- figure
+call: gcd(18, 30) | | 6
+call: >gcd(18, 12) | | 6
+call: >>gcd(6, 12) | | 6
+call: >>>gcd(6, 6) | base case: equal | 6
+-->
 ```text
 gcd(18, 30)
   gcd(18, 12)
@@ -374,6 +431,7 @@ gcd(18, 30)
   returns 6
 returns 6
 ```
+<!-- /figure -->
 
 That's 4 calls. Both numbers must be at least 1, because with a 0 the subtraction never makes them equal. zyBooks' program checks this before the first call, which is the outer function's job.
 
@@ -390,6 +448,13 @@ def power(base, exp):
     return base * power(base, exp - 1)
 ```
 
+<!-- figure
+call: power(3, 4) | | 3 * 27 = 81
+call: >power(3, 3) | | 3 * 9 = 27
+call: >>power(3, 2) | | 3 * 3 = 9
+call: >>>power(3, 1) | | 3 * 1 = 3
+call: >>>>power(3, 0) | base case | 1
+-->
 ```text
 power(3, 4)
   power(3, 3)
@@ -402,6 +467,7 @@ power(3, 4)
   returns 3 * 9 = 27
 returns 3 * 27 = 81
 ```
+<!-- /figure -->
 
 That's exp + 1 calls: O(exp). Python's `**` and `math.pow()` do this for you. The recursive version is for practice.
 
@@ -492,6 +558,10 @@ def arrange(remaining, chosen):
 
 The tree for `arrange("pqr", "")`. Each node shows `remaining/chosen`:
 
+<!-- figure
+nary: pqr/{qr/p{r/pq{/pqr}, q/pr{/prq}}, pr/q{r/qp{/qpr}, p/qr{/qrp}}, pq/r{q/rp{/rpq}, p/rq{/rqp}}}
+levels: start | choose the 1st letter | choose the 2nd letter | choose the 3rd letter: print
+-->
 ```text
                          pqr/
            ┌──────────────┼──────────────┐
@@ -501,6 +571,7 @@ The tree for `arrange("pqr", "")`. Each node shows `remaining/chosen`:
       │      │       │      │       │      │
     /pqr   /prq    /qpr   /qrp    /rpq   /rqp       choose the 3rd letter: print
 ```
+<!-- /figure -->
 
 The calls go down the leftmost branch first, and the loop then tries the next letter at each level. The leaves, read left to right, are the output:
 
@@ -532,6 +603,9 @@ def subsets(items, picked):
 
 Each call decides one item, then makes two calls:
 
+<!-- figure
+nary: "subsets([a, b], [])"{"subsets([b], [a])"{"subsets([], [a, b])"{"prints ['a', 'b']"@x}, "subsets([], [a])"{"prints ['a']"@x}}, "subsets([b], [])"{"subsets([], [b])"{"prints ['b']"@x}, "subsets([], [])"{"prints []"@x}}}
+-->
 ```text
 subsets([a, b], [])
   subsets([b], [a])
@@ -541,6 +615,7 @@ subsets([a, b], [])
     subsets([], [b])        prints ['b']
     subsets([], [])         prints []
 ```
+<!-- /figure -->
 
 Output:
 

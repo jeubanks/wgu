@@ -55,13 +55,21 @@ def binary_search(items, key):
 
 A trace, searching for 75 in an 11-item list:
 
+<!-- figure
+array: 3 9 14 22 31 40 57 68 75 82 96
+step: Step 1 | 0 10 5
+step: Step 2 | 6 10 8
+-->
 ```text
 index    0   1   2   3   4   5   6   7   8   9  10
 items    3   9  14  22  31  40  57  68  75  82  96
-
-step 1   low 0, high 10   mid = (0 + 10) // 2 = 5    items[5] = 40   75 > 40, so low = 6
-step 2   low 6, high 10   mid = (6 + 10) // 2 = 8    items[8] = 75   found at index 8
 ```
+<!-- /figure -->
+
+| Step | low | high | mid | items[mid] | Result |
+|---|---|---|---|---|---|
+| 1 | 0 | 10 | (0 + 10) // 2 = 5 | 40 | 75 > 40, so low = 6 |
+| 2 | 6 | 10 | (6 + 10) // 2 = 8 | 75 | found at index 8 |
 
 Binary search needed two comparisons here, where linear search would need nine. Each step halves the range that's left, so the number of steps is how many times n can be halved. Binary search makes at most **⌊log₂ n⌋ + 1** comparisons.
 
@@ -183,10 +191,9 @@ for i in range(n):
 
 The inner loop's length changes with i, so trace it. For n = 8:
 
-```text
-i              0  1  2  3  4  5  6  7
-inner passes   0  1  2  3  4  5  6  7    total 28
-```
+| i | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | Total |
+|---|---|---|---|---|---|---|---|---|---|
+| Inner passes | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 28 |
 
 Total: 0 + 1 + 2 + ... + 7 = 28. In general, 0 + 1 + ... + (n − 1) = **n(n − 1) / 2**, which is about n²/2. Drop the ½: **O(n²)**.
 
@@ -204,10 +211,9 @@ while i > 1:
 
 Trace it for n = 16:
 
-```text
-pass              1  2  3  4
-i after the pass  8  4  2  1    stops: 4 passes
-```
+| Pass | 1 | 2 | 3 | 4 |
+|---|---|---|---|---|
+| i after the pass | 8 | 4 | 2 | 1: stop after 4 passes |
 
 4 passes, and 2⁴ = 16. The number of passes is how many times n can be halved before reaching 1: **log₂ n**. So this is **O(log n)**. Doubling up to n is the same:
 
@@ -242,10 +248,9 @@ while i > 0:
 
 It looks like Pattern 6, so the guess is O(n log n). Trace it for n = 16 instead:
 
-```text
-i              16   8   4   2   1
-inner passes   16   8   4   2   1    total 31
-```
+| i | 16 | 8 | 4 | 2 | 1 | Total |
+|---|---|---|---|---|---|---|
+| Inner passes | 16 | 8 | 4 | 2 | 1 | 31 |
 
 Total: 16 + 8 + 4 + 2 + 1 = 31, which is just under 2n. Each round does half the work of the one before, and n + n/2 + n/4 + ... never reaches 2n. So it's **O(n)**. When the inner work shrinks, trace before you multiply.
 
@@ -326,6 +331,9 @@ def fib(n):
 
 Each call makes two more, so the calls form a tree that roughly doubles at each level:
 
+<!-- figure
+nary: fib(5){fib(4){fib(3){fib(2){fib(1), fib(0)}, fib(1)}, fib(2){fib(1), fib(0)}}, fib(3){fib(2){fib(1), fib(0)}, fib(1)}}
+-->
 ```
                     fib(5)
            ┌──────────┴──────────┐
@@ -337,6 +345,7 @@ Each call makes two more, so the calls form a tree that roughly doubles at each 
  ┌─┴─┐
 f(1) f(0)
 ```
+<!-- /figure -->
 
 `fib(5)` makes 15 calls; `fib(6)` makes 25; `fib(20)` makes 21,891. The count grows exponentially: **O(2ⁿ)**. (Storing each answer the first time, as [dynamic programming](01-introduction.md#dynamic-programming) does, cuts it to O(n).)
 
@@ -378,6 +387,12 @@ If you can count the steps for some n, count them again for 2n. How the count ch
 
 Find the smallest item in the unsorted part, and swap it to the front of that part. The sorted part grows by one item per pass.
 
+<!-- figure
+row: start | 29 4 17 8 42 11
+row: pass 1 | *4 *29 17 8 42 11 | smallest is 4: swap it with 29
+row: pass 2 | .4 *8 17 *29 42 11 | smallest of the rest is 8: swap it with 29
+row: pass 3 | .4 .8 *11 29 42 *17 | and so on; faded items are sorted
+-->
 ```text
 start    29  4 17  8 42 11
 pass 1    4 29 17  8 42 11     smallest is 4: swap it with 29
@@ -385,6 +400,7 @@ pass 2    4  8 17 29 42 11     smallest of the rest is 8: swap it with 29
 pass 3    4  8 11 29 42 17
 ...
 ```
+<!-- /figure -->
 
 Selection sort always scans the whole unsorted part to be sure it found the smallest, even when the list is already sorted: n − 1 + n − 2 + ... + 1 comparisons, every time.
 
@@ -395,6 +411,12 @@ Selection sort always scans the whole unsorted part to be sure it found the smal
 
 Take the next item, and shift it left past every bigger item in the sorted part, like sorting a hand of cards.
 
+<!-- figure
+row: start | 29 4 17 8 42 11
+row: i = 1 | *4 29 17 8 42 11 | 4 moves left past 29
+row: i = 2 | 4 *17 29 8 42 11 | 17 moves left past 29, stops at 4
+row: i = 3 | 4 *8 17 29 42 11 | 8 moves left past 29 and 17, and so on
+-->
 ```text
 start    29  4 17  8 42 11
 i = 1     4 29 17  8 42 11     4 moves left past 29
@@ -402,6 +424,7 @@ i = 2     4 17 29  8 42 11     17 moves left past 29, stops at 4
 i = 3     4  8 17 29 42 11     8 moves left past 29 and 17
 ...
 ```
+<!-- /figure -->
 
 - **Best:** O(n), when the list is already sorted: each item is compared once and doesn't move. Nearly sorted lists are almost as fast.
 - **Average and worst:** O(n²). The worst case is a reversed list, where every item moves all the way to the front.
@@ -412,10 +435,15 @@ i = 3     4  8 17 29 42 11     8 moves left past 29 and 17
 
 Walk through the list comparing neighbors, and swap any pair that's out of order. Each pass carries the largest remaining item to the end, like a bubble rising.
 
+<!-- figure
+row: start | 29 4 17 8 42 11
+row: pass 1 | 4 17 8 29 11 *42 | 42 has bubbled to the end
+-->
 ```text
 start     29  4 17  8 42 11
 pass 1     4 17  8 29 11 42     42 has bubbled to the end
 ```
+<!-- /figure -->
 
 - **Best:** O(n), but only for the version that stops when a pass makes no swaps (the list is sorted). Without that check, it's O(n²) every time.
 - **Average and worst:** O(n²).
@@ -426,12 +454,19 @@ pass 1     4 17  8 29 11 42     42 has bubbled to the end
 
 Shell sort speeds up insertion sort by first sorting items that are far apart. With a **gap** of 3, it treats the list as 3 interleaved lists (indexes 0, 3, 6, ...; 1, 4, 7, ...; 2, 5, 8, ...) and insertion-sorts each one. Then it repeats with smaller gaps. The last gap is always 1. That final pass is a plain insertion sort, and it's quick because the list is now nearly sorted.
 
+<!-- figure
+index: yes
+row: start, gap 3 | *45 13 70 *2 88 31 *59 7 24 | one interleaved list: 45, 2, 59
+row: after gap 3 | *2 7 24 *45 13 31 *59 88 70 | that list is now 2, 45, 59
+row: after gap 1 | 2 7 13 24 31 45 59 70 88 | sorted
+-->
 ```text
 start, gap 3    45 13 70  2 88 31 59  7 24
                  ↑        ↑        ↑          one interleaved list: 45, 2, 59 → 2, 45, 59
 after gap 3      2  7 24 45 13 31 59 88 70
 after gap 1      2  7 13 24 31 45 59 70 88
 ```
+<!-- /figure -->
 
 Any gaps work as long as the last is 1. zyBooks suggests powers of 2 minus 1, largest first, below the list's length: for 100 items, 63, 31, 15, 7, 3, 1.
 
@@ -451,6 +486,13 @@ zyBooks picks the **middle** element as the pivot, and partitions with two index
 2. `high` starts at the right and moves left while its item is bigger than the pivot.
 3. If they've met or crossed, the partition is done: `high` is the last index of the left part. Otherwise, swap the two items, step both indexes one place, and repeat.
 
+<!-- figure
+index: yes
+row: start | 24 7 61 *15 38 3 50 | pivot = middle item = 15
+row: swap | *3 7 61 15 38 *24 50 | low stopped at 24 (not < 15), high at 3 (not > 15)
+row: swap | 3 7 *15 *61 38 24 50 | low stopped at 61, high at 15
+row: done | 3 7 15 // 61 38 24 50 | low passed high: left part and right part
+-->
 ```text
 start    24  7 61 15 38  3 50       pivot = middle item = 15
          low stops at 24 (not < 15), high stops at 3 (not > 15): swap them
@@ -459,6 +501,7 @@ start    24  7 61 15 38  3 50       pivot = middle item = 15
           3  7 15 61 38 24 50
          low passes high: done. Left part 3 7 15, right part 61 38 24 50
 ```
+<!-- /figure -->
 
 - **Best and average:** O(n log n). Good pivots split each range roughly in half, so there are about log n levels of partitioning, each O(n).
 - **Worst:** O(n²), when every pivot is the smallest or largest value, so each partition only peels off one item. With a last-item pivot, an already sorted list does this. (The optional code lesson's quicksort uses the last item, which is why its demo slows down on sorted input.)
@@ -470,11 +513,17 @@ start    24  7 61 15 38  3 50       pivot = middle item = 15
 
 Split the list in half, sort each half recursively, then **merge** the two sorted halves by repeatedly taking the smaller front item.
 
+<!-- figure
+row: split | 29 4 17 // 8 42 11
+row: sort each half | 4 17 29 // 8 11 42
+row: merge | 4 8 11 17 29 42 | take the smaller front item each time
+-->
 ```text
 split    29  4 17 | 8 42 11
 sort      4 17 29 | 8 11 42
 merge    take 4, 8, 11, 17, 29, 42 (the smaller front item each time)
 ```
+<!-- /figure -->
 
 - **Best, average, worst:** O(n log n), always: log n levels of splitting, and each level merges n items in total.
 - **Memory:** O(n) extra, for the merged lists. It doesn't sort in place.
@@ -493,12 +542,19 @@ Build a max-heap from the list (O(n)), then remove the max n times, each time pu
 
 Sort non-negative integers one digit at a time, starting from the ones digit. Each pass puts every number into one of 10 **buckets** by the digit it's looking at, then reads the buckets back in order, 0 to 9. After the pass for the largest number's last digit, the list is sorted.
 
+<!-- figure
+row: start | 170 45 75 90 802 24 2 66
+row: by ones digit | 170 90 802 2 24 45 75 66 | buckets 0: 170 90, 2: 802 2, 4: 24, ...
+row: by tens digit | 802 2 24 45 66 170 75 90
+row: by hundreds digit | 2 24 45 66 75 90 170 802 | sorted
+-->
 ```text
 start              170  45  75  90 802  24   2  66
 by ones digit      170  90 802   2  24  45  75  66     buckets 0: 170 90   2: 802 2   4: 24 ...
 by tens digit      802   2  24  45  66 170  75  90
 by hundreds digit    2  24  45  66  75  90 170 802
 ```
+<!-- /figure -->
 
 Each pass must keep the order from the pass before (append to the end of each bucket), or it undoes the earlier digits.
 
@@ -789,10 +845,15 @@ Trace each one before you answer. Many questions ask you to work out a count and
 
 - **11.9** Binary search. The list is sorted:
 
+  <!-- figure
+  index: yes
+  row: items | 3 9 14 22 31 40 57 68 75 82 96
+  -->
   ```text
   index    0   1   2   3   4   5   6   7   8   9  10
   items    3   9  14  22  31  40  57  68  75  82  96
   ```
+  <!-- /figure -->
 
   **a)** Searching for 10, which values does `items[mid]` take, in order? Write them separated by commas.
 

@@ -250,9 +250,35 @@ Run `python3 build_solutions.py` in the course folder after changing a lesson or
 | `allocation`, `huffman`, `tree-shapes` | Static drawings | C949 2, 1, cheat sheet |
 | `rb-tree`, `treap`, `set-ops` | Static drawings | C949 6, 7, 8 |
 
+For any other example drawing, use a [figure block](#drawn-figures-hooksfigurespy) instead of a new `data-viz` kind.
+
 - **Never let a bench answer a question.** Give each bench a setup the page's questions don't use (C949's hash bench has 13 buckets; its questions use 7, 10, and 11), and limit inputs where a question could be reproduced (the loop tracer stops at n = 16; question 11.5 asks about n = 32).
 - **Complexity chips:** on C949 pages, `viz.js` turns O(1), O(log n), O(n), O(n log n), O(n²), O(2ⁿ), and O(n!) in table cells into colored chips, one color per class, the same colors as the growth chart. Quiz tables and code are skipped.
 - Every bench works in light and dark, respects reduced motion, and narrates each step in a live region.
+
+### Drawn figures (`hooks/figures.py`)
+
+Every example drawing on the C949 pages (trees, B-trees, graphs, linked lists, array traces, matrices, recursive call chains) is a figure block: a short spec in an HTML comment, then a plain-text drawing that GitHub shows. The build turns the whole block into inline SVG, drawn on the server, so it needs no JavaScript and works in light and dark:
+
+````markdown
+<!-- figure
+tree: 62{31{15, 47{, 52}}, 84{73, 96}}
+-->
+```text
+        62
+      /    \
+    31      84
+   ...
+```
+<!-- /figure -->
+````
+
+The spec lines (`tree:`, `nary:`, `btree:`, `nodes:`/`edges:`, `list:`, `heap:`, `array:`/`step:`, `row:`, `grid:`, `call:`, `frame:`) are documented at the top of `hooks/figures.py`. A block works inside a list item: indent it like the rest of the item. Each SVG gets an `aria-label` that spells out the structure.
+
+- **Keep the text drawing.** It's what GitHub shows, and it's the record to check the spec against.
+- **Never draw an ASCII picture without a spec.** A trace that's really a table (BFS queues, Dijkstra distances, sort passes with notes) can be a Markdown table instead.
+- **A figure in a question shows only the question's input.** Path highlights (`@h`) and highlighted cells belong in worked examples and Answer boxes.
+- Lay graphs out so no two weights sit on top of each other: bend one of a pair of opposite edges (`~-30`), or move a crossing edge's weight along it (`@0.3`).
 
 ### C949 practice quiz (`practice.js`)
 

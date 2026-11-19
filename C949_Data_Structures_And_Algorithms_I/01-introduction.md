@@ -32,11 +32,17 @@ The right structure depends on the data and on which operations the program does
 
 Inserting into the middle shows the trade-off. An array keeps its items side by side, so every item after the new spot has to shift over one place first:
 
+<!-- figure
+index: yes
+row: before | K P R T W Z | insert M at index 2
+row: after | K P *M R T W Z | Z, W, T, R each shifted right one place, back to front (4 shifts)
+-->
 ```text
 array before:   [K, P, R, T, W, Z]      insert M at index 2
 shift Z, W, T, R right one place each   (4 shifts)
 array after:    [K, P, M, R, T, W, Z]
 ```
+<!-- /figure -->
 
 A linked list needs no shifting. Make a node for M, point it at R, then point P's node at M. The other nodes don't move. Inserting at the end of an array needs no shifts, and inserting at the front of an array shifts every item.
 
@@ -193,6 +199,8 @@ A worked example on the text `MISSISSIPPI` (11 characters):
 - The queue now holds 3, I (4), and S (4). Remove 3, then I. Join them into 7: the 3 node on the left, I on the right.
 - Remove S (4), then 7. Join them into the root, 11: S on the left, 7 on the right.
 
+<div class="viz" data-viz="huffman" markdown>
+
 ```text
             11
           0/  \1
@@ -203,6 +211,8 @@ A worked example on the text `MISSISSIPPI` (11 characters):
            M   P
 ```
 
+</div>
+
 The codes are S = `0`, I = `11`, M = `100`, P = `101`. The encoded text takes 4×1 + 4×2 + 2×3 + 1×3 = 21 bits. In 8-bit ASCII, the same 11 characters take 88 bits. Even a fixed-length code of 2 bits per character (enough for four characters) needs 22.
 
 Three things to know:
@@ -210,12 +220,6 @@ Three things to know:
 - **No code is the start of another.** Every character sits at a leaf, so no code is a prefix of another code. The decoder never needs separators.
 - **Ties can give different trees.** When two nodes have the same count, either can come out of the queue first. The codes change, but the total number of bits doesn't.
 - **The dictionary has to travel with the data.** The decoder needs the tree (or the codes) to read the bits, and that adds to the size. So Huffman coding pays off mainly on large files.
-
-<div class="viz" data-viz="huffman" markdown>
-
-*On the site, a drawing here shows this Huffman tree, with each code read off its branches.*
-
-</div>
 
 ### Compressing and decompressing
 
@@ -396,14 +400,22 @@ The **largest entry** is the length of the longest common substring. Its row is 
 
 `BREAD` (rows) against `TREAT` (columns):
 
+<!-- figure
+grid: BREAD (rows) against TREAT (columns). Highlighted: the matches that extend the diagonal :: T R E A T / B: 0 0 0 0 0 / R: 0 *1 0 0 0 / E: 0 0 *2 0 0 / A: 0 0 0 *3 0 / D: 0 0 0 0 0
+-->
 ```text
       T  R  E  A  T
   B   0  0  0  0  0
-  R   0  1  0  0  0     R = R: 1 + up-left 0 = 1
-  E   0  0  2  0  0     E = E: 1 + up-left 1 = 2
-  A   0  0  0  3  0     A = A: 1 + up-left 2 = 3
+  R   0  1  0  0  0
+  E   0  0  2  0  0
+  A   0  0  0  3  0
   D   0  0  0  0  0
 ```
+<!-- /figure -->
+
+- Row R, column R: R = R, so 1 + up-left 0 = 1.
+- Row E, column E: E = E, so 1 + up-left 1 = 2.
+- Row A, column A: A = A, so 1 + up-left 2 = 3.
 
 The largest entry is 3, in row 3 (the `A` of `BREAD`, counting from 0). The longest common substring is the 3 characters ending there: `REA`.
 
@@ -426,13 +438,22 @@ Use 0 for any entry outside the matrix. Entries never get smaller moving right o
 
 `CART` (rows) against `CHAT` (columns):
 
+<!-- figure
+grid: CART (rows) against CHAT (columns). Highlighted: the matches :: C H A T / C: *1 1 1 1 / A: 1 1 *2 2 / R: 1 1 2 2 / T: 1 1 2 *3
+-->
 ```text
       C  H  A  T
-  C   1  1  1  1     C = C: 1 + 0. The rest of the row copies from the left.
-  A   1  1  2  2     A = A: 1 + up-left 1 = 2
-  R   1  1  2  2     no matches: larger of above and left
-  T   1  1  2  3     T = T: 1 + up-left 2 = 3
+  C   1  1  1  1
+  A   1  1  2  2
+  R   1  1  2  2
+  T   1  1  2  3
 ```
+<!-- /figure -->
+
+- Row C: C = C, so 1 + 0 = 1. The rest of the row copies from the left.
+- Row A: A = A, so 1 + up-left 1 = 2.
+- Row R: no matches, so each entry is the larger of the one above and the one to the left.
+- Row T: T = T, so 1 + up-left 2 = 3.
 
 The LCS length is 3 (`CAT`). Like the substring matrix, it's O(NM) time. Trying every subsequence instead would be exponential. Two strings can have more than one LCS of the same length.
 

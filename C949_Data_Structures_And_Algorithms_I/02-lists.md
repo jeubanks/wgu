@@ -6,11 +6,15 @@ A **list** is an ADT for items kept in order. (An ADT, or abstract data type, is
 
 A singly-linked list is a chain of **nodes**. Each node holds one item (its data) and a pointer to the next node. The list keeps a `head` pointer to the first node and a `tail` pointer to the last. The last node's next pointer is null.
 
+<!-- figure
+list: 3 8 5 2
+-->
 ```
 head                    tail
  ↓                       ↓
 [3] → [8] → [5] → [2] → null
 ```
+<!-- /figure -->
 
 The nodes aren't stored side by side in memory, so you can't jump straight to item i. Every operation starts from `head` (or `tail`) and follows pointers.
 
@@ -66,9 +70,14 @@ If you have the node before it, removal is O(1). Removing the **last** node is s
 
 A **doubly-linked list** gives each node two pointers: `next` and `prev`. The head's `prev` and the tail's `next` are null.
 
+<!-- figure
+list: 3 8 5 2
+double: yes
+-->
 ```
 null ← [3] ⇄ [8] ⇄ [5] ⇄ [2] → null
 ```
+<!-- /figure -->
 
 The extra pointer costs memory, and every insert or remove has to update pointers in both directions. In return, you get two things:
 

@@ -57,6 +57,9 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
 
 - **22.2** Tree terms and shapes. Use this tree:
 
+  <!-- figure
+  tree: K{E{B, G}, S{P}}
+  -->
   ```text
             K
           /   \
@@ -64,6 +67,7 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
         / \   /
        B   G P
   ```
+  <!-- /figure -->
 
   **a)** Fill in each answer.
 
@@ -96,6 +100,9 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
 
 - **22.3** Graph terms. This adjacency matrix stores a graph. The row is the from-vertex and the column is the to-vertex, so a 1 in row A, column B means an edge A → B.
 
+  <!-- figure
+  grid: A B C D E / A: 0 1 0 1 0 / B: 0 0 1 0 0 / C: 1 0 0 0 1 / D: 0 0 1 0 0 / E: 0 0 0 0 0
+  -->
   ```text
         A  B  C  D  E
      A  0  1  0  1  0
@@ -104,6 +111,7 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
      D  0  0  1  0  0
      E  0  0  0  0  0
   ```
+  <!-- /figure -->
 
   **a)** Answer each question about the graph.
 
@@ -139,10 +147,15 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
 
 - **22.4** Linear search. The list is not sorted:
 
+  <!-- figure
+  index: yes
+  row: items | 18 42 7 63 25 7 90
+  -->
   ```text
   index    0   1   2   3   4   5   6
   items   18  42   7  63  25   7  90
   ```
+  <!-- /figure -->
 
   Linear search checks each item in order, from index 0, and stops at the first match.
 
@@ -210,6 +223,9 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
 
   Inserting the keys in preorder rebuilds the same tree, since each parent goes in before its children:
 
+  <!-- figure
+  tree: 58{24{13, 37{30}}, 81{66{, 72}, 92}}
+  -->
   ```text
             58
           /    \
@@ -219,6 +235,7 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
          /      \
        30        72
   ```
+  <!-- /figure -->
 
   - **a)** Left subtree (13, 30, 37, 24), right subtree (72, 66, 92, 81), then the root: **13, 30, 37, 24, 72, 66, 92, 81, 58**.
   - **b)** 30 and 72 are 3 edges below 58: height **3**.
@@ -228,6 +245,10 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
 
 - **22.7** Breadth-first search. Use this undirected graph. Take neighbors in alphabetical order. Separate vertices with commas.
 
+  <!-- figure
+  nodes: F 0 0, G 1.2 0, H 2.4 0, J 0 1.2, K 1.2 1.2, L 2.4 1.2, M 3.6 1.2
+  edges: F-G, G-H, F-J, G-J, G-K, H-L, J-K, L-M
+  -->
   ```text
      F --- G --- H
      |   / |     |
@@ -235,6 +256,7 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
      | /   |     |
      J --- K     L --- M
   ```
+  <!-- /figure -->
 
   **a)** What is the BFS visit order starting at K?
 
@@ -253,16 +275,15 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
 
   The adjacency lists are F: G, J. G: F, H, J, K. H: G, L. J: F, G, K. K: G, J. L: H, M. M: L.
 
-  ```text
-  Dequeue  Enqueue (newly discovered)  Queue afterward
-  K        G, J                        G, J
-  G        F, H   (J, K already found) J, F, H
-  J        (none)                      F, H
-  F        (none)                      H
-  H        L                           L
-  L        M                           M
-  M        (none)                      empty
-  ```
+  | Dequeue | Enqueue (newly discovered) | Queue afterward |
+  |---|---|---|
+  | K | G, J | G, J |
+  | G | F, H (J and K are already discovered) | J, F, H |
+  | J | (none) | F, H |
+  | F | (none) | H |
+  | H | L | L |
+  | L | M | M |
+  | M | (none) | empty |
 
   - **a)** **K, G, J, F, H, L, M**.
   - **b)** K → G → H → L → M: **4** edges.
@@ -272,10 +293,15 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
 
 - **22.8** Binary search. The list is sorted. Use `mid = (low + high) // 2`.
 
+  <!-- figure
+  index: yes
+  row: items | 2 5 11 16 23 29 34 41 47 52 60 68 75
+  -->
   ```text
   index    0   1   2   3   4   5   6   7   8   9  10  11  12
   items    2   5  11  16  23  29  34  41  47  52  60  68  75
   ```
+  <!-- /figure -->
 
   **a)** Searching for 60, which values does `items[mid]` take, in order? Write them separated by commas.
 
@@ -345,6 +371,9 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
 
 - **22.10** Successors and removal. Use this BST. For a node with two children, remove uses the successor, as zyBooks does.
 
+  <!-- figure
+  tree: 40{18{9, 27}, 65{52{47{, 49}, 58}, 80}}
+  -->
   ```text
               40
             /    \
@@ -356,6 +385,7 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
                \
                 49
   ```
+  <!-- /figure -->
 
   **a)** What is the predecessor of 52?
 
@@ -378,12 +408,17 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
 
   </details>
 
-- **22.11** Depth-first search on a directed graph. Each vertex's outgoing edges are listed in alphabetical order. Separate vertices with commas.
+- **22.11** Depth-first search on a directed graph. Take each vertex's outgoing edges in alphabetical order. Separate vertices with commas.
 
+  <!-- figure
+  nodes: P 0 0.6, Q 1.3 0, S 1.3 1.2, R 2.6 0, T 2.6 1.2
+  edges: P>Q, P>S, Q>R, Q>T, S>Q, S>T, T>R
+  -->
   ```text
   P → Q      Q → R      S → Q      T → R
   P → S      Q → T      S → T
   ```
+  <!-- /figure -->
 
   **a)** Run zyBooks' stack-based DFS from P: pop a vertex, and if it's new, visit it and push all its neighbors in list order. What is the visit order?
 
@@ -402,17 +437,16 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
 
   - **a)** The stack's top is on the right.
 
-    ```text
-    Pop  Visited?  Action               Stack afterward
-    P    new       visit P, push Q, S   Q, S
-    S    new       visit S, push Q, T   Q, Q, T
-    T    new       visit T, push R      Q, Q, R
-    R    new       visit R              Q, Q
-    Q    new       visit Q, push R, T   Q, R, T
-    T    yes       skip                 Q, R
-    R    yes       skip                 Q
-    Q    yes       skip                 empty
-    ```
+    | Pop | Visited? | Action | Stack afterward |
+    |---|---|---|---|
+    | P | new | visit P, push Q, S | Q, S |
+    | S | new | visit S, push Q, T | Q, Q, T |
+    | T | new | visit T, push R | Q, Q, R |
+    | R | new | visit R | Q, Q |
+    | Q | new | visit Q, push R, T | Q, R, T |
+    | T | yes | skip | Q, R |
+    | R | yes | skip | Q |
+    | Q | yes | skip | empty |
 
     **P, S, T, R, Q**.
 
@@ -513,11 +547,16 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
 
 - **22.15** Dijkstra's algorithm. Run it on this directed graph, starting at A. If two vertices ever tie for the smallest distance, take the one that comes first alphabetically.
 
+  <!-- figure
+  nodes: A 0 0.7, B 1.4 0, C 1.4 1.4, D 2.8 0, E 2.8 1.4, F 4.2 0.7
+  edges: A>B 6, A>C 2, C>B 3, C>D 7 @0.28, C>E 9, B>D 1, B>E 5 @0.28, D>E 2, D>F 6, E>F 1
+  -->
   ```text
   A → B  6      C → B  3      B → D  1      D → E  2
   A → C  2      C → D  7      B → E  5      D → F  6
                 C → E  9                    E → F  1
   ```
+  <!-- /figure -->
 
   **a)** What is each vertex's final distance?
 
@@ -538,15 +577,14 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
   <details>
   <summary>Answer</summary>
 
-  ```text
-  Remove  Updates                                B   C   D   E   F
-  A (0)   B = 6, C = 2                           6   2   ∞   ∞   ∞
-  C (2)   B: 2+3 = 5 < 6.  D = 9.  E = 11        5   2   9  11   ∞
-  B (5)   D: 5+1 = 6 < 9.  E: 5+5 = 10 < 11      5   2   6  10   ∞
-  D (6)   E: 6+2 = 8 < 10.  F = 12               5   2   6   8  12
-  E (8)   F: 8+1 = 9 < 12                        5   2   6   8   9
-  F (9)   (no outgoing edges)
-  ```
+  | Remove | Updates | B | C | D | E | F |
+  |---|---|---|---|---|---|---|
+  | A (0) | B = 6, C = 2 | 6 | 2 | ∞ | ∞ | ∞ |
+  | C (2) | B: 2 + 3 = 5 < 6. D = 9. E = 11 | 5 | 2 | 9 | 11 | ∞ |
+  | B (5) | D: 5 + 1 = 6 < 9. E: 5 + 5 = 10 < 11 | 5 | 2 | 6 | 10 | ∞ |
+  | D (6) | E: 6 + 2 = 8 < 10. F = 12 | 5 | 2 | 6 | 8 | 12 |
+  | E (8) | F: 8 + 1 = 9 < 12 | 5 | 2 | 6 | 8 | 9 |
+  | F (9) | (no outgoing edges) | 5 | 2 | 6 | 8 | 9 |
 
   - **a)** **B 5, C 2, D 6, E 8, F 9.**
   - **b)** Follow predecessors back from F: E, D, B, C, A. Reversed: **A, C, B, D, E, F**, length 2 + 3 + 1 + 2 + 1 = 9.
@@ -612,6 +650,9 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
 
 - **22.18** AVL insert. Keys 35, 20, 60, 10, 50, 70, 55 were inserted into an empty AVL tree, which gave this tree with no rotations:
 
+  <!-- figure
+  tree: 35{20{10}, 60{50{, 55}, 70}}
+  -->
   ```text
             35
           /    \
@@ -621,6 +662,7 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
                \
                 55
   ```
+  <!-- /figure -->
 
   **a)** Give each node's balance factor (left height − right height, with a null subtree at height −1).
 
@@ -656,10 +698,15 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
 
 - **22.19** Bellman-Ford. Run it on this directed graph, starting at S. Each pass processes the vertices in the order C, A, B, S.
 
+  <!-- figure
+  nodes: S 0 0.6, A 1.4 0, B 1.4 1.2, C 2.8 0.6
+  edges: S>A 5, S>B 8, B>A -4, A>C 2, B>C 6
+  -->
   ```text
   S → A   5      B → A  −4      A → C   2
   S → B   8                     B → C   6
   ```
+  <!-- /figure -->
 
   **a)** What are the distances after the **second** pass?
 
@@ -764,6 +811,12 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
 
 - **22.22** Red-black rules. A null child counts as a black null leaf.
 
+  <!-- figure
+  tree: Tree A :: 40@b{25@r{18@b, 31@b}, 52@b{, 60@r}}
+  tree: Tree B :: 40@b{25@b, 52@r}
+  tree: Tree C :: 40@b{25@b, 52@b{47@r{, 49@r}}}
+  tree: Tree D :: 40@r{25@b, 52@b}
+  -->
   ```text
   Tree A                          Tree B
            40 (B)                          40 (B)
@@ -781,6 +834,7 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
                 \
                49 (R)
   ```
+  <!-- /figure -->
 
   **a)** For each tree, is it a valid red-black tree? If not, which rule does it break?
 
@@ -810,10 +864,15 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
 
 - **22.23** Topological sort. Use this directed acyclic graph:
 
+  <!-- figure
+  nodes: V 0 0.6, U 1.3 0, X 1.3 1.2, W 0 1.8, Y 2.6 1.8, Z 2.6 0
+  edges: V>U, V>X, W>X, W>Y, X>Y, U>Z, Y>Z
+  -->
   ```text
   V → U      W → X      U → Z      W → Y
   V → X      X → Y      Y → Z
   ```
+  <!-- /figure -->
 
   **a)** Run zyBooks' algorithm. The collection is a stack, first filled in the order U, V, W, X, Y, Z, and `pop()` takes the last vertex added. What is the result? Separate the vertices with commas.
 
@@ -835,15 +894,14 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
 
   - **a)** Counts: U 1, V 0, W 0, X 2, Y 2, Z 2. V and W start at 0, so the stack starts as V, W.
 
-    ```text
-    Stack   Pop  Result              Changes
-    V, W    W    W                   X 2→1, Y 2→1
-    V       V    W, V                U→0 push, X→0 push
-    U, X    X    W, V, X             Y→0 push
-    U, Y    Y    W, V, X, Y          Z 2→1
-    U       U    W, V, X, Y, U       Z→0 push
-    Z       Z    W, V, X, Y, U, Z
-    ```
+    | Stack | Pop | Result | Changes |
+    |---|---|---|---|
+    | V, W | W | W | X 2→1, Y 2→1 |
+    | V | V | W, V | U→0 push, X→0 push |
+    | U, X | X | W, V, X | Y→0 push |
+    | U, Y | Y | W, V, X, Y | Z 2→1 |
+    | U | U | W, V, X, Y, U | Z→0 push |
+    | Z | Z | W, V, X, Y, U, Z | |
 
     **W, V, X, Y, U, Z**.
 
@@ -936,11 +994,16 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
 
 - **22.27** Kruskal's minimum spanning tree. Run it on this undirected graph:
 
+  <!-- figure
+  nodes: A 0 0.6, B 1.3 0, C 1.3 1.2, D 2.6 0, E 2.6 1.2, F 3.9 0.6
+  edges: A-B 4, A-C 8, B-C 2, B-D 6, C-D 3, C-E 9, D-E 5, D-F 10, E-F 7
+  -->
   ```text
   A–B  4      B–C  2      C–D  3      D–E   5
   A–C  8      B–D  6      C–E  9      D–F  10
                                       E–F   7
   ```
+  <!-- /figure -->
 
   **a)** Kruskal's algorithm takes the edges lightest first. Is each of the first six edges added to the tree or skipped?
 
@@ -1097,6 +1160,9 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
   - 65: the root is full: split, 40 becomes the new root over (15) and (70). Split 4. 65 then goes to (55 60), which has room: (55 60 65).
   - 20 joins (25 30): (20 25 30). 5 joins (10): (5 10). No node on either path is full, so no more splits.
 
+  <!-- figure
+  btree: 40{15{5 10, 20 25 30}, 70{55 60 65, 85}}
+  -->
   ```text
                      40
               /             \
@@ -1104,6 +1170,7 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
           /    \           /      \
        5 10   20 25 30   55 60 65   85
   ```
+  <!-- /figure -->
 
   - **d)** Root **40**, **4** splits.
   - **e)** **55 60 65**.
@@ -1166,6 +1233,9 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
 
 - **22.34** Treap insert and delete. Each node is written key:priority, and the priorities form a max-heap. Insert F, which gets priority 75.
 
+  <!-- figure
+  tree: L:88{D:52{A:15, H:47}, V:70{, Z:20}}
+  -->
   ```text
             L:88
            /    \
@@ -1173,6 +1243,7 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
        /   \        \
     A:15   H:47     Z:20
   ```
+  <!-- /figure -->
 
   **a)** Before any rotation, F is a new leaf. Which node is its parent?
 
@@ -1231,6 +1302,13 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
   <details>
   <summary>Answer</summary>
 
+  <!-- figure
+  call: halves(11) | prints 11 | total 11 + 8 = 19, prints 19
+  call: >halves(5) | prints 5 | total 5 + 3 = 8, prints 8
+  call: >>halves(2) | prints 2 | total 2 + 1 = 3, prints 3
+  call: >>>halves(1) | prints 1 | total 1 + 0 = 1, prints 1
+  call: >>>>halves(0) | base case | returns 0
+  -->
   ```text
   halves(11)        prints 11
     halves(5)       prints 5
@@ -1242,6 +1320,7 @@ For unlimited practice with new numbers every time, try the [practice quiz](prac
     total = 5 + 3 = 8, prints 8
   total = 11 + 8 = 19, prints 19
   ```
+  <!-- /figure -->
 
   - **a)** The first print runs on the way down and the second on the way back up: **11 5 2 1 1 3 8 19**.
   - **b)** The calls on 11, 5, 2, 1, and 0 are all waiting at once when `halves(0)` runs: **5** frames.

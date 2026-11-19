@@ -34,13 +34,13 @@ Compared with the other ADTs:
 
 S1 is a **subset** of S2 if S2 contains every one of S1's elements. If even one element of S1 is missing from S2, S1 is not a subset.
 
-```text
-S2 = {6, 13, 21, 34, 40}
+With S2 = {6, 13, 21, 34, 40}:
 
-{13, 40}       every element is in S2       → a subset of S2
-{6, 21, 50}    50 is not in S2              → not a subset of S2
-S2 itself      every element is in S2       → a subset of S2
-```
+| Set | Check | Subset of S2? |
+|---|---|---|
+| {13, 40} | every element is in S2 | yes |
+| {6, 21, 50} | 50 is not in S2 | no |
+| S2 itself | every element is in S2 | yes |
 
 - Every set is a subset of itself, so two equal sets are subsets of each other.
 - If S1 is a subset of S2, S1 can't have more elements than S2. Its length is ≤ S2's length.
@@ -80,14 +80,14 @@ Each operation starts with a new, empty result set and adds to it. Adding a dupl
 
 Union, step by step, for the X and Y above:
 
-```text
-result = {}
-add X's elements 7, 19, 23, 40     → {7, 19, 23, 40}
-add Y's 19                         → already there, no change
-add Y's 31                         → {7, 19, 23, 40, 31}
-add Y's 40                         → already there, no change
-add Y's 58                         → {7, 19, 23, 40, 31, 58}
-```
+| Step | Result afterward |
+|---|---|
+| Start | { } |
+| Add X's elements 7, 19, 23, 40 | {7, 19, 23, 40} |
+| Add Y's 19 | already there, no change |
+| Add Y's 31 | {7, 19, 23, 40, 31} |
+| Add Y's 40 | already there, no change |
+| Add Y's 58 | {7, 19, 23, 40, 31, 58} |
 
 A few rules follow from the definitions, for any sets X and Y:
 
@@ -103,15 +103,12 @@ Filter and map each build a new set from one set by calling a function once on e
 
 With W = {14, 24, 31, 46, 51}:
 
-```text
-filter with "is greater than 30":
-  14 → False   24 → False   31 → True   46 → True   51 → True
-  result: {31, 46, 51}
+| Element | 14 | 24 | 31 | 46 | 51 | Result |
+|---|---|---|---|---|---|---|
+| Filter with "is greater than 30" | False | False | True | True | True | {31, 46, 51} |
+| Map with "ones digit" | 4 | 4 | 1 | 6 | 1 | {4, 1, 6} |
 
-map with "ones digit":
-  14 → 4   24 → 4   31 → 1   46 → 6   51 → 1
-  result: {4, 1, 6}     (4 and 1 come back twice, but a set keeps one copy)
-```
+The map returns 4 and 1 twice each, but a set keeps one copy.
 
 In Python, `{x for x in W if x > 30}` filters, and `{x % 10 for x in W}` maps.
 
@@ -147,6 +144,9 @@ zyBooks builds its `Set` class on a binary search tree ([chapter 5](05-trees.md)
 
 The examples below use this tree, built by adding 30, 15, 45, 10, 20, 40, 50, 25 in that order:
 
+<!-- figure
+tree: 30{15{10, 20{, 25}}, 45{40, 50}}
+-->
 ```text
           30
         /    \
@@ -156,6 +156,7 @@ The examples below use this tree, built by adding 30, 15, 45, 10, 20, 40, 50, 25
           \
           25
 ```
+<!-- /figure -->
 
 #### add
 
@@ -174,11 +175,19 @@ Adding 20 again to the tree above returns False, and the length stays 8.
 
 Successor of 25, which has no right child:
 
+<!-- figure
+tree: Climb from 25 until the climb comes from a left child :: 30@h{15@h{10, 20@h{, 25@h}}, 45{40, 50}}
+-->
 ```text
 25 is 20's right child   → climb to 20
 20 is 15's right child   → climb to 15
 15 is 30's left child    → stop: the successor is 30
 ```
+<!-- /figure -->
+
+1. 25 is 20's right child: climb to 20.
+2. 20 is 15's right child: climb to 15.
+3. 15 is 30's left child: stop. The successor is 30.
 
 Successor of 20: 20 has a right child, so go right to 25, then left as far as possible. 25 has no left child, so the successor is 25.
 
@@ -188,9 +197,13 @@ Successor of 20: 20 has a right child, so go right to 25, then left as far as po
 
 The iterator keeps only one node reference at a time. It visits the elements in **ascending order of their keys**:
 
+<!-- figure
+row: visits | 10 15 20 25 30 40 45 50 | then None: stop
+-->
 ```text
 start at 10 → 15 → 20 → 25 → 30 → 40 → 45 → 50 → None: stop
 ```
+<!-- /figure -->
 
 #### remove
 
@@ -207,18 +220,23 @@ The successor in case 1 has no left child, because it's the leftmost node of a r
 
 Removing 15 from the tree above:
 
-```text
-15 has two children → case 1
-successor of 15: right to 20, no left child → 20; save 20
-remove the old 20 node: it has a right child only → case 4, 25 takes its place
-copy 20 into the node that held 15
+1. 15 has two children: case 1.
+2. The successor of 15: go right to 20, which has no left child, so it's 20. Save 20.
+3. Remove the old 20 node. It has a right child only (case 4), so 25 takes its place.
+4. Copy 20 into the node that held 15.
 
+<!-- figure
+title: After removing 15
+tree: 30{20{10, 25}, 45{40, 50}}
+-->
+```text
           30
         /    \
       20      45
      /  \    /  \
    10   25  40   50
 ```
+<!-- /figure -->
 
 #### Length, union, and the rest
 
@@ -389,6 +407,9 @@ With zyBooks' plain (unbalanced) BST, replace each log with the tree's height, u
 
   The tree before any removal:
 
+  <!-- figure
+  tree: 41{17{8, 29{, 34}}, 63{52, 77}}
+  -->
   ```text
             41
           /    \
@@ -398,6 +419,7 @@ With zyBooks' plain (unbalanced) BST, replace each log with the tree's height, u
             \
             34
   ```
+  <!-- /figure -->
 
   - **a)** **False.** `add` searches first, finds 29, and leaves the set unchanged.
   - **b)** **8.** The failed add didn't change anything, and `count()` visits all 8 nodes.
