@@ -1,16 +1,16 @@
 # 8. Sets
 
-A **set** holds distinct items in no particular order. It's built to answer one question fast: is this item in the set? A set ignores duplicates. The classic set operations (union, intersection, difference) combine two sets into a new one.
+A **set** holds distinct items in no particular order. Think of the list of students who turned in homework: a name is either on it or not, and writing a name twice doesn't count it twice. A set is built to answer one question fast: is this item in the set? A set ignores duplicates. The classic set operations (union, intersection, difference) combine two sets into a new one.
 
 ## The set ADT
 
 A set ADT (abstract data type) holds **distinct** elements, so no element is ever in it twice. Adding an element that's already there does nothing, however many times you try.
 
 - A set is **unordered**. Two sets with the same elements are **equal sets**, whatever order the elements were added in. For example, {8, 3, 12} equals {12, 8, 3}.
-- A set's **length** is the number of elements in it. zyBooks also calls it the set's **cardinality**.
+- A set's **length** is the number of elements in it. Its formal name is the set's **cardinality**. {8, 3, 12} has length 3.
 - If a set doesn't contain an element, then either the element was never added, or it was removed after it was last added.
 
-The common operations, with zyBooks' names:
+The common operations, by the method names the course code uses:
 
 | Operation | What it does |
 |---|---|
@@ -64,13 +64,13 @@ With X = {7, 19, 23, 40} and Y = {19, 31, 40, 58}:
 | **Symmetric difference** | what's in exactly one of them | {7, 23, 31, 58} | `X ^ Y` |
 | **Subset** | is every item of one in the other? | {19, 40} ⊆ Y is true | `{19, 40} <= Y` or `.issubset(Y)` |
 
-zyBooks covers union, intersection, difference, and subset. Python also provides symmetric difference.
+The course covers union, intersection, difference, and subset. Symmetric difference is an extra one that Python provides.
 
 Union and intersection are **commutative**, meaning the order of the two sets doesn't matter: X ∪ Y = Y ∪ X, and X ∩ Y = Y ∩ X. Difference is not commutative. X − Y is {7, 23}, but Y − X is {31, 58}.
 
 ### How zyBooks builds each result
 
-Each operation starts with a new, empty result set and adds to it. Adding a duplicate does nothing, so the result never repeats an element.
+Each operation is a short loop. It starts with a new, empty result set and adds to it. Adding a duplicate does nothing, so the result never repeats an element.
 
 | Operation | Steps |
 |---|---|
@@ -132,9 +132,9 @@ The items come out in no useful order. Python's `set` works this way.
 
 ### On a binary search tree: the zyBooks Set class
 
-zyBooks builds its `Set` class on a binary search tree ([chapter 5](05-trees.md)), one element per node. zyBooks notes that real code would use a balanced BST ([chapter 6](06-balanced-trees.md)) or a hash table for better speed. A plain BST is still enough to build every operation.
+zyBooks builds its `Set` class on a binary search tree ([chapter 5](05-trees.md)), one element per node. Real code would use a balanced BST ([chapter 6](06-balanced-trees.md)) or a hash table for better speed. A plain BST is still enough to build every operation, and it keeps the elements in sorted order.
 
-**The key function.** You can pass the constructor a **get-key function**. Given an element, this function returns the key the BST sorts by. The BST compares keys with `<`, `>`, and `==`. With no argument, the default is `lambda el: el`, so each element is its own key. A set of student records could pass `lambda s: s.id` to key them by ID. The new sets returned by union, intersection, and the other operations use the same get-key function as the original set.
+**The key function.** A BST needs something to compare, but set elements can be whole records. So you can pass the constructor a **get-key function**. Given an element, this function returns the key the BST sorts by. The BST compares keys with `<`, `>`, and `==`. With no argument, the default is `lambda el: el`, so each element is its own key. A set of student records could pass `lambda s: s.id` to key them by ID. The new sets returned by union, intersection, and the other operations use the same get-key function as the original set.
 
 **The nodes.** Each `BSTNode` stores its element in `data`, plus `left`, `right`, and **`parent`** references. The parent reference lets the class find a node's successor and iterate without recursion. Each node also has three helpers:
 
@@ -207,7 +207,7 @@ start at 10 → 15 → 20 → 25 → 30 → 40 → 45 → 50 → None: stop
 
 #### remove
 
-`remove(key)` searches for the node with that key, then removes it. If the key is missing, nothing happens. The node falls into one of four cases, checked in this order:
+`remove(key)` searches for the node with that key, then removes it. If the key is missing, nothing happens. The node falls into one of four cases, checked in this order. Case 1 uses the successor's data because the successor is the next larger key, so putting it in the node's place keeps the BST order.
 
 | Case | The node is | What happens |
 |---|---|---|

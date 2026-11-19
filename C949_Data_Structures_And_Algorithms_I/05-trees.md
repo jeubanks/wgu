@@ -2,11 +2,11 @@
 
 A tree stores data in a hierarchy instead of a line. A binary search tree uses that shape to search quickly. Each comparison rules out one side of the tree, so a search skips most of the data, the way binary search skips half of a sorted list.
 
-This page follows zyBooks chapter 5: binary tree terms, where trees are used, binary search trees (search, insert, remove, traversal, height), parent references, recursion, and tries.
+This page follows chapter 5 of the course text: binary tree terms, where trees are used, binary search trees (search, insert, remove, traversal, height), parent references, recursion, and tries.
 
 ## Binary trees
 
-A **binary tree** is made of nodes, where each node has up to two children: a **left child** and a **right child**.
+Picture a tree drawn upside down, with its root at the top. One node sits at the top, and each node can point down to other nodes below it. In a **binary tree**, each node points down to at most two: a **left child** and a **right child**. In the tree below, 62 is at the top, its two children are 31 and 84, and 31's two children are 15 and 47.
 
 <!-- figure
 tree: 62{31{15, 47{, 52}}, 84{73, 96}}
@@ -37,7 +37,7 @@ levels: root, depth 0 | depth 1 | depth 2 | depth 3 (52 is a leaf)
 | **Level** | All the nodes at one depth | Level 1 is 31 and 84 |
 | **Height** of the tree | The largest depth of any node | 3 |
 
-A tree with just one node has height 0. That one node is both the root and a leaf. zyBooks gives an empty tree (no nodes) height −1, which is what the height algorithm below returns for a null subtree.
+A tree with just one node has height 0. That one node is both the root and a leaf. An empty tree (no nodes) has height −1 in zyBooks. Some other books define height differently, so use −1 for the practice questions here. It's also what the height algorithm below returns for a null subtree.
 
 Every tree is a subtree of itself: it's the subtree rooted at its own root.
 
@@ -56,7 +56,7 @@ Every tree is a subtree of itself: it's the subtree rooted at its own root.
 | **Perfect** | Every internal node has 2 children, and every leaf is at the same level. A perfect tree is also full and complete. |
 | **Balanced** | For every node, the heights of its left and right subtrees differ by at most 1. (Chapter 6.) |
 
-A complete tree has no gaps when you read it level by level, which is why a heap ([chapter 7](07-heaps-treaps.md)) can store one in an array.
+Full is about each node (0 or 2 children). Complete is about the whole shape (no gaps). Perfect needs both, plus every leaf on the bottom level. A complete tree has no gaps when you read it level by level, which is why a heap ([chapter 7](07-heaps-treaps.md)) can store one in an array.
 
 ## Where trees are used
 
@@ -71,9 +71,11 @@ A **binary search tree** is a binary tree with an ordering rule, for every node:
 - every key in its **left** subtree is **smaller**, and
 - every key in its **right** subtree is **larger**.
 
-The rule applies to whole subtrees, not just children. In the tree above, 52 is in the left subtree of 62, so it must be less than 62, and it is. It's also in the right subtree of 31 and of 47, so it must be greater than both, and it is.
+This rule is what makes search fast. At any node, one comparison tells you which side the key must be on, so you never look at the other side.
 
-In zyBooks, a BST holds **distinct keys**: no duplicates.
+The rule covers every key in each subtree, all the way down. In the tree above, 52 is in the left subtree of 62, so it must be less than 62, and it is. It's also in the right subtree of 31 and of 47, so it must be greater than both, and it is.
+
+In zyBooks, a BST holds **distinct keys**: no duplicates. (Some other books allow duplicates and send them to one side.)
 
 ### Search
 
@@ -92,7 +94,7 @@ search for 40:  62 → go left → 31 → go right → 47 → 40 < 47, go left �
 - **Search for 52:** 52 < 62, go left to 31. 52 > 31, go right to 47. 52 > 47, go right: 52 found.
 - **Search for 40:** 40 < 62, go left to 31. 40 > 31, go right to 47. 40 < 47, go left: a null child, so 40 isn't in the tree.
 
-zyBooks says a search **visits** a node when it reads that node's key. The search for 52 visits 4 nodes. Each step goes down one level, so a search makes at most **height + 1** comparisons: O(h).
+A search **visits** a node when it reads that node's key. The search for 52 visits 4 nodes. Each step goes down one level, and a path from the root has at most height + 1 nodes. So a search makes at most **height + 1** comparisons: O(h).
 
 A tree with the smallest possible height keeps that number small. A BST of 1,000,000 nodes can have height 19, so a search needs at most 20 comparisons. A linked list of the same keys can need 1,000,000.
 
@@ -104,6 +106,8 @@ To find a node's successor:
 
 1. If the node has a right subtree, go right once, then left as far as possible. That node is the successor. It can be the right child itself, when the right child has no left child.
 2. If it has no right subtree, go up until you come up from a **left** child. That parent is the successor. If you reach the root without doing that, the node is the largest key and has no successor.
+
+Why case 2 works: when you climb up from a right child, the parent is smaller than where you started, so keep going. The first time you climb up from a left child, the parent is larger than everything in that left subtree, including your node. It's the first key bigger than yours.
 
 The predecessor is the mirror image: left once, then right as far as possible; or, with no left subtree, go up until you come up from a right child.
 
@@ -126,13 +130,13 @@ Inserting 40 into the tree above:
 
 Inserting into an empty tree makes the new node the root.
 
-zyBooks splits this into two methods. **insert_node** does the walk above. **insert_key** first searches for the key, does nothing if it's already there, and otherwise makes a new node and calls insert_node. That check is how the tree keeps its keys distinct.
+The textbook's code splits this into two methods. **insert_node** does the walk above. **insert_key** first searches for the key, does nothing if it's already there, and otherwise makes a new node and calls insert_node. That check is how the tree keeps its keys distinct.
 
 Insert visits one node per level: O(h) time, which is O(log n) when the tree is short and O(n) when it's a chain. It uses a few variables however big the tree is: O(1) extra space.
 
 ### Remove
 
-Find the node, then:
+Removing a node must leave a tree that still follows the BST rule. Find the node, then:
 
 | The node has | What happens |
 |---|---|
@@ -140,7 +144,7 @@ Find the node, then:
 | **One child** | Its parent points straight to that child instead. If it was the root, the child becomes the root. |
 | **Two children** | Find its **successor** (right once, then left as far as possible). Copy the successor's key into the node. Then remove the successor from the right subtree. The successor has no left child, so that second removal is one of the two easy cases. |
 
-zyBooks always uses the successor for the two-children case.
+Why the successor? It's the next larger key, so it's bigger than everything in the left subtree and smaller than every other key in the right subtree. Putting it in the removed node's place keeps the BST rule. zyBooks always uses the successor for the two-children case. Some other books use the predecessor, which works for the same reason.
 
 Removing each node from the tree above, starting fresh each time:
 
@@ -187,10 +191,10 @@ So a plain BST is O(log n) on average and O(n) in the worst case. Balanced trees
 
 ### Computing the height
 
-zyBooks computes a tree's height recursively:
+A node's height is one more than the height of its taller subtree: the node adds one edge on top of the longest path below it. Written as a recursive rule:
 
-- A null subtree has height −1.
-- Otherwise, the height is 1 + the larger of the left and right subtrees' heights.
+1. A null subtree has height −1.
+2. Otherwise, the height is 1 + the larger of the left and right subtrees' heights.
 
 The −1 makes a leaf come out as 1 + max(−1, −1) = 0. The function calls itself once per node and once per null child, so it's O(n). The order of the two recursive calls doesn't matter.
 
@@ -215,7 +219,7 @@ Tracing it on the tree at the top of the page. Each call finishes after both of 
 
 ### Traversals
 
-A **traversal** visits every node once: O(n). To **visit** a node means to do something with it: print its key, add it to a list, count it. zyBooks passes that action in as a **visitor** object, so one traversal function can print, count, or collect without being rewritten.
+A **traversal** visits every node once: O(n). To **visit** a node means to do something with it: print its key, add it to a list, count it. The action can be passed in as a **visitor** object, so one traversal function can print, count, or collect without being rewritten.
 
 The name says where the node itself goes:
 
@@ -230,7 +234,7 @@ An inorder traversal of a BST always gives the keys in **sorted order**, smalles
 
 A preorder traversal of a BST also lists the keys in an order that rebuilds the same tree when you insert them one by one: each parent goes in before its children.
 
-zyBooks' chapter 5 covers those four. A fifth, **level order**, goes level by level, left to right, using a queue: 62, 31, 84, 15, 47, 73, 96, 52. It's the same idea as breadth-first search on a graph.
+Chapter 5 covers those four. A fifth, **level order**, goes level by level, left to right, using a queue: 62, 31, 84, 15, 47, 73, 96, 52. It's the same idea as breadth-first search on a graph.
 
 ## Parent references
 
@@ -239,7 +243,7 @@ A BST node can also store a **parent** reference. Balanced trees (chapter 6) use
 The downside is extra bookkeeping. Every insert and remove that relinks a child also has to set that child's parent reference.
 
 - **Insert:** after making the new node a child of some node P, set the new node's parent to P. A new root gets parent null.
-- **Remove:** zyBooks uses a helper, **replace_child(current_child, new_child)**, on the removed node's parent. It swaps whichever child pointer points at current_child to point at new_child, and sets new_child's parent (when new_child isn't null). If the node being removed is the root, the new root's parent is set to null instead.
+- **Remove:** it uses a helper, **replace_child(current_child, new_child)**, on the removed node's parent. It swaps whichever child pointer points at current_child to point at new_child, and sets new_child's parent (when new_child isn't null). If the node being removed is the root, the new root's parent is set to null instead.
 
 Removing 47 from the tree at the top, with parent references: 47's parent is 31, so the tree calls 31.replace_child(47, 52). 31's right pointer now goes to 52, and 52's parent becomes 31.
 
@@ -267,7 +271,7 @@ Otherwise it calls itself on the left child (key is smaller) or the right child 
 
 A **trie** (said "try"), also called a **prefix tree**, stores a set of strings. Each node below the root stands for one character, and a node has at most one child per character. A string is a path from the root. Strings that start the same share the start of their path.
 
-In zyBooks, each string's end is marked by its own **terminal node**: an extra child, with no character, under the string's last character. Every inserted string has exactly one terminal node, and zyBooks counts the terminal nodes as nodes.
+The trie needs some way to mark where a word ends. Otherwise, after inserting `dog`, it couldn't tell whether `do` is also a word. In zyBooks, each string's end is marked by its own **terminal node**: an extra child, with no character, under the string's last character. Every inserted string has exactly one terminal node, and zyBooks counts the terminal nodes as nodes. (Many other books mark the end with a flag on the last character's node instead, which adds no nodes.)
 
 <!-- figure
 nary: Words cat, car, cart, do, dog. $ marks the end of a word :: root{c{a{t{$}, r{$, t{$}}}}, d{o{$, g{$}}}}
@@ -313,7 +317,7 @@ Searching the trie above for `ca` reaches the `a` node, but `a` has no terminal 
 
 ### Remove
 
-Removing a string deletes its terminal node, then deletes each node above it, bottom up, that is left with no children. It stops at the first node that still has a child, and it never deletes the root. zyBooks does this recursively: go down one character per call, remove the terminal node at the bottom, then on the way back up remove any child that now has 0 children.
+Removing a string deletes its terminal node, then deletes each node above it, bottom up, that is left with no children. It stops at the first node that still has a child, because that node is part of another string. It never deletes the root. The recursive version works like this: go down one character per call, remove the terminal node at the bottom, then on the way back up remove any child that now has 0 children.
 
 Removing `dog` from the trie above:
 

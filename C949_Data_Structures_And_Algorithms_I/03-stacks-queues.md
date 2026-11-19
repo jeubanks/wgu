@@ -4,7 +4,7 @@ Stacks and queues are lists that let you add and remove items only at the ends. 
 
 ## The stack ADT
 
-A **stack** is **last in, first out** (LIFO). The item you remove is always the one added most recently, like the top plate on a stack of plates.
+A **stack** is **last in, first out** (LIFO). The item you remove is always the one added most recently, like the top plate on a stack of plates. Push 1, then 2, then 3, and the first Pop gives back 3, the next gives 2, and the last gives 1.
 
 | Operation | What it does |
 |---|---|
@@ -18,26 +18,29 @@ Popping or peeking an empty stack is an error. Stacks show up wherever the most 
 
 ### Stacks built on linked lists
 
-Use the list's **head** as the top of the stack:
+Use the list's **head** as the top of the stack. Push and pop both happen at the top, so the top must be an end where removing is cheap. In a singly-linked list, removing the head is O(1). Removing the tail is O(n), because you have to walk from the head to find the node before the tail.
 
 - Push: prepend the new node. O(1).
 - Pop: remove the head node and return its data. O(1).
 - Peek: return the head's data. O(1).
 
-The top goes at the head because removing the head of a singly-linked list is O(1). Removing the tail is O(n), since you have to find the node before it.
-
 ### Stacks built on arrays
 
-Use the **end** of the array as the top, and keep a count of items:
+Use the **end** of the array as the top, and keep a count of items in `length`. Adding or removing the last item of an array never moves the other items, which is why the top goes there.
 
 - Push: store the item at index `length`, and add 1 to `length`.
 - Pop: subtract 1 from `length`, and return the item at that index.
 
-Both are O(1). Nothing happens at the front of the array, so no items shift. When the array is full, one of two things happens. In a **bounded** stack, which has a fixed maximum length, the push fails. Otherwise the array is resized, which makes that one push O(n) and keeps pushes O(1) amortized (averaged over many pushes).
+For example, with `A B C` stored and `length` 3, a push of D stores it at index 3 and makes `length` 4. A pop then sets `length` back to 3 and returns the item at index 3, which is D.
+
+Both are O(1). When the array is full, what happens depends on the kind of stack:
+
+- A **bounded** stack has a fixed maximum length, so the push fails.
+- Any other stack resizes the array: it allocates a bigger one and copies every item over. That one push is O(n). Resizes are rare, so pushes are still O(1) amortized (averaged over many pushes).
 
 ## The queue ADT
 
-A **queue** is **first in, first out** (FIFO). Items leave in the order they arrived, like people in a line at a store.
+A **queue** is **first in, first out** (FIFO). Items leave in the order they arrived, like people in a line at a store. Enqueue 1, then 2, then 3, and the first Dequeue gives back 1, then 2, then 3.
 
 | Operation | What it does |
 |---|---|
@@ -50,22 +53,22 @@ Queues hold work that is waiting its turn, such as print jobs, requests to a ser
 
 ### Queues built on linked lists
 
-Enqueue at the **tail** and dequeue at the **head**:
+A queue works at both ends: items go in at one end and come out at the other. Enqueue at the **tail** and dequeue at the **head**:
 
 - Enqueue: append. O(1) with a tail pointer.
 - Dequeue: remove the head. O(1).
 
-If you swapped the ends, dequeue would have to remove the tail, which is O(n) in a singly-linked list.
+Adding at either end of a singly-linked list with a tail pointer is O(1), but only the head can be removed in O(1). So the removing end, the front of the queue, goes at the head. If you swapped the ends, dequeue would have to remove the tail, which is O(n) in a singly-linked list.
 
 ### Queues built on arrays
 
-Dequeuing from index 0 of an array would shift every other item left, which is O(n). Instead, an array-based queue keeps a **front index** and a **length**, and lets the items wrap around the end of the array. This layout is called a **circular array** (or ring buffer).
+Dequeuing from index 0 of an array would shift every other item left, which is O(n). Instead, an array-based queue leaves the items where they are and moves the front. It keeps a **front index** and a **length**. When the back reaches the end of the array, new items wrap around and fill the free slots at the start. This layout is called a **circular array** (or ring buffer).
 
 - The front item is at `front`.
 - Enqueue puts the new item at `(front + length) % size`, then adds 1 to `length`.
 - Dequeue takes the item at `front`, sets `front` to `(front + 1) % size`, and subtracts 1 from `length`.
 
-The `%` (remainder) operator makes the index wrap back to 0. For example, with an array of size 5:
+The `%` (remainder) operator makes the index wrap back to 0: an index one past the last slot has remainder 0 when divided by the size. For example, with an array of size 5:
 
 | Step | front | length | Array (index 0 to 4) |
 |---|---|---|---|
@@ -85,7 +88,13 @@ Every operation is O(1), and nothing ever shifts. When `length` reaches the arra
 
 A **deque** (double-ended queue, pronounced "deck") lets you add and remove at **both** ends. Its operations are PushFront, PushBack, PopFront, PopBack, PeekFront, and PeekBack. A deque can act as either a stack or a queue. If you build it on a doubly-linked list or a circular array, all of these operations are O(1).
 
-A typical use is checking whether a word is a palindrome. Put its letters in a deque, then keep popping one letter from each end and comparing the two.
+A typical use is checking whether a word is a palindrome (the same forwards and backwards):
+
+1. Put the word's letters in a deque.
+2. PopFront one letter and PopBack one letter, and compare them.
+3. If they differ, the word isn't a palindrome. If they match, repeat step 2 until one letter or none is left.
+
+For "level", the pairs are l and l, then e and e, and the middle v is left over, so it's a palindrome.
 
 ## Stacks and queues in Python
 

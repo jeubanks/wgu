@@ -1,6 +1,6 @@
 # 11. Searching and algorithm analysis
 
-This chapter covers three things, in the same order as zyBooks chapter 11:
+This chapter covers three things, in the order the course's chapter 11 takes them:
 
 1. **Searching:** linear search and binary search, and why one is O(n) and the other O(log n).
 2. **Finding Big-O by tracing:** count how many times the busiest line of code runs, as a formula in n, then keep only the part that grows fastest. Ten worked patterns, from a single loop to recursion.
@@ -30,7 +30,9 @@ Linear search works on any list, sorted or not, because it needs nothing from th
 
 ### Binary search
 
-Binary search needs a **sorted** list. It compares the key with the middle item, then throws away the half that can't hold the key:
+Think of looking up a word in a dictionary. You open it near the middle, see whether your word comes before or after that page, and ignore the other half. Binary search does the same with a list. It compares the key with the middle item, then throws away the half that can't hold the key.
+
+The list must be **sorted**. Only then does "bigger than the middle item" mean "to the right of the middle", so it's safe to throw the left half away. The steps:
 
 1. Set `low` to 0 and `high` to the last index.
 2. While `low <= high`: compute `mid = (low + high) // 2` and compare the key with `items[mid]`.
@@ -379,8 +381,8 @@ If you can count the steps for some n, count them again for 2n. How the count ch
 
 - **Comparison sort:** decides the order only by comparing two items at a time (`a < b`). Selection, insertion, bubble, shell, quick, merge, and heap sort are comparison sorts. No comparison sort can beat O(n log n) on average.
 - **Non-comparison sort:** never compares two items. It looks inside each one instead, at its digits or its value range. Radix, counting, and bucket sort work this way, which is how they can run in close to O(n), but only on numbers (or things that can be turned into numbers).
-- **Fast sort:** zyBooks calls a sort *fast* when its average case is O(n log n) or better: quicksort, merge sort, heap sort, and radix sort. Selection, insertion, bubble, and shell sort are not.
-- **Stable:** items with equal keys stay in their original order. That matters when you sort by one field, then another.
+- **Fast sort:** a sort whose average case is O(n log n) or better: quicksort, merge sort, heap sort, and radix sort. Selection, insertion, bubble, and shell sort are not.
+- **Stable:** items with equal keys stay in their original order. That matters when you sort by one field, then another. For example, sort people by name, then stably by age: people of the same age stay in name order.
 - **In place:** uses only O(1) extra memory. Merge sort needs a second list, so it isn't in place.
 
 ### Selection sort
@@ -468,7 +470,7 @@ after gap 1      2  7 13 24 31 45 59 70 88
 ```
 <!-- /figure -->
 
-Any gaps work as long as the last is 1. zyBooks suggests powers of 2 minus 1, largest first, below the list's length: for 100 items, 63, 31, 15, 7, 3, 1.
+Any gaps work as long as the last is 1, because a gap-1 pass is a full insertion sort and always finishes the job. Books differ on which gaps to use. zyBooks suggests powers of 2 minus 1, largest first, below the list's length: for 100 items, 63, 31, 15, 7, 3, 1. The practice questions use this rule.
 
 - **Best:** O(n log n), on sorted input.
 - **Average:** about O(n^1.5) with gaps like these. It depends on the gaps.
@@ -480,11 +482,11 @@ Any gaps work as long as the last is 1. zyBooks suggests powers of 2 minus 1, la
 
 Pick a **pivot**, then **partition**: move every value smaller than the pivot to the left side and every larger value to the right. Then sort each side the same way, recursively.
 
-zyBooks picks the **middle** element as the pivot, and partitions with two indexes:
+Books choose the pivot differently. Many use the last item. zyBooks, and the practice questions here, use the **middle** element, at index (low + high) // 2. The partition uses two indexes:
 
-1. `low` starts at the left and moves right while its item is smaller than the pivot.
-2. `high` starts at the right and moves left while its item is bigger than the pivot.
-3. If they've met or crossed, the partition is done: `high` is the last index of the left part. Otherwise, swap the two items, step both indexes one place, and repeat.
+1. `low` starts at the left and moves right while its item is smaller than the pivot. It stops on an item that isn't smaller than the pivot, so it can go on the right.
+2. `high` starts at the right and moves left while its item is bigger than the pivot. It stops on an item that isn't bigger than the pivot, so it can go on the left.
+3. If they've met or crossed, the partition is done: `high` is the last index of the left part. Otherwise, the two stopped items are each on the wrong side, so swap them, step both indexes one place, and repeat from step 1.
 
 <!-- figure
 index: yes
@@ -532,7 +534,13 @@ merge    take 4, 8, 11, 17, 29, 42 (the smaller front item each time)
 
 ### Heap sort
 
-Build a max-heap from the list (O(n)), then remove the max n times, each time putting it at the end of the list (O(log n) each).
+A max-heap always keeps its largest item at the root, so it can hand you the largest item over and over. Heap sort uses that:
+
+1. Build a max-heap from the list, in place (O(n)).
+2. Swap the root, the largest item left, with the last item of the heap. That item is now in its final place, and the heap is one item shorter.
+3. Percolate the new root down to repair the heap (O(log n)), and repeat step 2 until the heap is empty.
+
+Step 2 runs n times at O(log n) each, so the sorting phase is O(n log n).
 
 - **Best, average, worst:** O(n log n).
 - **Memory:** in place. **Stable:** no.
@@ -558,7 +566,7 @@ by hundreds digit    2  24  45  66  75  90 170 802
 
 Each pass must keep the order from the pass before (append to the end of each bucket), or it undoes the earlier digits.
 
-**Negative numbers:** sorting by digits sorts by absolute value. zyBooks' fix: after the digit passes, split the result into negatives and non-negatives, reverse the negatives, and put them first.
+**Negative numbers:** sorting by digits ignores the sign, so it sorts by absolute value. That puts −5 before −50, which is backwards. The fix: after the digit passes, split the result into negatives and non-negatives, reverse the negatives (so −50 comes before −5), and put them first.
 
 - **Best, average, worst:** O(n·k), where k is the number of digits in the largest number. When k is a small constant, that's O(n). The course study guide writes O(n·k); some worksheets write O(n).
 - **Memory:** O(n) for the buckets. **Stable:** yes.
@@ -566,7 +574,7 @@ Each pass must keep the order from the pass before (append to the end of each bu
 
 ### Counting sort
 
-For integers in a small range of k values: count how many times each value occurs, then write each value out that many times.
+For integers in a small range of k values: count how many times each value occurs, then write each value out that many times. For `3 1 3 0`, with values 0 to 3, the counts are one 0, one 1, no 2s, and two 3s, so the output is `0 1 3 3`.
 
 - **Best, average, worst:** O(n + k). **Memory:** O(k) for the counts.
 - **Spot it in code:** a `count` list indexed by the values themselves, `count[x] += 1`.
@@ -911,15 +919,15 @@ Trace each one before you answer. Many questions ask you to work out a count and
 
   </details>
 
-- **11.12** Quicksort's partition, the zyBooks way (middle element as the pivot). The list is `24 7 61 15 38 3 50`.
+- **11.12** Quicksort's partition, the zyBooks way (middle element as the pivot). The list is `42 19 8 33 71 5 26`.
 
   **a)** What is the pivot?
 
-  <!-- answer:11.12a blanks: 15 -->
+  <!-- answer:11.12a blanks: 33 -->
 
   **b)** What is the list after partitioning? Separate the values with spaces.
 
-  <!-- answer:11.12b blanks: 3 7 15 61 38 24 50 | 3, 7, 15, 61, 38, 24, 50 -->
+  <!-- answer:11.12b blanks: 26 19 8 5 71 33 42 | 26, 19, 8, 5, 71, 33, 42 -->
 
   **c)** What is quicksort's worst case, and what causes it?
 
@@ -934,8 +942,8 @@ Trace each one before you answer. Many questions ask you to work out a count and
   <details>
   <summary>Answer</summary>
 
-  - **a)** The middle index is (0 + 6) // 2 = 3, which holds **15**.
-  - **b)** low stops at 24, high stops at 3: swap. low stops at 61, high stops at 15: swap. Now low has passed high: **3 7 15 61 38 24 50**, with 3, 7, 15 on the left.
+  - **a)** The middle index is (0 + 6) // 2 = 3, which holds **33**.
+  - **b)** low stops at 42, high stops at 26: swap. low moves past 19 and 8 and stops at 33, and high stops at 5: swap. Both indexes step to index 4. low stops right there on 71, and high moves left past 71 and stops on 5 at index 3. low has passed high: done. **26 19 8 5 71 33 42**, with 26, 19, 8, 5 on the left.
   - **c)** **B.** Each partition then peels off one item, so there are n levels of O(n) work.
 
   </details>

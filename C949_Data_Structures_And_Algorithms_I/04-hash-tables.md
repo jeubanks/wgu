@@ -4,7 +4,7 @@ A hash table finds an item by its key in O(1) time on average. Instead of search
 
 ## The map ADT
 
-A **map** (also called a dictionary or associative array) stores **key-value pairs** and looks up a value by its key. Keys are unique, so inserting a key that's already in the map replaces its value.
+A **map** (also called a dictionary or associative array) stores **key-value pairs** and looks up a value by its key. A phone book is a map: the key is a name, and the value is that person's number. Keys are unique, so inserting a key that's already in the map replaces its value.
 
 | Operation | What it does |
 |---|---|
@@ -26,7 +26,7 @@ Two different keys can hash to the same bucket: 17 % 10 is also 7. That's called
 
 ## Chaining
 
-With **chaining**, each bucket holds a list of the items that hashed to it.
+With **chaining**, each bucket holds a list of the items that hashed to it. With 10 buckets, 47 and 17 both hash to 7, so bucket 7 holds the list 47, 17.
 
 - Insert: hash the key, check that the key isn't already in that bucket's list, and add the item to the list.
 - Search and remove: hash the key, and search only that bucket's list.
@@ -35,7 +35,7 @@ With a good hash function, items spread evenly and the lists stay short, so each
 
 ## Open addressing: probing
 
-With **open addressing**, each bucket holds at most one item. If a key's bucket is taken, the table **probes**, which means it tries other buckets in a fixed order until it finds a free one. A search follows the same order until it finds the key or reaches a bucket that has never held anything.
+With **open addressing**, each bucket holds at most one item. If a key's bucket is taken, the table **probes**, which means it tries other buckets in a fixed order until it finds a free one. A search follows the same order until it finds the key or reaches a bucket that has never held anything. It can stop at that bucket because an insert of the key would have stopped there too: if the key were in the table, the search would have reached it before this bucket.
 
 ### Linear probing
 
@@ -50,20 +50,31 @@ Example: 10 buckets, h = key % 10. Insert 43, 13, 53, then 23:
 | 53 | 3 | 3, 4, 5 | 5 |
 | 23 | 3 | 3, 4, 5, 6 | 6 |
 
-Linear probing tends to build **clusters**, which are long runs of full buckets. A cluster keeps growing, because any key that hashes into it lands at its end.
+Linear probing tends to build **clusters**, which are long runs of full buckets, like buckets 3 to 6 above. Any key that hashes anywhere into a cluster walks past its end and lands in the next free bucket. That makes the cluster one bucket longer, which makes it even more likely to catch the next key.
 
-Removing an item needs care. Suppose 13 is removed and its bucket is simply emptied. A search for 53 would start at bucket 3, find bucket 4 empty, and wrongly stop. To prevent this, buckets have two kinds of empty:
+Removing an item needs care. In the table above, suppose 13 is removed and bucket 4 is simply emptied. A search for 53 would start at bucket 3, find bucket 4 empty, and wrongly stop, even though 53 is in bucket 5. To prevent this, buckets have two kinds of empty:
 
 - **Empty-since-start:** the bucket has never been used. A search can stop here, because the key isn't in the table.
 - **Empty-after-removal:** an item was removed from the bucket. A search keeps going past it, and an insert may reuse it.
 
 ### Quadratic probing
 
-To break up clusters, jump farther each time. The table tries bucket `(h + c1·i + c2·i²) % N` for i = 0, 1, 2, ..., where c1 and c2 are constants the table picks. With c1 = 1 and c2 = 1, the offsets from the home bucket are 0, 2, 6, 12, ...
+To break up clusters, jump farther each time, so a key that collides moves quickly away from the crowded area. The table tries bucket `(h + c1·i + c2·i²) % N` for i = 0, 1, 2, ..., where c1 and c2 are constants the table picks. With c1 = 1 and c2 = 1, the offset from the home bucket is i + i²:
+
+| i | Offset i + i² |
+|---|---|
+| 0 | 0 |
+| 1 | 1 + 1 = 2 |
+| 2 | 2 + 4 = 6 |
+| 3 | 3 + 9 = 12 |
 
 ### Double hashing
 
-Use a **second hash function** to choose the step size. The table tries bucket `(h1(key) + i·h2(key)) % N`. Keys with the same home bucket usually have different step sizes, so they follow different paths. h2 must never return 0, or the probe would stay in one bucket. A common choice is `h2(key) = p − (key % p)` for a prime p smaller than N.
+Use a **second hash function** to choose the step size. The first hash, h1, gives the home bucket, as before. The second, h2, says how far to jump on each collision. The table tries bucket `(h1(key) + i·h2(key)) % N` for i = 0, 1, 2, ...
+
+Keys with the same home bucket usually have different step sizes, so they follow different paths instead of piling up in one cluster. h2 must never return 0, or the probe would stay in one bucket. A common choice is `h2(key) = p − (key % p)` for a prime p smaller than N. Because `key % p` is at most p − 1, this h2 is always at least 1.
+
+Example: N = 11, h1 = key % 11, and h2 = 7 − (key % 7). Key 15 has h1 = 4 and h2 = 7 − 1 = 6, so it tries buckets 4, then 10, then (4 + 12) % 11 = 5, and so on.
 
 <div class="viz" data-viz="hash-probe" markdown>
 
@@ -73,12 +84,17 @@ Use a **second hash function** to choose the step size. The table tries bucket `
 
 ## Resizing and the load factor
 
-The **load factor** is the number of items divided by the number of buckets. It measures how full the table is.
+The **load factor** is the number of items divided by the number of buckets. It measures how full the table is: 6 items in 10 buckets is a load factor of 0.6.
 
 - With chaining, it's the average list length. It can go above 1.
 - With probing, it can't go above 1, and probe sequences get long as it gets close to 1.
 
-When the load factor passes a threshold (often around 0.75 for probing), the table **resizes**. It allocates a bigger array, usually a prime number of buckets about twice the old size, and **rehashes** every item into it. Items can't just be copied to the same index, because the index depends on N. A resize is O(n), but resizes are rare, so inserts stay O(1) on average.
+When the load factor passes a threshold (often around 0.75 for probing), the table **resizes**:
+
+1. Allocate a bigger array, usually a prime number of buckets about twice the old size.
+2. **Rehash** every item: run the hash function again with the new N, and insert the item at the new index.
+
+Items can't just be copied to the same index, because the index depends on N. With `key % N`, key 17 is in bucket 7 of a 10-bucket table, but in bucket 17 of a 23-bucket table. A resize is O(n), but resizes are rare, so inserts stay O(1) on average.
 
 ## Hash functions
 
@@ -93,10 +109,11 @@ Three common hash functions:
 - **Modulo hash:** `key % N`. It's simple and fast. A prime N spreads keys better than a round number like 100, because keys often share factors with round numbers.
 - **Mid-square hash:** square the key, take some digits (or bits) from the middle of the result, and take that modulo N. The middle digits depend on every digit of the key. Example: 453² = 205209, and its middle two digits are 52.
 - **Multiplicative string hash:** start from an initial value, and for each character, multiply the hash so far by a constant and add the character's code: `hash = hash * multiplier + code(c)`. Then take the result modulo N. Each character's position affects the result, so anagrams like "stop" and "pots" get different hashes.
+  - Small example, with initial value 0, multiplier 10, and made-up codes a = 1 and b = 2. "ab" gives 0 × 10 + 1 = 1, then 1 × 10 + 2 = 12. "ba" gives 21. The first character gets multiplied more times, so swapping letters changes the hash.
 
 ### Computing a modulo by hand
 
-Questions often give a hash function like `key % 1009` and ask where a key goes. On a calculator without a `%` key:
+Questions often give a hash function like `key % 1009` and ask where a key goes. The remainder is what's left after taking out as many whole 1009s as fit. On a calculator without a `%` key, for key 3045:
 
 1. Divide: 3045 ÷ 1009 = 3.0178...
 2. Keep the whole-number part: 3.
@@ -106,7 +123,7 @@ So key 3045 goes in bucket 18. (Another way: multiply the fractional part, 0.017
 
 ### Direct hashing
 
-**Direct hashing** uses the key itself as the index: `h(key) = key`. There are no collisions, and every operation is O(1) even in the worst case. Direct hashing only works when keys are small non-negative integers, though. It needs one bucket for every possible key, which wastes memory when the keys are spread out.
+**Direct hashing** uses the key itself as the index: `h(key) = key`, so key 42 goes in bucket 42. Two different keys always get different buckets, so there are no collisions, and every operation is O(1) even in the worst case. Direct hashing only works when keys are small non-negative integers, though. It needs one bucket for every possible key, which wastes memory when the keys are spread out.
 
 ## Cryptographic and password hashing
 
@@ -119,7 +136,7 @@ Hashing is also used for security, where the goals are different:
 
 A Python `dict` is a hash table using open addressing. `d[key]`, `d[key] = value`, `del d[key]`, and `key in d` are all O(1) on average. A `set` works the same way but holds keys without values.
 
-Keys must be **hashable**, which means immutable types like numbers, strings, and tuples. A list can't be a key, because changing the list would change its hash, and the table would look in the wrong bucket.
+Keys must be **hashable**, which means immutable types like numbers, strings, and tuples. A list can't be a key: Python gives lists no hash at all, because a list can change, and a key that changed after it was stored would leave it in the wrong bucket.
 
 Checking `x in some_list` is O(n). Checking `x in some_set` is O(1) on average. If you check membership many times, turning the list into a set first is a common speedup.
 

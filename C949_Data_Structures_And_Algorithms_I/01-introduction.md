@@ -1,10 +1,10 @@
 # 1. Introduction to data structures and algorithms
 
-This chapter sets up the words the rest of the course uses: what an algorithm is, the main kinds of algorithms, data types, data structures, abstract data types, and efficiency. It then works through the design ideas zyBooks chapter 1 covers: compression with Huffman codes, heuristics, greedy algorithms, and dynamic programming.
+This chapter sets up the words the rest of the course uses: what an algorithm is, the main kinds of algorithms, data types, data structures, abstract data types, and efficiency. It then works through the chapter's design ideas: compression with Huffman codes, heuristics, greedy algorithms, and dynamic programming.
 
 ## Data structures and algorithms
 
-A **data structure** is a layout for data in memory plus the operations that work on that layout. Typical operations read or change an item, look for an item, add one, or take one out. The basic ones in this course:
+A **data structure** is a way of laying data out in memory, together with the operations that work on that layout. A row of numbered boxes is one layout; a chain of nodes, each pointing to the next, is another. Typical operations read or change an item, look for an item, add one, or take one out. The basic structures in this course:
 
 | Data structure | How it's organized |
 |---|---|
@@ -16,15 +16,13 @@ A **data structure** is a layout for data in memory plus the operations that wor
 | Heap | A tree where each node's key is greater than or equal to its children's keys (max-heap), or less than or equal to them (min-heap) |
 | Graph | Items (vertices) joined by connections (edges) |
 
-An **algorithm** is a step-by-step procedure for a computational problem or a calculation. The steps don't have to be code: plain English, pseudocode, and even a circuit can all express one.
+An **algorithm** is a step-by-step procedure for a computational problem or a calculation. A recipe for counting the below-freezing days in a week of temperatures is one. The steps don't have to be code: plain English, pseudocode, and even a circuit can all express one.
 
-A **computational problem** has three parts:
+A **computational problem** is the job the algorithm is written for. In the temperature example, the input is a list of temperatures, the question is how many of them are below freezing, and the output is one integer. Those are the three parts every computational problem has:
 
 - **Input:** the data the algorithm is given.
 - **Question:** what you want to know about the input, which a computer can answer.
 - **Output:** the form the answer takes.
-
-For example, the input is a list of temperatures, the question is how many of them are below freezing, and the output is one integer.
 
 ### Choosing a data structure
 
@@ -59,7 +57,9 @@ The structure decides how fast an algorithm can be. Binary search is O(log n) on
 
 ### What makes something an algorithm
 
-zyBooks points to a list of characteristics every algorithm should have. Other books word the list differently: some say "definiteness" for unambiguity, and some add "generality" (it works for every input of the right kind). This guide uses zyBooks' names.
+A procedure only counts as an algorithm if a person or computer can follow it to the end and get an answer. "Add up the numbers, then divide by how many there are" qualifies. "Keep guessing until it feels right" doesn't: it's unclear and may never stop. The characteristics below spell out what "can follow it to the end" means.
+
+The names vary between books. Some say "definiteness" for unambiguity, and some add "generality" (it works for every input of the right kind). This guide uses the names from the zyBooks text, since the practice questions use them.
 
 | Characteristic | Meaning |
 |---|---|
@@ -99,7 +99,7 @@ Many real problems reduce to a few well-known algorithms. Comparing two DNA samp
 
 An algorithm's efficiency is usually measured by its runtime, and how that runtime grows as the input grows. It's written in Big-O, which keeps only the term that dominates for large inputs. The [Big-O cheat sheet](big-o.md) lists the growth rates and the rules for working one out.
 
-zyBooks calls an algorithm **efficient** when its runtime grows no faster than a polynomial in the input size: O(n), O(n²), O(n³), and so on. O(2ⁿ) is not efficient.
+An algorithm is called **efficient** when its runtime grows no faster than a polynomial in the input size: O(n), O(n²), O(n³), and so on. O(2ⁿ) is not efficient. The line sits there because exponential growth gets out of hand fast: adding one item to the input doubles a 2ⁿ runtime, while it barely changes n³.
 
 **NP-complete** problems are a group of problems for which nobody knows an efficient algorithm. Three facts describe them:
 
@@ -131,7 +131,7 @@ Data types come in a few flavors:
 
 An **abstract data type** is defined by what you can ask it to do, not by how it does it. A list ADT promises "append, remove, search, and keep items in order". It says nothing about arrays or nodes. A data structure is one way to build it, and the same ADT can be built on different structures. Code that calls the ADT's operations works the same whichever one is underneath, so the programmer doesn't need to know which it is.
 
-zyBooks' common ADTs and the structures each is usually built on:
+The common ADTs, and the structures each is usually built on:
 
 | ADT | What it does | Usually built on |
 |---|---|---|
@@ -182,7 +182,7 @@ How to build the codes:
 
 1. Count how often each character appears. This is the **character frequency table**.
 2. Make a leaf node for each character, holding its count, and put every leaf in a priority queue where a lower count means a higher priority.
-3. Remove the two nodes with the lowest counts. Make a new parent node with the first one removed as its **left** child and the second as its **right** child. The parent's count is the sum of theirs. Put the parent back in the queue.
+3. Remove the two nodes with the lowest counts. Make a new parent node with the first one removed as its **left** child and the second as its **right** child. The parent's count is the sum of theirs. Put the parent back in the queue. Joining the rarest nodes first pushes them deepest in the tree, so the rarest characters end up with the longest codes.
 4. Repeat step 3 until one node is left. It's the root of the Huffman tree.
 5. Read each character's code from the path from the root to its leaf: append 0 for each left branch and 1 for each right branch.
 
@@ -248,7 +248,7 @@ Finding the best (optimal) answer can take more time or memory than is available
 
 A knapsack can carry a limited weight. Each item has a weight and a value. The goal is the most valuable load that stays within the weight limit. In the **0-1 knapsack problem**, you can take at most one of each item. Trying every combination finds the best load, but with n items there are 2ⁿ combinations.
 
-zyBooks' heuristic for the 0-1 knapsack takes the most valuable items first:
+A simple heuristic for the 0-1 knapsack takes the most valuable items first:
 
 1. Sort the items by value, highest first.
 2. Go through them in that order. If an item fits in the remaining weight, take it and subtract its weight.
@@ -303,7 +303,9 @@ With other coins, greedy can fail. With coins 1, 3, and 4, making 6 greedily giv
 
 ### Fractional knapsack
 
-The **fractional knapsack problem** lets you take part of an item: any fraction from 0.0 to 1.0 of it, for that fraction of its weight and value. Greedy is not always optimal for the 0-1 knapsack, but it **is** optimal for the fractional knapsack:
+The **fractional knapsack problem** lets you take part of an item: any fraction from 0.0 to 1.0 of it, for that fraction of its weight and value. Think of bulk spices: you can scoop out as much of each as you like.
+
+Greedy is not always optimal for the 0-1 knapsack, but it **is** optimal for the fractional knapsack. Since any amount can be taken, every pound of space should hold the most value it can, so the method fills up on the items worth the most per pound:
 
 1. Sort the items by value-to-weight ratio, highest first.
 2. Take whole items in that order while the next whole item fits.
@@ -328,7 +330,7 @@ Every chosen item is taken whole except possibly the last, so the number of item
 
 ### Activity selection
 
-In the **activity selection problem**, each activity has a start time and a finish time. The goal is the largest set of activities with no time conflicts. Greedy finds the optimal answer:
+In the **activity selection problem**, each activity has a start time and a finish time. The goal is the largest set of activities with no time conflicts, like fitting as many meetings as possible into one room. Greedy finds the optimal answer by always choosing the activity that's over soonest, since that leaves the most time for the rest:
 
 1. Sort the activities by finish time, earliest first.
 2. Choose the first one. It becomes the current activity.
@@ -357,11 +359,39 @@ Splitting a problem into subproblems alone isn't dynamic programming. Merge sort
 
 ### Fibonacci numbers
 
-zyBooks numbers the terms from 0: F(0) = 0, F(1) = 1, and F(n) = F(n − 1) + F(n − 2).
+The Fibonacci sequence starts with 0 and 1. Every number after that is the sum of the two numbers before it:
 
-Plain recursion recomputes the same terms many times. Computing F(6) recursively makes 25 calls:
+<!-- figure
+row: position | 0 1 2 3 4 5 6 7
+row: value | 0 1 1 2 3 5 8 13 | 1 + 2 = 3, 2 + 3 = 5, and so on
+-->
+```text
+position  0  1  2  3  4  5  6  7
+value     0  1  1  2  3  5  8  13
+```
+<!-- /figure -->
 
-| Term | Times it's computed for F(6) |
+We count positions from 0, so F(0) = 0, F(1) = 1, F(2) = 1, and F(6) = 8. As a rule: F(n) = F(n − 1) + F(n − 2), for any n of 2 or more.
+
+**The slow way: plain recursion.** Code that follows the rule directly calls itself twice, once for each of the two numbers before. Those two calls each make two more calls, and some of them ask for the same number. Here are the calls for F(4). The highlighted F(2) is worked out twice, from scratch both times:
+
+<!-- figure
+nary: F(4){F(3){F(2)@h{F(1), F(0)}, F(1)}, F(2)@h{F(1), F(0)}}
+-->
+```text
+            F(4)
+          /      \
+      F(3)        F(2)
+     /    \      /    \
+  F(2)   F(1)  F(1)  F(0)
+  /  \
+F(1) F(0)
+```
+<!-- /figure -->
+
+That's 9 calls to get F(4). Each step up roughly doubles the work: F(6) takes 25 calls, and F(20) takes over 20,000. The number of calls grows exponentially: O(2ⁿ).
+
+| Number | Times it's worked out when computing F(6) |
 |---|---|
 | F(5) | 1 |
 | F(4) | 2 |
@@ -370,33 +400,33 @@ Plain recursion recomputes the same terms many times. Computing F(6) recursively
 | F(1) | 8 |
 | F(0) | 5 |
 
-The number of calls grows exponentially: O(2ⁿ).
+**The fast way: dynamic programming.** Work forward from the start instead, and write each number down once. To get the next number you only need the last two, so keep just those two: `previous` and `current`. Each pass adds them to get `next`, then slides forward one place.
 
-The dynamic programming version keeps only the two most recent terms, `previous` and `current`, and loops from 1 up to n − 1. Each pass computes `next = previous + current`, then shifts: `previous` takes `current`'s value and `current` takes `next`'s.
-
-| Pass i | next | previous after | current after |
+| Pass | next = previous + current | previous after | current after |
 |---|---|---|---|
 | (start) | | 0 | 1 |
-| 1 | 1 | 1 | 1 |
-| 2 | 2 | 1 | 2 |
-| 3 | 3 | 2 | 3 |
-| 4 | 5 | 3 | 5 |
-| 5 | 8 | 5 | 8 |
+| 1 | 0 + 1 = 1 | 1 | 1 |
+| 2 | 1 + 1 = 2 | 1 | 2 |
+| 3 | 1 + 2 = 3 | 2 | 3 |
+| 4 | 2 + 3 = 5 | 3 | 5 |
+| 5 | 3 + 5 = 8 | 5 | 8 |
 
-F(6) = 8, after n − 1 = 5 passes. Each term is computed once, so the loop is O(n).
+After 5 passes (n − 1 passes for n = 6), `current` holds F(6) = 8. Each number is worked out exactly once, so this is O(n) time, and keeping only two numbers is O(1) space.
 
 ### Longest common substring
 
-A **substring** is a run of characters next to each other: `REA` is a substring of `BREAD`. The **longest common substring** algorithm finds the longest substring that appears in both of two strings.
+A **substring** is a run of characters next to each other: `REA` is a substring of `BREAD`. The **longest common substring** of two strings is the longest substring that appears in both. `BREAD` and `TREAT` share runs such as `RE`, `EA`, and `REA`, and the longest is `REA`.
 
-zyBooks uses a matrix of integers with one row per character of the first string (N rows) and one column per character of the second (M columns). The entry at row i, column j is the length of the longest common substring that **ends** at character i of the first string and character j of the second.
+The idea behind the algorithm: a shared run that ends at some pair of matching characters is one character longer than the shared run ending just before them. In `BREAD` and `TREAT`, the run ending at the two `A`s is `REA`, which is the run ending at the two `E`s (`RE`) plus one. So if you record, for every pair of positions, how long a shared run ends there, each answer comes from one you already have.
+
+Those answers go in a matrix of integers, with one row per character of the first string (N rows) and one column per character of the second (M columns). The entry at row i, column j is the length of the longest common substring that **ends** at character i of the first string and character j of the second.
 
 Fill the matrix one row at a time, top to bottom, left to right within each row:
 
-- If the two characters **match**, the entry is 1 + the entry diagonally up and to the left. Use 0 for an up-left entry that's outside the matrix (row 0 or column 0).
-- If they **don't match**, the entry is 0.
+1. If the two characters **match**, the entry is 1 + the entry diagonally up and to the left. The up-left entry is the run ending one character earlier in both strings, and this match extends it. Use 0 for an up-left entry that's outside the matrix (row 0 or column 0).
+2. If they **don't match**, the entry is 0, because no shared run can end on two different characters.
 
-The **largest entry** is the length of the longest common substring. Its row is where the substring ends in the first string, so the substring is the characters ending there, counting back by the length. If two entries tie for largest, there are two longest common substrings. zyBooks' code updates the largest entry only when a new entry is strictly larger, so it returns the first one it finds (the one ending in the earliest row).
+The **largest entry** is the length of the longest common substring. Its row is where the substring ends in the first string, so the substring is the characters ending there, counting back by the length. If two entries tie for largest, there are two longest common substrings. zyBooks' code (the version the practice questions follow) updates the largest entry only when a new entry is strictly larger, so it returns the first one it finds (the one ending in the earliest row).
 
 `BREAD` (rows) against `TREAT` (columns):
 
@@ -429,12 +459,12 @@ One common use is comparing long DNA strings (made of the letters A, C, G, and T
 
 A **subsequence** keeps characters in their order but can skip some: `ACE` is a subsequence of `ABCDE`, but not a substring. The **longest common subsequence** (LCS) of two strings is the longest one that's a subsequence of both.
 
-zyBooks' lab builds the same N × M matrix as the substring algorithm, with one rule changed:
+The method builds the same N × M matrix as the substring algorithm, with one rule changed. Here the entry at row i, column j is the LCS length of the first i + 1 characters of the first (row) string and the first j + 1 characters of the second (column) string.
 
-- If the two characters **match**, the entry is 1 + the entry up and to the left (same as the substring).
-- If they **don't match**, the entry is the larger of the entry above and the entry to the left.
+1. If the two characters **match**, the entry is 1 + the entry up and to the left (same as the substring). The matching character can be added to the end of the best subsequence found so far without it.
+2. If they **don't match**, the entry is the larger of the entry above and the entry to the left. At least one of the two characters can't end the subsequence, so drop one or the other and keep whichever choice did better.
 
-Use 0 for any entry outside the matrix. Entries never get smaller moving right or down, so the largest entry is the bottom-right one, and it's the LCS length.
+A mismatch no longer resets to 0, because a subsequence is allowed to skip characters. Use 0 for any entry outside the matrix. Entries never get smaller moving right or down, so the largest entry is the bottom-right one, and it's the LCS length.
 
 `CART` (rows) against `CHAT` (columns):
 
@@ -639,7 +669,11 @@ The LCS length is 3 (`CAT`). Like the substring matrix, it's O(NM) time. Trying 
   <summary>Answer</summary>
 
   - **a)** **C.** Option A is greedy.
-  - **b)** 4, for example `AANA`. A length of 5 would have to be all of `ATANA`, but `BANANA` has no T.
+  - **b)** **4**, for example `AANA`. A subsequence keeps the letters in order but can skip letters in between, so it doesn't have to be one unbroken run:
+    - In `BANANA`, `AANA` uses the A at index 1, the A at 3, the N at 4, and the A at 5, skipping the B and the first N.
+    - In `ATANA`, it uses the A at 0, the A at 2, the N at 3, and the A at 4, skipping the T.
+    - A length of 5 would have to be all of `ATANA`, but `BANANA` has no T.
+    - Don't confuse this with the longest common **substring**, which must be unbroken: that's `ANA`, length 3.
   - **c)** O(nm): one cell per pair of positions, each filled in O(1).
   - **d)** 3. F(5) calls F(4) and F(3). F(4) calls F(3) and F(2). Each of the two F(3) calls makes one F(2) call, so F(2) is computed 1 + 2 = 3 times. The stored-terms version computes it once.
 
@@ -682,7 +716,7 @@ The LCS length is 3 (`CAT`). Like the substring matrix, it's O(NM) time. Trying 
 
   - **a)** **C.** Option A is dynamic programming, and a heuristic gives up the guarantee in B.
   - **b)** **B.** Whether NP-complete problems have efficient algorithms is one of the big open questions in computer science.
-  - **c)** **A.** NP-complete problems stand or fall together. And zyBooks counts any polynomial runtime as efficient, not only O(n).
+  - **c)** **A.** NP-complete problems stand or fall together. And any polynomial runtime counts as efficient, not only O(n).
 
   </details>
 
@@ -763,7 +797,7 @@ The LCS length is 3 (`CAT`). Like the substring matrix, it's O(NM) time. Trying 
 
   </details>
 
-- **1.9** Longest common substring, the zyBooks way. The first string `MARKET` labels the rows (indexes 0 to 5), and the second string `PARKED` labels the columns.
+- **1.9** Longest common substring, with the matrix method from this chapter. The first string `MARKET` labels the rows (indexes 0 to 5), and the second string `PARKED` labels the columns.
 
   **a)** What is the largest entry in the matrix?
 
@@ -798,7 +832,7 @@ The LCS length is 3 (`CAT`). Like the substring matrix, it's O(NM) time. Trying 
 
   </details>
 
-- **1.10** Activity selection. Use the zyBooks greedy method on these activities:
+- **1.10** Activity selection. Use the greedy method from this chapter on these activities:
 
   | Activity | Start | Finish |
   |---|---|---|
@@ -846,7 +880,7 @@ The LCS length is 3 (`CAT`). Like the substring matrix, it's O(NM) time. Trying 
 
 - **1.11** Knapsacks. The weight limit is 10 lb. The items are 8 lb worth $40, 5 lb worth $30, 4 lb worth $26, and 4 lb worth $10.
 
-  **a)** zyBooks' 0-1 knapsack heuristic takes the most valuable items first. What total value does it reach?
+  **a)** The 0-1 knapsack heuristic from this chapter takes the most valuable items first. What total value does it reach?
 
   <!-- answer:1.11a blanks: 40 | $40 -->
 
