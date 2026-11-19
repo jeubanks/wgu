@@ -11,15 +11,39 @@ A **rotation** rearranges a node and one of its children so the child moves up a
 - A **right rotation** at a node moves its **left** child up into its place. The node needs a left child.
 - A **left rotation** at a node moves its **right** child up into its place. The node needs a right child.
 
+<!-- figure
+title: Right rotation at Y
+tree: Before :: Y{X{A@t, B@t}, C@t}
+tree: After: X moved up :: X{A@t, Y{B@t, C@t}}
+flow: yes
+-->
 ```text
-right rotation at Y                       left rotation at X
+right rotation at Y
 
-        Y                 X                  X                     Y
-       / \               / \                / \                   / \
-      X   C     →       A   Y              A   Y        →        X   C
-     / \                   / \                / \               / \
-    A   B                 B   C              B   C             A   B
+        Y                 X
+       / \               / \
+      X   C     →       A   Y
+     / \                   / \
+    A   B                 B   C
 ```
+<!-- /figure -->
+
+<!-- figure
+title: Left rotation at X
+tree: Before :: X{A@t, Y{B@t, C@t}}
+tree: After: Y moved up :: Y{X{A@t, B@t}, C@t}
+flow: yes
+-->
+```text
+left rotation at X
+
+        X                     Y
+       / \                   / \
+      A   Y        →        X   C
+         / \               / \
+        B   C             A   B
+```
+<!-- /figure -->
 
 - Keys are in the same order before and after: A < X < B < Y < C.
 - The middle subtree B changes parents: it was X's right child and becomes Y's left child (or the reverse).
@@ -44,17 +68,27 @@ Each node's **balance factor** is
 
 A one-node subtree has height 0, and a missing (null) subtree counts as height **−1**. In an AVL tree every balance factor is −1, 0, or 1. A node at **+2** leans too far left; at **−2**, too far right. One such node anywhere means the whole tree isn't an AVL tree.
 
+<!-- figure
+title: The BST from inserting 50, 30, 70, 20, 40, 45, with each balance factor
+tree: 50 ^+2{30 ^−1{20 ^0, 40 ^−1{, 45 ^0}}, 70 ^0}
+-->
 ```text
-BST from inserting 50, 30, 70, 20, 40, 45         balance factors
-
-            50                                     50: left height 2, right 0   → +2  ✗
-          /    \                                   30: left 0, right 1          → −1
-        30      70                                 40: left −1, right 0         → −1
-       /  \                                        20, 45, 70: leaves           →  0
+            50
+          /    \
+        30      70
+       /  \
      20    40
              \
               45
 ```
+<!-- /figure -->
+
+| Node | Left height | Right height | Balance factor |
+|---|---|---|---|
+| 50 | 2 | 0 | +2: out of balance |
+| 30 | 0 | 1 | −1 |
+| 40 | −1 (no left child) | 0 | −1 |
+| 20, 45, 70 | −1 (leaf) | −1 (leaf) | 0 |
 
 ### Storing heights in the nodes
 
@@ -105,6 +139,9 @@ zyBooks' code only checks for the zigzag. If the child leans the opposite way, i
 6. Rotate left at 30. 40 moves up into 30's place, and 30 becomes 40's left child.
 7. Rotate right at 50. 40 moves up to the root. 40's right child, 45, moves over to become 50's left child.
 
+<!-- figure
+tree: 40{30{20}, 50{45, 70}}
+-->
 ```text
           40
         /    \
@@ -112,6 +149,7 @@ zyBooks' code only checks for the zigzag. If the child leans the opposite way, i
      /       /  \
    20      45    70
 ```
+<!-- /figure -->
 
 The tree has height 2, and every balance factor is −1, 0, or 1. The balance factors drawn earlier are this same tree before the fix.
 
@@ -136,6 +174,11 @@ Unlike insert, removal can need rotations at several nodes on the way up, since 
 
 **Trace:** start from the AVL tree below and remove 10.
 
+<!-- figure
+tree: Before :: 20{10, 30{25, 35}}
+tree: After removing 10 :: 30{20{, 25}, 35}
+flow: yes
+-->
 ```text
 before                after removing 10
 
@@ -145,6 +188,7 @@ before                after removing 10
        /  \                \
      25    35               25
 ```
+<!-- /figure -->
 
 1. 10 is a leaf, so it's removed.
 2. Rebalance its parent, 20: left height −1, right height 1, balance factor **−2**.
@@ -172,6 +216,8 @@ A **red-black tree** is a BST where every node is colored red or black, followin
 
 Null leaves aren't stored. You draw them in when you check rule 5. When zyBooks counts black nodes on a path, it counts the starting node (if black) and the null leaf at the end.
 
+<div class="viz" data-viz="rb-tree" markdown>
+
 ```text
           13 (B)
          /      \
@@ -182,17 +228,13 @@ Null leaves aren't stored. You draw them in when you check rule 5. When zyBooks 
                         27 (R)
 ```
 
+</div>
+
 Every path from 13 down to a null leaf has **3** black nodes: 13, one of 1, 11, 15, or 25, and the null leaf. No red node has a red child.
 
 Coloring every node black only works when every null leaf is at the same depth. Most BSTs can't be made red-black trees that way.
 
 Rules 3 and 5 together keep the tree balanced enough: the longest path (alternating red and black) can be at most twice as long as the shortest (all black). So the height is at most **2 log₂(n + 1)**: O(log n).
-
-<div class="viz" data-viz="rb-tree" markdown>
-
-*On the site, a drawing here shows the red-black tree above, with each node's color written beside it.*
-
-</div>
 
 ### Rotations in a red-black tree
 
@@ -226,6 +268,9 @@ So an insert needs either recoloring only, one rotation (a straight line), or tw
 | 2 | 2 is 4's left child. Parent 4 and uncle 8 are both red: color them black and 6 red. Balance 6: it's the root, so color it black. | 6B, children 4B and 8B; 2R under 4 |
 | 1 | 1 is 2's left child. Parent 2 is red, uncle (4's right child) is null. Straight line: color 2 black and 4 red. 1 is a left child, so rotate right at 4. | below |
 
+<!-- figure
+tree: 6@b{2@b{1@r, 4@r}, 8@b}
+-->
 ```text
             6 (B)
            /     \
@@ -233,6 +278,7 @@ So an insert needs either recoloring only, one rotation (a straight line), or tw
        /   \
     1 (R)  4 (R)
 ```
+<!-- /figure -->
 
 Every path from 6 to a null leaf has 3 black nodes, and no red node has a red child.
 
@@ -285,6 +331,12 @@ A null child counts as black in every check.
 
 **Trace 2:** remove 20 from this tree. Every path from 30 has 3 black nodes.
 
+<!-- figure
+tree: Before :: 30@b{20@b, 40@b{35@r}}
+tree: After case 5 (rotate right at 40) :: 30@b{20@b, 35@b{, 40@r}}
+tree: After the final steps, with 20 removed :: 35@b{30@b, 40@b}
+flow: yes
+-->
 ```text
 before                 after case 5               after the final steps,
                        (rotate right at 40)       with 20 removed
@@ -295,6 +347,7 @@ before                 after case 5               after the final steps,
           /                         \
        35 (R)                      40 (R)
 ```
+<!-- /figure -->
 
 1. Case 1: 20 is black with a parent. No.
 2. Case 2: sibling 40 is black. No.
@@ -320,6 +373,9 @@ With the counts, you can find the **nth key** in sorted order, with n starting a
 
 **Trace:** find the key at n = 3 in this tree. Counts are in brackets.
 
+<!-- figure
+tree: 14 ^[8]{7 ^[4]{3 ^[1], 10 ^[2]{, 12 ^[1]}}, 22 ^[3]{18 ^[1], 27 ^[1]}}
+-->
 ```text
                14 [8]
              /        \
@@ -329,6 +385,7 @@ With the counts, you can find the **nth key** in sorted order, with n starting a
                \
               12 [1]
 ```
+<!-- /figure -->
 
 1. At 14, L = 4. 3 < 4: go left, n stays 3.
 2. At 7, L = 1. 3 > 1: go right, n = 3 − 2 = 1.
@@ -465,6 +522,9 @@ Insert and remove in both trees use O(1) extra space: a fixed number of temporar
 
 - **6.6** AVL removal. Keys 60, 40, 80, 30, 50, 70, 90, 55 were inserted into an empty AVL tree, which gave this tree with no rotations:
 
+  <!-- figure
+  tree: 60{40{30, 50{, 55}}, 80{70, 90}}
+  -->
   ```text
             60
           /    \
@@ -474,6 +534,7 @@ Insert and remove in both trees use O(1) extra space: a fixed number of temporar
              \
               55
   ```
+  <!-- /figure -->
 
   **a)** Remove 60, using zyBooks' AVL removal. Which key is at the root afterward?
 
@@ -524,6 +585,9 @@ Insert and remove in both trees use O(1) extra space: a fixed number of temporar
 
 - **6.8** Red-black removal. Remove 50 from this red-black tree, using zyBooks' algorithm.
 
+  <!-- figure
+  tree: 50@b{30@r{20@b, 40@b}, 70@b}
+  -->
   ```text
              50 (B)
             /      \
@@ -531,6 +595,7 @@ Insert and remove in both trees use O(1) extra space: a fixed number of temporar
         /    \
     20 (B)  40 (B)
   ```
+  <!-- /figure -->
 
   **a)** Which key ends up in the node that held 50?
 
@@ -555,6 +620,9 @@ Insert and remove in both trees use O(1) extra space: a fixed number of temporar
 
 - **6.9** Subtree key counts. Each node stores its subtree key count.
 
+  <!-- figure
+  tree: 33{17{9, 25}, 48{41, 56{52}}}
+  -->
   ```text
             33
           /    \
@@ -564,6 +632,7 @@ Insert and remove in both trees use O(1) extra space: a fixed number of temporar
                   /
                 52
   ```
+  <!-- /figure -->
 
   **a)** What is the subtree key count stored at 17?
 

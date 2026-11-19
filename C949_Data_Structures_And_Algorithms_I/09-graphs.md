@@ -6,6 +6,10 @@ A graph stores items and the connections between them, with no top, no bottom, a
 
 A **graph** is a set of **vertices** (also called nodes) joined by **edges**. A vertex is an item, like a city or a person. An edge is a connection between two vertices, like a road or a friendship.
 
+<!-- figure
+nodes: A 0 0, B 1 0, C 0 1, D 1 1, E 0 2, F 1 2, G 2 2
+edges: A-B, A-C, B-D, C-D, C-E, D-F, E-F, F-G
+-->
 ```text
    A --- B
    |     |
@@ -13,6 +17,7 @@ A **graph** is a set of **vertices** (also called nodes) joined by **edges**. A 
    |     |
    E --- F --- G
 ```
+<!-- /figure -->
 
 | Term | Meaning | In the graph above |
 |---|---|---|
@@ -62,23 +67,28 @@ A road map only needs a vertex where roads meet or where a trip can start or end
 
 zyBooks 9.3 and 9.4 cover the two standard ways to store a graph. Both use this small undirected graph:
 
+<!-- figure
+nodes: P 0 0, Q 1 0, R 0 1, S 1 1
+edges: P-Q, P-R, Q-R
+-->
 ```text
    P --- Q
    |   /
    |  /
    R     S
 ```
+<!-- /figure -->
 
 ### Adjacency list
 
 Each vertex keeps a list of the vertices adjacent to it.
 
-```text
-P: Q, R
-Q: P, R
-R: P, Q
-S: (empty)
-```
+| Vertex | Adjacent vertices |
+|---|---|
+| P | Q, R |
+| Q | P, R |
+| R | P, Q |
+| S | (none) |
 
 In an undirected graph, every edge shows up **twice**: P–Q puts Q in P's list and P in Q's list.
 
@@ -90,6 +100,9 @@ In an undirected graph, every edge shows up **twice**: P–Q puts Q in P's list 
 
 A V × V grid of 0s and 1s. The entry in row X, column Y is 1 if there's an edge from X to Y.
 
+<!-- figure
+grid: P Q R S / P: 0 *1 *1 0 / Q: *1 0 *1 0 / R: *1 *1 0 0 / S: 0 0 0 0
+-->
 ```text
       P  Q  R  S
    P  0  1  1  0
@@ -97,6 +110,7 @@ A V × V grid of 0s and 1s. The entry in row X, column Y is 1 if there's an edge
    R  1  1  0  0
    S  0  0  0  0
 ```
+<!-- /figure -->
 
 - An undirected graph's matrix is **symmetric**: row X, column Y matches row Y, column X.
 - **Space:** O(V²), however few edges there are. A graph with 10,000 vertices needs 100,000,000 entries, mostly 0s if the graph is sparse.
@@ -134,25 +148,34 @@ zyBooks calls the vertices waiting in the queue the **frontier**: discovered but
 
 **A trace** on the graph from the start of the chapter, starting at A. Neighbors are taken in alphabetical order.
 
+<!-- figure
+nodes: A 0 0, B 1 0, C 0 1, D 1 1, E 0 2, F 1 2, G 2 2
+edges: A-B, A-C, B-D, C-D, C-E, D-F, E-F, F-G
+-->
 ```text
    A --- B
    |     |
    C --- D
    |     |
    E --- F --- G
-
-Dequeue  Visit  Enqueue (newly discovered)  Queue afterward
-A        A      B, C                        B, C
-B        B      D                           C, D
-C        C      E   (A and D already found) D, E
-D        D      F                           E, F
-E        E      (none)                      F
-F        F      G                           G
-G        G      (none)                      empty
-
-BFS order: A, B, C, D, E, F, G
-Distance:  0  1  1  2  2  3  4
 ```
+<!-- /figure -->
+
+| Dequeue and visit | Enqueue (newly discovered) | Queue afterward |
+|---|---|---|
+| A | B, C | B, C |
+| B | D | C, D |
+| C | E (A and D are already discovered) | D, E |
+| D | F | E, F |
+| E | (none) | F |
+| F | G | G |
+| G | (none) | empty |
+
+BFS order: A, B, C, D, E, F, G. Each vertex's distance from A:
+
+| Vertex | A | B | C | D | E | F | G |
+|---|---|---|---|---|---|---|---|
+| Distance | 0 | 1 | 1 | 2 | 2 | 3 | 4 |
 
 D is 2 edges from A along two different paths. BFS discovers it only once, at distance 2.
 
@@ -178,22 +201,20 @@ A vertex can be on the stack more than once. The visited check after each pop sk
 
 **A trace** on the same graph, starting at A, with alphabetical adjacency lists (A: B, C. B: A, D. C: A, D, E. D: B, C, F. E: C, F. F: D, E, G. G: F). The stack's top is on the right.
 
-```text
-Pop  Visited?  Action                 Stack afterward
-A    new       visit A, push B, C     B, C
-C    new       visit C, push A, D, E  B, A, D, E
-E    new       visit E, push C, F     B, A, D, C, F
-F    new       visit F, push D, E, G  B, A, D, C, D, E, G
-G    new       visit G, push F        B, A, D, C, D, E, F
-F    yes       skip                   B, A, D, C, D, E
-E    yes       skip                   B, A, D, C, D
-D    new       visit D, push B, C, F  B, A, D, C, B, C, F
-F, C yes       skip both              B, A, D, C, B
-B    new       visit B, push A, D     B, A, D, C, A, D
-(every remaining pop is already visited)
+| Pop | Visited? | Action | Stack afterward |
+|---|---|---|---|
+| A | new | visit A, push B, C | B, C |
+| C | new | visit C, push A, D, E | B, A, D, E |
+| E | new | visit E, push C, F | B, A, D, C, F |
+| F | new | visit F, push D, E, G | B, A, D, C, D, E, G |
+| G | new | visit G, push F | B, A, D, C, D, E, F |
+| F | yes | skip | B, A, D, C, D, E |
+| E | yes | skip | B, A, D, C, D |
+| D | new | visit D, push B, C, F | B, A, D, C, B, C, F |
+| F, C | yes | skip both | B, A, D, C, B |
+| B | new | visit B, push A, D | B, A, D, C, A, D |
 
-DFS order (stack): A, C, E, F, G, D, B
-```
+Every remaining pop is already visited. DFS order (stack): A, C, E, F, G, D, B.
 
 ### Recursive DFS
 
@@ -204,6 +225,15 @@ zyBooks also gives a recursive version that uses the call stack instead of an ex
 
 The recursive version takes neighbors from the **front** of each list, so on the same graph it gives a different order:
 
+<!-- figure
+call: dfs(A) | visit A. First neighbor: B
+call: >dfs(B) | visit B. A is visited, so D
+call: >>dfs(D) | visit D. B is visited, so C
+call: >>>dfs(C) | visit C. A and D are visited, so E
+call: >>>>dfs(E) | visit E. C is visited, so F
+call: >>>>>dfs(F) | visit F. D and E are visited, so G
+call: >>>>>>dfs(G) | visit G
+-->
 ```text
 visit A → first neighbor B
   visit B → B's neighbors: A (visited), D
@@ -212,9 +242,10 @@ visit A → first neighbor B
         visit E → E's neighbors: C (visited), F
           visit F → F's neighbors: D, E (visited), G
             visit G
-
-DFS order (recursive): A, B, D, C, E, F, G
 ```
+<!-- /figure -->
+
+DFS order (recursive): A, B, D, C, E, F, G.
 
 Both orders are valid depth-first searches. Each goes as deep as it can before backing up. Many other books (and many instructors) trace DFS the recursive way. If a question says "push the neighbors onto a stack," use the stack version.
 
@@ -242,12 +273,17 @@ Both orders are valid depth-first searches. Each goes as deep as it can before b
 
 zyBooks 9.7. In a **directed graph**, each edge has a direction: it goes from a **starting vertex** to a **terminating vertex**. Draw it as an arrow.
 
+<!-- figure
+nodes: K 0 0, L 1.5 0, M 1.5 1, N 0 1, O 3 1
+edges: K>L, L>M, M>N, N>K, M>O
+-->
 ```text
    K -----> L
    ^        |
    |        v
    N <----- M -----> O
 ```
+<!-- /figure -->
 
 - **Adjacency is one-way.** L is adjacent to K, because there's an edge K → L. K isn't adjacent to L.
 - A **path** follows the arrows. K → L → M → O is a path. O → M isn't.
@@ -264,13 +300,18 @@ zyBooks 9.8. A **weighted graph** gives each edge a number: a cost, distance, ti
 - A cycle's **cycle length** is the sum of the weights around it. If that sum is negative, the cycle is a **negative edge weight cycle**.
 - If a negative cycle can be reached, **no shortest path exists**: every trip around the cycle makes the path shorter, forever.
 
+<!-- figure
+nodes: P 0 0, Q 1.4 0, R 2.8 0
+edges: P>Q 2, Q>R 2, P>R 7 ~62
+-->
 ```text
    P --2--> Q --2--> R
    |                 ^
    +--------7--------+
-
-P → R directly: 7.   P → Q → R: 2 + 2 = 4, the shorter path, even with more edges.
 ```
+<!-- /figure -->
+
+P → R directly costs 7. P → Q → R costs 2 + 2 = 4: the shorter path, even with more edges.
 
 ## The Graph class in zyBooks
 
@@ -304,27 +345,31 @@ Step 3.2 is called **relaxing** an edge. To read a path afterward, start at the 
 
 **A trace.** A directed graph, starting at S:
 
+<!-- figure
+nodes: S 0 0.7, A 1.3 0, B 1.3 1.4, C 2.6 0, D 3.9 0.7
+edges: S>A 4, S>B 1, B>A 2, B>C 5, B>D 8, A>C 1, C>D 3
+-->
 ```text
    S ---4---> A ---1---> C ---3---> D
    |          ^          ^          ^
    1          2          5          8
    v          |          |          |
    B ---------+----------+----------+
-
-Edges: S→A 4, S→B 1, B→A 2, B→C 5, B→D 8, A→C 1, C→D 3
-
-Remove  Relax edges                          S   A   B   C   D
-start                                        0   ∞   ∞   ∞   ∞
-S (0)   S→A: 0+4=4 < ∞    S→B: 0+1=1 < ∞     0   4   1   ∞   ∞
-B (1)   B→A: 1+2=3 < 4    B→C: 1+5=6 < ∞
-        B→D: 1+8=9 < ∞                       0   3   1   6   9
-A (3)   A→C: 3+1=4 < 6                       0   3   1   4   9
-C (4)   C→D: 4+3=7 < 9                       0   3   1   4   7
-D (7)   (no outgoing edges)                  0   3   1   4   7
-
-Predecessors: A ← B, B ← S, C ← A, D ← C
-Path to D: D ← C ← A ← B ← S, so S → B → A → C → D, length 7
 ```
+<!-- /figure -->
+
+Edges: S→A 4, S→B 1, B→A 2, B→C 5, B→D 8, A→C 1, C→D 3.
+
+| Remove | Relax edges | S | A | B | C | D |
+|---|---|---|---|---|---|---|
+| start | | 0 | ∞ | ∞ | ∞ | ∞ |
+| S (0) | S→A: 0 + 4 = 4 < ∞<br>S→B: 0 + 1 = 1 < ∞ | 0 | 4 | 1 | ∞ | ∞ |
+| B (1) | B→A: 1 + 2 = 3 < 4<br>B→C: 1 + 5 = 6 < ∞<br>B→D: 1 + 8 = 9 < ∞ | 0 | 3 | 1 | 6 | 9 |
+| A (3) | A→C: 3 + 1 = 4 < 6 | 0 | 3 | 1 | 4 | 9 |
+| C (4) | C→D: 4 + 3 = 7 < 9 | 0 | 3 | 1 | 4 | 7 |
+| D (7) | (no outgoing edges) | 0 | 3 | 1 | 4 | 7 |
+
+Predecessors: A ← B, B ← S, C ← A, D ← C. Following them back from D gives D ← C ← A ← B ← S, so the path is S → B → A → C → D, length 7.
 
 The direct edge S → A costs 4, but S → B → A costs only 3. Dijkstra's algorithm finds it because it handles B (distance 1) before A.
 
@@ -334,20 +379,26 @@ The direct edge S → A costs 4, but S → B → A costs only 3. Dijkstra's algo
 
 Dijkstra's algorithm is safe when every weight is 0 or more. An unweighted graph counts too: give every edge a weight of 1. Once any edge is negative, a vertex that was already removed can turn out to have a shorter path, and the algorithm never goes back to fix it. Use Bellman-Ford instead.
 
+<!-- figure
+nodes: X 0 0, Y 1.3 0, W 2.6 0, V 3.9 0, Z 1.3 1.2
+edges: X>Y 1, Y>W 2, W>V 2, X>Z 4, Z>W -4
+-->
 ```text
    X ---1---> Y ---2---> W ---2---> V
    |                     ^
    4                    -4
    v                     |
    Z --------------------+
-
-Remove  Result                                 W   V
-X (0)   Y = 1, Z = 4                           ∞   ∞
-Y (1)   W = 1 + 2 = 3                          3   ∞
-W (3)   V = 3 + 2 = 5                          3   5
-Z (4)   Z→W: 4 + (−4) = 0 < 3, so W = 0        0   5
-V (5)   (no outgoing edges)                    0   5
 ```
+<!-- /figure -->
+
+| Remove | Result | W | V |
+|---|---|---|---|
+| X (0) | Y = 1, Z = 4 | ∞ | ∞ |
+| Y (1) | W = 1 + 2 = 3 | 3 | ∞ |
+| W (3) | V = 3 + 2 = 5 | 3 | 5 |
+| Z (4) | Z→W: 4 + (−4) = 0 < 3, so W = 0 | 0 | 5 |
+| V (5) | (no outgoing edges) | 0 | 5 |
 
 W's distance drops to 0 after W was already removed, and W is never processed again. So V keeps 5, while the real shortest path X → Z → W → V has length 4 − 4 + 2 = 2.
 
@@ -381,38 +432,40 @@ The final distances are the same for any vertex order. The table **after each pa
 
 **A trace** on the graph that fooled Dijkstra, starting at X, processing vertices in the order V, W, X, Y, Z:
 
-```text
-Pass 1
-  V: distance ∞, nothing to relax from
-  W: distance ∞, nothing to relax from
-  X: X→Y: 0+1 = 1 < ∞, Y = 1 (pred X)   X→Z: 0+4 = 4 < ∞, Z = 4 (pred X)
-  Y: Y→W: 1+2 = 3 < ∞, W = 3 (pred Y)
-  Z: Z→W: 4−4 = 0 < 3, W = 0 (pred Z)
-  After pass 1:  V ∞   W 0   X 0   Y 1   Z 4
+| Pass | Vertex | Relax its edges |
+|---|---|---|
+| 1 | V | distance ∞, nothing to relax from |
+| 1 | W | distance ∞, nothing to relax from |
+| 1 | X | X→Y: 0 + 1 = 1 < ∞, so Y = 1 (pred X)<br>X→Z: 0 + 4 = 4 < ∞, so Z = 4 (pred X) |
+| 1 | Y | Y→W: 1 + 2 = 3 < ∞, so W = 3 (pred Y) |
+| 1 | Z | Z→W: 4 − 4 = 0 < 3, so W = 0 (pred Z) |
+| 2 | W | W→V: 0 + 2 = 2 < ∞, so V = 2 (pred W). No other change. |
+| 3, 4 | | no change |
+| check | | no edge can improve anything, so there's no negative cycle: return True |
 
-Pass 2
-  W: W→V: 0+2 = 2 < ∞, V = 2 (pred W)
-  (no other change)
-  After pass 2:  V 2   W 0   X 0   Y 1   Z 4
+| After | V | W | X | Y | Z |
+|---|---|---|---|---|---|
+| Pass 1 | ∞ | 0 | 0 | 1 | 4 |
+| Pass 2 | 2 | 0 | 0 | 1 | 4 |
 
-Passes 3 and 4: no change.
-Check pass: no edge can improve anything, so there's no negative cycle. Return True.
-
-Path to V: V ← W ← Z ← X, so X → Z → W → V, length 2
-```
+Path to V: V ← W ← Z ← X, so X → Z → W → V, length 2.
 
 V was still ∞ after pass 1, because V came before W in the order. With a different order, it might have been finished in one pass.
 
 ### Detecting a negative cycle
 
+<!-- figure
+nodes: A 0 0, B 1.3 0, C 2.6 0, D 3.9 0
+edges: A>B 4, B>C 1 ~-34, C>B -3 ~-34, C>D 2
+-->
 ```text
    A ---4---> B ---1---> C ---2---> D
               ^          |
               +----−3----+
-
-Edges: A→B 4, B→C 1, C→B −3, C→D 2
-Cycle B → C → B has length 1 − 3 = −2.
 ```
+<!-- /figure -->
+
+Edges: A→B 4, B→C 1, C→B −3, C→D 2. The cycle B → C → B has length 1 − 3 = −2.
 
 After the V − 1 = 3 passes (order A, B, C, D), the distances are A 0, B −2, C 1, D 3. In the check pass, B → C gives −2 + 1 = −1 < 1. A distance still improved, so a negative cycle exists, and the algorithm returns False. Every lap around the cycle would knock another 2 off.
 
@@ -453,26 +506,31 @@ zyBooks says the collection can be a queue, a stack, or a set: any of them gives
 
 **A trace:**
 
+<!-- figure
+nodes: A 0 0, C 1.2 0, E 2.4 0, F 3.6 0, B 0 1.1, D 1.2 1.1
+edges: A>C, B>C, B>D, C>E, D>E, E>F
+-->
 ```text
    A ---> C ---> E ---> F
           ^      ^
    B -----+      |
    |             |
    +----> D -----+
-
-Edges: A→C, B→C, B→D, C→E, D→E, E→F
-Counts: A 0, B 0, C 2, D 1, E 2, F 1
-
-Stack (top on right)  Pop  Result so far     Count changes
-A, B                  B    B                 C 2→1, D 1→0: push D
-A, D                  D    B, D              E 2→1
-A                     A    B, D, A           C 1→0: push C
-C                     C    B, D, A, C        E 1→0: push E
-E                     E    B, D, A, C, E     F 1→0: push F
-F                     F    B, D, A, C, E, F
-
-Result: B, D, A, C, E, F
 ```
+<!-- /figure -->
+
+Edges: A→C, B→C, B→D, C→E, D→E, E→F. Incoming-edge counts: A 0, B 0, C 2, D 1, E 2, F 1.
+
+| Stack (top on right) | Pop | Result so far | Count changes |
+|---|---|---|---|
+| A, B | B | B | C 2→1, D 1→0: push D |
+| A, D | D | B, D | E 2→1 |
+| A | A | B, D, A | C 1→0: push C |
+| C | C | B, D, A, C | E 1→0: push E |
+| E | E | B, D, A, C, E | F 1→0: push F |
+| F | F | B, D, A, C, E, F | |
+
+Result: B, D, A, C, E, F.
 
 With a queue instead of a stack, A would come out first: A, B, C, D, E, F. Both are valid.
 
@@ -503,6 +561,10 @@ If the graph is disconnected, no spanning tree exists. When several edges share 
 
 **A trace:**
 
+<!-- figure
+nodes: A 0.6 0, B 0 1, C 1.2 1, D 0 2.1, E 1.2 2.1
+edges: A-B 4, A-C 1, B-C 3, B-D 2, C-D 7, C-E 6, D-E 5
+-->
 ```text
        A
     4 / \ 1
@@ -512,18 +574,20 @@ If the graph is disconnected, no spanning tree exists. When several edges share 
     2   7   6
     |  /    |
     D --5-- E
-
-Edge  Weight  Sets before                     Action
-AC    1       {A} {B} {C} {D} {E}             add, merge to {A,C}
-BD    2       {A,C} {B} {D} {E}               add, merge to {B,D}
-BC    3       {A,C} {B,D} {E}                 add, merge to {A,B,C,D}
-AB    4       {A,B,C,D} {E}                   skip: A and B are already connected
-DE    5       {A,B,C,D} {E}                   add, merge to {A,B,C,D,E}
-CE    6       {A,B,C,D,E}                     skip
-CD    7       {A,B,C,D,E}                     skip
-
-Tree: AC, BD, BC, DE.   4 edges for 5 vertices.   Total weight 1 + 2 + 3 + 5 = 11
 ```
+<!-- /figure -->
+
+| Edge | Weight | Sets before | Action |
+|---|---|---|---|
+| AC | 1 | {A} {B} {C} {D} {E} | add, merge to {A,C} |
+| BD | 2 | {A,C} {B} {D} {E} | add, merge to {B,D} |
+| BC | 3 | {A,C} {B,D} {E} | add, merge to {A,B,C,D} |
+| AB | 4 | {A,B,C,D} {E} | skip: A and B are already connected |
+| DE | 5 | {A,B,C,D} {E} | add, merge to {A,B,C,D,E} |
+| CE | 6 | {A,B,C,D,E} | skip |
+| CD | 7 | {A,B,C,D,E} | skip |
+
+The tree is AC, BD, BC, DE: 4 edges for 5 vertices, total weight 1 + 2 + 3 + 5 = 11.
 
 Kruskal's algorithm is **greedy**: it always grabs the cheapest edge that doesn't make a cycle, and never takes one back. The lightest edge in the graph is always in the tree.
 
@@ -554,19 +618,34 @@ After the round for K, every entry holds the length of the shortest path that ma
 
 **A trace:**
 
+<!-- figure
+nodes: A 0 0.7, B 1.6 0, C 1.6 1.4
+edges: A>B 4, A>C 9, B>C 2 ~-26, C>B -1 ~-26
+-->
 ```text
 Edges: A→B 4, A→C 9, B→C 2, C→B −1
+```
+<!-- /figure -->
 
+<!-- figure
+grid: Start :: A B C / A: 0 4 9 / B: ∞ 0 2 / C: ∞ −1 0
+grid: K = A :: A B C / A: 0 4 9 / B: ∞ 0 2 / C: ∞ −1 0
+grid: K = B :: A B C / A: 0 4 *6 / B: ∞ 0 2 / C: ∞ −1 0
+grid: K = C (final) :: A B C / A: 0 4 6 / B: ∞ 0 2 / C: ∞ −1 0
+flow: yes
+-->
+```text
 Start         K = A          K = B          K = C (final)
    A  B  C       A  B  C        A  B  C        A  B  C
 A  0  4  9    A  0  4  9     A  0  4  6     A  0  4  6
 B  ∞  0  2    B  ∞  0  2     B  ∞  0  2     B  ∞  0  2
 C  ∞ −1  0    C  ∞ −1  0     C  ∞ −1  0     C  ∞ −1  0
-
-K = A: no edge leads into A, so nothing can go through it.
-K = B: A→B→C is 4 + 2 = 6 < 9, so (A, C) becomes 6.
-K = C: A→C→B is 6 − 1 = 5, which doesn't beat 4. No change.
 ```
+<!-- /figure -->
+
+- K = A: no edge leads into A, so nothing can go through it.
+- K = B: A→B→C is 4 + 2 = 6 < 9, so (A, C) becomes 6.
+- K = C: A→C→B is 6 − 1 = 5, which doesn't beat 4. No change.
 
 B and C have no path back to A, so their A column stays ∞.
 
@@ -616,6 +695,10 @@ V is the number of vertices and E the number of edges. These match the [cheat sh
 
 - **9.1** Graph vocabulary. Use this undirected graph:
 
+  <!-- figure
+  nodes: J 0 0, K 1.2 0, L 0 1.2, M 1.2 1.2, N 2.2 0, O 2.2 1.2
+  edges: J-K, J-L, K-L, K-M, L-M, N-O
+  -->
   ```text
      J ----- K        N
      |     / |        |
@@ -623,6 +706,7 @@ V is the number of vertices and E the number of edges. These match the [cheat sh
      | /     |        O
      L ----- M
   ```
+  <!-- /figure -->
 
   | Question | Answer |
   |---|---|
@@ -682,11 +766,16 @@ V is the number of vertices and E the number of edges. These match the [cheat sh
 
 - **9.3** BFS and DFS. Use this undirected graph, with every adjacency list in alphabetical order. Separate the vertices with commas.
 
+  <!-- figure
+  nodes: P 0 0, Q 1 0, R 2 0, S 0 1, T 1 1, U 2 1, V 3 1
+  edges: P-Q, Q-R, P-S, Q-T, R-U, S-T, T-U, U-V
+  -->
   ```text
      P --- Q --- R
      |     |     |
      S --- T --- U --- V
   ```
+  <!-- /figure -->
 
   **a)** What is the BFS visit order starting at P?
 
@@ -718,11 +807,16 @@ V is the number of vertices and E the number of edges. These match the [cheat sh
 
 - **9.4** Dijkstra's algorithm. Run it on this directed graph, starting at H. When two vertices tie for the smallest distance, take the one that comes first in the order H, J, K, L, M, N.
 
+  <!-- figure
+  nodes: H 0 0.6, J 1.3 0, K 1.3 1.2, M 2.6 0, L 2.6 1.2, N 3.9 0.6
+  edges: H>J 7, H>K 2, K>J 3, J>L 2, J>M 6, K>L 8, L>M 1, L>N 2, M>N 3
+  -->
   ```text
   H → J  7      J → L  2      L → M  1
   H → K  2      J → M  6      L → N  2
   K → J  3      K → L  8      M → N  3
   ```
+  <!-- /figure -->
 
   **a)** What is each vertex's final distance?
 
@@ -739,15 +833,14 @@ V is the number of vertices and E the number of edges. These match the [cheat sh
   <details>
   <summary>Answer</summary>
 
-  ```text
-  Remove  Updates                                   J   K   L   M   N
-  H (0)   J = 7, K = 2                              7   2   ∞   ∞   ∞
-  K (2)   J: 2+3 = 5 < 7.  L: 2+8 = 10              5   2  10   ∞   ∞
-  J (5)   L: 5+2 = 7 < 10.  M: 5+6 = 11             5   2   7  11   ∞
-  L (7)   M: 7+1 = 8 < 11.  N: 7+2 = 9              5   2   7   8   9
-  M (8)   N: 8+3 = 11, not < 9                      5   2   7   8   9
-  N (9)   (no outgoing edges)
-  ```
+  | Remove | Updates | J | K | L | M | N |
+  |---|---|---|---|---|---|---|
+  | H (0) | J = 7, K = 2 | 7 | 2 | ∞ | ∞ | ∞ |
+  | K (2) | J: 2 + 3 = 5 < 7. L: 2 + 8 = 10 | 5 | 2 | 10 | ∞ | ∞ |
+  | J (5) | L: 5 + 2 = 7 < 10. M: 5 + 6 = 11 | 5 | 2 | 7 | 11 | ∞ |
+  | L (7) | M: 7 + 1 = 8 < 11. N: 7 + 2 = 9 | 5 | 2 | 7 | 8 | 9 |
+  | M (8) | N: 8 + 3 = 11, not < 9 | 5 | 2 | 7 | 8 | 9 |
+  | N (9) | (no outgoing edges) | 5 | 2 | 7 | 8 | 9 |
 
   - **a)** **J 5, K 2, L 7, M 8, N 9.**
   - **b)** **H, K, J, L, M, N**: always the smallest distance left.
@@ -757,11 +850,16 @@ V is the number of vertices and E the number of edges. These match the [cheat sh
 
 - **9.5** Bellman-Ford. Run it on this directed graph, starting at Q. Each pass processes the vertices in the order Q, R, S, T.
 
+  <!-- figure
+  nodes: Q 0 0.6, R 1.3 0, S 1.3 1.2, T 2.6 0.6
+  edges: Q>R 6, Q>S 3, S>R -2, R>T 4, S>T 7
+  -->
   ```text
   Q → R   6        S → R  −2
   Q → S   3        R → T   4
                    S → T   7
   ```
+  <!-- /figure -->
 
   **a)** What are the distances after the **first** pass?
 
@@ -797,10 +895,15 @@ V is the number of vertices and E the number of edges. These match the [cheat sh
 
 - **9.6** Topological sort. Use this directed acyclic graph:
 
+  <!-- figure
+  nodes: Q 0 0.6, P 1.2 0, R 1.2 1.2, S 2.4 0, T 2.4 1.2, U 3.6 0.6
+  edges: Q>P, Q>R, P>S, R>T, S>T, S>U, T>U
+  -->
   ```text
   Q → P      P → S      S → T      T → U
   Q → R      R → T      S → U
   ```
+  <!-- /figure -->
 
   **a)** Run zyBooks' algorithm. The collection is a stack, first filled in the order P, Q, R, S, T, U, and `pop()` takes the last vertex added. What is the result? Separate the vertices with commas.
 
@@ -822,15 +925,14 @@ V is the number of vertices and E the number of edges. These match the [cheat sh
 
   - **a)** Counts: P 1, Q 0, R 1, S 1, T 2, U 2. Only Q starts at 0.
 
-    ```text
-    Stack   Pop  Result              Changes
-    Q       Q    Q                   P→0 push, R→0 push
-    P, R    R    Q, R                T 2→1
-    P       P    Q, R, P             S→0 push
-    S       S    Q, R, P, S          T→0 push, U 2→1
-    T       T    Q, R, P, S, T       U→0 push
-    U       U    Q, R, P, S, T, U
-    ```
+    | Stack | Pop | Result | Changes |
+    |---|---|---|---|
+    | Q | Q | Q | P→0 push, R→0 push |
+    | P, R | R | Q, R | T 2→1 |
+    | P | P | Q, R, P | S→0 push |
+    | S | S | Q, R, P, S | T→0 push, U 2→1 |
+    | T | T | Q, R, P, S, T | U→0 push |
+    | U | U | Q, R, P, S, T, U | |
 
     **Q, R, P, S, T, U**.
 
@@ -846,11 +948,16 @@ V is the number of vertices and E the number of edges. These match the [cheat sh
 
   Kruskal's algorithm runs on this undirected graph:
 
+  <!-- figure
+  nodes: P 0 0.6, Q 1.3 0, R 1.3 1.2, S 2.6 0, T 2.6 1.2, U 3.9 0.6
+  edges: P-Q 7, P-R 3, Q-R 6, Q-S 2, R-S 9, R-T 4, S-T 8, S-U 5, T-U 10
+  -->
   ```text
   P–Q  7      Q–S  2      S–T   8
   P–R  3      R–S  9      S–U   5
   Q–R  6      R–T  4      T–U  10
   ```
+  <!-- /figure -->
 
   **a)** What is the first edge added to the tree? (Write it like `XY`.)
 
@@ -876,6 +983,13 @@ V is the number of vertices and E the number of edges. These match the [cheat sh
   - **c)** 2 + 3 + 4 + 5 + 6 = **20**, with 5 edges for 6 vertices.
   - **d)**
 
+    <!-- figure
+    grid: Start :: P Q R / P: 0 5 9 / Q: ∞ 0 2 / R: −3 ∞ 0
+    grid: K = P :: P Q R / P: 0 5 9 / Q: ∞ 0 2 / R: −3 *2 0
+    grid: K = Q :: P Q R / P: 0 5 *7 / Q: ∞ 0 2 / R: −3 2 0
+    grid: K = R (final) :: P Q R / P: 0 5 7 / Q: *−1 0 2 / R: −3 2 0
+    flow: yes
+    -->
     ```text
     Start          K = P          K = Q          K = R (final)
        P  Q  R        P  Q  R        P  Q  R        P  Q  R
@@ -883,6 +997,7 @@ V is the number of vertices and E the number of edges. These match the [cheat sh
     Q  ∞  0  2     Q  ∞  0  2     Q  ∞  0  2     Q −1  0  2
     R −3  ∞  0     R −3  2  0     R −3  2  0     R −3  2  0
     ```
+    <!-- /figure -->
 
     - K = P: R → P → Q is −3 + 5 = 2.
     - K = Q: P → Q → R is 5 + 2 = 7 < 9.

@@ -8,6 +8,10 @@ This page follows zyBooks chapter 5: binary tree terms, where trees are used, bi
 
 A **binary tree** is made of nodes, where each node has up to two children: a **left child** and a **right child**.
 
+<!-- figure
+tree: 62{31{15, 47{, 52}}, 84{73, 96}}
+levels: root, depth 0 | depth 1 | depth 2 | depth 3 (52 is a leaf)
+-->
 ```text
               62            ← root (depth 0)
             /    \
@@ -17,6 +21,7 @@ A **binary tree** is made of nodes, where each node has up to two children: a **
               \
                52           ← depth 3, a leaf
 ```
+<!-- /figure -->
 
 | Term | Meaning | In the tree above |
 |---|---|---|
@@ -74,10 +79,18 @@ In zyBooks, a BST holds **distinct keys**: no duplicates.
 
 Start at the root. If the key matches, you're done. If it's smaller, go left; if it's larger, go right. Stop when you find it, or when you step off the tree (a null child), which means it isn't there.
 
+<!-- figure
+tree: Search for 52: 62, 31, 47, 52, found :: 62@h{31@h{15, 47@h{, 52@h}}, 84{73, 96}}
+tree: Search for 40: 62, 31, 47, then a null child :: 62@h{31@h{15, 47@h{"null"@x, 52}}, 84{73, 96}}
+-->
 ```text
 search for 52:  62 → 52 < 62, go left → 31 → 52 > 31, go right → 47 → 52 > 47, go right → 52 found
 search for 40:  62 → go left → 31 → go right → 47 → 40 < 47, go left → null: not in the tree
 ```
+<!-- /figure -->
+
+- **Search for 52:** 52 < 62, go left to 31. 52 > 31, go right to 47. 52 > 47, go right: 52 found.
+- **Search for 40:** 40 < 62, go left to 31. 40 > 31, go right to 47. 40 < 47, go left: a null child, so 40 isn't in the tree.
 
 zyBooks says a search **visits** a node when it reads that node's key. The search for 52 visits 4 nodes. Each step goes down one level, so a search makes at most **height + 1** comparisons: O(h).
 
@@ -146,6 +159,10 @@ In the worst case, remove walks from the root to a leaf to find the node, then d
 
 The same keys can make very different trees:
 
+<!-- figure
+tree: Insert 4, 2, 6, 1, 3, 5, 7: height 2 :: 4{2{1, 3}, 6{5, 7}}
+tree: Insert 1, 2, 3, 4, 5, 6, 7: height 6 :: 1{, 2{, 3{, 4{, 5{, 6{, 7}}}}}}
+-->
 ```text
 insert 4, 2, 6, 1, 3, 5, 7            insert 1, 2, 3, 4, 5, 6, 7
 
@@ -157,6 +174,7 @@ insert 4, 2, 6, 1, 3, 5, 7            insert 1, 2, 3, 4, 5, 6, 7
 
 height 2                               height 6
 ```
+<!-- /figure -->
 
 | Shape | Height for n nodes | Search, insert, remove |
 |---|---|---|
@@ -251,6 +269,9 @@ A **trie** (said "try"), also called a **prefix tree**, stores a set of strings.
 
 In zyBooks, each string's end is marked by its own **terminal node**: an extra child, with no character, under the string's last character. Every inserted string has exactly one terminal node, and zyBooks counts the terminal nodes as nodes.
 
+<!-- figure
+nary: Words cat, car, cart, do, dog. $ marks the end of a word :: root{c{a{t{$}, r{$, t{$}}}}, d{o{$, g{$}}}}
+-->
 ```text
 words: cat, car, cart, do, dog          $ = terminal node
 
@@ -266,6 +287,7 @@ words: cat, car, cart, do, dog          $ = terminal node
               |
               $
 ```
+<!-- /figure -->
 
 That's 8 character nodes plus 5 terminal nodes: 13 nodes below the root.
 
@@ -325,6 +347,9 @@ Search, insert, and remove are all O(h) for a tree of height h, and use O(1) ext
 
 - **5.1** Tree vocabulary. Use this tree:
 
+  <!-- figure
+  tree: M{D{B, H{F}}, R{, W}}
+  -->
   ```text
             M
           /   \
@@ -334,6 +359,7 @@ Search, insert, and remove are all O(h) for a tree of height h, and use O(1) ext
           /
          F
   ```
+  <!-- /figure -->
 
   | Question | Answer |
   |---|---|
@@ -356,6 +382,11 @@ Search, insert, and remove are all O(h) for a tree of height h, and use O(1) ext
 
 - **5.2** Shapes. Is each tree full, complete, and perfect?
 
+  <!-- figure
+  tree: Tree A :: 1{2, 3}
+  tree: Tree B :: 1{2{4}, 3}
+  tree: Tree C :: 1{2{4, 5}, 3}
+  -->
   ```text
   Tree A          Tree B          Tree C
      1               1               1
@@ -364,6 +395,7 @@ Search, insert, and remove are all O(h) for a tree of height h, and use O(1) ext
                   /               / \
                  4               4   5
   ```
+  <!-- /figure -->
 
   | Tree | Full? | Complete? | Perfect? |
   |---|---|---|---|
@@ -466,6 +498,9 @@ Search, insert, and remove are all O(h) for a tree of height h, and use O(1) ext
 
 - **5.7** Successors and predecessors. Use this BST:
 
+  <!-- figure
+  tree: 45{22{12, 35{30, 40}}, 70{58{, 64}, 88}}
+  -->
   ```text
               45
             /    \
@@ -475,6 +510,7 @@ Search, insert, and remove are all O(h) for a tree of height h, and use O(1) ext
            /  \   \
          30   40   64
   ```
+  <!-- /figure -->
 
   **a)** What is the successor of 40?
 
@@ -518,6 +554,9 @@ Search, insert, and remove are all O(h) for a tree of height h, and use O(1) ext
 
   The tree:
 
+  <!-- figure
+  tree: 40{20{10{5{1}}}, 60{, 70{65}}}
+  -->
   ```text
               40
             /    \
@@ -529,6 +568,7 @@ Search, insert, and remove are all O(h) for a tree of height h, and use O(1) ext
      /
     1
   ```
+  <!-- /figure -->
 
   - **a)** Leaves (1 and 65) return 0. 5 returns 1 + max(0, −1) = 1, 10 returns 2, and 20 returns 3. On the right, 70 returns 1 + max(0, −1) = 1 and 60 returns 1 + max(−1, 1) = 2. The root returns 1 + max(3, 2) = **4**.
   - **b)** **2**, from part a: 60 → 70 → 65 is 2 edges.

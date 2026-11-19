@@ -20,6 +20,9 @@ A complete tree has no gaps when read level by level, so a heap is stored in an 
 | Right child | 2i + 2 |
 | Parent | (i − 1) // 2 |
 
+<!-- figure
+heap: 72 45 63 30 41 50 18
+-->
 ```text
 array    72 45 63 30 41 50 18       as a tree:          72
 index     0  1  2  3  4  5  6                        /      \
@@ -27,6 +30,7 @@ index     0  1  2  3  4  5  6                        /      \
                                                   /  \      /  \
                                                 30   41    50   18
 ```
+<!-- /figure -->
 
 Index 1 (45) has children at 3 and 4 (30 and 41), and its parent is at (1 − 1) // 2 = 0.
 
@@ -41,12 +45,19 @@ Index 1 (45) has children at 3 and 4 (30 and 41), and its parent is at (1 − 1)
 
 zyBooks calls step 2 a **percolate-up**. Inserting 68 into the heap above:
 
+<!-- figure
+index: yes
+row: append 68 | 72 45 63 30 41 50 18 *68 | parent is index 3 (30)
+row: 68 > 30: swap | 72 45 63 *68 41 50 18 *30 | parent is index 1 (45)
+row: 68 > 45: swap | 72 *68 63 *45 41 50 18 30 | parent is index 0 (72). 68 ≤ 72: stop
+-->
 ```text
 append 68 at index 7     72 45 63 30 41 50 18 68     parent is index 3 (30)
 68 > 30: swap            72 45 63 68 41 50 18 30     parent is index 1 (45)
 68 > 45: swap            72 68 63 45 41 50 18 30     parent is index 0 (72)
 68 <= 72: stop
 ```
+<!-- /figure -->
 
 Two swaps: `72 68 63 45 41 50 18 30`.
 
@@ -61,11 +72,18 @@ A heap's remove always removes the root.
 
 zyBooks calls step 3 a **percolate-down**. Removing the max from `72 45 63 30 41 50 18`:
 
+<!-- figure
+index: yes
+row: 18 to the root | *18 45 63 30 41 50 | save 72. Children: 45 and 63
+row: 63 is larger, 18 < 63: swap | *63 45 *18 30 41 50 | children: 50 (index 6 is gone)
+row: 18 < 50: swap | 63 45 *50 30 41 *18 | index 5 has no children: stop
+-->
 ```text
 save 72, move 18 to the root    18 45 63 30 41 50     children: 45 and 63
 63 is larger, 18 < 63: swap     63 45 18 30 41 50     children: 50 (index 6 is gone)
 18 < 50: swap                   63 45 50 30 41 18     index 5 has no children: stop
 ```
+<!-- /figure -->
 
 The method returns 72, and the heap is `63 45 50 30 41 18`.
 
@@ -93,12 +111,20 @@ A min-heap runs the same code with the comparisons flipped. Percolate up while t
 
 Heapifying `15 22 9 30 11 40 7`: N = 7, so the internal nodes are indexes 2, 1, and 0.
 
+<!-- figure
+index: yes
+row: start | 15 22 9 30 11 40 7
+row: i = 2 | 15 22 *40 30 11 *9 7 | 9 swaps with its larger child, 40
+row: i = 1 | 15 *30 40 *22 11 9 7 | 22 swaps with its larger child, 30
+row: i = 0 | *40 30 *15 22 11 9 7 | 15 swaps with 40, then beats 9 and 7: stop
+-->
 ```text
 start                15 22  9 30 11 40  7
 percolate down i=2   15 22 40 30 11  9  7     9 swaps with its larger child, 40
 percolate down i=1   15 30 40 22 11  9  7     22 swaps with its larger child, 30
 percolate down i=0   40 30 15 22 11  9  7     15 swaps with 40, then beats 9 and 7: stop
 ```
+<!-- /figure -->
 
 Heapify looks like n log n work. But most nodes are near the bottom and move only a short distance, so building a heap this way is **O(n)**.
 
@@ -161,14 +187,15 @@ A **priority queue** is a queue where every item has a priority, and higher-prio
 
 Each queue decides what "higher priority" means. Often a **lower number means higher priority**, so priority 1 is served before priority 4.
 
-```text
-lower number = higher priority          front -> end
-enqueue 6                               6
-enqueue 9                               6 9
-enqueue 2                               2 6 9
-enqueue 6 (a second 6)                  2 6 6' 9      the new 6 goes behind the old one
-dequeue: returns 2                      6 6' 9
-```
+A trace, where a lower number means higher priority. The second 6 is written 6′:
+
+| Operation | Queue afterward, front to end |
+|---|---|
+| Enqueue 6 | 6 |
+| Enqueue 9 | 6, 9 |
+| Enqueue 2 | 2, 6, 9 |
+| Enqueue 6 (a second 6) | 2, 6, 6′, 9 (the new 6 goes behind the old one) |
+| Dequeue: returns 2 | 6, 6′, 9 |
 
 | Operation | What it does | With a heap |
 |---|---|---|
@@ -256,6 +283,13 @@ A treap is a BST, so search is a plain BST search by main key. The priorities ar
 
 Each node below is written key:priority. Here is the insert of J, which gets priority 82:
 
+<!-- figure
+tree: Start :: M:90{E:60{B:30, H:40}, T:75}
+tree: J goes in as H's right child :: M:90{E:60{B:30, H:40{, J:82}}, T:75}
+tree: 82 > 40: left rotation at H :: M:90{E:60{B:30, J:82{H:40}}, T:75}
+tree: 82 > 60: left rotation at E. Then 82 ≤ 90: stop :: M:90{J:82{E:60{B:30, H:40}}, T:75}
+flow: yes
+-->
 ```text
 start                        J goes in as H's right child
        M:90                          M:90
@@ -275,6 +309,7 @@ start                        J goes in as H's right child
           /                         /   \
         H:40                      B:30  H:40
 ```
+<!-- /figure -->
 
 J's parent is now M, with priority 90, so the insert is done after two left rotations. The keys still read B E H J M T in order.
 
@@ -290,6 +325,13 @@ Moving the higher-priority child up keeps the heap rule, because the child that 
 
 Deleting E from the treap above:
 
+<!-- figure
+tree: E gets −∞. Its children are B:30 and H:40 :: M:90{J:82{E:-inf{B:30, H:40}}, T:75}
+tree: H (40) beats B (30): left rotation at E :: M:90{J:82{H:40{E:-inf{B:30}}}, T:75}
+tree: Only child B: right rotation at E :: M:90{J:82{H:40{B:30{, E:-inf}}}, T:75}
+tree: E is a leaf: remove it :: M:90{J:82{H:40{B:30}}, T:75}
+flow: yes
+-->
 ```text
 E gets -inf                   H (40) beats B (30):          only child B:
 children B:30 and H:40        left rotation at E            right rotation at E
@@ -305,6 +347,7 @@ children B:30 and H:40        left rotation at E            right rotation at E
 
 E is a leaf: remove it    M:90 ( J:82 ( H:40 ( B:30 ) ), T:75 )
 ```
+<!-- /figure -->
 
 zyBooks also mentions a second way. Do a normal BST delete (copy the successor in), then percolate down with rotations. Setting the priority to −∞ is simpler.
 
@@ -478,6 +521,9 @@ A heap-based priority queue: enqueue and dequeue O(log n); peek, IsEmpty, and Ge
 
 - **7.8** Insert R into this treap (key:priority, priorities form a max-heap). R gets priority 60.
 
+  <!-- figure
+  tree: P:95{F:70{C:45, K:20}, W:50{S:35}}
+  -->
   ```text
              P:95
             /    \
@@ -485,6 +531,7 @@ A heap-based priority queue: enqueue and dequeue O(log n); peek, IsEmpty, and Ge
         /   \     /
      C:45  K:20  S:35
   ```
+  <!-- /figure -->
 
   **a)** Before any rotation, R is a new leaf. Which node is its parent?
 
@@ -509,6 +556,9 @@ A heap-based priority queue: enqueue and dequeue O(log n); peek, IsEmpty, and Ge
 
 - **7.9** Delete N from this treap, the zyBooks way (set its priority to −∞ and rotate it down).
 
+  <!-- figure
+  tree: G:90{C:55, N:80{J:40, T:65{Q:30}}}
+  -->
   ```text
            G:90
           /    \
@@ -518,6 +568,7 @@ A heap-based priority queue: enqueue and dequeue O(log n); peek, IsEmpty, and Ge
                     /
                   Q:30
   ```
+  <!-- /figure -->
 
   **a)** What is the first rotation?
 
