@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Color scheme mockups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --page: #e9ebee; --ink: #1c1f24; }
+  @media (prefers-color-scheme: dark) { :root { --page: #15171b; --ink: #e8eaee; } }
+  body { margin: 0; background: var(--page); color: var(--ink); font: 15px/1.5 Inter, system-ui, sans-serif; }
+  header.top { padding: 20px 16px 4px; max-width: 1500px; margin: 0 auto; }
+  header.top h1 { font: 700 24px "Space Grotesk", sans-serif; margin: 0 0 4px; }
+  header.top p { margin: 4px 0; max-width: 70ch; }
+  .scheme { max-width: 1500px; margin: 18px auto; padding: 0 16px; }
+  .scheme h2 { font: 700 19px "Space Grotesk", sans-serif; margin: 0 0 2px; }
+  .scheme .why { margin: 0 0 10px; max-width: 90ch; opacity: .85; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 900px) { .pair { grid-template-columns: 1fr; } }
+
+  /* One sample page, drawn from the scheme's variables */
+  .sample { background: var(--bg); color: var(--text); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+  .sample .bar { background: var(--header); color: #fff; padding: 8px 14px; font: 600 13px Inter, sans-serif; display: flex; justify-content: space-between; }
+  .sample .body { padding: 14px 18px 16px; }
+  .sample h3 { font: 700 21px "Space Grotesk", sans-serif; color: var(--heading); margin: 2px 0 8px; }
+  .sample h4 { font: 600 16px "Space Grotesk", sans-serif; color: var(--heading); margin: 14px 0 6px; }
+  .sample p { margin: 0 0 9px; }
+  .sample strong { color: var(--strong); font-weight: 700; }
+  .sample a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
+  .sample code { font: 13px "JetBrains Mono", monospace; background: var(--codebg); color: var(--text); padding: 1px 5px; border-radius: 4px; }
+  .sample .muted { color: var(--muted); font-size: 13px; }
+  .sample table { border-collapse: collapse; width: 100%; font-size: 14px; margin: 6px 0 10px; background: var(--surface); }
+  .sample th { text-align: left; color: var(--strong); font-weight: 600; border-bottom: 2px solid var(--border); padding: 6px 8px; }
+  .sample td { border-bottom: 1px solid var(--border); padding: 6px 8px; }
+  .chip { display: inline-flex; align-items: center; gap: .35em; font: 600 12px "JetBrains Mono", monospace; padding: 1px 7px 1px 5px; border-radius: 999px; background: var(--codebg); border: 1px solid var(--border); color: var(--text); }
+  .chip::before { content: ""; width: .6em; height: .6em; border-radius: 50%; background: var(--dot); }
+  .callout { border-left: 4px solid var(--tip); background: color-mix(in srgb, var(--tip) 12%, var(--bg)); padding: 8px 12px; border-radius: 6px; margin: 10px 0; font-size: 14px; }
+  .callout b { color: var(--strong); }
+  .answer { border: 1px solid var(--good); border-radius: 6px; margin: 10px 0; overflow: hidden; font-size: 14px; }
+  .answer .t { background: color-mix(in srgb, var(--good) 16%, var(--bg)); padding: 6px 12px; font-weight: 700; color: var(--strong); }
+  .answer .c { padding: 6px 12px; }
+  .fig { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px; margin: 10px 0; display: flex; justify-content: center; }
+  .fig svg { max-width: 100%; height: auto; }
+  .fig .n { fill: var(--codebg); stroke: var(--text); stroke-width: 1.5; }
+  .fig .e { stroke: var(--muted); stroke-width: 1.6; }
+  .fig .t { fill: var(--text); font: 600 13px Inter, sans-serif; }
+  .fig .hit { fill: color-mix(in srgb, var(--link) 24%, var(--surface)); stroke: var(--link); stroke-width: 2; }
+  .fig .eh { stroke: var(--link); stroke-width: 2.6; }
+  .fig .red { fill: #c0292b; stroke: #c0292b; } .fig .blk { fill: #1d1d22; stroke: var(--text); } .fig .on { fill: #fff; }
+  .fig .cap { fill: var(--muted); font: 500 12px Inter, sans-serif; }
+  pre { font: 13px/1.45 "JetBrains Mono", monospace; background: var(--codebg); padding: 8px 12px; border-radius: 6px; margin: 8px 0; overflow-x: auto; }
+  pre .k { color: var(--kw); font-weight: 600; } pre .c { color: var(--muted); }
+
+  /* Contrast readout */
+  .readout { font: 12px/1.4 "JetBrains Mono", monospace; margin-top: 8px; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 2px 12px; }
+  .readout span.ok { color: #2f7d0f; } .readout span.bad { color: #c0292b; } .readout span.meh { color: #9a6400; }
+  @media (prefers-color-scheme: dark) { .readout span.ok { color: #97e152; } .readout span.bad { color: #ff8a80; } .readout span.meh { color: #f2c14e; } }
+  .label { font: 600 12px Inter, sans-serif; text-transform: uppercase; letter-spacing: .05em; opacity: .7; margin: 0 0 4px; }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Color scheme mockups for the study site</h1>
+  <p>Each scheme shows the same sample page in light and dark. The numbers under each page are measured contrast ratios against that page's background. AA needs 4.5:1 for body text, and AAA needs 7:1.</p>
+  <p><b>"Bold vs body"</b> measures how much bold text stands apart from regular text. In the current dark mode the two are the same color, so the ratio is 1.00 and bold relies on weight alone.</p>
+</header>
+<main id="schemes"></main>
+
+<script>
+const SAMPLE = `
+<div class="bar"><span>WGU Study Kits</span><span>6. Balanced trees</span></div>
+<div class="body">
+  <h3>AVL trees</h3>
+  <p>An <strong>AVL tree</strong> is a BST that never lets one side get much taller than the other. At every node, the two subtrees differ in height by <strong>at most 1</strong>. See <a href="#">chapter 5</a> for how height is counted, and use <code>height(None) == -1</code>.</p>
+  <div class="callout"><b>Common mistake:</b> counting nodes instead of edges. A leaf has height 0, not 1.</div>
+  <table>
+    <tr><th>Operation</th><th>Best</th><th>Worst</th></tr>
+    <tr><td>Search</td><td><span class="chip" style="--dot:var(--c1)">O(1)</span></td><td><span class="chip" style="--dot:var(--c2)">O(log n)</span></td></tr>
+    <tr><td>Insert</td><td><span class="chip" style="--dot:var(--c2)">O(log n)</span></td><td><span class="chip" style="--dot:var(--c2)">O(log n)</span></td></tr>
+    <tr><td>Linear scan</td><td><span class="chip" style="--dot:var(--c3)">O(n)</span></td><td><span class="chip" style="--dot:var(--c5)">O(n²)</span></td></tr>
+  </table>
+  <div class="fig"><svg viewBox="0 0 330 120" width="330">
+    <line class="e eh" x1="165" y1="22" x2="95" y2="62"/><line class="e" x1="165" y1="22" x2="235" y2="62"/>
+    <line class="e eh" x1="95" y1="62" x2="60" y2="100"/><line class="e" x1="95" y1="62" x2="130" y2="100"/>
+    <line class="e" x1="235" y1="62" x2="275" y2="100"/>
+    <circle class="n hit" cx="165" cy="22" r="16"/><text class="t" x="165" y="27" text-anchor="middle">40</text>
+    <circle class="n hit" cx="95" cy="62" r="16"/><text class="t" x="95" y="67" text-anchor="middle">20</text>
+    <circle class="n blk" cx="235" cy="62" r="16"/><text class="t on" x="235" y="67" text-anchor="middle">60</text>
+    <circle class="n hit" cx="60" cy="100" r="16"/><text class="t" x="60" y="105" text-anchor="middle">10</text>
+    <circle class="n" cx="130" cy="100" r="16"/><text class="t" x="130" y="105" text-anchor="middle">30</text>
+    <circle class="n red" cx="275" cy="100" r="16"/><text class="t on" x="275" y="105" text-anchor="middle">70</text>
+    <text class="cap" x="300" y="30" text-anchor="end">search path</text>
+  </svg></div>
+  <pre><span class="k">def</span> height(node):
+    <span class="k">if</span> node <span class="k">is</span> None:   <span class="c"># an empty tree</span>
+        <span class="k">return</span> -1</pre>
+  <div class="answer"><div class="t">Answer</div><div class="c">Balance factor = left height − right height = <strong>+2</strong>, so 50 is out of balance.</div></div>
+  <p class="muted">Caption and secondary text look like this.</p>
+</div>`;
+
+// Each scheme: name, why, and a light and dark palette.
+const SCHEMES = [
+  { name: "Current", why: "What the site uses now: Material's white page in light mode, and a charcoal page with 82%-opacity text in dark mode. Body text, bold, and headings share one gray.",
+    light: { bg:"#ffffff", surface:"#ffffff", text:"#212121", strong:"#212121", heading:"#212121", link:"#0070f0", muted:"#757575", codebg:"#eef6f9", border:"#e2e2e2", header:"#002855", tip:"#46b1ef", good:"#6fbf2a", kw:"#3e5dbe" },
+    dark:  { bg:"#1e2129", surface:"#1e2129", text:"#bfc1c6", strong:"#bfc1c6", heading:"#bfc1c6", link:"#6cc4f5", muted:"#8c8e95", codebg:"#282c36", border:"#3a3e48", header:"#002855", tip:"#46b1ef", good:"#6fbf2a", kw:"#7aa2f7" } },
+  { name: "A. Soft contrast (recommended)", why: "Light: a soft gray-white page instead of pure white, with dark slate text, so there's less glare and the text still passes AAA. Dark: a lifted charcoal, full-strength text, white bold, and bright headings, so bold and headings stand out again. The WGU navy header and blue links stay.",
+    light: { bg:"#f5f6f8", surface:"#fbfbfc", text:"#24292f", strong:"#0b1220", heading:"#002855", link:"#0b5cc4", muted:"#57606a", codebg:"#e9edf2", border:"#d4d9df", header:"#002855", tip:"#2f9bd8", good:"#4f9e1d", kw:"#2a4fb0" },
+    dark:  { bg:"#22272e", surface:"#272d35", text:"#d6dce4", strong:"#ffffff", heading:"#f2f5f8", link:"#6cb6ff", muted:"#9aa5b2", codebg:"#2d333b", border:"#444c56", header:"#002855", tip:"#46b1ef", good:"#97e152", kw:"#8ab4ff" } },
+  { name: "B. WGU blue", why: "Leans into the WGU palette. Light: a pale blue page with navy headings. Dark: a deep navy-slate page with light blue headings. It has the most brand color, and the page tint is noticeable.",
+    light: { bg:"#eef3f7", surface:"#f8fbfd", text:"#1b2a3a", strong:"#001731", heading:"#002855", link:"#0057bd", muted:"#4f6275", codebg:"#dfe8f0", border:"#cbd6e0", header:"#002855", tip:"#2f9bd8", good:"#4f9e1d", kw:"#2a4fb0" },
+    dark:  { bg:"#172231", surface:"#1d2a3b", text:"#d8e2ec", strong:"#ffffff", heading:"#a9d8ff", link:"#7cc4fa", muted:"#9db0c4", codebg:"#22324a", border:"#33475f", header:"#001731", tip:"#46b1ef", good:"#97e152", kw:"#8ab4ff" } },
+  { name: "C. Warm low-glare", why: "A paper-like option for long reading sessions. Light: a warm off-white page with brown-black text. Dark: a warm gray page with cream text. It's the gentlest on the eyes, and it moves furthest from the WGU look.",
+    light: { bg:"#f7f4ee", surface:"#fcfaf6", text:"#2b2722", strong:"#120f0b", heading:"#1d3557", link:"#1f5fbf", muted:"#6b6256", codebg:"#eee8dc", border:"#ddd5c6", header:"#1d3557", tip:"#2f9bd8", good:"#4f9e1d", kw:"#2a4fb0" },
+    dark:  { bg:"#26272b", surface:"#2c2d32", text:"#e2ded6", strong:"#ffffff", heading:"#f3efe7", link:"#8cc8ff", muted:"#aaa499", codebg:"#313238", border:"#45464d", header:"#1d3557", tip:"#46b1ef", good:"#97e152", kw:"#9ab8ff" } },
+];
+const CHIPS = { light: ["#2a78d6","#eb6834","#1baf7a","#eda100","#e87ba4"], dark: ["#3987e5","#d95926","#199e70","#c98500","#d55181"] };
+
+function lum(hex){ const v=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(c=>c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4)); return .2126*v[0]+.7152*v[1]+.0722*v[2]; }
+function ratio(a,b){ const x=lum(a), y=lum(b); return (Math.max(x,y)+.05)/(Math.min(x,y)+.05); }
+function grade(r, min){ return r>=7 ? "ok" : r>=min ? "meh" : "bad"; }
+
+function page(p, mode){
+  const d = document.createElement("div"); d.className = "sample";
+  for (const [k,v] of Object.entries(p)) d.style.setProperty("--"+k, v);
+  CHIPS[mode].forEach((c,i)=>d.style.setProperty("--c"+(i+1), c));
+  d.innerHTML = SAMPLE;
+  const rows = [
+    ["body text", p.text, p.bg, 4.5], ["bold", p.strong, p.bg, 4.5], ["headings", p.heading, p.bg, 3],
+    ["links", p.link, p.bg, 4.5], ["muted", p.muted, p.bg, 4.5], ["code text", p.text, p.codebg, 4.5],
+  ];
+  const ro = document.createElement("div"); ro.className = "readout";
+  ro.innerHTML = rows.map(([n,f,b,min])=>{ const r=ratio(f,b); return `<div>${n}: <span class="${grade(r,min)}">${r.toFixed(1)}:1</span></div>`; }).join("")
+    + `<div>bold vs body: <span class="${ratio(p.strong,p.text)>1.15?'ok':'bad'}">${ratio(p.strong,p.text).toFixed(2)}</span></div>`
+    + `<div>link vs body: <span class="${ratio(p.link,p.text)>=1.5?'ok':'meh'}">${ratio(p.link,p.text).toFixed(2)}</span></div>`;
+  const wrap = document.createElement("div");
+  const lab = document.createElement("p"); lab.className="label"; lab.textContent = mode === "light" ? "Light" : "Dark";
+  wrap.append(lab, d, ro); return wrap;
+}
+const root = document.getElementById("schemes");
+for (const s of SCHEMES){
+  const sec = document.createElement("section"); sec.className = "scheme";
+  sec.innerHTML = `<h2>${s.name}</h2><p class="why">${s.why}</p>`;
+  const pair = document.createElement("div"); pair.className = "pair";
+  pair.append(page(s.light,"light"), page(s.dark,"dark"));
+  sec.append(pair); root.append(sec);
+}
+</script>
+</body>
+</html>
