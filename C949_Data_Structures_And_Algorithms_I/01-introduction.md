@@ -629,60 +629,50 @@ The LCS length is 3 (`CAT`). Like the substring matrix, it's O(NM) time. Trying 
 
   </details>
 
-- **1.3** Huffman coding. A text has these character counts:
+- **1.3** Huffman coding.
 
-  | Character | Count |
-  |---|---|
-  | A | 7 |
-  | B | 3 |
-  | C | 2 |
-  | D | 1 |
+  **a)** Which characters get the shortest Huffman codes?
 
-  **a)** How many bits long is each character's Huffman code?
+  A. The characters that appear most often
 
-  | Character | Code length in bits |
-  |---|---|
-  | A | |
-  | B | |
-  | C | |
-  | D | |
+  B. The characters that come first in the alphabet
 
-  <!-- answer:1.3a table: 1; 2; 3; 3 -->
+  C. Every character gets a code of the same length
 
-  **b)** How many bits does the whole encoded text take?
+  <!-- answer:1.3a choice: A -->
 
-  <!-- answer:1.3b blanks: 22 -->
+  **b)** Why can a decoder read Huffman-coded bits with no separators between the codes?
 
-  **c)** How many bits would it take with a fixed-length code of 2 bits per character?
+  A. Every code is exactly 8 bits long
 
-  <!-- answer:1.3c blanks: 26 -->
+  B. No code is the start of another code
 
-  **d)** How many bits would it take uncompressed, in 8-bit ASCII?
+  C. The codes are stored in sorted order
 
-  <!-- answer:1.3d blanks: 104 -->
+  <!-- answer:1.3b choice: B -->
+
+  **c)** Besides the encoded bits, what does the decoder need?
+
+  A. Nothing else
+
+  B. The Huffman tree, or the table of codes
+
+  C. The original text
+
+  <!-- answer:1.3c choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - Join D (1) and C (2) into 3. Join that with B (3) into 6. Join that with A (7) into the root, 13.
-  - **a)** A is one branch from the root: 1 bit. B is two down: 2 bits. C and D are three down: 3 bits each.
-  - **b)** 7×1 + 3×2 + 2×3 + 1×3 = 22 bits.
-  - **c)** 13 characters × 2 bits = 26 bits.
-  - **d)** 13 characters × 8 bits = 104 bits.
+  - **a)** **A.** Common characters sit near the root of the tree, so their codes are short. Rare characters sit deep, with long codes. Short codes for common characters are what shrink the total.
+  - **b)** **B.** Every character is at a leaf, so no code is a prefix of another. As soon as the bits read so far match a code, that code is the character.
+  - **c)** **B.** The codes are built for one particular text, so the decoder needs them too. That extra size is why Huffman coding pays off mainly on large files.
 
   </details>
 
 - **1.4** Greedy algorithms.
 
-  **a)** Using coins worth 25, 10, 5, and 1, how many coins does the greedy algorithm use to make 41 cents?
-
-  <!-- answer:1.4a blanks: 4 -->
-
-  **b)** Using coins worth 1, 5, and 6, the greedy algorithm makes 10 cents as 6 + 1 + 1 + 1 + 1. What is the fewest coins that can make 10 cents?
-
-  <!-- answer:1.4b blanks: 2 -->
-
-  **c)** Which statement about greedy algorithms is true?
+  **a)** Which statement about greedy algorithms is true?
 
   A. They always find the best answer, but slowly.
 
@@ -690,14 +680,25 @@ The LCS length is 3 (`CAT`). Like the substring matrix, it's O(NM) time. Trying 
 
   C. They try every possible answer and keep the best one.
 
-  <!-- answer:1.4c choice: B -->
+  <!-- answer:1.4a choice: B -->
+
+  **b)** Does the greedy method always find the best answer for each problem?
+
+  | Problem and greedy rule | Always the best answer? |
+  |---|---|
+  | Making change with US coins (25, 10, 5, 1), largest coin first | |
+  | Making change with coins 1, 5, and 6, largest coin first | |
+  | Fractional knapsack, highest value per pound first | |
+  | 0-1 knapsack, most valuable item first | |
+  | Activity selection, earliest finish first | |
+
+  <!-- answer:1.4b table [Always best, Not always best]: Always best; Not always best; Always best; Not always best; Always best -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** 25 + 10 + 5 + 1: 4 coins.
-  - **b)** 5 + 5: 2 coins. Taking the 6 first leaves 4, which only 1s can make.
-  - **c)** **B.** Option C describes brute force.
+  - **a)** **B.** Option C describes brute force.
+  - **b)** Greedy is optimal for US coins, the fractional knapsack, and activity selection. It can miss the best answer with coins 1, 5, and 6 (for 10 cents it uses 6 + 1 + 1 + 1 + 1, when 5 + 5 is better), and on the 0-1 knapsack, where taking the most valuable item first can waste room. That's why the 0-1 method in this chapter is called a heuristic.
 
   </details>
 
@@ -713,29 +714,36 @@ The LCS length is 3 (`CAT`). Like the substring matrix, it's O(NM) time. Trying 
 
   <!-- answer:1.5a choice: C -->
 
-  **b)** What is the length of the longest common subsequence of `BANANA` and `ATANA`?
+  **b)** Why is the plain recursive Fibonacci function slow?
 
-  <!-- answer:1.5b blanks: 4 -->
+  A. It works out the same smaller Fibonacci numbers again and again
 
-  **c)** What is the Big-O of the LCS table method for strings of lengths n and m?
+  B. Adding two numbers takes O(n) time
 
-  <!-- answer:1.5c blanks: O(nm) | O(n*m) | O(mn) | O(m*n) -->
+  C. It uses a loop inside the recursion
 
-  **d)** The plain recursive Fibonacci function, with F(0) = 0 and F(1) = 1, is called to compute F(5). How many times is F(2) computed?
+  <!-- answer:1.5b choice: A -->
 
-  <!-- answer:1.5d blanks: 3 -->
+  **c)** What is the Big-O of each Fibonacci method?
+
+  | Method | Big-O time |
+  |---|---|
+  | Plain recursion | |
+  | Dynamic programming, keeping the two previous numbers | |
+
+  <!-- answer:1.5c table [O(1), O(log n), O(n), O(2ⁿ)]: O(2ⁿ); O(n) -->
+
+  **d)** What is the Big-O of the LCS table method for strings of lengths n and m?
+
+  <!-- answer:1.5d blanks: O(nm) | O(n*m) | O(mn) | O(m*n) -->
 
   <details>
   <summary>Answer</summary>
 
   - **a)** **C.** Option A is greedy.
-  - **b)** **4**, for example `AANA`. A subsequence keeps the letters in order but can skip letters in between, so it doesn't have to be one unbroken run:
-    - In `BANANA`, `AANA` uses the A at index 1, the A at 3, the N at 4, and the A at 5, skipping the B and the first N.
-    - In `ATANA`, it uses the A at 0, the A at 2, the N at 3, and the A at 4, skipping the T.
-    - A length of 5 would have to be all of `ATANA`, but `BANANA` has no T.
-    - Don't confuse this with the longest common **substring**, which must be unbroken: that's `ANA`, length 3.
-  - **c)** O(nm): one cell per pair of positions, each filled in O(1).
-  - **d)** 3. F(5) calls F(4) and F(3). F(4) calls F(3) and F(2). Each of the two F(3) calls makes one F(2) call, so F(2) is computed 1 + 2 = 3 times. The stored-terms version computes it once.
+  - **b)** **A.** Each call makes two more calls, and many of them ask for the same number, so the work roughly doubles each time n goes up by 1.
+  - **c)** Plain recursion is **O(2ⁿ)**. The dynamic programming loop works out each number once: **O(n)**.
+  - **d)** O(nm): one table entry per pair of positions, each filled in O(1).
 
   </details>
 
@@ -857,21 +865,29 @@ The LCS length is 3 (`CAT`). Like the substring matrix, it's O(NM) time. Trying 
 
   </details>
 
-- **1.9** Longest common substring, with the matrix method from this chapter. The first string `MARKET` labels the rows (indexes 0 to 5), and the second string `PARKED` labels the columns.
+- **1.9** Substrings and subsequences.
 
-  **a)** What is the largest entry in the matrix?
+  **a)** Is each string a substring of `PLANET`, only a subsequence, or neither?
 
-  <!-- answer:1.9a blanks: 4 -->
+  | String | Relationship to `PLANET` |
+  |---|---|
+  | `LAN` | |
+  | `PNT` | |
+  | `TEN` | |
+  | `ANE` | |
 
-  **b)** What is the longest common substring?
+  <!-- answer:1.9a table [Substring, Subsequence only, Neither]: Substring; Subsequence only; Neither; Substring -->
 
-  <!-- answer:1.9b blanks: ARKE -->
+  **b)** When the two characters don't match, what goes in the table entry?
 
-  **c)** At which row index of `MARKET` is the largest entry?
+  | Table | Entry on a mismatch |
+  |---|---|
+  | Longest common substring | |
+  | Longest common subsequence | |
 
-  <!-- answer:1.9c blanks: 4 -->
+  <!-- answer:1.9b table [0, 1 + the up-left entry, The larger of the entries above and to the left]: 0; The larger of the entries above and to the left -->
 
-  **d)** The space-saving version keeps one row of the matrix. What is its space complexity, for a first string of length N and a second of length M?
+  **c)** The space-saving version of the substring method keeps one row of the table. What is its space complexity, for a first string of length N and a second of length M?
 
   A. O(1)
 
@@ -879,45 +895,20 @@ The LCS length is 3 (`CAT`). Like the substring matrix, it's O(NM) time. Trying 
 
   C. O(NM)
 
-  <!-- answer:1.9d choice: B -->
+  <!-- answer:1.9c choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - The matches that matter run along one diagonal: A at row 1 is 1, R at row 2 is 1 + 1 = 2, K at row 3 is 3, and E at row 4 is 4. Every other entry is 0, and the `T` row has no matches.
-  - **a)** 4.
-  - **b)** `ARKE`: the 4 characters of `MARKET` ending at the largest entry's row.
-  - **c)** Row 4, the `E`. The largest entry's row is where the substring ends in the first string.
-  - **d)** **B.** One row has M entries. The time is still O(NM), since every entry is still computed.
+  - **a)** `LAN` and `ANE` are unbroken runs, so they're substrings. `PNT` keeps the order P, N, T but skips letters: only a subsequence. `TEN` would need T before E and N, but T comes last in `PLANET`: neither.
+  - **b)** A substring has to be unbroken, so a mismatch ends the run: **0**. A subsequence can skip a character, so it keeps the best result so far: the **larger of the entries above and to the left**.
+  - **c)** **B.** One row has M entries. The time is still O(NM), since every entry is still worked out.
 
   </details>
 
-- **1.10** Activity selection. Use the greedy method from this chapter on these activities:
+- **1.10** Activity selection.
 
-  | Activity | Start | Finish |
-  |---|---|---|
-  | U | 8 | 16 |
-  | Q | 10 | 12 |
-  | T | 13 | 15 |
-  | P | 9 | 11 |
-  | S | 12 | 14 |
-  | R | 11 | 13 |
-
-  **a)** How many activities does the algorithm choose?
-
-  <!-- answer:1.10a blanks: 3 -->
-
-  **b)** Which activities does it choose, in the order it chooses them?
-
-  | Order | Activity |
-  |---|---|
-  | First | |
-  | Second | |
-  | Third | |
-
-  <!-- answer:1.10b table: P; R; T -->
-
-  **c)** What does the algorithm sort the activities by?
+  **a)** What does the greedy activity selection algorithm sort the activities by?
 
   A. Start time, earliest first
 
@@ -925,63 +916,93 @@ The LCS length is 3 (`CAT`). Like the substring matrix, it's O(NM) time. Trying 
 
   C. Finish time, earliest first
 
-  <!-- answer:1.10c choice: C -->
+  <!-- answer:1.10a choice: C -->
+
+  **b)** Why does that order give the most activities?
+
+  A. The activity that ends first leaves the most time for the others
+
+  B. Shorter activities are worth more
+
+  C. It doesn't; it only gives a good guess
+
+  <!-- answer:1.10b choice: A -->
 
   <details>
   <summary>Answer</summary>
 
-  - Sorted by finish time: P (11), Q (12), R (13), S (14), T (15), U (16).
-  - P is chosen first. Q starts at 10, before P finishes at 11: skip. R starts at 11, when P finishes: choose. S starts at 12, before R finishes at 13: skip. T starts at 13, when R finishes: choose. U starts at 8: skip.
-  - **a)** 3.
-  - **b)** P, R, T.
-  - **c)** **C.** Taking the activity that frees up the earliest leaves the most time for the rest.
+  - **a)** **C.** After sorting, it takes each activity that starts at or after the last chosen one finishes.
+  - **b)** **A.** Picking the activity that frees the room soonest never blocks more of the others than any other choice would, so greedy is optimal here.
 
   </details>
 
-- **1.11** Knapsacks. The weight limit is 10 lb. The items are 8 lb worth $40, 5 lb worth $30, 4 lb worth $26, and 4 lb worth $10.
+- **1.11** Knapsacks.
 
-  **a)** The 0-1 knapsack heuristic from this chapter takes the most valuable items first. What total value does it reach?
+  **a)** What is the difference between the 0-1 knapsack and the fractional knapsack?
 
-  <!-- answer:1.11a blanks: 40 | $40 -->
+  A. In the 0-1 knapsack, each item is taken whole or not at all. In the fractional knapsack, part of an item can be taken.
 
-  **b)** What is the best total value possible if each item is taken whole or not at all?
+  B. The 0-1 knapsack allows only 0 or 1 items in total.
 
-  <!-- answer:1.11b blanks: 56 | $56 -->
+  C. The fractional knapsack has no weight limit.
 
-  **c)** What total value does the greedy fractional knapsack algorithm reach?
+  <!-- answer:1.11a choice: A -->
 
-  <!-- answer:1.11c blanks: 61 | $61 -->
+  **b)** Why does the fractional greedy method take items in order of value per pound?
+
+  A. Every pound of space then holds the most value it can
+
+  B. The lightest items always fit, so they should go first
+
+  C. The most valuable item should always be taken whole
+
+  <!-- answer:1.11b choice: A -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** $40. The 8 lb item is the most valuable, so it goes in first, leaving 2 lb. No other item weighs 2 lb or less.
-  - **b)** $56: the 5 lb and the 4 lb $26 items, 9 lb in all. So the heuristic is not optimal here.
-  - **c)** $61. By value per lb: 4 lb $26 (6.5), 5 lb $30 (6), 8 lb $40 (5), 4 lb $10 (2.5). Take the 4 lb $26 item (6 lb left), then the 5 lb item (1 lb left), then 1/8 of the 8 lb item, worth $5. $26 + $30 + $5 = $61.
+  - **a)** **A.** Gold bars are 0-1: a bar can't be split. Bulk spices are fractional: you can scoop out part.
+  - **b)** **A.** When items can be split, filling each pound with the best value per pound gives the most total value. That stops working when items can't be split, which is why the 0-1 knapsack needs a different method.
 
   </details>
 
-- **1.12** Move-to-front. A list starts as `12, 5, 30, 7, 19, 2`. Each search is a linear search from the front, and the found item then moves to the front.
+- **1.12** Self-adjusting heuristics.
 
-  **a)** How many comparisons does each search make?
+  **a)** What does move-to-front do after a search finds an item?
 
-  | Search | Comparisons |
-  |---|---|
-  | 7 | |
-  | 7 | |
-  | 2 | |
-  | 7 | |
+  A. Moves the found item to the front of the list
 
-  <!-- answer:1.12a table: 4; 1; 6; 2 -->
+  B. Sorts the whole list
 
-  **b)** What is the first item in the list after all four searches?
+  C. Swaps the found item with the last item
 
-  <!-- answer:1.12b blanks: 7 -->
+  <!-- answer:1.12a choice: A -->
+
+  **b)** When does move-to-front make searches faster?
+
+  A. When a few items are searched for much more often than the rest
+
+  B. When every item is searched for equally often
+
+  C. Only when the list is sorted
+
+  <!-- answer:1.12b choice: A -->
+
+  **c)** What is the worst case for one search with move-to-front?
+
+  A. O(1)
+
+  B. O(log n)
+
+  C. O(n)
+
+  <!-- answer:1.12c choice: C -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** 7 is fourth: 4 comparisons, and the list becomes `7, 12, 5, 30, 19, 2`. 7 is now first: 1 comparison. 2 is last: 6 comparisons, and the list becomes `2, 7, 12, 5, 30, 19`. 7 is second: 2 comparisons.
-  - **b)** 7. The last search moves it back to the front: `7, 2, 12, 5, 30, 19`.
+  - **a)** **A.** The list rearranges itself as it's used, which is why it's called self-adjusting.
+  - **b)** **A.** Popular items drift to the front, where they're found in a few comparisons. If every item is equally popular, nothing gains.
+  - **c)** **C.** A search for an item at the back still checks every item. Move-to-front improves the typical case, not the worst case.
 
   </details>

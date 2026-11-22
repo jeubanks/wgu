@@ -38,6 +38,7 @@ Nothing here yet.
 
 ## Done
 
+- C949 chapter 1 questions are now concept questions in place of hand calculations. Huffman asks which characters get short codes, why no separators are needed, and what the decoder needs. Greedy asks when it's optimal. Dynamic programming asks why plain recursion is slow, with the Big-O of each method. Substring vs subsequence uses a table of string relationships and each table's mismatch rule. Activity selection and knapsacks ask why the greedy order works. Move-to-front asks what it does, when it helps, and its worst case (#70)
 - Site colors: the "Soft contrast" palette, chosen from three mockups (`mockups/color-schemes.html`).
   - Light mode has a soft gray-white page in place of pure white, for less glare, with slate text at 13.5:1, darker bold, and navy headings.
   - Dark mode has a lifted charcoal page with full-strength text at 10.9:1 in place of Material's 82%-opacity gray, white bold, and near-white headings, so bold and headings stand out again.
