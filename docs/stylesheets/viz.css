@@ -256,3 +256,11 @@
 .dsf-svg .dsf-split { stroke: var(--viz-accent); stroke-width: 2; stroke-dasharray: 4 3; }
 .dsf-svg .dsf-sq { stroke-width: 1; }
 .dsf-svg .dsf-eh { stroke: var(--viz-accent); stroke-width: 2.6; }
+
+/* Scroll hints (viz.js scrollHints): a shadow on the side that has more drawing. */
+.md-typeset .sc-r { box-shadow: inset -18px 0 14px -14px rgba(15, 23, 42, .35); }
+.md-typeset .sc-l { box-shadow: inset 18px 0 14px -14px rgba(15, 23, 42, .35); }
+.md-typeset .sc-l.sc-r { box-shadow: inset -18px 0 14px -14px rgba(15, 23, 42, .35), inset 18px 0 14px -14px rgba(15, 23, 42, .35); }
+[data-md-color-scheme="slate"] .md-typeset .sc-r { box-shadow: inset -18px 0 14px -14px rgba(0, 0, 0, .75); }
+[data-md-color-scheme="slate"] .md-typeset .sc-l { box-shadow: inset 18px 0 14px -14px rgba(0, 0, 0, .75); }
+[data-md-color-scheme="slate"] .md-typeset .sc-l.sc-r { box-shadow: inset -18px 0 14px -14px rgba(0, 0, 0, .75), inset 18px 0 14px -14px rgba(0, 0, 0, .75); }
