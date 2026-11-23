@@ -23,6 +23,7 @@ turns on the build features it uses by listing pages for them:
           quiz: 04-concepts-check.md            # interactive answer keys
           old_slugs: [x123]                     # old URL paths that redirect here
           moved: {old-page.md: new/page.md}     # pages that moved; old URLs redirect
+          storage: x123v2                       # new prefix for saved progress after a renumbering
 
 A course with only `folder` is published as plain pages. See AUTHORING.md.
 """
@@ -48,6 +49,7 @@ class Course:
     quiz: str = None
     old_slugs: tuple = ()
     moved: dict = field(default_factory=dict)
+    storage: str = None  # prefix for browser-saved progress and answers (default: the slug)
 
     def uri(self, page):
         """The docs/ path MkDocs uses for one of this course's pages."""
@@ -98,6 +100,7 @@ def _course(slug, s):
         quiz=s.get("quiz"),
         old_slugs=tuple(s.get("old_slugs") or ()),
         moved=dict(s.get("moved") or {}),
+        storage=s.get("storage") or slug,
     )
 
 

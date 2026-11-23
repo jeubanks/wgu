@@ -1272,6 +1272,8 @@
     "12": function (s) { txt(s, 20, 30, "for i in range(n):", { class: "tx", "font-size": 12 }); txt(s, 40, 50, "if x > m:", { class: "tx", "font-size": 12 }); txt(s, 60, 70, "m = x", { class: "tx", "font-size": 12 }); },
     "21": function (s) { var P = [[110, 14], [60, 44], [160, 44], [35, 74], [85, 74]]; [[0, 1], [0, 2], [1, 3], [1, 4]].forEach(function (e) { line(s, P[e[0]][0], P[e[0]][1], P[e[1]][0], P[e[1]][1]); }); ["f(4)", "f(3)", "f(2)", "f(2)", "f(1)"].forEach(function (v, i) { node(s, P[i][0], P[i][1], v, 15, 9); }); }
   };
+  /* Topic page number -> the glyph that pictures it (pages follow the course study guide's competencies). */
+  var PAGE_GLYPH = { "01": "21", "02": "11", "03": "11", "04": "11", "05": "03", "06": "02", "07": "04", "08": "05", "09": "09", "10": "12", "11": "08" };
   function chapterMap(root) {
     var items = Array.prototype.slice.call(root.querySelectorAll("li")).map(function (li) {
       var a = li.querySelector("a"); if (!a) return null;
@@ -1281,10 +1283,10 @@
     if (!items.length) return;
     var grid = h("div", { class: "viz-cards" });
     items.forEach(function (it) {
-      var m = /(\d\d)-[^/]*\/?$/.exec(it.href.replace(/\/$/, "")), key = m ? m[1] : "";
+      var m = /(\d\d)-[^/]*\/?$/.exec(it.href.replace(/\/$/, "")), key = m ? (PAGE_GLYPH[m[1]] || m[1]) : "";
       var title = it.title.replace(/^[\d–-]+\.\s*/, ""), num = (/^([\d–-]+)\./.exec(it.title) || [, ""])[1];
       var a = h("a", { class: "viz-card", href: it.href }, grid);
-      h("span", { class: "num" }, a, num ? "Chapter " + num : "");
+      h("span", { class: "num" }, a, num ? "Page " + num : "");
       var svg = el("svg", { viewBox: "0 0 220 86", "aria-hidden": "true", focusable: "false" }, a);
       var g = el("g", { class: "vz-static" }, svg), mk = arrowMarker(svg, uid("cm"), "var(--viz-ink)");
       (GLYPHS[key] || GLYPHS["12"])(g, mk);

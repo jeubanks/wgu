@@ -75,9 +75,9 @@ def _empty_cells(region):
     ]
 
 
-def _parse(pid, spec, region):
+def _parse(pid, spec, region, page=""):
     def fail(why):
-        raise PluginError(f"{PAGE}: answer key {pid}: {why}")
+        raise PluginError(f"{page}: answer key {pid}: {why}")
 
     m = SPEC.match(spec.strip())
     if not m:
@@ -154,7 +154,7 @@ def on_page_markdown(markdown, page, **kwargs):
         region = markdown[max(start, q.end()):m.start()]
         if any(p["id"] == pid for p in parts):
             raise PluginError(f"{PAGE}: answer key {pid} appears twice")
-        part = _parse(pid, m["spec"], region)
+        part = _parse(pid, m["spec"], region, PAGE)
         part["question"] = q["q"]
         parts.append(part)
         start = m.end()
@@ -170,6 +170,6 @@ def on_page_content(html, page, **kwargs):
     if course is None:
         return html
     # Saved answers live under "<course>-quiz:<page number>", e.g. d427-quiz:04.
-    storage = f"{course.slug}-quiz:{Path(PAGE).stem[:2]}"
+    storage = f"{course.storage}-quiz:{Path(PAGE).stem[:2]}"
     blob = json.dumps({"storage": storage, "parts": _parts[PAGE]}).replace("</", "<\\/")
     return html + f'\n<script type="application/json" id="quiz-data">{blob}</script>\n'
