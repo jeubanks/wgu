@@ -38,6 +38,11 @@ Nothing here yet.
 
 ## Done
 
+- Card and color cleanup:
+  - **Cards ran together.** D427 exercise cards no longer sit inside section cards. Each section heading is now a banner, and the exercise cards sit on the page with their colored edge.
+  - **Colors didn't match between elements.** Header and section cards, the quiz box, callouts, exercise cards, figures, benches, and tables now use one set of light and dark surfaces. Drawings inside a section card are insets.
+  - **Muted text was hard to read.** It now has more contrast.
+  - **D427 used one color per part.** It now uses a single blue, because C949's indigo, teal, and amber mean its competencies
 - C949 drawing review: every drawing on every C949 page was put on one contact sheet and checked by script for overlapping or clipped text at desktop and phone widths. Fixed:
   - the tree-shapes captions (two lines each)
   - the memory-allocation drawing, whose linked nodes now zigzag without covering each other

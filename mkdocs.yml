@@ -146,11 +146,13 @@ extra:
         reading: false
         sections: true
         noun: exercise
+        # Sections are mostly exercise cards, so no card around them (cards in
+        # cards run together): each ## heading is a banner instead.
+        wrap: false
         groups:
-          explains: {title: D427 Data Management, pages: [1]}
-          impact: {title: D427 Data Management, pages: [2]}
-          applies: {title: D427 Data Management, pages: [3]}
-          practice: {title: D427 Data Management, pages: [4, 5]}
+          # One color for the whole course: C949's indigo, teal, and amber mean
+          # its competencies, so D427 doesn't reuse them.
+          practice: {title: D427 Data Management, pages: [1, 2, 3, 4, 5]}
       # Sample data for the ER diagrams, concept diagrams, and SQL runner.
       setup_sql: setup.sql
       # "Show tables" diagrams; the full diagram replaces the Mermaid block in readme.

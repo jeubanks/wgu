@@ -19,6 +19,7 @@ matching `pages` gets:
       reading: true                # "N min read" in the meta row
       sections: false              # "N sections" in the meta row
       noun: question               # what the meta row counts ("12 questions")
+      wrap: true                   # false: no section cards; each ## is a banner instead
 
 A "← Back" link paragraph right after the title moves to the bottom of the
 header card, and an "**In this part:**" paragraph of links becomes jump chips.
@@ -136,8 +137,14 @@ def on_page_content(html, page, **kwargs):
         k += 1
         badge = (f'<span class="wgu-secnum" aria-hidden="true">{number}.{k}</span>'
                  if number and course.cards.get("badges", True) else "")
-        chunk = H2_OPEN.sub(lambda h: f"<h2{h['attrs']}>{badge}", chunk, count=1)
-        out.append(f'<section class="wgu-card">{chunk}</section>')
+        if course.cards.get("wrap", True):
+            chunk = H2_OPEN.sub(lambda h: f"<h2{h['attrs']}>{badge}", chunk, count=1)
+            out.append(f'<section class="wgu-card">{chunk}</section>')
+        else:
+            # exercise pages: the heading is a banner and the exercise cards sit on
+            # the page itself, so cards never nest inside cards
+            chunk = H2_OPEN.sub(lambda h: f'<h2{h["attrs"]} class="wgu-band">{badge}', chunk, count=1)
+            out.append(f'<section class="wgu-section">{chunk}</section>')
 
     accent_attr = f' data-accent="{accent}"' if accent else ""
     return f'{before}<div class="wgu-cards"{accent_attr}>{hero}{"".join(out)}</div>'
