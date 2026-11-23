@@ -1,4 +1,4 @@
-/* Random practice quiz for C949 (styles in viz.css, "Practice quiz").
+/* Random multiple-choice practice quiz for C949 (styles in viz.css, "Practice quiz").
    The page holds <div id="c949-quiz">; its Markdown content is what GitHub shows.
    Each quiz draws 10 questions from the generators below, filtered by the topic
    checkboxes. Every question is built from random values, so there's nothing to
@@ -76,22 +76,28 @@
     if (present) key = pick(a); else { do { key = rnd(1, 99); } while (a.indexOf(key) >= 0); }
     var lo = 0, hi = n - 1, mids = [], steps = [];
     while (lo <= hi) { var mid = Math.floor((lo + hi) / 2); mids.push(a[mid]); steps.push("low " + lo + ", high " + hi + ": mid " + mid + " holds " + a[mid]); if (a[mid] === key) break; if (a[mid] < key) lo = mid + 1; else hi = mid - 1; }
-    return { prompt: "Binary search this sorted list for " + key + ", with mid = (low + high) // 2. Which values does items[mid] take, in order? Separate them with commas.", code: "index  " + a.map(function (_, i) { return String(i).padStart(3); }).join("") + "\nitems  " + a.map(function (v) { return String(v).padStart(3); }).join(""), kind: "text", answer: list(mids), why: steps.join(". ") + "." + (present ? "" : " low passes high: " + key + " isn't in the list.") };
+    function variant(ceil, flip) { var l = 0, r = n - 1, out = []; while (l <= r && out.length < 8) { var m = ceil ? Math.ceil((l + r) / 2) : Math.floor((l + r) / 2); out.push(a[m]); if (a[m] === key) break; if ((a[m] < key) !== flip) l = m + 1; else r = m - 1; } return list(out); }
+    var wrongBS = [variant(true, false), variant(false, true), list(mids.slice(0, Math.max(1, mids.length - 1)))];
+    return { wrong: wrongBS, prompt: "Binary search this sorted list for " + key + ", with mid = (low + high) // 2. Which values does items[mid] take, in order?", code: "index  " + a.map(function (_, i) { return String(i).padStart(3); }).join("") + "\nitems  " + a.map(function (v) { return String(v).padStart(3); }).join(""), kind: "text", answer: list(mids), why: steps.join(". ") + "." + (present ? "" : " low passes high: " + key + " isn't in the list.") };
   } };
 
-  function heapInsert(a, x) { a = a.concat([x]); var i = a.length - 1, sw = 0; while (i > 0 && a[(i - 1) >> 1] < a[i]) { var p = (i - 1) >> 1, t = a[p]; a[p] = a[i]; a[i] = t; i = p; sw++; } return { a: a, sw: sw }; }
+  function heapInsert(a, x, lim) { a = a.concat([x]); var i = a.length - 1, sw = 0; while (i > 0 && a[(i - 1) >> 1] < a[i] && (lim === undefined || sw < lim)) { var p = (i - 1) >> 1, t = a[p]; a[p] = a[i]; a[i] = t; i = p; sw++; } return { a: a, sw: sw }; }
   GEN.heapInsert = { topic: "trees", make: function () {
     var vals = distinct(7, 5, 95), heap = [];
     vals.slice(0, 6).forEach(function (v) { heap = heapInsert(heap, v).a; });
     var x = vals[6], r = heapInsert(heap, x);
-    return { prompt: "Insert " + x + " into this max-heap (root at index 0). What is the array afterward? Separate the values with spaces.", code: heap.join("  "), kind: "text", answer: r.a.join(" "), why: x + " goes in at index " + heap.length + ", then swaps with its parent while it's larger: " + r.sw + " swap" + (r.sw === 1 ? "" : "s") + "." };
+    var wrongHI = [heap.concat([x]).join(" "), heapInsert(heap, x, Math.max(0, r.sw - 1)).a.join(" "), [x].concat(heap).join(" "), heap.concat([x]).sort(function (p, q) { return q - p; }).join(" ")];
+    return { wrong: wrongHI, prompt: "Insert " + x + " into this max-heap (root at index 0). What is the array afterward?", code: heap.join("  "), kind: "text", answer: r.a.join(" "), why: x + " goes in at index " + heap.length + ", then swaps with its parent while it's larger: " + r.sw + " swap" + (r.sw === 1 ? "" : "s") + "." };
   } };
 
   GEN.heapRemove = { topic: "trees", make: function () {
     var heap = []; distinct(7, 5, 95).forEach(function (v) { heap = heapInsert(heap, v).a; });
-    var a = heap.slice(), top = a[0]; a[0] = a.pop(); var i = 0;
-    for (;;) { var l = 2 * i + 1, r = 2 * i + 2, b = i; if (l < a.length && a[l] > a[b]) b = l; if (r < a.length && a[r] > a[b]) b = r; if (b === i) break; var t = a[i]; a[i] = a[b]; a[b] = t; i = b; }
-    return { prompt: "Remove the max from this max-heap (root at index 0). What is the array afterward? Separate the values with spaces.", code: heap.join("  "), kind: "text", answer: a.join(" "), why: top + " is removed. The last value moves to the root and swaps with its larger child until both children are smaller." };
+    function down(smaller) { var a = heap.slice(); a[0] = a.pop(); var i = 0;
+      for (;;) { var l = 2 * i + 1, r = 2 * i + 2, b = i; if (smaller) { var c = l; if (r < a.length && a[r] < a[l]) c = r; if (c < a.length && a[c] > a[i]) b = c; } else { if (l < a.length && a[l] > a[b]) b = l; if (r < a.length && a[r] > a[b]) b = r; } if (b === i) break; var t = a[i]; a[i] = a[b]; a[b] = t; i = b; }
+      return a; }
+    var top = heap[0], a = down(false), noSift = heap.slice(1, -1); noSift.unshift(heap[heap.length - 1]);
+    var wrongHR = [noSift.join(" "), down(true).join(" "), heap.slice(1).join(" ")];
+    return { wrong: wrongHR, prompt: "Remove the max from this max-heap (root at index 0). What is the array afterward?", code: heap.join("  "), kind: "text", answer: a.join(" "), why: top + " is removed. The last value moves to the root and swaps with its larger child until both children are smaller." };
   } };
 
   function bstBuild(keys) { var root = null; keys.forEach(function (k) { var n = { k: k, l: null, r: null }; if (!root) { root = n; return; } var c = root; for (;;) { if (k < c.k) { if (!c.l) { c.l = n; return; } c = c.l; } else { if (!c.r) { c.r = n; return; } c = c.r; } } }); return root; }
@@ -102,7 +108,8 @@
   GEN.bst = { topic: "trees", make: function () {
     var keys = distinct(rnd(7, 9), 1, 99), t = bstBuild(keys), which = pick(["preorder", "postorder", "level-order", "height"]);
     var ans = which === "preorder" ? list(pre(t)) : which === "postorder" ? list(post(t)) : which === "level-order" ? list(lvl(t)) : String(height(t));
-    return { prompt: "Insert these keys, in order, into an empty BST. " + (which === "height" ? "What is the tree's height (edges on the longest root-to-leaf path)?" : "What is its " + which + " traversal? Separate the keys with commas."), code: list(keys), kind: "text", answer: ans, why: which === "height" ? "Draw the tree: its deepest leaf is " + ans + " edges below the root." : which.charAt(0).toUpperCase() + which.slice(1) + ": " + { preorder: "node, left, right", postorder: "left, right, node", "level-order": "level by level, left to right" }[which] + "." };
+    var hgt = height(t), wrongBST = which === "height" ? [String(hgt + 1), String(hgt - 1), String(hgt + 2)] : [list(pre(t)), list(post(t)), list(lvl(t)), list(keys.slice().sort(function (p, q) { return p - q; })), list(keys)];
+    return { wrong: wrongBST, prompt: "Insert these keys, in order, into an empty BST. " + (which === "height" ? "What is the tree's height (edges on the longest root-to-leaf path)?" : "What is its " + which + " traversal?"), code: list(keys), kind: "text", answer: ans, why: which === "height" ? "Draw the tree: its deepest leaf is " + ans + " edges below the root." : which.charAt(0).toUpperCase() + which.slice(1) + ": " + { preorder: "node, left, right", postorder: "left, right, node", "level-order": "level by level, left to right" }[which] + "." };
   } };
 
   GEN.probe = { topic: "lists", make: function () {
@@ -113,30 +120,42 @@
     keys = shuffle(keys);
     var table = Array(m).fill(null), slot = -1, steps = [];
     keys.forEach(function (k, idx) { var h0 = k % m; for (var j = 0; j < m; j++) { var s = (h0 + j) % m; if (table[s] === null) { table[s] = k; if (idx === keys.length - 1) { slot = s; steps.push(k + " % " + m + " = " + h0 + ", lands in " + s); } return; } } });
-    return { prompt: "A table with " + m + " buckets uses h = key % " + m + " and linear probing. Insert these keys in order. Which bucket does the last key, " + keys[keys.length - 1] + ", land in?", code: list(keys), kind: "text", answer: String(slot), why: "Each key tries its home bucket, then the next ones, wrapping around. " + steps.join("") + "." };
+    var lastKey = keys[keys.length - 1], wrongP = [String(lastKey % m), String((slot + 1) % m), String((slot + m - 1) % m), String((slot + 2) % m)];
+    return { wrong: wrongP, prompt: "A table with " + m + " buckets uses h = key % " + m + " and linear probing. Insert these keys in order. Which bucket does the last key, " + keys[keys.length - 1] + ", land in?", code: list(keys), kind: "text", answer: String(slot), why: "Each key tries its home bucket, then the next ones, wrapping around. " + steps.join("") + "." };
   } };
 
+  function firstPass(alg, a) { var b = a.slice(), i, j, t;
+    if (alg === "selection") { var s = 0; for (j = 1; j < b.length; j++) if (b[j] < b[s]) s = j; t = b[0]; b[0] = b[s]; b[s] = t; }
+    else if (alg === "insertion") { j = 1; while (j > 0 && b[j] < b[j - 1]) { t = b[j]; b[j] = b[j - 1]; b[j - 1] = t; j--; } }
+    else { for (i = 0; i < b.length - 1; i++) if (b[i] > b[i + 1]) { t = b[i]; b[i] = b[i + 1]; b[i + 1] = t; } }
+    return b.join(" "); }
   GEN.sortPass = { topic: "sort", make: function () {
     var a = distinct(6, 1, 60), alg = pick(["selection", "insertion", "bubble"]), b = a.slice(), why;
     if (alg === "selection") { var s = 0; for (var j = 1; j < b.length; j++) if (b[j] < b[s]) s = j; var t = b[0]; b[0] = b[s]; b[s] = t; why = "Selection sort swaps the smallest value, " + b[0] + ", into position 0."; }
     else if (alg === "insertion") { var k = 1; while (k > 0 && b[k] < b[k - 1]) { var t2 = b[k]; b[k] = b[k - 1]; b[k - 1] = t2; k--; } why = "Insertion sort's first pass takes the item at index 1 and shifts it left past any larger item."; }
     else { for (var i = 0; i < b.length - 1; i++) if (b[i] > b[i + 1]) { var t3 = b[i]; b[i] = b[i + 1]; b[i + 1] = t3; } why = "Bubble sort swaps each out-of-order neighbor pair, left to right, so the largest value ends up last."; }
-    return { prompt: "What is this list after the first pass of " + alg + " sort? Separate the values with spaces.", code: a.join("  "), kind: "text", answer: b.join(" "), why: why };
+    var wrongSP = ["selection", "insertion", "bubble"].filter(function (x) { return x !== alg; }).map(function (x) { return firstPass(x, a); }).concat([a.slice().sort(function (p, q) { return p - q; }).join(" ")]);
+    return { wrong: wrongSP, prompt: "What is this list after the first pass of " + alg + " sort?", code: a.join("  "), kind: "text", answer: b.join(" "), why: why };
   } };
 
   GEN.radix = { topic: "sort", make: function () {
     var a = distinct(6, 1, 999), b = []; for (var d = 0; d < 10; d++) a.forEach(function (x) { if (x % 10 === d) b.push(x); });
-    return { prompt: "What is this list after radix sort's first pass (by the ones digit)? Separate the values with spaces.", code: a.join("  "), kind: "text", answer: b.join(" "), why: "Put each number in bucket 0 to 9 by its last digit, keeping their order within a bucket, then read the buckets in order." };
+    function byDigit(div) { var o = []; for (var d2 = 0; d2 < 10; d2++) a.forEach(function (x) { if (Math.floor(x / div) % 10 === d2) o.push(x); }); return o.join(" "); }
+    var wrongR = [byDigit(10), byDigit(100), a.slice().sort(function (p, q) { return p - q; }).join(" "), b.slice().reverse().join(" ")];
+    return { wrong: wrongR, prompt: "What is this list after radix sort's first pass (by the ones digit)?", code: a.join("  "), kind: "text", answer: b.join(" "), why: "Put each number in bucket 0 to 9 by its last digit, keeping their order within a bucket, then read the buckets in order." };
   } };
 
   GEN.stackQueue = { topic: "lists", make: function () {
-    var isStack = Math.random() < 0.5, items = [], ops = [], out = [], next = 1;
+    var isStack = Math.random() < 0.5, items = [], ops = [], out = [], next = 1, pool = distinct(8, 2, 60);
     for (var i = 0; i < 7; i++) {
       if (items.length && Math.random() < 0.4) { ops.push(isStack ? "Pop()" : "Dequeue()"); out.push(isStack ? items.pop() : items.shift()); }
-      else { var v = next * rnd(2, 9); next++; items.push(v); ops.push((isStack ? "Push(" : "Enqueue(") + v + ")"); }
+      else { var v = pool[next - 1]; next++; items.push(v); ops.push((isStack ? "Push(" : "Enqueue(") + v + ")"); }
     }
-    while (out.length < 2 && items.length) { ops.push(isStack ? "Pop()" : "Dequeue()"); out.push(isStack ? items.pop() : items.shift()); }
-    return { prompt: "Starting with an empty " + (isStack ? "stack" : "queue") + ", run these operations. What do the " + (isStack ? "Pops" : "Dequeues") + " return, in order? Separate the values with commas.", code: ops.join("\n"), kind: "text", answer: list(out), why: isStack ? "A stack is last in, first out: each Pop returns the most recent Push still on it." : "A queue is first in, first out: each Dequeue returns the oldest item still in it." };
+    while (out.length < 3 && items.length) { ops.push(isStack ? "Pop()" : "Dequeue()"); out.push(isStack ? items.pop() : items.shift()); }
+    var other = [], alt = []; ops.forEach(function (o) { var m = /\((\d+)\)/.exec(o); if (m) other.push(+m[1]); else alt.push(isStack ? other.shift() : other.pop()); });
+    var wrongSQ = [list(alt), list(out.slice().reverse()), list(pushed().slice(0, out.length)), list(pushed().slice(-out.length).reverse())];
+    function pushed() { var p = []; ops.forEach(function (o) { var m = /\((\d+)\)/.exec(o); if (m) p.push(+m[1]); }); return p; }
+    return { wrong: wrongSQ, prompt: "Starting with an empty " + (isStack ? "stack" : "queue") + ", run these operations. What do the " + (isStack ? "Pops" : "Dequeues") + " return, in order?", code: ops.join("\n"), kind: "text", answer: list(out), why: isStack ? "A stack is last in, first out: each Pop returns the most recent Push still on it." : "A queue is first in, first out: each Dequeue returns the oldest item still in it." };
   } };
 
   GEN.graph = { topic: "graphs", make: function () {
@@ -146,10 +165,13 @@
     for (var i = 1; i < V.length; i++) add(V[i], V[rnd(0, i - 1)]);
     for (var e = 0; e < 3; e++) add(pick(V), pick(V));
     V.forEach(function (v) { adj[v].sort(); });
-    var which = pick(["BFS", "recursive DFS"]), order = [], seen = {};
-    if (which === "BFS") { var q = ["A"]; seen.A = true; while (q.length) { var x = q.shift(); order.push(x); adj[x].forEach(function (y) { if (!seen[y]) { seen[y] = true; q.push(y); } }); } }
-    else (function dfs(x) { if (seen[x]) return; seen[x] = true; order.push(x); adj[x].forEach(dfs); })("A");
-    return { prompt: "Run " + which + " from A on this undirected graph. Adjacency lists are in alphabetical order. What is the visit order? Separate the vertices with commas.", code: V.map(function (v) { return v + ": " + adj[v].join(", "); }).join("\n"), kind: "text", answer: list(order), why: which === "BFS" ? "BFS uses a queue: visit A, then its neighbors in order, then theirs." : "Recursive DFS visits a vertex, then calls itself on each unvisited neighbor in list order before moving on." };
+    function walk(bfs, rev) { var order = [], seen = {}, nb = function (x) { return rev ? adj[x].slice().reverse() : adj[x]; };
+      if (bfs) { var q = ["A"]; seen.A = true; while (q.length) { var x = q.shift(); order.push(x); nb(x).forEach(function (y) { if (!seen[y]) { seen[y] = true; q.push(y); } }); } }
+      else (function dfs(x) { if (seen[x]) return; seen[x] = true; order.push(x); nb(x).forEach(dfs); })("A");
+      return order; }
+    var which = pick(["BFS", "recursive DFS"]), isB = which === "BFS", order = walk(isB, false);
+    var wrongG = [list(walk(!isB, false)), list(walk(isB, true)), list(walk(!isB, true)), list(V)];
+    return { wrong: wrongG, prompt: "Run " + which + " from A on this undirected graph. Adjacency lists are in alphabetical order. What is the visit order?", code: V.map(function (v) { return v + ": " + adj[v].join(", "); }).join("\n"), kind: "text", answer: list(order), why: which === "BFS" ? "BFS uses a queue: visit A, then its neighbors in order, then theirs." : "Recursive DFS visits a vertex, then calls itself on each unvisited neighbor in list order before moving on." };
   } };
 
   GEN.recursion = { topic: "recursion", make: function () {
@@ -157,8 +179,34 @@
     if (op === "*") { N = rnd(3, 5); base = Math.max(1, base); }
     function f(n) { if (n <= 0) return base; return op === "+" ? n + f(n - k) : n * f(n - k); }
     var calls = [], n = N; while (n > 0) { calls.push(n); n -= k; }
-    return { prompt: "What does f(" + N + ") return?", code: "def f(n):\n    if n <= 0:\n        return " + base + "\n    return n " + op + " f(n - " + k + ")", kind: "text", answer: String(f(N)), why: "Expand the calls: " + calls.join(" " + op + " ") + " " + op + " " + base + " (the base case) = " + f(N) + "." };
+    function g(n) { if (n <= k) return op === "+" ? n + base : n * base; return op === "+" ? n + g(n - k) : n * g(n - k); }
+    var fn = f(N), wrongRec = [String(f(N - k)), String(op === "+" ? fn - base + (base === 0 ? 1 : 0) : fn / base * (base + 1)), String(fn + k), String(g(N) === fn ? fn - 1 : g(N))];
+    return { prompt: "What does f(" + N + ") return?", code: "def f(n):\n    if n <= 0:\n        return " + base + "\n    return n " + op + " f(n - " + k + ")", kind: "text", wrong: wrongRec, answer: String(f(N)), why: "Expand the calls: " + calls.join(" " + op + " ") + " " + op + " " + base + " (the base case) = " + f(N) + "." };
   } };
+
+  /* Turn a generated answer into four options: the answer plus three wrong answers
+     that come from real mistakes (q.wrong), topped up by small changes if needed. */
+  function toChoice(q) {
+    var seen = {}, opts = [q.answer]; seen[q.answer] = true;
+    shuffle(q.wrong || []).forEach(function (w) { if (opts.length < 4 && w && !seen[w]) { seen[w] = true; opts.push(w); } });
+    var tries = 0;
+    while (opts.length < 4 && tries++ < 40) {
+      var w;
+      if (/^-?\d+$/.test(q.answer)) w = String(+q.answer + pick([-2, -1, 1, 2, 3]));
+      else { var sep = q.answer.indexOf(", ") >= 0 ? ", " : " ", parts = q.answer.split(sep); if (parts.length < 2) break; var i = rnd(0, parts.length - 2), t = parts[i]; parts[i] = parts[i + 1]; parts[i + 1] = t; w = parts.join(sep); }
+      if (!seen[w]) { seen[w] = true; opts.push(w); }
+    }
+    q.kind = "choice"; q.options = shuffle(opts);
+    return q;
+  }
+
+  /* A fixed option list (Big-O classes) shrinks to the answer and its three nearest
+     neighbors, kept in growth order. */
+  function fourNearest(q) {
+    var i = q.options.indexOf(q.answer), lo = Math.max(0, Math.min(i - rnd(1, 2), q.options.length - 4));
+    q.options = q.options.slice(lo, lo + 4);
+    return q;
+  }
 
   var TOPICS = [["bigo", "Big-O"], ["sort", "Searching and sorting"], ["lists", "Lists, stacks, queues, hashing"], ["trees", "Trees and heaps"], ["graphs", "Graphs"], ["recursion", "Recursion"]];
 
@@ -188,15 +236,15 @@
       if (done) return; done = true; answered++; if (ok) right++;
       li.classList.add(ok ? "is-right" : "is-wrong");
       fb.innerHTML = "";
-      h("p", { class: "pq-verdict" }, fb, ok ? "Right." : "Not quite. The answer is " + q.answer + ".");
+      h("p", { class: "pq-verdict" }, fb, ok ? "Right." : "Not quite. The answer is " + "ABCDEFGH".charAt(q.options.indexOf(q.answer)) + ". " + q.answer + ".");
       h("p", { class: "pq-why" }, fb, q.why);
       updateScore();
     }
     if (q.kind === "choice") {
       var row = h("div", { class: "pq-options", role: "group", "aria-label": "Answer choices for question " + (i + 1) }, li);
-      q.options.forEach(function (o) {
-        var b = h("button", { type: "button", class: "pq-opt" }, row, o);
-        b.addEventListener("click", function () { if (done) return; b.classList.add(o === q.answer ? "pq-opt-right" : "pq-opt-wrong"); if (o !== q.answer) Array.prototype.forEach.call(row.children, function (x) { if (x.textContent === q.answer) x.classList.add("pq-opt-right"); }); Array.prototype.forEach.call(row.children, function (x) { x.disabled = true; }); finish(o === q.answer); });
+      q.options.forEach(function (o, k) {
+        var b = h("button", { type: "button", class: "pq-opt", "data-value": o }, row, "ABCDEFGH".charAt(k) + ". " + o);
+        b.addEventListener("click", function () { if (done) return; b.classList.add(o === q.answer ? "pq-opt-right" : "pq-opt-wrong"); if (o !== q.answer) Array.prototype.forEach.call(row.children, function (x) { if (x.getAttribute("data-value") === q.answer) x.classList.add("pq-opt-right"); }); Array.prototype.forEach.call(row.children, function (x) { x.disabled = true; }); finish(o === q.answer); });
       });
     } else {
       var id = "pq-a-" + i, f = h("div", { class: "pq-answer" }, li);
@@ -216,7 +264,7 @@
     total = 10;
     var order = [];
     while (order.length < total) order = order.concat(shuffle(gens));
-    order.slice(0, total).forEach(function (k, i) { render(GEN[k].make(), i); });
+    order.slice(0, total).forEach(function (k, i) { var q = GEN[k].make(); render(q.kind === "text" ? toChoice(q) : q.options.length > 4 ? fourNearest(q) : q, i); });
     updateScore();
   }
   startBtn.addEventListener("click", newQuiz);

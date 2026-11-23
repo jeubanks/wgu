@@ -209,7 +209,14 @@ With `progress:` set, every exercise on the `pages` glob gets a **Done** checkbo
 
 ## Python courses (C949)
 
-C949 is a study guide first: one page per zyBooks chapter (`01-introduction.md` ... `21-recursion.md`), each explaining how things work, with Big-O tables and a **Questions** section of quiz items at the end. Its optional Python lessons live in `code/`, with their own `build_solutions.py` (in the course folder) instead of a `solutions.sql`. Each lesson page `code/0N-*.md` pairs with `c949-practice/lessonN.py` and `c949-practice/solutions/lessonN.py`:
+C949 is a concise study guide first, organized by the course study guide's three competencies: ten topic pages (`01-tracing-code.md` ... `10-programming-basics.md`), a mixed `11-final-practice.md`, and a `beyond-the-guide.md` appendix of brief notes on zyBooks topics outside the course study guide (it has no questions). Each topic page leads with the idea and a drawn example, gives best, average, and worst-case Big-O, and ends with a **Questions** section of quiz items. Keep pages short: no walkthroughs of zyBooks' own classes, and no zyBooks section order. The old chapter pages redirect to the topic pages (`moved:` in mkdocs.yml). **Study cards.** With `cards:` in the course settings, `hooks/study_cards.py` and `docs/stylesheets/cards.css` turn each topic page into cards:
+- **Header card:** an eyebrow (competency · Page N), the title, the lead sentence, the learn list, reading time, and question count.
+- **Section cards:** one per `##` section, with a number badge. The Questions section isn't wrapped.
+- **Accent color:** each competency's group in `cards.groups` picks it.
+
+Start each topic page with `# N. Title`, then one lead sentence. Next comes the exact line `After this page you can:` and three verb-first bullets. On GitHub this reads as ordinary Markdown.
+
+Every C949 question part is single-answer multiple choice (`choice`) with four options, A–D. Each wrong option is the answer a specific mistake gives (an off-by-one, the wrong traversal, stack vs queue, `/` vs `//`), all four share one format, and the correct letters are spread across A–D. The folded Answer names the letter, explains it, and says which slip leads to the most tempting wrong option. The practice quiz follows the same rule: each generator returns `wrong` answers from real mistakes, and `toChoice` fills to four. Its optional Python lessons live in `code/`, with their own `build_solutions.py` (in the course folder) instead of a `solutions.sql`. Each lesson page `code/0N-*.md` pairs with `c949-practice/lessonN.py` and `c949-practice/solutions/lessonN.py`:
 
 - **Exercises** use the same `- **N.M**` cards, with an `**In:**` line naming the function or variable to fill in. Trace exercises put the code to trace on the page.
 - **Solutions** are the solutions file's statements between its `exercises` (or `answers`) rule and its `checks` rule. A def or class belongs to the label its docstring starts with (`2.2 Reverse ...`); anything else belongs to the last label comment above it (`# 2.1 Trace ...`, or a bare `# [7.5]`).
@@ -308,6 +315,7 @@ Add both capitalizations if a term starts sentences (`*[cardinality]:` and `*[Ca
 - A trailing `\` is a line break.
 - A list can start right after a paragraph, with no blank line.
 - `> [!NOTE]`, `> [!TIP]`, `> [!IMPORTANT]`, `> [!WARNING]` become callout boxes.
+- `> [!IMPORTANT]` whose first line starts with `**Key idea:**` becomes a Key idea box in the page's competency color (one per teaching section on C949 topic pages; never one that answers a question on the page).
 - `<a href="file.sql" download>` becomes a download link that works from any page.
 
 ## Rules

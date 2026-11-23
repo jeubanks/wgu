@@ -63,6 +63,7 @@ ALERTS = {
     "WARNING": ("warning", "Warning"),
     "CAUTION": ("danger", "Caution"),
 }
+KEY_IDEA = re.compile(r"^\*\*Key idea:\*\*\s*")
 ALERT_START = re.compile(r"^(?P<indent>[ \t]*)>\s*\[!(?P<kind>[A-Z]+)\]\s*$")
 
 
@@ -76,12 +77,17 @@ def _alerts(markdown):
             continue
         indent = start["indent"]
         kind, title = ALERTS[start["kind"]]
-        out += [f'{indent}!!! {kind} "{title}"', ""]
         i += 1
         quoted = re.compile(rf"^{re.escape(indent)}>( ?)(?P<text>.*)$")
+        body = []
         while i < len(lines) and (m := quoted.match(lines[i])):
-            out.append(f"{indent}    {m['text']}" if m["text"].strip() else "")
+            body.append(f"{indent}    {m['text']}" if m["text"].strip() else "")
             i += 1
+        # "> [!IMPORTANT]" + "> **Key idea:** ..." is a Key idea box.
+        if start["kind"] == "IMPORTANT" and body and KEY_IDEA.match(body[0].strip()):
+            kind, title = "keyidea", "Key idea"
+            body[0] = f"{indent}    " + KEY_IDEA.sub("", body[0].strip(), count=1)
+        out += [f'{indent}!!! {kind} "{title}"', ""] + body
     return "\n".join(out)
 
 

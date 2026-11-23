@@ -1,6 +1,6 @@
 # Practice in code
 
-Optional. The [study guide](../README.md) chapters are the main path; these lessons let you build the same structures in Python, if you want to. 44 exercises in seven lessons: Big-O, linked lists, stacks and queues, hash tables, trees and heaps, searching and sorting, graphs, and tracing pseudocode by hand.
+Optional. The [study guide](../README.md) pages are the main path; these lessons let you build the same structures in Python, if you want to. 44 exercises in seven lessons: Big-O, linked lists, stacks and queues, hash tables, trees and heaps, searching and sorting, graphs, and tracing pseudocode by hand.
 
 Each lesson page has a short intro, the lesson code, and the exercises. You write your answers in the matching `lessonN.py` file and run it to check them. Hints and solutions are folded under each exercise.
 

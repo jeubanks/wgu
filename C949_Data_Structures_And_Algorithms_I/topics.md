@@ -1,56 +1,59 @@
 # Topic map
 
-This page lists every topic in the C949 course study guide (in your WGU course resources), grouped by the course's three competencies, and shows where this guide covers each one. Use it as a checklist: once you can explain a topic and answer its questions without looking, move on.
+This page lists the topics in the C949 course study guide (in your WGU course resources), grouped by the course's three competencies, and shows where this guide covers each one. Use it as a checklist: once you can explain a topic and answer its questions without looking, move on.
 
-For a quick review of what each topic costs, use the [Big-O cheat sheet](big-o.md). For hands-on practice, the optional [code lessons](code/README.md) have you build several of these structures yourself.
+For a quick review of what each topic costs, use the [Big-O cheat sheet](big-o.md). Topics that come up in zyBooks but aren't on the course study guide's list are in [Beyond the guide](beyond-the-guide.md).
 
 ## Explains Algorithms
 
 | Topic | Where |
 |---|---|
-| What makes something an algorithm: zyBooks' characteristics (unambiguity, finiteness, well-defined inputs and outputs, effectiveness, feasibility, language independence) | [1. Introduction](01-introduction.md#what-makes-something-an-algorithm) |
-| Qualities of a good algorithm: correctness, simplicity, modularity, maintainability, robustness, extensibility | [1. Introduction](01-introduction.md#what-makes-something-an-algorithm) |
-| Kinds of algorithms: brute force, recursive, backtracking, divide and conquer, greedy, dynamic programming, randomized, searching, sorting, hashing, encryption | [1. Introduction](01-introduction.md#kinds-of-algorithms) |
-| Greedy algorithms and dynamic programming | [1. Introduction](01-introduction.md#greedy-algorithms) |
-| Recursion: base case, recursive case, the call stack, tracing factorial | [21. Recursion](21-recursion.md); [11. Recursion's Big-O](11-algorithm-analysis.md#pattern-10-recursion) |
-| Linear and binary search, including tracing binary search's mid values | [11. Searching](11-algorithm-analysis.md#searching); [Cheat sheet](big-o.md#searching) |
-| Interpolation search | [11. Searching](11-algorithm-analysis.md#interpolation-search); [Cheat sheet](big-o.md#searching) |
-| Breadth-first and depth-first search | [9. Graphs](09-graphs.md#breadth-first-search-bfs) |
-| Sorting: bubble, selection, insertion, shell, merge, quick, heap, counting, radix, and bucket sort, their best, average, and worst cases, and recognizing each one in code | [11. Sorting](11-algorithm-analysis.md#sorting); [Cheat sheet](big-o.md#sorting) |
-| Big-O: growth rates, best, average, and worst case, and the rules for simplifying | [Cheat sheet](big-o.md#growth-rates-slowest-to-fastest) |
-| Finding the Big-O of code: nested and dependent loops, halving loops, hidden costs, recursion | [11. Algorithm analysis](11-algorithm-analysis.md) |
+| Reading pseudocode and tracing loops by hand | [1. Tracing code](01-tracing-code.md#the-variable-table) |
+| Recursion: base case, recursive case, the call stack | [1. Tracing code](01-tracing-code.md#tracing-recursion) |
+| Linear search | [2. Searching](02-searching.md#linear-search) |
+| Binary search, including tracing its mid values | [2. Searching](02-searching.md#binary-search) |
+| Sorting algorithms, with best, average, and worst cases | [3. Sorting](03-sorting.md#all-sorts-at-a-glance) |
+| Recognizing a sort from its code | [3. Sorting](03-sorting.md#spot-the-sort) |
+| Big-O: growth rates, best, average, and worst case | [4. Algorithm analysis](04-algorithm-analysis.md#growth-classes) |
+| Finding the Big-O of code | [4. Algorithm analysis](04-algorithm-analysis.md#finding-the-big-o-of-code) |
+| Classes | [10. Programming basics](10-programming-basics.md#classes) |
 
 ## Determines Data Structure Impact
 
 | Topic | Where |
 |---|---|
-| Data types (primitive, composite, user-defined) and enumerations | [1. Introduction](01-introduction.md#data-types-data-structures-and-adts) |
-| Data types vs data structures vs ADTs | [1. Introduction](01-introduction.md#data-types-data-structures-and-adts) |
-| Records | [1. Introduction](01-introduction.md#data-types-data-structures-and-adts) |
-| Arrays, and Python's list methods | [2. Lists](02-lists.md#array-based-lists); [12–20](12-programming-concepts.md#what-pythons-built-ins-cost) |
-| Linked lists: singly, doubly, and circular | [2. Lists](02-lists.md) |
-| Stacks | [3. Stacks and queues](03-stacks-queues.md#the-stack-adt) |
-| Queues and deques | [3. Stacks and queues](03-stacks-queues.md#the-queue-adt) |
-| Bags | [1. Introduction](01-introduction.md#abstract-data-types-adts); [Cheat sheet](big-o.md#hash-tables-maps-and-sets) |
-| Hash tables: hash functions, keys, collisions, chaining, probing, computing `key % N` by hand | [4. Hash tables](04-hash-tables.md) |
-| Dictionaries and maps, and Python's dict methods | [4. Hash tables](04-hash-tables.md#the-map-adt); [12–20](12-programming-concepts.md#what-pythons-built-ins-cost) |
-| Trees: binary trees, BSTs, full, complete, perfect, and balanced trees, BST removal, traversals | [5. Trees](05-trees.md) |
-| AVL and red-black trees | [6. Balanced trees](06-balanced-trees.md) |
-| B-trees | [10. B-trees](10-b-trees.md) |
-| Heaps: percolate up and down, child and parent indexes, heapify | [7. Heaps and treaps](07-heaps-treaps.md) |
-| Sets and set operations (union, intersection, difference) | [8. Sets](08-sets.md) |
-| Graphs: kinds, adding and removing vertices and edges, Dijkstra vs Bellman-Ford | [9. Graphs](09-graphs.md) |
+| Data types vs data structures vs ADTs | [5. ADTs](05-adts.md#data-type-data-structure-adt) |
+| ADTs and their Python commands: list, tuple, stack, queue, deque, bag, set, priority queue, dictionary | [5. ADTs](05-adts.md#the-adts-one-card-each) |
+| What `pop()` does on a stack, a queue, a deque, and a priority queue | [5. ADTs](05-adts.md#what-pop-removes) |
+| Design properties: how each structure compares, inserts, deletes, and indexes, and whether it's linear or hierarchical | [5. ADTs](05-adts.md#design-properties) |
+| Linear, hierarchical, and graph structures | [5. ADTs](05-adts.md#linear-hierarchical-and-network-structures) |
+| Arrays | [6. Lists, stacks, and queues](06-lists-stacks-queues.md#arrays-and-python-lists) |
+| Singly and doubly linked lists | [6. Lists, stacks, and queues](06-lists-stacks-queues.md#singly-linked-lists) |
+| Stack operations: push, pop, peek | [6. Lists, stacks, and queues](06-lists-stacks-queues.md#stacks) |
+| Queue operations: enqueue, dequeue, peek | [6. Lists, stacks, and queues](06-lists-stacks-queues.md#queues) |
+| Deque operations | [6. Lists, stacks, and queues](06-lists-stacks-queues.md#deques) |
+| Hash tables: hashing, hash keys, the modulo operator, chaining | [7. Hash tables](07-hash-tables.md) |
+| Dictionaries and their operations | [7. Hash tables](07-hash-tables.md#pythons-dict-and-set) |
+| Trees: root, leaf, parent, child, height | [8. Trees and heaps](08-trees-heaps.md#tree-vocabulary) |
+| Binary search trees | [8. Trees and heaps](08-trees-heaps.md#binary-search-trees) |
+| Tree traversals: inorder, preorder, postorder | [8. Trees and heaps](08-trees-heaps.md#traversals) |
+| Heaps: min-heap, max-heap, stored as a list, parent and child indexes | [8. Trees and heaps](08-trees-heaps.md#heaps) |
+| Priority queues | [8. Trees and heaps](08-trees-heaps.md#priority-queues-and-heapq) |
+| Sets, including intersection | [9. Sets and graphs](09-sets-graphs.md#sets) |
+| Graphs: vertices, edges, weight, direction, adjacency | [9. Sets and graphs](09-sets-graphs.md#graphs) |
 
 ## Applies Algorithms
 
 | Topic | Where |
 |---|---|
-| Static vs dynamic variables and allocation | [12–20](12-programming-concepts.md#static-and-dynamic-strong-and-weak) |
-| Strongly vs weakly typed languages | [12–20](12-programming-concepts.md#static-and-dynamic-strong-and-weak) |
-| Assignment operators and precedence | [12–20](12-programming-concepts.md#operators) |
-| Loops: for, while, do-while, nested, break, continue, pass | [12–20](12-programming-concepts.md#loops-and-range) |
-| Branching: if, elif, else, switch, and, or, not | [12–20](12-programming-concepts.md#branching) |
-| Classes: attributes, methods, constructors, inheritance, encapsulation, polymorphism | [12–20](12-programming-concepts.md#classes) |
-| Garbage collection, reference counting, memory allocation | [12–20](12-programming-concepts.md#memory-management) |
-| Linked vs sequential allocation | [2. Lists](02-lists.md#sequential-and-linked-allocation) |
-| Data flow diagrams | [12–20](12-programming-concepts.md#data-flow-diagrams) |
+| Data types: boolean, byte, int, char, float, double, string | [10. Programming basics](10-programming-basics.md#data-types) |
+| Static vs dynamic variables and typing | [10. Programming basics](10-programming-basics.md#static-and-dynamic-strong-and-weak) |
+| Assignment vs comparison | [10. Programming basics](10-programming-basics.md#assignment-and-comparison) |
+| Order of operations and precedence | [10. Programming basics](10-programming-basics.md#operators-and-precedence) |
+| Branching | [10. Programming basics](10-programming-basics.md#branching) |
+| Loops | [10. Programming basics](10-programming-basics.md#loops); [1. Tracing code](01-tracing-code.md#loop-traces) |
+| Classes and constructors | [10. Programming basics](10-programming-basics.md#classes) |
+| Garbage collection, reference counts, memory allocation, pointers, null | [10. Programming basics](10-programming-basics.md#memory) |
+| Linked vs sequential allocation | [6. Lists, stacks, and queues](06-lists-stacks-queues.md#sequential-and-linked-allocation) |
+| List methods | [5. ADTs](05-adts.md#list) |
+| Linear and binary search, sorting, Big-O, ADTs, stacks, and deques | Pages [2](02-searching.md), [3](03-sorting.md), [4](04-algorithm-analysis.md), [5](05-adts.md), and [6](06-lists-stacks-queues.md) |

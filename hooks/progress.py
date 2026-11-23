@@ -71,7 +71,7 @@ def on_page_content(html, page, **kwargs):
     # Only the overview and the counted pages: other pages may reuse labels.
     if course is None or not (name == course.progress_overview or fnmatch(name, course.progress_pages)):
         return html
-    data = {"key": f"{course.slug}-progress", "overview": name == course.progress_overview,
+    data = {"key": f"{course.storage}-progress", "overview": name == course.progress_overview,
             "parts": _parts(course)}
     blob = json.dumps(data).replace("</", "<\\/")
     return html + f'\n<script type="application/json" id="ex-progress-data">{blob}</script>\n'

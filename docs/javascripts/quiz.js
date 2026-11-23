@@ -475,7 +475,8 @@
   summary.appendChild(actions);
   summary.appendChild(note);
   var heading = content.querySelector("h2");
-  if (heading) heading.parentNode.insertBefore(summary, heading); else content.prepend(summary);
+  var hero = content.querySelector(".wgu-hero");
+  if (hero) hero.after(summary); else if (heading) heading.parentNode.insertBefore(summary, heading); else content.prepend(summary);
 
   function totals() {
     var t = { items: 0, right: 0, wrong: 0 };

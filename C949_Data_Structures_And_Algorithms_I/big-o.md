@@ -4,6 +4,8 @@ This page puts every data structure and algorithm in the course in one place. **
 
 Sorts that don't compare items use a second size, k. Depending on the sort, k is the number of digits (radix sort), the range of values (counting sort), or the number of buckets (bucket sort). This sheet follows the course study guide: radix sort is O(n·k) and bucket sort is O(n + k). Some course worksheets drop the k and write O(n). That's the same thing when k is a small constant.
 
+Rows marked † aren't in the course study guide's topic list. [Beyond the guide](beyond-the-guide.md) explains each one briefly.
+
 ## Growth rates, slowest to fastest
 
 | Big-O | Name | Example |
@@ -23,7 +25,7 @@ Sorts that don't compare items use a second size, k. Depending on the sort, k is
 
 </div>
 
-**Rules for finding a Big-O** (the [algorithm analysis page](11-algorithm-analysis.md) traces an example of each):
+**Rules for finding a Big-O** ([4. Algorithm analysis](04-algorithm-analysis.md) traces an example of each):
 
 - Drop constant factors: O(3n²) is O(n²), and O(n + 10) is O(n).
 - Keep only the fastest-growing term: 5n³ + 2n² + 7 is O(n³), and 2ⁿ + n³ is O(2ⁿ), since an exponential grows faster than any polynomial.
@@ -79,10 +81,10 @@ A **bag** (multiset) allows duplicates. Python's `collections.Counter` is a bag:
 | Tree | Search, insert, remove: average | Worst case | Kept short by |
 |---|---|---|---|
 | Binary search tree (BST) | O(log n) | O(n) | Nothing. Keys inserted in sorted order make a chain. |
-| AVL tree | O(log n) | O(log n) | Rotations. Height stays under about 1.44 log n. |
-| Red-black tree | O(log n) | O(log n) | Rotations and recoloring. Height stays under 2 log n. |
-| 2-3-4 tree or B-tree | O(log n) | O(log n) | Splits and merges. Every leaf is at the same depth. |
-| Treap | O(log n) | O(n) | Random priorities, so it's balanced on average. |
+| AVL tree † | O(log n) | O(log n) | Rotations. Height stays under about 1.44 log n. |
+| Red-black tree † | O(log n) | O(log n) | Rotations and recoloring. Height stays under 2 log n. |
+| 2-3-4 tree or B-tree † | O(log n) | O(log n) | Splits and merges. Every leaf is at the same depth. |
+| Treap † | O(log n) | O(n) | Random priorities, so it's balanced on average. |
 
 A BST search's best case is O(1), when the key is at the root.
 
@@ -98,7 +100,7 @@ A tree with n nodes has height at least ⌊log₂ n⌋, and at most n − 1. Any
 
 A heap is stored in an array with no gaps. With the root at index 0, the children of index i are at 2i + 1 and 2i + 2, and its parent is at (i − 1) // 2. (With the root at index 1: children 2i and 2i + 1, parent i // 2.)
 
-To step through a heap one operation at a time, see [chapter 7](07-heaps-treaps.md#heaps).
+To step through a heap one operation at a time, see [8. Trees and heaps](08-trees-heaps.md).
 
 <div class="viz" data-viz="tree-shapes" markdown>
 
@@ -152,11 +154,11 @@ Merge sort, quicksort, and binary search are **divide and conquer**: split the p
 |---|---|---|
 | Breadth-first search (BFS) | O(V + E) | Uses a queue. Finds the paths with the fewest edges. |
 | Depth-first search (DFS) | O(V + E) | Uses a stack, or recursion |
-| Dijkstra's shortest path | O((V + E) log V) with a binary-heap priority queue, O(V²) with an unsorted list | Greedy. Edge weights can't be negative. |
-| Bellman-Ford shortest path | O(V·E) | Dynamic programming. Allows negative weights and detects negative cycles. |
-| Topological sort | O(V + E) | For directed graphs with no cycles |
-| Prim's or Kruskal's minimum spanning tree | O(E log V), also written O(E log E): the same class, since E < V² | For undirected, connected, weighted graphs |
-| Floyd-Warshall all-pairs shortest path | O(V³) | From every vertex to every other vertex |
+| Dijkstra's shortest path † | O((V + E) log V) with a binary-heap priority queue, O(V²) with an unsorted list | Greedy. Edge weights can't be negative. |
+| Bellman-Ford shortest path † | O(V·E) | Dynamic programming. Allows negative weights and detects negative cycles. |
+| Topological sort † | O(V + E) | For directed graphs with no cycles |
+| Prim's or Kruskal's minimum spanning tree † | O(E log V), also written O(E log E): the same class, since E < V² | For undirected, connected, weighted graphs |
+| Floyd-Warshall all-pairs shortest path † | O(V³) | From every vertex to every other vertex |
 
 | Representation | Space | Is there an edge from A to B? | List A's neighbors | Add a vertex | Remove a vertex |
 |---|---|---|---|---|---|

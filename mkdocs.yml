@@ -25,6 +25,7 @@ exclude_docs: |
 extra_css:
   - stylesheets/wgu.css
   - stylesheets/viz.css
+  - stylesheets/cards.css
 
 # The SQL runner on D427 Part 1 and the quiz on Part 4
 # (hooks/sql_runner.py and hooks/quiz.py add their data to those pages).
@@ -45,6 +46,7 @@ hooks:
   - hooks/sql_runner.py
   - hooks/quiz.py
   - hooks/progress.py
+  - hooks/study_cards.py
   - hooks/page_footer.py
   - hooks/anchors.py
   - hooks/redirects.py
@@ -169,6 +171,18 @@ extra:
       quiz: "[0-9][0-9]-*.md"
       # The course was published as d949 before; old links redirect here.
       old_slugs: [d949]
+      # The v5 restructure renumbered every question, so saved progress starts fresh.
+      storage: c949v5
+      # Study-card layout on the topic pages: header card, section cards, and
+      # one accent color per competency (hooks/study_cards.py).
+      cards:
+        pages: "[0-9][0-9]-*.md"
+        label: Page
+        groups:
+          explains: {title: Explains Algorithms, pages: [1, 2, 3, 4]}
+          impact: {title: Determines Data Structure Impact, pages: [5, 6, 7, 8, 9]}
+          applies: {title: Applies Algorithms, pages: [10]}
+          practice: {title: All competencies, pages: [11]}
       # The Python lessons moved under code/; old links redirect there.
       moved:
         exercises.md: code/README.md
@@ -179,6 +193,21 @@ extra:
         05-searching-sorting.md: code/05-searching-sorting.md
         06-graphs.md: code/06-graphs.md
         07-tracing.md: code/07-tracing.md
+        # v5 restructure: the zyBooks-chapter pages were merged into topic pages.
+        01-introduction.md: 05-adts.md
+        02-lists.md: 06-lists-stacks-queues.md
+        03-stacks-queues.md: 06-lists-stacks-queues.md
+        04-hash-tables.md: 07-hash-tables.md
+        05-trees.md: 08-trees-heaps.md
+        06-balanced-trees.md: beyond-the-guide.md
+        07-heaps-treaps.md: 08-trees-heaps.md
+        08-sets.md: 09-sets-graphs.md
+        09-graphs.md: 09-sets-graphs.md
+        10-b-trees.md: beyond-the-guide.md
+        11-algorithm-analysis.md: 04-algorithm-analysis.md
+        12-programming-concepts.md: 10-programming-basics.md
+        21-recursion.md: 01-tracing-code.md
+        22-final-practice.md: 11-final-practice.md
 
 nav:
   - Home: index.md
@@ -196,20 +225,21 @@ nav:
       - Error decoder: d427/errors.md
   - C949 Data Structures:
       - Contents: c949/README.md
-      - 1. Introduction: c949/01-introduction.md
-      - 2. Lists: c949/02-lists.md
-      - 3. Stacks and queues: c949/03-stacks-queues.md
-      - 4. Hash tables: c949/04-hash-tables.md
-      - 5. Trees: c949/05-trees.md
-      - 6. Balanced trees: c949/06-balanced-trees.md
-      - 7. Heaps and treaps: c949/07-heaps-treaps.md
-      - 8. Sets: c949/08-sets.md
-      - 9. Graphs: c949/09-graphs.md
-      - 10. B-trees: c949/10-b-trees.md
-      - 11. Searching and algorithm analysis: c949/11-algorithm-analysis.md
-      - 12–20. Programming concepts: c949/12-programming-concepts.md
-      - 21. Recursion: c949/21-recursion.md
-      - Final practice: c949/22-final-practice.md
+      - "Explains Algorithms":
+          - 1. Tracing code: c949/01-tracing-code.md
+          - 2. Searching: c949/02-searching.md
+          - 3. Sorting: c949/03-sorting.md
+          - 4. Algorithm analysis: c949/04-algorithm-analysis.md
+      - "Determines Data Structure Impact":
+          - 5. ADTs and design properties: c949/05-adts.md
+          - 6. Lists, stacks, and queues: c949/06-lists-stacks-queues.md
+          - 7. Hash tables: c949/07-hash-tables.md
+          - 8. Trees and heaps: c949/08-trees-heaps.md
+          - 9. Sets and graphs: c949/09-sets-graphs.md
+      - "Applies Algorithms":
+          - 10. Programming basics: c949/10-programming-basics.md
+      - Final practice: c949/11-final-practice.md
+      - Beyond the guide: c949/beyond-the-guide.md
       - Practice quiz: c949/practice-quiz.md
       - Topic map: c949/topics.md
       - Big-O cheat sheet: c949/big-o.md
