@@ -200,7 +200,7 @@ Drop(n)
 | One recursive call on n − 1 | O(n) | O(n) | O(n) | n levels of calls |
 | Two recursive calls on n − 1 and n − 2 | O(2ⁿ) | O(2ⁿ) | O(2ⁿ) | The call tree doubles at each level |
 
-For more drills, see the [tracing lesson](code/07-tracing.md).
+For more drills, see [Lesson 7: Tracing pseudocode](code/07-tracing.md) in Practice in code.
 
 ## Questions
 

@@ -40,7 +40,7 @@ The [topic map](topics.md) is a checklist. It lists every topic in the course st
 
 For practice with new numbers every time, the [practice quiz](practice-quiz.md) builds a random 10-question quiz from the topics you pick, and checks each answer.
 
-If you want more practice, the optional [Practice in code](code/README.md) section has seven Python lessons where you build these structures yourself and run checks on your code. Lesson 7, [tracing pseudocode](code/07-tracing.md), needs only paper, and you can do it at any point.
+If you want more practice, the optional [Practice in code](code/README.md) section has seven Python lessons where you build these structures yourself and run checks on your code. [Lesson 7: Tracing pseudocode](code/07-tracing.md) needs only paper, and you can do it at any point.
 
 ## How to use this guide
 
