@@ -1,10 +1,19 @@
 # 4. Algorithm analysis
 
-This page supports the **Explains Algorithms** and **Applies Algorithms** competencies. After it, you can read code, say how its running time grows with the input, and give its best, average and worst case.
+Algorithm analysis estimates how a program's running time grows as its input grows.
+
+After this page you can:
+
+- Simplify an exact step count to its Big-O
+- Find the Big-O of loops and recursive code
+- Tell best, average, and worst case apart
 
 ## What Big-O measures
 
 **Big-O** describes how the work grows when the input grows. It ignores exact counts and keeps only the shape: O(n) means doubling the input roughly doubles the work, and O(n²) means doubling it roughly quadruples the work.
+
+> [!IMPORTANT]
+> **Key idea:** Big-O tells you how the work grows as n grows, not how many steps the code takes.
 
 To get a Big-O from an exact count of steps:
 
@@ -36,6 +45,9 @@ From slowest-growing (best) to fastest-growing (worst):
 
 Some code does different amounts of work on inputs of the same size. The **best case** is the luckiest input of size n (not a small n), the **average case** a typical random input, and the **worst case** the input that makes it run longest. When a question asks only for "the Big-O", it means the worst case.
 
+> [!IMPORTANT]
+> **Key idea:** The cases differ by which input of size n the code gets, never by making n small.
+
 ## Finding the Big-O of code
 
 1. **Name n**, the input size.
@@ -45,6 +57,9 @@ Some code does different amounts of work on inputs of the same size. The **best 
 5. **Check for early exits.** A `return` or `break` in a loop splits best from worst case.
 
 Assigning, arithmetic, comparing, `a[i]`, `append` and `len()` are each one O(1) step.
+
+> [!IMPORTANT]
+> **Key idea:** The Big-O of code is how often its busiest line runs, written as a formula in n and simplified.
 
 <div class="viz" data-viz="loop-grid" markdown>
 

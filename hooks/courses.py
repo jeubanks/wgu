@@ -24,6 +24,7 @@ turns on the build features it uses by listing pages for them:
           old_slugs: [x123]                     # old URL paths that redirect here
           moved: {old-page.md: new/page.md}     # pages that moved; old URLs redirect
           storage: x123v2                       # new prefix for saved progress after a renumbering
+          cards: {pages: "0[0-9]-*.md"}          # study-card layout; see hooks/study_cards.py
 
 A course with only `folder` is published as plain pages. See AUTHORING.md.
 """
@@ -49,6 +50,7 @@ class Course:
     quiz: str = None
     old_slugs: tuple = ()
     moved: dict = field(default_factory=dict)
+    cards: dict = field(default_factory=dict)  # study-card layout (hooks/study_cards.py)
     storage: str = None  # prefix for browser-saved progress and answers (default: the slug)
 
     def uri(self, page):
@@ -100,6 +102,7 @@ def _course(slug, s):
         quiz=s.get("quiz"),
         old_slugs=tuple(s.get("old_slugs") or ()),
         moved=dict(s.get("moved") or {}),
+        cards=dict(s.get("cards") or {}),
         storage=s.get("storage") or slug,
     )
 

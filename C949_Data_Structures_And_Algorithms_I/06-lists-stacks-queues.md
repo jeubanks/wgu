@@ -1,6 +1,12 @@
 # 6. Lists, stacks, and queues
 
-Part of the **Determines Data Structure Impact** competency. After this page you'll be able to trace arrays, linked lists, stacks, queues, and deques by hand, and say what each operation costs.
+Keep items in a row or a chain of nodes, then add and remove them at the ends or in the middle.
+
+After this page you can:
+
+- Trace inserts and removals in arrays and linked lists
+- Trace stack, queue, and deque operations by hand
+- Give the Big-O of each operation on each structure
 
 ## Arrays and Python lists
 
@@ -17,6 +23,9 @@ before:  [K, P, R, T, W, ·]     insert M at index 2
 after:   [K, P, M, R, T, W]     W, T, R shifted right (3 shifts)
 ```
 <!-- /figure -->
+
+> [!IMPORTANT]
+> **Key idea:** An array finds any index instantly, but every change in the middle moves all the items after it.
 
 Removing from the middle shifts the later items left. Both are O(n). The end is the cheap spot: `append` and `pop()` shift nothing.
 
@@ -36,6 +45,9 @@ A Python `list` is a **dynamic array** with spare slots. When they run out, `app
 ## Singly linked lists
 
 Each **node** holds a value and a `next` pointer. The list keeps `head` (first node) and `tail` (last node). The last node's `next` is `None`.
+
+> [!IMPORTANT]
+> **Key idea:** A linked list makes changes next to a node you already hold cheap, but getting to that node means walking from the head.
 
 <!-- figure
 list: 3 8 5 2
@@ -77,6 +89,9 @@ edges: 6>2, 2>10, 10>7
 
 Each node also has a `prev` pointer to the node before it.
 
+> [!IMPORTANT]
+> **Key idea:** A `prev` pointer on every node buys backward walks and quick unlinking, paid for in memory and extra pointer updates.
+
 <!-- figure
 list: 3 8 5 2
 double: yes
@@ -98,6 +113,9 @@ In a **circular** list, the tail's `next` points back to the head, so a walk sto
 
 A **stack** is last in, first out (LIFO). **Push** adds on top, **pop** removes and returns the top, and **peek** reads the top without removing it. Popping an empty stack is an error.
 
+> [!IMPORTANT]
+> **Key idea:** A stack always hands back the newest item, so keep its top at an end where adding and removing are both cheap.
+
 Put the top where adding and removing are both O(1):
 
 - On a Python `list`, the top is the **end**: `append(x)`, `pop()`, `s[-1]`. All O(1) (append amortized).
@@ -108,6 +126,9 @@ Stacks handle "most recent first" jobs: undo, matching brackets, the call stack.
 ## Queues
 
 A **queue** is first in, first out (FIFO). **Enqueue** adds at the back, **dequeue** removes and returns the front, and **peek** reads the front.
+
+> [!IMPORTANT]
+> **Key idea:** A queue always hands back the oldest item, so it needs a structure that can take from the front without moving the rest.
 
 A `list` makes a poor queue. `pop(0)` takes the front, then every other item shifts left to close the gap:
 

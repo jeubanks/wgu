@@ -1,10 +1,19 @@
 # 7. Hash tables
 
-A hash table computes where a key belongs instead of searching for it, so lookups are O(1) on average. This page is part of *Determines Data Structure Impact*. After it, you can hash keys by hand, place them with chaining or linear probing, and use Python's `dict` and `set`, which are hash tables.
+A hash table computes where a key belongs instead of searching for it.
+
+After this page you can:
+
+- Hash keys to bucket indexes by hand with modulo
+- Place keys with chaining and with linear probing
+- Use Python's `dict` and `set`, which are hash tables
 
 ## Hashing a key to an index
 
 A hash table is an array of **buckets**. A **hash function** turns a key into a bucket index. The simplest is the **modulo hash**, `key % N`, where N is the number of buckets. With N = 10, key 47 goes in bucket 7, and a search for 47 looks only in bucket 7.
+
+> [!IMPORTANT]
+> **Key idea:** A hash function sends each key straight to one bucket, and because keys outnumber buckets, some keys will always have to share.
 
 - **By hand:** 3045 % 1009: 3045 ÷ 1009 = 3.01..., so subtract 3 × 1009: 3045 − 3027 = **18**.
 - **Negative keys:** Python's `%` with a positive N always gives 0 to N − 1. `-13 % 10` is 7, because −13 = −2 × 10 + 7. Some languages give −3, so their tables add N.
@@ -33,11 +42,17 @@ bucket 4:  []
 ```
 <!-- /figure -->
 
+> [!IMPORTANT]
+> **Key idea:** With chaining, a table is only as fast as its longest bucket list, so an even spread of keys is what keeps it quick.
+
 Insert, search and remove work only on the key's bucket list. A search for 32 compares against 12, 7, then 32. Spread evenly, lists stay short: O(1) on average. All in one bucket: O(n).
 
 ## Open addressing
 
 With **open addressing**, each bucket holds one item. If the home bucket is taken, the table **probes** other buckets in a fixed order.
+
+> [!IMPORTANT]
+> **Key idea:** Insert, search, and remove all walk the same probe path, so nothing may break that path once keys depend on it.
 
 ### Linear probing
 
@@ -74,6 +89,9 @@ insert 23    -  -  - 43 13 53 23  -  -  -
 ## Load factor and resizing
 
 The **load factor** is items ÷ buckets: 6 items in 10 buckets is 0.6. With chaining it can pass 1. With probing it can't, and probe paths grow as it nears 1.
+
+> [!IMPORTANT]
+> **Key idea:** A table slows down as it fills, so it grows and rehashes every key before it gets too full.
 
 Past a threshold (often 0.75), the table **resizes**: about twice the buckets, and every item **rehashed**, since the index depends on N (17 is in bucket 7 of 10, but bucket 17 of 23). A resize is O(n) but rare, so inserts stay O(1) on average.
 

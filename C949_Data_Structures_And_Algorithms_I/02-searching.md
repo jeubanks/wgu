@@ -1,10 +1,19 @@
 # 2. Searching
 
-This page is part of the **Explains Algorithms** competency. You'll learn to trace linear and binary search, say why binary search needs sorted input, and give each search's Big-O.
+Find a key in a list: check every item, or halve a sorted list until the key turns up.
+
+After this page you can:
+
+- Trace linear search and binary search by hand
+- Say why binary search needs sorted input
+- Give each search's best, average, and worst case
 
 ## Linear search
 
 Check each item in order, from the first, until you find the key or run out of items. It works on any list, sorted or not.
+
+> [!IMPORTANT]
+> **Key idea:** Linear search asks nothing of the data, and pays for that by possibly checking every item.
 
 ```python
 def linear_search(items, key):
@@ -19,6 +28,9 @@ def linear_search(items, key):
 ## Binary search
 
 Think of a printed dictionary: open near the middle, see whether your word comes before or after that page, and ignore the other half. Binary search compares the key with the middle item and drops the half that can't hold it.
+
+> [!IMPORTANT]
+> **Key idea:** Binary search throws away half of what's left with every comparison, which only makes sense when the list is in order.
 
 The list must be **sorted**. Only then does "bigger than the middle item" mean "to the right". Unsorted, it can miss a key that's there.
 
@@ -98,6 +110,9 @@ Still O(log n) time, but the waiting calls use O(log n) stack memory where the l
 ## Interpolation search
 
 Binary search with a smarter guess: it uses the key's value to estimate where it should sit, like opening a phone book near the back for "W". On sorted, evenly spread values it averages O(log log n); on lopsided values the guesses go wrong, and the worst case is O(n).
+
+> [!IMPORTANT]
+> **Key idea:** Interpolation search is only as good as its guesses: evenly spread values make it faster than binary search, and lopsided values make it slower.
 
 ## Big-O summary
 

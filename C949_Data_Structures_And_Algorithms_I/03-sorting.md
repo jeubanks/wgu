@@ -1,6 +1,12 @@
 # 3. Sorting
 
-This page is part of the **Explains Algorithms** competency. You'll learn how each common sort works, what drives its best, average and worst case, and how to recognize it in code.
+Sorting puts items in order, and each common sort gets there a different way at a different cost.
+
+After this page you can:
+
+- Trace the first passes of each common sort
+- Give each sort's best, average, and worst case
+- Recognize a sort from clues in its code
 
 ## Words to know
 
@@ -21,6 +27,9 @@ The examples start from `29 4 17 8 42 11`. In the diagram below, compare sorted 
 
 Find the smallest item in the unsorted part and swap it to the front of that part.
 
+> [!IMPORTANT]
+> **Key idea:** Selection sort can't tell when a list is already sorted, so it does the same quadratic work on every input.
+
 <!-- figure
 row: start | 29 4 17 8 42 11
 row: pass 1 | *4 *29 17 8 42 11 | swap 4 with 29
@@ -38,6 +47,9 @@ pass 2    4  8 17 29 42 11     swap 8 with 29
 ## Insertion sort
 
 Take the next item and shift it left past every bigger item in the sorted part, like sorting a hand of cards.
+
+> [!IMPORTANT]
+> **Key idea:** Insertion sort does little work when items are already close to their places and the most when they're in reverse.
 
 <!-- figure
 row: start | 29 4 17 8 42 11
@@ -79,6 +91,9 @@ Insertion sort on items a **gap** apart, then smaller gaps, ending with gap 1: p
 
 ## Quicksort
 
+> [!IMPORTANT]
+> **Key idea:** Quicksort is only as fast as its pivots: splits near the middle keep it quick, and lopsided splits make it quadratic.
+
 Pick a **pivot**, then **partition**: smaller values to the left, larger to the right. Then quicksort each side. Many books pivot on the last item; zyBooks and these pages use the **middle** item, at (low + high) // 2. To partition:
 
 1. `low` moves right while its item is smaller than the pivot.
@@ -106,6 +121,9 @@ done      3  7 15 | 61 38 24 50   low passed high
 ## Merge sort
 
 Split the list in half, merge sort each half, then **merge** the sorted halves by repeatedly taking the smaller front item.
+
+> [!IMPORTANT]
+> **Key idea:** Merge sort's cost never depends on the input order, but it needs a second list's worth of memory to merge into.
 
 <!-- figure
 row: split | 29 4 17 // 8 42 11

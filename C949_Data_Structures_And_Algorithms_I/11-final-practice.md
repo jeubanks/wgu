@@ -1,6 +1,14 @@
 # 11. Final practice
 
-Thirty questions that mix all three competencies (explaining algorithms, judging a data structure's impact, and applying algorithms), for when you've worked through pages 1 to 10. They use their own numbers, so they show whether you can apply each idea on your own.
+Thirty questions that mix explaining algorithms, judging a data structure's impact, and applying algorithms.
+
+After this page you can:
+
+- Answer mixed questions without being told the topic
+- Apply each idea to numbers you haven't seen
+- Spot which topics need another pass
+
+Try them once you've worked through pages 1 to 10. They use their own numbers, so they show whether you can apply each idea on your own.
 
 - Work each one on paper first, then check it.
 - Each question says which convention it uses, like the heap's root index or the order neighbors are taken in.

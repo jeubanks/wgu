@@ -1,10 +1,19 @@
 # 8. Trees and heaps
 
-A tree stores data in a hierarchy: one root, children below, no cycles. This page is part of *Determines Data Structure Impact*. After it, you can name a tree's parts, search and change a binary search tree, list traversals, and work a heap by index.
+A tree stores data in a hierarchy: one root, children below, no cycles.
+
+After this page you can:
+
+- Name a tree's parts and list its traversals
+- Search, insert into, and remove from a BST
+- Insert into and remove from a heap stored in an array
 
 ## Tree vocabulary
 
 In a **binary tree**, each node has at most two children, a left and a right.
+
+> [!IMPORTANT]
+> **Key idea:** Every node but the root has exactly one parent, and depth and height count edges, not nodes.
 
 <!-- figure
 tree: 62{31{15, 47{, 52}}, 84{73, 96}}
@@ -52,6 +61,9 @@ Depth and height count **edges**, not nodes. One node alone has height 0; an emp
 ## Binary search trees
 
 A **BST** adds a rule at every node: the left subtree is all **smaller**, the right all **larger** (duplicates go right). One comparison picks a side and skips the other.
+
+> [!IMPORTANT]
+> **Key idea:** Each comparison in a BST rules out a whole subtree, so its speed depends on how tall the tree has grown.
 
 ### Search and insert
 
@@ -138,6 +150,9 @@ tree: Level-order: F B G A D I :: F^1{B^2{A^4, D^5}, G^3{, I^6}}
 ```
 <!-- /figure -->
 
+> [!IMPORTANT]
+> **Key idea:** A traversal's name tells you when a node is listed compared with its subtrees: before them, between them, or after them.
+
 | Traversal | Order | Trick |
 |---|---|---|
 | **Preorder** | node, left, right | Trace around the tree counterclockwise from the root; list a node as you pass its **left** side. |
@@ -154,6 +169,9 @@ tree: Level-order: F B G A D I :: F^1{B^2{A^4, D^5}, G^3{, I^6}}
 ## Heaps
 
 A **max-heap** is a complete binary tree where every parent is **≥** its children, so the largest key is at the root. A **min-heap** flips that. There's no left-right rule, so finding an arbitrary key is O(n).
+
+> [!IMPORTANT]
+> **Key idea:** A heap only promises that each parent outranks its children, and its complete shape lets it live in an array with no gaps.
 
 ### Stored in an array
 
@@ -223,6 +241,9 @@ A min-heap flips the comparisons. **Heapify** builds a heap from an unsorted arr
 ## Priority queues and `heapq`
 
 A **priority queue** dequeues the highest-priority item first. It's usually a heap: enqueue inserts, dequeue removes the root, peek reads it.
+
+> [!IMPORTANT]
+> **Key idea:** A priority queue always serves the most urgent item next, and a heap does that without keeping everything sorted.
 
 Python's `heapq` works on a plain list as a **min-heap**: `heappop` returns the **smallest**.
 

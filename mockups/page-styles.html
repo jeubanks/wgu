@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en" data-style="a" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C949 page style mockups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ---------- mockup chrome ---------- */
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Inter, system-ui, sans-serif; }
+.bar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; padding: .6rem 1rem; background: #111827; color: #f3f4f6; font-size: .85rem; }
+.bar b { margin-right: .5rem; }
+.bar button { font: inherit; border: 1px solid #4b5563; background: #1f2937; color: #f3f4f6; border-radius: 999px; padding: .3rem .8rem; cursor: pointer; }
+.bar button[aria-pressed="true"] { background: #f3f4f6; color: #111827; border-color: #f3f4f6; }
+.bar .sp { flex: 1; }
+.blurb { max-width: 60rem; margin: 0 auto; padding: .8rem 1rem 0; font-size: .9rem; }
+
+/* ---------- shared tokens per theme ---------- */
+:root { --mono: "JetBrains Mono", ui-monospace, monospace; }
+html[data-theme="light"] { --bg: #f5f6f8; --surface: #ffffff; --surface-2: #eef1f5; --ink: #1f2933; --muted: #5b6672; --line: #d9dee5; --code-bg: #eef1f5; }
+html[data-theme="dark"]  { --bg: #1c2128; --surface: #242b34; --surface-2: #2d3540; --ink: #e3e8ee; --muted: #9aa6b4; --line: #3a4350; --code-bg: #2d3540; }
+/* competency accents: Explains = indigo; right/wrong are fixed hues with text labels */
+html[data-theme="light"] { --acc: #4f46e5; --acc-soft: #eceafe; --acc-ink: #3730a3; --ok: #15803d; --ok-soft: #e7f6ec; --bad: #b42318; --bad-soft: #fdecea; --warn-soft: #fff6dd; --warn: #8a5a00; }
+html[data-theme="dark"]  { --acc: #a5b4fc; --acc-soft: #2e3160; --acc-ink: #c7d2fe; --ok: #6fd28f; --ok-soft: #1f3a2a; --bad: #ff8f84; --bad-soft: #43201e; --warn-soft: #3b321b; --warn: #f2c66d; }
+body { background: var(--bg); color: var(--ink); }
+.blurb { color: var(--muted); }
+
+.page { max-width: 60rem; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+code, pre { font-family: var(--mono); }
+pre { background: var(--code-bg); padding: .8rem 1rem; border-radius: .4rem; overflow-x: auto; font-size: .85rem; line-height: 1.55; }
+.k { color: var(--acc-ink); font-weight: 600; } .c { color: var(--muted); }
+table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+th, td { text-align: left; padding: .5rem .7rem; border-bottom: 1px solid var(--line); }
+.chip { font-family: var(--mono); font-size: .8rem; font-weight: 600; padding: .1rem .45rem; border-radius: .3rem; white-space: nowrap; }
+.chip.g { background: var(--ok-soft); color: var(--ok); } .chip.y { background: var(--warn-soft); color: var(--warn); } .chip.r { background: var(--bad-soft); color: var(--bad); }
+svg text { font-family: var(--mono); fill: var(--ink); }
+.fig .cell { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; }
+.fig .hit { fill: var(--acc-soft); stroke: var(--acc); stroke-width: 2; }
+.fig .out { fill: var(--surface-2); stroke: var(--line); opacity: .55; }
+.fig .idx { fill: var(--muted); font-size: 11px; }
+.fig .mk { fill: var(--acc-ink); font-size: 12px; font-weight: 600; }
+.fig .ar { stroke: var(--acc); stroke-width: 2; }
+.opt { display: flex; gap: .7rem; align-items: center; width: 100%; text-align: left; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: .5rem; padding: .6rem .8rem; margin: .4rem 0; cursor: pointer; }
+.opt .l { flex: none; width: 1.7rem; height: 1.7rem; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: .8rem; border: 1.5px solid var(--line); }
+.opt code { font-size: .9rem; }
+.opt.right { border-color: var(--ok); background: var(--ok-soft); } .opt.right .l { background: var(--ok); color: var(--surface); border-color: var(--ok); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-soft); } .opt.wrong .l { background: var(--bad); color: var(--surface); border-color: var(--bad); }
+.verdict { font-size: .9rem; margin: .5rem 0 0; }
+.verdict .tag { font-weight: 700; }
+.note, .learn, .meta, .eyebrow, .keyidea .ic { display: none; }
+
+/* ======================================================
+   CURRENT (approximation of today's page)
+   ====================================================== */
+[data-style="cur"] .page { font-size: .95rem; line-height: 1.6; }
+[data-style="cur"] h1 { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 600; font-size: 1.9rem; margin: .5rem 0 1rem; }
+[data-style="cur"] h2 { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 600; font-size: 1.4rem; margin: 2rem 0 .8rem; }
+[data-style="cur"] h3 { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 600; font-size: 1.1rem; margin: 1.4rem 0 .6rem; }
+[data-style="cur"] .keyidea { margin: 0; }
+[data-style="cur"] .keyidea .t { display: none; }
+[data-style="cur"] .fig { background: var(--surface); border: 1px solid var(--line); border-radius: .4rem; padding: .6rem; }
+[data-style="cur"] .q { border-top: 1px solid var(--line); padding-top: 1rem; }
+[data-style="cur"] .qhead { font-weight: 600; }
+
+/* ======================================================
+   A. STUDY CARDS — each idea is a card; competency color threads through
+   ====================================================== */
+[data-style="a"] .page { font-size: 1rem; line-height: 1.65; max-width: 52rem; }
+[data-style="a"] .hero { background: var(--surface); border-radius: 1rem; padding: 1.6rem 1.8rem; border: 1px solid var(--line); border-top: 6px solid var(--acc); box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px -12px rgba(30,40,80,.18); }
+[data-style="a"] .eyebrow { display: inline-flex; gap: .5rem; align-items: center; font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--acc-ink); background: var(--acc-soft); padding: .25rem .65rem; border-radius: 999px; }
+[data-style="a"] h1 { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 700; font-size: 2.4rem; letter-spacing: -.02em; margin: .7rem 0 .4rem; }
+[data-style="a"] .lead { font-size: 1.1rem; color: var(--muted); margin: 0 0 1rem; }
+[data-style="a"] .learn { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: .5rem; list-style: none; padding: 0; margin: 0 0 1rem; }
+[data-style="a"] .learn li { display: flex; gap: .5rem; align-items: flex-start; background: var(--surface-2); border-radius: .5rem; padding: .55rem .7rem; font-size: .92rem; }
+[data-style="a"] .learn li::before { content: "✓"; color: var(--acc); font-weight: 700; }
+[data-style="a"] .meta { display: flex; gap: 1.2rem; font-size: .85rem; color: var(--muted); }
+[data-style="a"] section.card { background: var(--surface); border: 1px solid var(--line); border-radius: 1rem; padding: 1.4rem 1.8rem; margin-top: 1.4rem; }
+[data-style="a"] h2 { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 700; font-size: 1.6rem; letter-spacing: -.01em; margin: 0 0 .6rem; display: flex; gap: .6rem; align-items: center; }
+[data-style="a"] h2 .n { font-size: .85rem; font-weight: 700; color: var(--surface); background: var(--acc); border-radius: .4rem; padding: .1rem .45rem; }
+[data-style="a"] h3 { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 600; font-size: 1.15rem; margin: 1.4rem 0 .5rem; }
+[data-style="a"] .keyidea { display: flex; gap: .8rem; background: var(--acc-soft); border-radius: .7rem; padding: .9rem 1rem; margin: .8rem 0 1rem; }
+[data-style="a"] .keyidea .ic { display: grid; place-items: center; flex: none; width: 2rem; height: 2rem; border-radius: .5rem; background: var(--acc); color: var(--surface); font-weight: 700; }
+[data-style="a"] .keyidea .t { font-weight: 700; color: var(--acc-ink); display: block; font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; }
+[data-style="a"] ol.steps { counter-reset: s; list-style: none; padding: 0; }
+[data-style="a"] ol.steps li { counter-increment: s; position: relative; padding: .1rem 0 .55rem 2.4rem; }
+[data-style="a"] ol.steps li::before { content: counter(s); position: absolute; left: 0; top: .05rem; width: 1.6rem; height: 1.6rem; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: .8rem; background: var(--surface-2); color: var(--acc-ink); border: 1.5px solid var(--acc); }
+[data-style="a"] .fig { background: var(--surface-2); border-radius: .7rem; padding: .8rem; margin: 1rem 0; }
+[data-style="a"] .fig figcaption { font-size: .85rem; color: var(--muted); margin-top: .3rem; }
+[data-style="a"] table { border: 1px solid var(--line); border-radius: .6rem; overflow: hidden; border-collapse: separate; border-spacing: 0; }
+[data-style="a"] th { background: var(--surface-2); font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+[data-style="a"] tr:last-child td { border-bottom: 0; }
+[data-style="a"] .bigo { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; margin: .8rem 0; }
+[data-style="a"] .bigo div { border-radius: .7rem; padding: .7rem .9rem; border: 1px solid var(--line); background: var(--surface); }
+[data-style="a"] .bigo b { display: block; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+[data-style="a"] .bigo .chip { font-size: 1.15rem; display: inline-block; margin: .2rem 0; }
+[data-style="a"] .bigo span.w { display: block; font-size: .85rem; color: var(--muted); }
+[data-style="a"] .q { background: var(--surface); border: 1px solid var(--line); border-left: 5px solid var(--acc); border-radius: 1rem; padding: 1.2rem 1.5rem; margin-top: 1.4rem; }
+[data-style="a"] .qhead { display: flex; align-items: center; gap: .6rem; font-weight: 600; margin-bottom: .6rem; }
+[data-style="a"] .qhead .num { background: var(--acc); color: var(--surface); border-radius: .4rem; padding: .1rem .5rem; font-size: .85rem; }
+[data-style="a"] .qhead .dots { margin-left: auto; display: flex; gap: .25rem; }
+[data-style="a"] .qhead .dots i { width: .55rem; height: .55rem; border-radius: 50%; background: var(--line); }
+[data-style="a"] .qhead .dots i.on { background: var(--ok); }
+[data-style="a"] .opt:hover { border-color: var(--acc); }
+mark { background: var(--acc-soft); color: inherit; border-radius: .2rem; padding: 0 .15rem; }
+[data-style="cur"] mark { background: none; padding: 0; }
+
+/* ======================================================
+   B. TEXTBOOK — calm reading column, serif headings, margin notes
+   ====================================================== */
+[data-style="b"] .page { font-size: 1.05rem; line-height: 1.75; max-width: 60rem; padding-right: 18rem; }
+@media (max-width: 62rem) { [data-style="b"] .page { padding-right: 1rem; max-width: 44rem; } }
+[data-style="b"] .eyebrow { display: block; font-family: var(--mono); font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--acc-ink); }
+[data-style="b"] h1 { font-family: Fraunces, Georgia, serif; font-weight: 650; font-size: 2.7rem; line-height: 1.1; margin: .4rem 0 .6rem; letter-spacing: -.01em; }
+[data-style="b"] .lead { font-family: Fraunces, Georgia, serif; font-size: 1.25rem; line-height: 1.5; color: var(--muted); margin: 0 0 1.2rem; }
+[data-style="b"] .meta { display: flex; gap: 1.2rem; flex-wrap: wrap; font-size: .85rem; color: var(--muted); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: .5rem 0; margin-bottom: 1.5rem; }
+[data-style="b"] h2 { font-family: Fraunces, Georgia, serif; font-weight: 650; font-size: 1.75rem; margin: 2.4rem 0 .6rem; }
+[data-style="b"] h2 .n { font-family: var(--mono); font-size: .9rem; color: var(--acc-ink); margin-right: .6rem; vertical-align: .25rem; }
+[data-style="b"] h3 { font-family: Inter, system-ui, sans-serif; font-weight: 700; font-size: .85rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 1.8rem 0 .4rem; }
+[data-style="b"] .keyidea { font-family: Fraunces, Georgia, serif; font-size: 1.2rem; line-height: 1.5; border-left: 3px solid var(--acc); padding: .2rem 0 .2rem 1.2rem; margin: 1rem 0 1.2rem; }
+[data-style="b"] .keyidea .t { display: none; }
+[data-style="b"] mark { background: linear-gradient(transparent 55%, var(--warn-soft) 55%); color: inherit; }
+[data-style="b"] .note { display: block; float: right; clear: right; width: 14rem; margin: .4rem -17rem 0 0; font-size: .85rem; line-height: 1.5; color: var(--muted); border-top: 2px solid var(--acc); padding-top: .5rem; }
+@media (max-width: 62rem) { [data-style="b"] .note { float: none; width: auto; margin: 1rem 0; } }
+[data-style="b"] .note b { color: var(--ink); display: block; font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .2rem; }
+[data-style="b"] .fig { margin: 1.2rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: .8rem 0; }
+[data-style="b"] .fig figcaption { font-size: .85rem; color: var(--muted); font-style: italic; }
+[data-style="b"] table { border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); }
+[data-style="b"] th { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; border-bottom: 1px solid var(--ink); }
+[data-style="b"] .bigo { display: none; }
+[data-style="b"] pre { border-radius: 0; border-left: 3px solid var(--line); }
+[data-style="b"] .q { margin-top: 2.4rem; padding: 1.2rem 0; border-top: 2px solid var(--ink); }
+[data-style="b"] .qhead { font-family: Fraunces, Georgia, serif; font-size: 1.2rem; font-weight: 650; margin-bottom: .5rem; }
+[data-style="b"] .qhead .num { font-family: var(--mono); font-size: .9rem; color: var(--acc-ink); margin-right: .4rem; }
+[data-style="b"] .qhead .dots { display: none; }
+[data-style="b"] .opt { border-radius: 0; border-width: 0 0 1px; background: transparent; margin: 0; padding: .7rem .2rem; }
+[data-style="b"] .opt .l { border-radius: .2rem; }
+[data-style="b"] .opt.right, [data-style="b"] .opt.wrong { border-radius: .2rem; }
+
+/* ======================================================
+   C. BOLD — big competency banner, tiles, 2x2 answer grid
+   ====================================================== */
+[data-style="c"] .page { font-size: 1rem; line-height: 1.65; max-width: 56rem; padding-top: 0; }
+[data-style="c"] .hero { margin: 0 -1rem; padding: 2.2rem 2rem 1.8rem; color: #fff; background: radial-gradient(120% 140% at 0% 0%, #6366f1 0%, #4338ca 45%, #1e1b4b 100%); border-radius: 0 0 1.2rem 1.2rem; }
+[data-style="c"] .eyebrow { display: inline-block; font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; background: rgba(255,255,255,.16); padding: .3rem .7rem; border-radius: 999px; }
+[data-style="c"] h1 { font-family: "Space Grotesk", system-ui, sans-serif; font-size: 3rem; font-weight: 700; letter-spacing: -.03em; margin: .6rem 0 .3rem; }
+[data-style="c"] h1 .big { font-size: 1.1em; opacity: .5; margin-right: .6rem; }
+[data-style="c"] .lead { font-size: 1.15rem; opacity: .9; margin: 0 0 1.1rem; max-width: 40rem; }
+[data-style="c"] .meta { display: flex; gap: .5rem; flex-wrap: wrap; }
+[data-style="c"] .meta span { background: rgba(255,255,255,.14); border-radius: .5rem; padding: .35rem .7rem; font-size: .85rem; font-weight: 600; }
+[data-style="c"] h2 { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 700; font-size: 1.9rem; letter-spacing: -.02em; margin: 2.4rem 0 .6rem; }
+[data-style="c"] h2 .n { color: var(--acc); margin-right: .6rem; }
+[data-style="c"] h3 { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 600; font-size: 1.2rem; margin: 1.5rem 0 .5rem; }
+[data-style="c"] .keyidea { display: flex; gap: .9rem; align-items: flex-start; background: var(--surface); border: 2px solid var(--acc); border-radius: 1rem; padding: 1rem 1.2rem; box-shadow: 6px 6px 0 var(--acc-soft); margin: 1rem 0 1.3rem; }
+[data-style="c"] .keyidea .ic { display: grid; place-items: center; flex: none; width: 2.2rem; height: 2.2rem; border-radius: 50%; background: var(--acc); color: var(--surface); font-weight: 800; }
+[data-style="c"] .keyidea .t { display: block; font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 700; }
+[data-style="c"] ol.steps { padding-left: 1.2rem; } [data-style="c"] ol.steps li::marker { color: var(--acc); font-weight: 800; font-family: "Space Grotesk", system-ui, sans-serif; }
+[data-style="c"] .fig { background: var(--surface); border-radius: 1rem; padding: 1rem; border: 1px solid var(--line); }
+[data-style="c"] .fig figcaption { font-size: .85rem; color: var(--muted); }
+[data-style="c"] .bigo { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; margin: 1rem 0; }
+[data-style="c"] .bigo div { border-radius: 1rem; padding: 1rem; color: var(--ink); }
+[data-style="c"] .bigo div:nth-child(1) { background: var(--ok-soft); } [data-style="c"] .bigo div:nth-child(2) { background: var(--warn-soft); } [data-style="c"] .bigo div:nth-child(3) { background: var(--bad-soft); }
+[data-style="c"] .bigo b { display: block; font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; }
+[data-style="c"] .bigo .chip { background: none !important; padding: 0; font-size: 1.6rem; display: block; margin: .2rem 0; }
+[data-style="c"] .bigo span.w { font-size: .85rem; }
+[data-style="c"] table.sum { display: none; }
+[data-style="c"] pre { border-radius: .8rem; position: relative; padding-top: 2rem; }
+[data-style="c"] pre::before { content: "python"; position: absolute; top: .5rem; left: 1rem; font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+[data-style="c"] .q { background: var(--surface); border-radius: 1.2rem; padding: 1.4rem 1.5rem; margin-top: 2rem; border: 1px solid var(--line); }
+[data-style="c"] .qhead { display: flex; align-items: center; gap: .7rem; font-family: "Space Grotesk", system-ui, sans-serif; font-size: 1.15rem; font-weight: 700; margin-bottom: .8rem; }
+[data-style="c"] .qhead .num { background: var(--ink); color: var(--surface); border-radius: .6rem; padding: .2rem .6rem; }
+[data-style="c"] .qhead .dots { display: none; }
+[data-style="c"] .opts { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+@media (max-width: 40rem) { [data-style="c"] .opts { grid-template-columns: 1fr; } }
+[data-style="c"] .opt { margin: 0; border-width: 2px; border-radius: .9rem; padding: .9rem 1rem; }
+[data-style="c"] .opt:hover { transform: translateY(-1px); border-color: var(--acc); }
+
+[data-style="b"] .bigo, [data-style="cur"] .bigo { display: none; }
+[data-style="a"] table.sum, [data-style="c"] table.sum { display: none; }
+</style>
+</head>
+<body>
+<div class="bar" role="toolbar" aria-label="Mockup controls">
+  <b>Style</b>
+  <button data-set="style" data-v="cur">Current</button>
+  <button data-set="style" data-v="a">A. Study cards</button>
+  <button data-set="style" data-v="b">B. Textbook</button>
+  <button data-set="style" data-v="c">C. Bold</button>
+  <span class="sp"></span>
+  <b>Theme</b>
+  <button data-set="theme" data-v="light">Light</button>
+  <button data-set="theme" data-v="dark">Dark</button>
+</div>
+<p class="blurb" id="blurb"></p>
+
+<main class="page">
+  <header class="hero">
+    <span class="eyebrow">Explains Algorithms · Page 2</span>
+    <h1><span class="big" hidden>02</span>Searching</h1>
+    <p class="lead">Find a key in a list: check every item, or halve a sorted list until the key turns up.</p>
+    <ul class="learn">
+      <li>Trace linear search and binary search by hand</li>
+      <li>Say why binary search needs sorted input</li>
+      <li>Give each search's best, average, and worst case</li>
+    </ul>
+    <div class="meta"><span>⏱ 8 min read</span><span>✎ 7 questions</span><span>◔ 3 of 7 done</span></div>
+  </header>
+
+  <section class="card">
+    <h2><span class="n">2.2</span>Binary search</h2>
+    <aside class="note"><b>Remember</b>mid = (low + high) // 2 rounds down. Every trace in this guide uses that rule.</aside>
+    <p>Look at the middle of a <mark>sorted</mark> list. If the key is smaller, throw away the right half; if it's larger, throw away the left half. Each check halves what's left.</p>
+    <div class="keyidea"><span class="ic">!</span><div><span class="t">Key idea</span>Binary search only works on sorted data, and it never needs more than about log₂ n checks.</div></div>
+
+    <h3>The steps</h3>
+    <ol class="steps">
+      <li>Set <code>low</code> to the first index and <code>high</code> to the last.</li>
+      <li>Find <code>mid = (low + high) // 2</code> and compare the key with <code>items[mid]</code>.</li>
+      <li>Move <code>low</code> or <code>high</code> past <code>mid</code>, and repeat until they cross.</li>
+    </ol>
+
+    <figure class="fig">
+      <svg viewBox="0 0 560 110" width="100%" role="img" aria-label="Array of nine sorted values; the left half is faded, mid points at index 6">
+        <g>
+          <rect class="out" x="10" y="30" width="56" height="40" rx="6"/><rect class="out" x="70" y="30" width="56" height="40" rx="6"/><rect class="out" x="130" y="30" width="56" height="40" rx="6"/><rect class="out" x="190" y="30" width="56" height="40" rx="6"/><rect class="out" x="250" y="30" width="56" height="40" rx="6"/>
+          <rect class="cell" x="310" y="30" width="56" height="40" rx="6"/><rect class="hit" x="370" y="30" width="56" height="40" rx="6"/><rect class="cell" x="430" y="30" width="56" height="40" rx="6"/><rect class="cell" x="490" y="30" width="56" height="40" rx="6"/>
+          <text x="38" y="55" text-anchor="middle">3</text><text x="98" y="55" text-anchor="middle">8</text><text x="158" y="55" text-anchor="middle">12</text><text x="218" y="55" text-anchor="middle">19</text><text x="278" y="55" text-anchor="middle">27</text><text x="338" y="55" text-anchor="middle">35</text><text x="398" y="55" text-anchor="middle">44</text><text x="458" y="55" text-anchor="middle">51</text><text x="518" y="55" text-anchor="middle">63</text>
+          <text class="idx" x="38" y="86" text-anchor="middle">0</text><text class="idx" x="98" y="86" text-anchor="middle">1</text><text class="idx" x="158" y="86" text-anchor="middle">2</text><text class="idx" x="218" y="86" text-anchor="middle">3</text><text class="idx" x="278" y="86" text-anchor="middle">4</text><text class="idx" x="338" y="86" text-anchor="middle">5</text><text class="idx" x="398" y="86" text-anchor="middle">6</text><text class="idx" x="458" y="86" text-anchor="middle">7</text><text class="idx" x="518" y="86" text-anchor="middle">8</text>
+          <text class="mk" x="338" y="18" text-anchor="middle">low</text><text class="mk" x="398" y="18" text-anchor="middle">mid</text><text class="mk" x="518" y="18" text-anchor="middle">high</text>
+          <line class="ar" x1="398" y1="22" x2="398" y2="29"/><line class="ar" x1="338" y1="22" x2="338" y2="29"/><line class="ar" x1="518" y1="22" x2="518" y2="29"/>
+        </g>
+      </svg>
+      <figcaption>Second check for 51: the left half is gone, and mid = (5 + 8) // 2 = 6.</figcaption>
+    </figure>
+
+    <pre><span class="k">def</span> binary_search(items, key):
+    low, high = <span class="k">0</span>, len(items) - <span class="k">1</span>
+    <span class="k">while</span> low &lt;= high:
+        mid = (low + high) // <span class="k">2</span>      <span class="c"># round down</span>
+        <span class="k">if</span> items[mid] == key: <span class="k">return</span> mid
+        <span class="k">if</span> items[mid] &lt; key: low = mid + <span class="k">1</span>
+        <span class="k">else</span>: high = mid - <span class="k">1</span>
+    <span class="k">return</span> -<span class="k">1</span></pre>
+
+    <h3>Big-O</h3>
+    <div class="bigo">
+      <div><b>Best</b><span class="chip g">O(1)</span><span class="w">Key is in the middle</span></div>
+      <div><b>Average</b><span class="chip y">O(log n)</span><span class="w">Halves each step</span></div>
+      <div><b>Worst</b><span class="chip y">O(log n)</span><span class="w">Key missing</span></div>
+    </div>
+    <table class="sum">
+      <thead><tr><th>Case</th><th>Big-O</th><th>When</th></tr></thead>
+      <tbody>
+        <tr><td>Best</td><td><span class="chip g">O(1)</span></td><td>The key is the first middle checked</td></tr>
+        <tr><td>Average</td><td><span class="chip y">O(log n)</span></td><td>Each check halves the range</td></tr>
+        <tr><td>Worst</td><td><span class="chip y">O(log n)</span></td><td>The key isn't there</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="q">
+    <div class="qhead"><span class="num">2.3</span>Binary search for 70 in a sorted 15-item list <span class="dots" aria-hidden="true"><i class="on"></i><i></i></span></div>
+    <p>What is the largest number of items binary search compares before it stops?</p>
+    <div class="opts">
+      <button class="opt"><span class="l">A</span>3</button>
+      <button class="opt right"><span class="l">B</span>4</button>
+      <button class="opt wrong"><span class="l">C</span>8</button>
+      <button class="opt"><span class="l">D</span>15</button>
+    </div>
+    <p class="verdict"><span class="tag">Not quite.</span> 15 → 7 → 3 → 1 is four checks. C is what you get if you halve only once.</p>
+  </div>
+</main>
+
+<script>
+var BLURBS = {
+  cur: "Current: an approximation of today's page, with stock Material spacing, plain headings, plain tables, and question options in a list.",
+  a: "A. Study cards: each page opens with a header card listing what you'll learn, and each section sits on its own card. Key ideas, numbered steps, and best/average/worst Big-O tiles stand out. The competency color (indigo for Explains Algorithms) runs through the page. Question cards show part progress.",
+  b: "B. Textbook: a calm reading column with serif headings and pull-quote key ideas. Margin notes hold reminders, and key terms get a highlighter mark. Tables use book-style rules, and answer options are a ruled list. The look is the quietest of the three, built for long reading.",
+  c: "C. Bold: a full-color competency banner with reading time and progress, large headings, and an outlined key-idea box. Big-O tiles are colored green, amber, or red by case, code blocks get a language tab, and answer options form a 2×2 grid of big tap targets."
+};
+function set(kind, v) {
+  document.documentElement.setAttribute("data-" + kind, v);
+  document.querySelectorAll('[data-set="' + kind + '"]').forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.v === v); });
+  if (kind === "style") { document.getElementById("blurb").textContent = BLURBS[v]; document.querySelector("h1 .big").hidden = v !== "c"; }
+  try { localStorage.setItem("mock-" + kind, v); } catch (e) {}
+}
+document.querySelectorAll("[data-set]").forEach(function (b) { b.addEventListener("click", function () { set(b.dataset.set, b.dataset.v); }); });
+var st = "a", th = "light";
+try { st = localStorage.getItem("mock-style") || st; th = localStorage.getItem("mock-theme") || th; } catch (e) {}
+set("style", st); set("theme", th);
+</script>
+</body>
+</html>

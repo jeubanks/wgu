@@ -1,10 +1,19 @@
 # 10. Programming basics
 
-Types, operators, branching, loops, classes and memory, for the **Applies Algorithms** competency. After this page you'll be able to predict what an expression gives, read a class, and say when an object's memory is freed.
+Read and predict small programs: types, operators, branches, loops, classes, and memory.
+
+After this page you can:
+
+- Predict what a Python expression or short program gives
+- Read a class and follow references to its objects
+- Say how memory is allocated and when it's freed
 
 ## Data types
 
 A **data type** says what kind of value a variable holds. Java names the type; Python works it out from the value.
+
+> [!IMPORTANT]
+> **Key idea:** A type limits what a value can hold and what you can do with it, and languages differ in which types they offer.
 
 | Type | Holds | Java | Python |
 |---|---|---|---|
@@ -42,6 +51,9 @@ Python is dynamic and strong. Java is static and strong. JavaScript is dynamic a
 | `2 ** 5` | `32` | Power |
 
 **Precedence** decides which operator runs first without parentheses. Higher rows run first. Within a row, operators go left to right, except `**`, which goes right to left.
+
+> [!IMPORTANT]
+> **Key idea:** Settle which operator runs first before doing any arithmetic, since the order changes the answer.
 
 | Order | Operators |
 |---|---|
@@ -101,6 +113,9 @@ Only the **first** true branch runs, so 95 gets "A".
 
 A **class** is a blueprint, and each **object** made from it holds its own data.
 
+> [!IMPORTANT]
+> **Key idea:** A class is written once, and every object built from it keeps its own attributes while sharing the class's methods.
+
 ```python
 class Account:
     def __init__(self, owner, balance=0):   # constructor
@@ -122,6 +137,9 @@ acct.deposit(50)         # balance is now 50
 A variable holds a **reference** to an object, like an address, not the object itself. After `b = a`, both names refer to one object, so a change through `b` shows through `a`.
 
 ## Memory
+
+> [!IMPORTANT]
+> **Key idea:** Memory is reserved when an object is made, and the language decides whether you free it by hand or it is freed for you.
 
 - **Allocation** reserves memory for a new object: `new` in Java, and every object creation in Python.
 - A **pointer** stores a memory address (C: `int *p`). Java and Python use **references**, which point at objects without address arithmetic.

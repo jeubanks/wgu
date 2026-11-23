@@ -1,8 +1,17 @@
 # 1. Tracing code
 
-Tracing means running code by hand and writing down what every variable holds. It belongs to the **Explains Algorithms** competency. After this page you'll be able to read pseudocode and trace loops and recursive calls on a whiteboard.
+Tracing means running code by hand and writing down what every variable holds.
+
+After this page you can:
+
+- Read pseudocode loops, operators, and indentation correctly
+- Trace a loop with a variable table
+- Trace recursive calls with a call stack or call list
 
 ## Reading pseudocode
+
+> [!IMPORTANT]
+> **Key idea:** Before you trace anything, pin down exactly which values a loop covers, because pseudocode ranges include both ends.
 
 Pseudocode mostly reads like Python, with a few differences:
 
@@ -22,6 +31,9 @@ Pseudocode mostly reads like Python, with a few differences:
 ## The variable table
 
 Write one column per variable. Add a row each time the loop checks its condition, **including the last check, the one that fails**. Run the body one line at a time, updating a value the moment it changes.
+
+> [!IMPORTANT]
+> **Key idea:** A loop's condition is always checked one more time than its body runs, since the final check is the one that fails.
 
 ```
 total = 0
@@ -47,6 +59,9 @@ The output is 12. The body ran 3 times, but the condition was checked 4 times.
 ### Nested loops
 
 The inner loop starts over on every pass of the outer loop. Trace a block of rows under each outer value.
+
+> [!IMPORTANT]
+> **Key idea:** Trace one pass at a time: an inner loop restarts on every outer pass, `break` ends the whole loop, and `continue` ends only the current pass.
 
 ```
 for i from 1 to 2
@@ -82,6 +97,9 @@ n = 1 outputs 1. n = 2 is even, so `continue` skips its output. n = 3 outputs 3,
 ### Base case and recursive case
 
 A **recursive** function calls itself on a smaller input. The **base case** answers directly and stops the calls. The **recursive case** calls the function on a smaller input and uses the answer. Each call must get closer to the base case.
+
+> [!IMPORTANT]
+> **Key idea:** Calls pile up until one reaches the base case, then the answers flow back up, deepest call first.
 
 ```
 Factorial(n)

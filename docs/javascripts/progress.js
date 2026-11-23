@@ -110,8 +110,8 @@
       foldDone(sw.checked);
     });
     bar.append(sw, document.createTextNode(" Collapse completed exercises"));
-    var h1 = document.querySelector(".md-content h1");
-    if (h1) h1.after(bar); else firstCard.before(bar);
+    var h1 = document.querySelector(".md-content h1"), meta = document.querySelector(".md-content .wgu-hero .wgu-meta");
+    if (meta) meta.appendChild(bar); else if (h1) h1.after(bar); else firstCard.before(bar);
     if (foldOn) foldDone(true);
     openTarget();
     window.addEventListener("hashchange", openTarget);

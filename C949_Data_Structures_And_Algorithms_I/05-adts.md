@@ -1,6 +1,12 @@
 # 5. Abstract data types
 
-Part of the **Determines Data Structure Impact** competency. After this page you'll know each common ADT's rules and Python commands, what `pop()` removes from each, and how the structures compare.
+An abstract data type names what a collection does and leaves how it's stored to a data structure.
+
+After this page you can:
+
+- Tell a data type, data structure, and ADT apart
+- Use each common ADT's Python commands
+- Predict what `pop()` removes from each structure
 
 ## Data type, data structure, ADT
 
@@ -11,6 +17,9 @@ Part of the **Determines Data Structure Impact** competency. After this page you
 | **Abstract data type (ADT)** | Only behavior: which operations exist and what they promise | List, stack, queue, set, dictionary |
 
 An ADT is a contract: a stack promises "last in, first out" and says nothing about arrays or nodes. A data structure is one way to keep the promise. Swap the structure and code using the ADT still works, but its speed may change.
+
+> [!IMPORTANT]
+> **Key idea:** An ADT is the promise of what operations do, and a data structure is one way to keep that promise.
 
 ## The ADTs, one card each
 
@@ -81,6 +90,9 @@ An ADT is a contract: a stack promises "last in, first out" and says nothing abo
 
 Add 40, then 15, then 70 to each. The highlighted cell comes out next.
 
+> [!IMPORTANT]
+> **Key idea:** Each ADT is defined by which item it gives back next, so the same three adds can come out in different orders.
+
 <!-- figure
 title: After adding 40, then 15, then 70
 row: stack: s.pop() | 40 15 *70 | the newest, 70
@@ -111,6 +123,9 @@ The course study guide (in your course resources) names a linked list as the bas
 
 **Ordered**: items keep a reliable sequence. **Indexed**: you can jump to an item by position or key.
 
+> [!IMPORTANT]
+> **Key idea:** Being ordered and being indexed are separate properties, so check each one on its own for every structure.
+
 | Structure | Ordered? | Indexed? | Duplicates? | Shape | Insert | Delete | Search |
 |---|---|---|---|---|---|---|---|
 | Array (`list`) | Yes | Yes | Yes | Linear | O(1) end, O(n) middle | O(1) end, O(n) middle | O(n) |
@@ -133,6 +148,9 @@ Two common claims are wrong:
 ## Linear, hierarchical, and network structures
 
 **Linear** structures keep items in one line: each has at most one item before it and one after. Arrays, linked lists, stacks, queues, and deques are linear. Searching an unsorted one is O(n).
+
+> [!IMPORTANT]
+> **Key idea:** The shape comes from how items connect: a single line, one parent per node, or links to any number of others.
 
 **Hierarchical** structures are trees: one root, every other node has exactly one parent, and there are no cycles. BSTs and heaps are hierarchical. A balanced tree of n nodes is about log n levels tall, which is where O(log n) comes from.
 

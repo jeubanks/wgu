@@ -1,10 +1,19 @@
 # 9. Sets and graphs
 
-Part of *Determines Data Structure Impact*. You'll combine sets with Python's operators, describe graphs, pick an adjacency list or matrix, and trace BFS and DFS.
+Sets hold each item once; graphs join vertices with edges and are searched breadth-first or depth-first.
+
+After this page you can:
+
+- Combine sets with Python's set operators
+- Describe a graph and choose an adjacency list or matrix
+- Trace BFS and DFS from a start vertex
 
 ## Sets
 
 A **set** holds each item at most once, in no order, like a sign-in sheet where signing twice doesn't count twice. Adding a duplicate changes nothing, and {8, 3, 12} equals {12, 8, 3}. Python's `set` is a [hash table](07-hash-tables.md), so items must be hashable (not lists).
+
+> [!IMPORTANT]
+> **Key idea:** A set cares only about whether an item is in it, and each set operation builds a new set from two others.
 
 ```python
 s = {3, 1, 4}
@@ -39,6 +48,9 @@ S1 is a **subset** of S2 when every item of S1 is in S2 (`S1 <= S2`). Every set 
 ## Graphs
 
 A **graph** is a set of **vertices** joined by **edges**, like towns joined by roads.
+
+> [!IMPORTANT]
+> **Key idea:** A graph models connections, and making edges one-way or giving them costs changes what a path means.
 
 <!-- figure
 nodes: A 0 0, B 1 0, C 2 0, D 0 1, E 1 1
@@ -75,6 +87,9 @@ graph = {"A": ["B", "D"], "B": ["A", "C", "E"], "C": ["B", "E"],
          "D": ["A", "E"], "E": ["B", "C", "D"]}
 ```
 
+> [!IMPORTANT]
+> **Key idea:** A matrix answers "are these two joined?" in one step but spends space on every possible pair, while a list spends space only on edges that exist.
+
 An **adjacency matrix** is a V × V grid with a 1 where row X and column Y are joined:
 
 <!-- figure
@@ -101,6 +116,9 @@ Most graphs are **sparse** (few edges per vertex), so lists are usual. A matrix 
 ## BFS and DFS
 
 Both visit every vertex reachable from a start, tracking which are seen, taking neighbors alphabetically.
+
+> [!IMPORTANT]
+> **Key idea:** BFS finishes every vertex at one distance before going farther, while DFS goes as deep as it can before backing up.
 
 <div class="viz" data-viz="graph-search" markdown>
 

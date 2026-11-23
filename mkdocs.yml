@@ -25,6 +25,7 @@ exclude_docs: |
 extra_css:
   - stylesheets/wgu.css
   - stylesheets/viz.css
+  - stylesheets/cards.css
 
 # The SQL runner on D427 Part 1 and the quiz on Part 4
 # (hooks/sql_runner.py and hooks/quiz.py add their data to those pages).
@@ -45,6 +46,7 @@ hooks:
   - hooks/sql_runner.py
   - hooks/quiz.py
   - hooks/progress.py
+  - hooks/study_cards.py
   - hooks/page_footer.py
   - hooks/anchors.py
   - hooks/redirects.py
@@ -171,6 +173,16 @@ extra:
       old_slugs: [d949]
       # The v5 restructure renumbered every question, so saved progress starts fresh.
       storage: c949v5
+      # Study-card layout on the topic pages: header card, section cards, and
+      # one accent color per competency (hooks/study_cards.py).
+      cards:
+        pages: "[0-9][0-9]-*.md"
+        label: Page
+        groups:
+          explains: {title: Explains Algorithms, pages: [1, 2, 3, 4]}
+          impact: {title: Determines Data Structure Impact, pages: [5, 6, 7, 8, 9]}
+          applies: {title: Applies Algorithms, pages: [10]}
+          practice: {title: All competencies, pages: [11]}
       # The Python lessons moved under code/; old links redirect there.
       moved:
         exercises.md: code/README.md
