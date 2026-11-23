@@ -752,15 +752,16 @@
   function line(g, x1, y1, x2, y2) { el("line", { class: "ln", x1: x1, y1: y1, x2: x2, y2: y2 }, g); }
 
   function allocation(root) {
-    var g = figure(root, "Sequential vs linked allocation", "0 0 400 200", "An array as one block of adjacent cells with consecutive addresses, and a linked list as nodes scattered in memory joined by arrows");
+    var g = figure(root, "Sequential vs linked allocation", "0 0 400 210", "An array as one block of adjacent cells with consecutive addresses, and a linked list as nodes scattered in memory joined by arrows");
     var svg = g.ownerSVGElement, m = arrowMarker(svg, uid("al"), "var(--viz-ink)");
     txt(g, 10, 18, "Array: one block. Address of item i = start + i × size", { class: "vz-cap" });
     [3, 8, 5, 2, 9].forEach(function (v, i) { box(g, 10 + i * 56, 28, 56, 34, v, 15); txt(g, 38 + i * 56, 78, String(1000 + i * 4), { class: "vz-cap", "text-anchor": "middle" }); });
     txt(g, 10, 112, "Linked list: nodes anywhere, joined by pointers", { class: "vz-cap" });
-    var P = [[14, 128], [130, 158], [64, 172], [250, 126], [300, 166]];
+    // scattered, but in a zigzag so no box or arrow covers another
+    var P = [[10, 126], [96, 174], [182, 126], [262, 174], [346, 126]];
     [3, 8, 5, 2, 9].forEach(function (v, i) {
       box(g, P[i][0], P[i][1], 44, 24, v, 13);
-      if (i < 4) el("line", { x1: P[i][0] + 44, y1: P[i][1] + 12, x2: P[i + 1][0] - 2, y2: P[i + 1][1] + 12, stroke: "var(--viz-ink)", "stroke-width": 1.4, "marker-end": m }, g);
+      if (i < 4) el("line", { x1: P[i][0] + 44, y1: P[i][1] + 12, x2: P[i + 1][0] - 3, y2: P[i + 1][1] + 12, stroke: "var(--viz-ink)", "stroke-width": 1.4, "marker-end": m }, g);
     });
   }
   function huffman(root) {
@@ -774,16 +775,16 @@
     [["S", "code 0"], ["I", "code 11"], ["M", "code 100"], ["P", "code 101"]].forEach(function (c) { var n = N[c[0]]; txt(g, n[0], n[1] + 34, c[1], { class: "vz-cap", "text-anchor": "middle" }); });
   }
   function treeShapes(root) {
-    var g = figure(root, "Tree shapes", "0 0 400 175", "Three small binary trees labeled full, complete, and perfect");
-    [["Full", [[0, 0], [-1, 1], [1, 1], [-1.5, 2], [-0.5, 2]], [[0, 1], [0, 2], [1, 3], [1, 4]], "every node has 0 or 2 children"],
-     ["Complete", [[0, 0], [-1, 1], [1, 1], [-1.5, 2], [-0.5, 2], [0.5, 2]], [[0, 1], [0, 2], [1, 3], [1, 4], [2, 5]], "levels full; last fills from the left"],
-     ["Perfect", [[0, 0], [-1, 1], [1, 1], [-1.5, 2], [-0.5, 2], [0.5, 2], [1.5, 2]], [[0, 1], [0, 2], [1, 3], [1, 4], [2, 5], [2, 6]], "every level completely full"]
+    var g = figure(root, "Tree shapes", "0 0 400 188", "Three small binary trees labeled full, complete, and perfect");
+    [["Full", [[0, 0], [-1, 1], [1, 1], [-1.5, 2], [-0.5, 2]], [[0, 1], [0, 2], [1, 3], [1, 4]], ["every node has", "0 or 2 children"]],
+     ["Complete", [[0, 0], [-1, 1], [1, 1], [-1.5, 2], [-0.5, 2], [0.5, 2]], [[0, 1], [0, 2], [1, 3], [1, 4], [2, 5]], ["full levels; the last", "fills from the left"]],
+     ["Perfect", [[0, 0], [-1, 1], [1, 1], [-1.5, 2], [-0.5, 2], [0.5, 2], [1.5, 2]], [[0, 1], [0, 2], [1, 3], [1, 4], [2, 5], [2, 6]], ["every level", "completely full"]]
     ].forEach(function (s, k) {
       var cx = 66 + k * 134, pp = s[1].map(function (p) { return [cx + p[0] * 28, 22 + p[1] * 42]; });
       s[2].forEach(function (e) { line(g, pp[e[0]][0], pp[e[0]][1], pp[e[1]][0], pp[e[1]][1]); });
       pp.forEach(function (p) { el("circle", { class: "nd", cx: p[0], cy: p[1], r: 9 }, g); });
       txt(g, cx, 136, s[0], { class: "tx", "text-anchor": "middle", "font-size": 13 });
-      txt(g, cx, 154, s[3], { class: "vz-cap", "text-anchor": "middle", "font-size": 11 });
+      s[3].forEach(function (line2, j) { txt(g, cx, 154 + j * 14, line2, { class: "vz-cap", "text-anchor": "middle", "font-size": 11 }); });
     });
   }
 
@@ -1270,10 +1271,14 @@
     "10": function (s) { box(s, 80, 8, 60, 22, "20 40", 11); box(s, 14, 52, 50, 22, "5 12", 11); box(s, 85, 52, 50, 22, "25 31", 11); box(s, 156, 52, 50, 22, "47 60", 11); line(s, 90, 30, 39, 52); line(s, 110, 30, 110, 52); line(s, 130, 30, 181, 52); },
     "11": function (s) { [["1", 2], ["2", 4], ["3", 10], ["4", 20], ["5", 40], ["6", 70]].forEach(function (b, i) { el("rect", { x: 30 + i * 28, y: 78 - b[1], width: 18, height: b[1], rx: 2, fill: "var(--viz-c" + b[0] + ")" }, s); }); line(s, 24, 78, 200, 78); },
     "12": function (s) { txt(s, 20, 30, "for i in range(n):", { class: "tx", "font-size": 12 }); txt(s, 40, 50, "if x > m:", { class: "tx", "font-size": 12 }); txt(s, 60, 70, "m = x", { class: "tx", "font-size": 12 }); },
+    calls: function (s, m) { ["f(3)", "f(2)", "f(1)"].forEach(function (v, i) { var x = 40 + i * 52, y = 8 + i * 24; box(s, x, y, 52, 20, v, 11); if (i < 2) el("path", { d: "M" + (x + 14) + " " + (y + 20) + "V" + (y + 34) + "H" + (x + 50), fill: "none", stroke: "var(--viz-ink)", "stroke-width": 1.4, "marker-end": m }, s); }); },
+    search: function (s) { [4, 9, 15, 22, 31, 40, 52].forEach(function (v, i) { box(s, 12 + i * 28, 30, 28, 26, v, 11); }); el("rect", { x: 96, y: 30, width: 28, height: 26, rx: 5, fill: "none", stroke: "var(--viz-accent)", "stroke-width": 2.5 }, s); [["low", 26], ["mid", 110], ["high", 194]].forEach(function (t) { txt(s, t[1], 74, t[0], { class: t[0] === "mid" ? "acc" : "tx", "text-anchor": "middle", "font-size": 11 }); }); },
+    growth: function (s) { line(s, 20, 78, 200, 78); line(s, 20, 78, 20, 6); [["M20 76 L200 62", 3], ["M20 77 L200 44", 4], ["M20 78 Q140 76 176 8", 6]].forEach(function (d) { el("path", { d: d[0], fill: "none", stroke: "var(--viz-c" + d[1] + ")", "stroke-width": 2.5 }, s); }); },
+    quiz: function (s) { ["A", "B", "C", "D"].forEach(function (v, i) { var y = 6 + i * 19; el("rect", { class: "box", x: 40, y: y, width: 140, height: 15, rx: 7 }, s); txt(s, 52, y + 11.5, v, { class: i === 2 ? "acc" : "tx", "font-size": 10, "text-anchor": "middle" }); if (i === 2) txt(s, 168, y + 12, "✓", { class: "acc", "text-anchor": "middle", "font-size": 12 }); }); },
     "21": function (s) { var P = [[110, 14], [60, 44], [160, 44], [35, 74], [85, 74]]; [[0, 1], [0, 2], [1, 3], [1, 4]].forEach(function (e) { line(s, P[e[0]][0], P[e[0]][1], P[e[1]][0], P[e[1]][1]); }); ["f(4)", "f(3)", "f(2)", "f(2)", "f(1)"].forEach(function (v, i) { node(s, P[i][0], P[i][1], v, 15, 9); }); }
   };
   /* Topic page number -> the glyph that pictures it (pages follow the course study guide's competencies). */
-  var PAGE_GLYPH = { "01": "21", "02": "11", "03": "11", "04": "11", "05": "03", "06": "02", "07": "04", "08": "05", "09": "09", "10": "12", "11": "08" };
+  var PAGE_GLYPH = { "01": "calls", "02": "search", "03": "11", "04": "growth", "05": "03", "06": "02", "07": "04", "08": "05", "09": "09", "10": "12", "11": "quiz" };
   function chapterMap(root) {
     var items = Array.prototype.slice.call(root.querySelectorAll("li")).map(function (li) {
       var a = li.querySelector("a"); if (!a) return null;
@@ -1310,4 +1315,18 @@
     try { f(root); } catch (e) { if (window.console) console.error("viz " + root.getAttribute("data-viz"), e); }
   });
   chips();
+
+  /* Scroll hints: a drawing wider than its box scrolls sideways (phones). A soft
+     shadow on the edge that has more to show says so; it goes once you reach it. */
+  function scrollHints() {
+    var boxes = document.querySelectorAll(".md-typeset .viz-stage, .md-typeset .dsf, .md-typeset .viz-chart, .md-typeset .viz-figure");
+    function update(b) {
+      var more = b.scrollWidth - b.clientWidth > 4;
+      b.classList.toggle("sc-r", more && b.scrollLeft + b.clientWidth < b.scrollWidth - 4);
+      b.classList.toggle("sc-l", more && b.scrollLeft > 4);
+    }
+    boxes.forEach(function (b) { update(b); b.addEventListener("scroll", function () { update(b); }, { passive: true }); });
+    window.addEventListener("resize", function () { boxes.forEach(update); });
+  }
+  scrollHints();
 })();

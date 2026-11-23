@@ -281,7 +281,8 @@ def draw_tree(root, kind, levels=None):
     minx = min(pos[id(n)][0] - half[id(n)] - (_w(n.note, 11) + 6 if n.note else 0) for n, _ in nodes)
     maxx = max(pos[id(n)][0] + half[id(n)] + (_w(n.note, 11) + 6 if n.note else 0) for n, _ in nodes)
     depth = max(d for _, d in nodes)
-    top = 26
+    # a note beside the root sits above it, so leave room for it at the top
+    top = 26 + (8 if root.note else 0)
     note_w = max((_w(t, 12) for t in levels or []), default=0)
     W = maxx - minx + 2 * pad + (note_w + 24 if levels else 0)
     H = top + depth * dy + 26
@@ -499,9 +500,9 @@ def draw_array(values, steps):
         for i, names in marks.items():
             # one label per line, so two markers on the same cell don't run into a neighbor's
             for k, name in enumerate(names):
-                out.append(text(x0 + i * cw + cw / 2, y + 46 + 12 * k, name, "dsf-acc", size=11))
+                out.append(text(x0 + i * cw + cw / 2, y + 46 + 14 * k, name, "dsf-acc", size=11))
         desc.append(f"{lab}: low {lo}, high {hi}, mid {md} (value {values[md]})")
-        y += 62 + 12 * (max(len(v) for v in marks.values()) - 1)
+        y += 62 + 14 * (max(len(v) for v in marks.values()) - 1)
     label = f"Sorted array {', '.join(values)} at indexes 0 to {n - 1}. " + ". ".join(desc) + "."
     return x0 + n * cw + 10, y - 6, "".join(out), label
 
