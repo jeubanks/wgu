@@ -152,21 +152,63 @@ See the [appendix](beyond-the-guide.md): [Dijkstra](beyond-the-guide.md#dijkstra
 
 ## Questions
 
-- **9.1** P = {3, 5, 9, 11} and Q = {5, 11, 13}. Give each result in increasing order, separated by commas.
+- **9.1** P = {3, 5, 9, 11} and Q = {5, 11, 13}.
 
-  | Expression | Result |
-  |---|---|
-  | <code>P &#124; Q</code> | |
-  | `P & Q` | |
-  | `P - Q` | |
-  | `P ^ Q` | |
+  **a)** What is <code>P &#124; Q</code>?
 
-  <!-- answer:9.1a-d table: 3, 5, 9, 11, 13 | 3,5,9,11,13; 5, 11 | 5,11; 3, 9 | 3,9; 3, 9, 13 | 3,9,13 -->
+  A. {5, 11}
+
+  B. {3, 9, 13}
+
+  C. {3, 5, 5, 9, 11, 11, 13}
+
+  D. {3, 5, 9, 11, 13}
+
+  <!-- answer:9.1a choice: D -->
+
+  **b)** What is `P & Q`?
+
+  A. {3, 9, 13}
+
+  B. {5, 11}
+
+  C. {3, 5, 9, 11, 13}
+
+  D. {3, 9}
+
+  <!-- answer:9.1b choice: B -->
+
+  **c)** What is `P - Q`?
+
+  A. {3, 9}
+
+  B. {13}
+
+  C. {3, 9, 13}
+
+  D. {5, 11}
+
+  <!-- answer:9.1c choice: A -->
+
+  **d)** What is `P ^ Q`?
+
+  A. {3, 9}
+
+  B. {3, 5, 9, 11, 13}
+
+  C. {3, 9, 13}
+
+  D. {5, 11}
+
+  <!-- answer:9.1d choice: C -->
 
   <details>
   <summary>Answer</summary>
 
-  - Intersection is the shared 5 and 11. `P - Q` drops them from P; `P ^ Q` drops them from the union.
+  - **a)** **D.** Everything in either, each once. C keeps duplicates, which a set never holds.
+  - **b)** **B.** Only the items in both sets. A is the opposite: the items in exactly one set.
+  - **c)** **A.** P's items with the shared 5 and 11 dropped. B is `Q - P`; difference depends on order.
+  - **d)** **C.** Items in exactly one set: the union minus 5 and 11. A forgets Q's 13, which is `P - Q`.
 
   </details>
 
@@ -180,53 +222,69 @@ See the [appendix](beyond-the-guide.md): [Dijkstra](beyond-the-guide.md#dijkstra
 
   C. `s.remove(8)`
 
+  D. `len(s)`
+
   <!-- answer:9.2a choice: C -->
 
   **b)** What does `len({4, 4, 9, 9, 9})` return?
 
-  <!-- answer:9.2b blanks: 2 -->
+  A. 2
+
+  B. 5
+
+  C. 3
+
+  D. 1
+
+  <!-- answer:9.2b choice: A -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** **C.** `remove` raises `KeyError` on a missing item; `discard` doesn't.
-  - **b)** A set keeps one copy of each value, {4, 9}: **2**.
+  - **a)** **C.** `remove` raises `KeyError` on a missing item; B's `discard` doesn't, and A's duplicate is just ignored.
+  - **b)** **A.** A set keeps one copy of each value, {4, 9}: 2. B counts the duplicates.
 
   </details>
 
 - **9.3** Which is true?
 
-  A. Every graph has a root vertex.
+  A. Every graph has a root vertex, like a tree.
 
-  B. A graph can contain cycles; a tree is a connected graph without them.
+  B. A graph can never contain a cycle.
 
-  C. Graphs are hierarchical, like trees.
+  C. Graphs are hierarchical, with levels.
 
-  <!-- answer:9.3 choice: B -->
+  D. A tree is a connected graph with no cycles.
+
+  <!-- answer:9.3 choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - **B.** A graph is a network: no root, no levels, cycles allowed.
+  - **D.** A graph is a network: no root, no levels, cycles allowed. A tree is the special case that is connected and has no cycles.
 
   </details>
 
 - **9.4** A road map has 40,000 intersections, each with 3 or 4 roads. Which storage fits better?
 
-  A. Adjacency matrix: edge checks are O(1)
+  A. Matrix: 1.6 billion cells, but O(1) edge checks are worth it
 
-  B. Adjacency list: the graph is sparse, and a matrix needs 1.6 billion cells
+  B. List: about 80,000 edges, far fewer than 1.6 billion matrix cells
+
+  C. Matrix: with 3 or 4 roads each, the graph is dense
+
+  D. Either: both need about the same memory for this graph
 
   <!-- answer:9.4 choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - **B.** At most 80,000 edges is tiny next to 40,000² cells.
+  - **B.** At most 80,000 edges is tiny next to 40,000² cells, so the graph is sparse. A pays for 1.6 billion cells that are almost all empty.
 
   </details>
 
-- **9.5** Use this undirected graph. Take neighbors alphabetically; separate vertices with commas.
+- **9.5** Use this undirected graph. Take neighbors alphabetically.
 
   <!-- figure
   nodes: S 1 0, P 0 1, Q 1 1, R 2 1, T 0 2, U 2 2
@@ -243,26 +301,59 @@ See the [appendix](beyond-the-guide.md): [Dijkstra](beyond-the-guide.md#dijkstra
 
   **a)** The degree of Q?
 
-  <!-- answer:9.5a blanks: 3 -->
+  A. 2
+
+  B. 3
+
+  C. 4
+
+  D. 6
+
+  <!-- answer:9.5a choice: B -->
 
   **b)** Is it a tree?
 
-  <!-- answer:9.5b blanks: [Yes, No] => No -->
+  A. Yes: every vertex is connected
+
+  B. Yes: it has no cycles
+
+  C. No: P, Q, R, U, T form a cycle
+
+  D. No: S isn't connected
+
+  <!-- answer:9.5b choice: C -->
 
   **c)** BFS order from P?
 
-  <!-- answer:9.5c blanks: P, Q, T, R, S, U | P,Q,T,R,S,U -->
+  A. P, Q, T, R, S, U
+
+  B. P, Q, R, U, T, S
+
+  C. P, T, U, R, Q, S
+
+  D. P, Q, R, S, T, U
+
+  <!-- answer:9.5c choice: A -->
 
   **d)** Recursive DFS order from P?
 
-  <!-- answer:9.5d blanks: P, Q, R, U, T, S | P,Q,R,U,T,S -->
+  A. P, Q, T, R, S, U
+
+  B. P, Q, S, R, U, T
+
+  C. P, Q, R, S, T, U
+
+  D. P, Q, R, U, T, S
+
+  <!-- answer:9.5d choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** Q touches P, R, S: **3**. **b)** P → Q → R → U → T → P is a cycle, so **No**.
-  - **c)** P enqueues Q, T. Q enqueues R, S. T enqueues U. **P, Q, T, R, S, U**.
-  - **d)** P → Q → R → U → T, then back up to Q for S. **P, Q, R, U, T, S**.
+  - **a)** **B.** Q touches P, R and S. D counts every edge in the graph.
+  - **b)** **C.** P → Q → R → U → T → P is a cycle. It is connected, but A forgets that a tree also needs no cycles.
+  - **c)** **A.** P enqueues Q, T. Q enqueues R, S. T enqueues U. C pops from a stack instead of a queue; D just lists the vertices alphabetically.
+  - **d)** **D.** P → Q → R → U → T, then back up to Q for S. B takes Q's neighbors out of alphabetical order.
 
   </details>
 
@@ -285,7 +376,11 @@ See the [appendix](beyond-the-guide.md): [Dijkstra](beyond-the-guide.md#dijkstra
 
   A. BFS
 
-  B. DFS
+  B. Recursive DFS
+
+  C. DFS with a stack
+
+  D. Topological sort
 
   <!-- answer:9.6a choice: A -->
 
@@ -297,12 +392,14 @@ See the [appendix](beyond-the-guide.md): [Dijkstra](beyond-the-guide.md#dijkstra
 
   C. O(V²)
 
+  D. O(V · E)
+
   <!-- answer:9.6b choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** **A.** `append` plus `popleft` makes `todo` a queue.
-  - **b)** **B.** Each vertex is dequeued once and each list scanned once; `seen` makes each check O(1).
+  - **a)** **A.** `append` plus `popleft` makes `todo` a queue. C would pop from the same end it appends to.
+  - **b)** **B.** Each vertex is dequeued once and each list scanned once; `seen` makes each check O(1). C is the cost with an adjacency matrix.
 
   </details>

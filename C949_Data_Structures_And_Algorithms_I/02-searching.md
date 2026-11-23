@@ -113,16 +113,18 @@ Binary search with a smarter guess: it uses the key's value to estimate where it
 
   A. So the middle index can be computed with `//`
 
-  B. So one comparison with the middle item rules out a half
+  B. So the search can stop at the first match
 
-  C. So the search can stop at the first match
+  C. So one comparison with the middle item rules out a half
 
-  <!-- answer:2.1 choice: B -->
+  D. So the key is always close to the middle item
+
+  <!-- answer:2.1 choice: C -->
 
   <details>
   <summary>Answer</summary>
 
-  - **B.** Sorted, everything right of the middle is at least as big, so one comparison rules out a half.
+  - **C.** Sorted, everything right of the middle is at least as big, so one comparison rules out a half. B is true of linear search too, sorted or not.
 
   </details>
 
@@ -138,24 +140,48 @@ Binary search with a smarter guess: it uses the key's value to estimate where it
   ```
   <!-- /figure -->
 
-  **a)** Searching for 63, which values does `items[mid]` take, in order? Separate them with commas.
+  **a)** Searching for 63, which values does `items[mid]` take, in order?
 
-  <!-- answer:2.2a blanks: 30, 59, 63 | 30,59,63 -->
+  A. 30, 59, 63
+
+  B. 36, 63
+
+  C. 30, 44, 59, 63
+
+  D. 30, 8, 2
+
+  <!-- answer:2.2a choice: A -->
 
   **b)** Searching for 5, which values does `items[mid]` take?
 
-  <!-- answer:2.2b blanks: 30, 8, 2 | 30,8,2 -->
+  A. 30, 8
+
+  B. 36, 15, 8, 2
+
+  C. 30, 59, 63, 70
+
+  D. 30, 8, 2
+
+  <!-- answer:2.2b choice: D -->
 
   **c)** What does the search for 5 return?
 
-  <!-- answer:2.2c blanks: -1 | −1 -->
+  A. 0
+
+  B. −1
+
+  C. 1
+
+  D. 2
+
+  <!-- answer:2.2c choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** mid 4 (30): low = 5. mid 7 (59): low = 8. mid 8 (63): found.
-  - **b)** mid 4 (30): high = 3. mid 1 (8): high = 0. mid 0 (2): low = 1.
-  - **c)** low passed high: **−1**.
+  - **a)** **A.** mid 4 (30): low = 5. mid 7 (59): low = 8. mid 8 (63): found. B rounds mid up; C sets `low = mid` and forgets the +1; D moves the wrong end.
+  - **b)** **D.** mid 4 (30): high = 3. mid 1 (8): high = 0. mid 0 (2): low = 1. A stops before the last check, when low and high are both 0. C moves the wrong end.
+  - **c)** **B.** low passed high, so the key is missing: −1. C is where low ended, not a match.
 
   </details>
 
@@ -163,63 +189,124 @@ Binary search with a smarter guess: it uses the key's value to estimate where it
 
   **a)** What does searching for 3 return?
 
-  <!-- answer:2.3a blanks: 1 -->
+  A. 1
+
+  B. 2
+
+  C. 3
+
+  D. 4
+
+  <!-- answer:2.3a choice: A -->
 
   **b)** How many comparisons does searching for 6 make?
 
-  <!-- answer:2.3b blanks: 5 -->
+  A. 3
+
+  B. 4
+
+  C. 5
+
+  D. 6
+
+  <!-- answer:2.3b choice: C -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** **1**: it returns at the first match.
-  - **b)** **5**: 6 is missing, so every item is checked.
+  - **a)** **A.** It returns at the first match, index 1. C is the last match; B counts from 1.
+  - **b)** **C.** 6 is missing, so all 5 items are checked. B stops one item short.
 
   </details>
 
 - **2.4** At most how many comparisons does binary search make on 500 sorted items?
 
-  <!-- answer:2.4 blanks: 9 -->
+  A. 8
+
+  B. 9
+
+  C. 10
+
+  D. 250
+
+  <!-- answer:2.4 choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - 256 ≤ 500 < 512, so ⌊log₂ 500⌋ = 8, plus 1: **9**.
+  - **B.** 256 ≤ 500 < 512, so ⌊log₂ 500⌋ = 8, plus 1: 9. A forgets the +1; D is linear search's average.
 
   </details>
 
 - **2.5** Give the Big-O.
 
-  | Situation | Big-O |
-  |---|---|
-  | Linear search, key is first | |
-  | Linear search, key missing | |
-  | Binary search, key missing | |
+  **a)** Linear search, key is first:
 
-  <!-- answer:2.5a-c table [O(1), O(log n), O(n)]: O(1); O(n); O(log n) -->
+  A. O(1)
+
+  B. O(log n)
+
+  C. O(n)
+
+  D. O(n log n)
+
+  <!-- answer:2.5a choice: A -->
+
+  **b)** Linear search, key missing:
+
+  A. O(1)
+
+  B. O(log n)
+
+  C. O(n)
+
+  D. O(n log n)
+
+  <!-- answer:2.5b choice: C -->
+
+  **c)** Binary search, key missing:
+
+  A. O(1)
+
+  B. O(log n)
+
+  C. O(n)
+
+  D. O(n log n)
+
+  <!-- answer:2.5c choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - Linear: 1 comparison if the first item matches, n if missing. Binary halves the range until it's empty.
+  - **a)** **A.** One comparison if the first item matches.
+  - **b)** **C.** A missing key means checking all n.
+  - **c)** **B.** Binary search halves the range until it's empty. C is linear search's worst case, not binary's.
 
   </details>
 
-- **2.6** Which search fits?
+- **2.6** Which search fits each job?
 
-  | Job | Search |
+  | Job | Task |
   |---|---|
-  | One lookup in an unsorted list | |
-  | Many lookups in a large sorted Python list | |
-  | A lookup in a sorted linked list | |
+  | 1 | One lookup in an unsorted list |
+  | 2 | Many lookups in a large sorted Python list |
+  | 3 | A lookup in a sorted linked list |
 
-  <!-- answer:2.6a-c table [Linear, Binary]: Linear; Binary; Linear -->
+  A. 1 binary, 2 binary, 3 binary
+
+  B. 1 linear, 2 binary, 3 binary
+
+  C. 1 binary, 2 binary, 3 linear
+
+  D. 1 linear, 2 binary, 3 linear
+
+  <!-- answer:2.6 choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - Sorting first (O(n log n)) costs more than one O(n) scan.
-  - Binary search needs sorted data and O(1) index access; a linked list has no index.
+  - **D.** Sorting first (O(n log n)) costs more than one O(n) scan. Binary search needs sorted data and O(1) index access; a linked list has no index, which B misses.
 
   </details>
 
@@ -241,15 +328,17 @@ Binary search with a smarter guess: it uses the key's value to estimate where it
 
   A. Linear search, O(n)
 
-  B. Binary search, O(log n)
+  B. Binary search, O(n log n)
 
-  C. Binary search, O(n log n)
+  C. Binary search, O(n)
 
-  <!-- answer:2.7 choice: B -->
+  D. Binary search, O(log n)
+
+  <!-- answer:2.7 choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - **B.** A `lo`/`hi` range, a middle check, and one end moved past the middle: binary search, halving each pass.
+  - **D.** A `lo`/`hi` range, a middle check, and one end moved past the middle: binary search, halving each pass. C treats the `while` as running once per item.
 
   </details>

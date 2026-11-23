@@ -215,30 +215,68 @@ The same values get recomputed, and the tree nearly doubles each time n goes up 
 
 - **4.1** Simplify each count to a Big-O.
 
-  | Count | Big-O |
-  |---|---|
-  | 4n³ + 100n² + 7 | |
-  | 50n + 2000 | |
-  | 2ⁿ + n⁵ | |
-  | 8 log₂ n + 3 | |
+  **a)** 4n³ + 100n² + 7
 
-  <!-- answer:4.1a-d table [O(1), O(log n), O(n), O(n²), O(n³), O(2ⁿ)]: O(n³); O(n); O(2ⁿ); O(log n) -->
+  A. O(n²)
+
+  B. O(4n³)
+
+  C. O(n³)
+
+  D. O(n⁵)
+
+  <!-- answer:4.1a choice: C -->
+
+  **b)** 2ⁿ + n⁵
+
+  A. O(2ⁿ)
+
+  B. O(n⁵)
+
+  C. O(n⁵ · 2ⁿ)
+
+  D. O(n²)
+
+  <!-- answer:4.1b choice: A -->
+
+  **c)** 8 log₂ n + 3
+
+  A. O(1)
+
+  B. O(n)
+
+  C. O(8 log n)
+
+  D. O(log n)
+
+  <!-- answer:4.1c choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - Keep the fastest-growing term and drop its constant. An exponential outgrows any power of n, so 2ⁿ beats n⁵.
+  - Keep the fastest-growing term and drop its constant.
+  - **a)** **C, O(n³).** A keeps the term with the bigger coefficient; coefficients don't matter, powers do.
+  - **b)** **A, O(2ⁿ).** An exponential outgrows any power of n. B treats it like a polynomial; D misreads 2ⁿ as n².
+  - **c)** **D, O(log n).** C forgets to drop the 8.
 
   </details>
 
-- **4.2** Algorithm A takes 1000n steps. Algorithm B takes n² / 2 steps. For very large n, which one is faster?
+- **4.2** Algorithm A takes 1000n steps. Algorithm B takes n² / 2 steps. Which statement is true?
 
-  <!-- answer:4.2 blanks: [A, B] => A -->
+  A. B is always faster, because n² / 2 has the smaller constant
+
+  B. A is faster once n is past 2000
+
+  C. A is faster only while n is under 2000
+
+  D. They tie, because both constants get dropped
+
+  <!-- answer:4.2 choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - **A.** A is O(n) and B is O(n²). B wins only while n is under 2000; past that, n² pulls ahead.
+  - **B.** A is O(n) and B is O(n²). 1000n < n² / 2 exactly when n > 2000; past that, n² pulls ahead. C has the crossover backward.
 
   </details>
 
@@ -254,17 +292,33 @@ The same values get recomputed, and the tree nearly doubles each time n goes up 
 
   **a)** What is `count` at the end when n = 6?
 
-  <!-- answer:4.3a blanks: 8 -->
+  A. 6
+
+  B. 8
+
+  C. 9
+
+  D. 12
+
+  <!-- answer:4.3a choice: B -->
 
   **b)** What is the Big-O?
 
-  <!-- answer:4.3b blanks: [O(1), O(log n), O(n), O(n log n), O(n²)] => O(n) -->
+  A. O(n²)
+
+  B. O(n log n)
+
+  C. O(log n)
+
+  D. O(n)
+
+  <!-- answer:4.3b choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** The first loop adds 6. The second visits 0 and 3, adding 2. Total 8.
-  - **b)** **O(n).** Sequential blocks add: about n + n/3.
+  - **a)** **B, 8.** The first loop adds 6. The second visits 0 and 3, adding 2. C counts 6 too, but `range` stops before n.
+  - **b)** **D, O(n).** Sequential blocks add: about n + n/3. A multiplies them as if nested.
 
   </details>
 
@@ -279,17 +333,33 @@ The same values get recomputed, and the tree nearly doubles each time n goes up 
 
   **a)** What is `count` at the end when n = 5?
 
-  <!-- answer:4.4a blanks: 15 -->
+  A. 10
+
+  B. 15
+
+  C. 20
+
+  D. 25
+
+  <!-- answer:4.4a choice: B -->
 
   **b)** What is the Big-O?
 
-  <!-- answer:4.4b blanks: [O(1), O(log n), O(n), O(n log n), O(n²)] => O(n²) -->
+  A. O(n²)
+
+  B. O(n)
+
+  C. O(n log n)
+
+  D. O(log n)
+
+  <!-- answer:4.4b choice: A -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** For i = 0 to 4 the inner loop runs 5, 4, 3, 2, 1 times: 15.
-  - **b)** **O(n²).** n + (n − 1) + … + 1 = n(n + 1) / 2.
+  - **a)** **B, 15.** For i = 0 to 4 the inner loop runs 5, 4, 3, 2, 1 times. A is what `range(i + 1, n)` would give; D ignores that the inner loop shrinks.
+  - **b)** **A, O(n²).** n + (n − 1) + … + 1 = n(n + 1) / 2. The inner loop shrinks by one each time, not by half, so C doesn't apply.
 
   </details>
 
@@ -305,17 +375,33 @@ The same values get recomputed, and the tree nearly doubles each time n goes up 
 
   **a)** What is `count` at the end when n = 81?
 
-  <!-- answer:4.5a blanks: 4 -->
+  A. 4
+
+  B. 5
+
+  C. 27
+
+  D. 80
+
+  <!-- answer:4.5a choice: A -->
 
   **b)** What is the Big-O?
 
-  <!-- answer:4.5b blanks: [O(1), O(log n), O(n), O(n log n), O(n²)] => O(log n) -->
+  A. O(n)
+
+  B. O(1)
+
+  C. O(log n)
+
+  D. O(n log n)
+
+  <!-- answer:4.5b choice: C -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** i goes 1 → 3 → 9 → 27 → 81. The check `81 < 81` fails, so the loop ran 4 times.
-  - **b)** **O(log n).** Multiplying by a constant each pass gives log₃ n passes; the base doesn't matter.
+  - **a)** **A, 4.** i goes 1 → 3 → 9 → 27 → 81, and the check `81 < 81` fails. B is what `i <= n` would give.
+  - **b)** **C, O(log n).** Multiplying by a constant gives log₃ n passes; the base doesn't matter. A treats it like adding 3 each pass.
 
   </details>
 
@@ -329,27 +415,37 @@ The same values get recomputed, and the tree nearly doubles each time n goes up 
 
   **a)** With n items, what is the Big-O?
 
-  <!-- answer:4.6a blanks: [O(1), O(log n), O(n), O(n log n), O(n²)] => O(n²) -->
+  A. O(1)
+
+  B. O(n)
+
+  C. O(n log n)
+
+  D. O(n²)
+
+  <!-- answer:4.6a choice: D -->
 
   **b)** Which change makes the whole loop O(n)?
 
-  A. Make `items` a `collections.deque` and call `items.popleft()`
+  A. Sort `items` first
 
-  B. Sort `items` first
+  B. Replace the `while` with a `for` loop that calls `items.pop(0)`
 
-  C. Replace the `while` with a `for` loop that calls `items.pop(0)`
+  C. Make `items` a `collections.deque` and call `items.popleft()`
 
-  <!-- answer:4.6b choice: A -->
+  D. Replace `items.pop(0)` with `items.remove(items[0])`
+
+  <!-- answer:4.6b choice: C -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** **O(n²).** The loop runs n times, and each `pop(0)` shifts every remaining item: a hidden inner loop.
-  - **b)** **A.** `deque.popleft()` is O(1), so n of them cost O(n). B and C still call the O(n) `pop(0)`.
+  - **a)** **D, O(n²).** The loop runs n times, and each `pop(0)` shifts every remaining item: a hidden inner loop. B misses that hidden loop.
+  - **b)** **C.** `deque.popleft()` is O(1), so n of them cost O(n). D looks different, but `remove` searches and then shifts too.
 
   </details>
 
-- **4.7** Checking for a repeated value.
+- **4.7** Checking for a repeated value. What are its best and worst cases?
 
   ```python
   def has_repeat(items):
@@ -360,18 +456,21 @@ The same values get recomputed, and the tree nearly doubles each time n goes up 
       return False
   ```
 
-  | Case | Big-O |
-  |---|---|
-  | Best | |
-  | Worst | |
+  A. Best O(n), worst O(n²)
 
-  <!-- answer:4.7a-b table [O(1), O(log n), O(n), O(n²)]: O(1); O(n²) -->
+  B. Best O(1), worst O(n)
+
+  C. Best O(n²), worst O(n²)
+
+  D. Best O(1), worst O(n²)
+
+  <!-- answer:4.7 choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - **Best O(1):** the first two items match, so it returns after one comparison.
-  - **Worst O(n²):** no value repeats, so it compares all n(n − 1) / 2 pairs.
+  - **D.** Best: the first two items match, so it returns after one comparison. Worst: no value repeats, so it compares all n(n − 1) / 2 pairs.
+  - A assumes the outer loop must finish once; the `return` can end it on the first pass.
 
   </details>
 
@@ -386,27 +485,51 @@ The same values get recomputed, and the tree nearly doubles each time n goes up 
 
   **a)** How many calls does `f(3)` make in all, counting itself?
 
-  <!-- answer:4.8a blanks: 7 -->
+  A. 3
+
+  B. 4
+
+  C. 7
+
+  D. 8
+
+  <!-- answer:4.8a choice: C -->
 
   **b)** What is the Big-O?
 
-  <!-- answer:4.8b blanks: [O(log n), O(n), O(n log n), O(n²), O(2ⁿ)] => O(2ⁿ) -->
+  A. O(2ⁿ)
+
+  B. O(n)
+
+  C. O(n log n)
+
+  D. O(n²)
+
+  <!-- answer:4.8b choice: A -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** One call to `f(3)`, two to `f(2)`, four to `f(1)`: 7.
-  - **b)** **O(2ⁿ).** The number of calls doubles at every level.
+  - **a)** **C, 7.** One call to `f(3)`, two to `f(2)`, four to `f(1)`. B counts only the bottom level; A one call per level.
+  - **b)** **A, O(2ⁿ).** The calls double at every level. C is merge sort's shape, but its calls work on n / 2, not n − 1.
 
   </details>
 
 - **4.9** For each of n names, a function binary-searches a sorted list of n names. What is its worst-case Big-O?
 
-  <!-- answer:4.9 blanks: [O(log n), O(n), O(n log n), O(n²)] => O(n log n) -->
+  A. O(log n)
+
+  B. O(n log n)
+
+  C. O(n)
+
+  D. O(n²)
+
+  <!-- answer:4.9 choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - **O(n log n).** n searches, each O(log n). Nested work multiplies.
+  - **B, O(n log n).** n searches, each O(log n): nested work multiplies. D treats each search as a linear scan.
 
   </details>

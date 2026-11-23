@@ -269,44 +269,95 @@ For a max-heap, push `-x` and negate what comes out.
   ```
   <!-- /figure -->
 
-  | Question | Answer |
-  |---|---|
-  | The root | |
-  | How many leaves | |
-  | The tree's height | |
-  | The depth of 40 | |
-  | Is it complete? (yes or no) | |
+  **a)** What is the tree's height?
 
-  <!-- answer:8.1a-e table: 50; 3; 3; 2; no -->
+  A. 2
+
+  B. 3
+
+  C. 4
+
+  D. 7
+
+  <!-- answer:8.1a choice: B -->
+
+  **b)** Which nodes are the leaves?
+
+  A. 10
+
+  B. 20, 40, 80
+
+  C. 10, 20, 40, 70, 80
+
+  D. 10, 40, 80
+
+  <!-- answer:8.1b choice: D -->
+
+  **c)** Which describes its shape?
+
+  A. Neither full nor complete
+
+  B. Full, but not complete
+
+  C. Complete, but not full
+
+  D. Both full and complete
+
+  <!-- answer:8.1c choice: A -->
 
   <details>
   <summary>Answer</summary>
 
-  - Root **50**; leaves 10, 40, 80: **3**. Longest path 50 → 30 → 20 → 10: **3** edges. 40 is **2** down.
-  - **No:** level 2 has a gap where 70's left child would be, yet 10 sits on a level below it.
+  - **a)** **B, 3.** The longest path, 50 → 30 → 20 → 10, has 3 edges. C counts its 4 nodes instead.
+  - **b)** **D.** 10, 40 and 80 have no children. B lists level 2, but 20 still has a child; C adds 20 and 70, which have one child each.
+  - **c)** **A.** 20 and 70 each have one child, so it isn't full. Level 2 has a gap where 70's left child would be, yet 10 sits below it, so it isn't complete.
 
   </details>
 
-- **8.2** Traversals of the 8.1 tree. Separate keys with commas.
+- **8.2** Traversals of the 8.1 tree.
 
-  **a)** Preorder
+  **a)** Preorder?
 
-  <!-- answer:8.2a blanks: 50, 30, 20, 10, 40, 70, 80 | 50,30,20,10,40,70,80 -->
+  A. 50, 30, 70, 20, 40, 80, 10
 
-  **b)** Postorder
+  B. 10, 20, 30, 40, 50, 70, 80
 
-  <!-- answer:8.2b blanks: 10, 20, 40, 30, 80, 70, 50 | 10,20,40,30,80,70,50 -->
+  C. 50, 30, 20, 10, 40, 70, 80
 
-  **c)** Level-order
+  D. 50, 70, 80, 30, 40, 20, 10
 
-  <!-- answer:8.2c blanks: 50, 30, 70, 20, 40, 80, 10 | 50,30,70,20,40,80,10 -->
+  <!-- answer:8.2a choice: C -->
+
+  **b)** Postorder?
+
+  A. 10, 20, 40, 30, 80, 70, 50
+
+  B. 10, 80, 40, 20, 70, 30, 50
+
+  C. 10, 20, 30, 40, 50, 70, 80
+
+  D. 80, 70, 40, 10, 20, 30, 50
+
+  <!-- answer:8.2b choice: A -->
+
+  **c)** Level-order?
+
+  A. 50, 30, 20, 10, 40, 70, 80
+
+  B. 50, 70, 30, 80, 40, 20, 10
+
+  C. 50, 70, 80, 30, 40, 20, 10
+
+  D. 50, 30, 70, 20, 40, 80, 10
+
+  <!-- answer:8.2c choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** 50, then its left subtree, then its right.
-  - **b)** Left subtree, right subtree, then 50.
-  - **c)** Row by row: 50; 30, 70; 20, 40, 80; 10.
+  - **a)** **C.** 50, then its whole left subtree, then its right. D goes right before left; A is level-order.
+  - **b)** **A.** Left subtree, right subtree, then 50. D reverses preorder, which isn't the same thing; B is level-order read backward.
+  - **c)** **D.** Row by row with a queue: 50; 30, 70; 20, 40, 80; 10. C is what a stack gives; B reads each row right to left.
 
   </details>
 
@@ -314,54 +365,114 @@ For a max-heap, push `-x` and negate what comes out.
 
   **a)** Remove 30. Which key takes its place?
 
-  <!-- answer:8.3a blanks: 40 -->
+  A. 10
+
+  B. 40
+
+  C. 20
+
+  D. 50
+
+  <!-- answer:8.3a choice: B -->
 
   **b)** Remove 20. How many nodes are left in the tree?
 
-  <!-- answer:8.3b blanks: 6 -->
+  A. 4
+
+  B. 7
+
+  C. 6
+
+  D. 5
+
+  <!-- answer:8.3b choice: C -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** **40**, 30's successor: right once, and 40 has no left child.
-  - **b)** **6.** 20 has one child, so 30 links straight to 10. Only 20 is removed.
+  - **a)** **B, 40**, 30's successor: right once, and 40 has no left child. A goes left as far as possible without the step right first; C promotes the left child, which leaves 40 with nowhere to go.
+  - **b)** **C, 6.** 20 has one child, so 30 links straight to 10. D deletes 10 along with 20, but children are reattached.
 
   </details>
 
 - **8.4** A max-heap is stored as `90 70 85 30 60 50 80`, root at index 0.
 
-  | Question | Answer |
-  |---|---|
-  | Left child's index, from index 2 | |
-  | Right child's value, from index 2 | |
-  | Parent's index, from index 4 | |
-  | Left child's index from index 3, root at 1 | |
+  **a)** From index 2, what is the left child's index?
 
-  <!-- answer:8.4a-d table: 5; 80; 1; 6 -->
+  A. 3
+
+  B. 4
+
+  C. 6
+
+  D. 5
+
+  <!-- answer:8.4a choice: D -->
+
+  **b)** From index 4, what is the parent's index?
+
+  A. 1
+
+  B. 0
+
+  C. 2
+
+  D. 1.5
+
+  <!-- answer:8.4b choice: A -->
+
+  **c)** With the root at index 1 instead, what is the left child's index from index 3?
+
+  A. 4
+
+  B. 6
+
+  C. 7
+
+  D. 8
+
+  <!-- answer:8.4c choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - From 0: left child 2 × 2 + 1 = **5**; right child 6 holds **80**; parent (4 − 1) // 2 = **1**.
-  - From 1: left child 2 × 3 = **6**.
+  - **a)** **D.** 2 × 2 + 1 = 5. B uses the root-at-1 formula 2i; C is the right child.
+  - **b)** **A.** (4 − 1) // 2 = 1. D divides with `/`; C uses the root-at-1 formula i // 2.
+  - **c)** **B.** 2 × 3 = 6. C uses the root-at-0 formula 2i + 1.
 
   </details>
 
-- **8.5** Start from the 8.4 heap each time. Separate values with spaces.
+- **8.5** Start from the 8.4 heap each time.
 
   **a)** Insert 88. What is the array afterward?
 
-  <!-- answer:8.5a blanks: 90 88 85 70 60 50 80 30 | 90, 88, 85, 70, 60, 50, 80, 30 -->
+  A. 90 70 85 30 60 50 80 88
+
+  B. 90 70 85 88 60 50 80 30
+
+  C. 90 88 85 70 60 50 80 30
+
+  D. 90 88 85 80 70 60 50 30
+
+  <!-- answer:8.5a choice: C -->
 
   **b)** Remove the root. What is the array afterward?
 
-  <!-- answer:8.5b blanks: 85 70 80 30 60 50 | 85, 70, 80, 30, 60, 50 -->
+  A. 80 70 85 30 60 50
+
+  B. 70 85 30 60 50 80
+
+  C. 70 80 85 30 60 50
+
+  D. 85 70 80 30 60 50
+
+  <!-- answer:8.5b choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** 88 enters at index 7, swaps past 30 and 70, and stops under 90.
-  - **b)** 80 moves to the root, swaps with the larger child 85, then beats 50.
+  - **a)** **C.** 88 enters at index 7, swaps past 30 and 70, and stops under 90. B stops after one swap; D sorts the array, but a heap only orders parents over children.
+  - **b)** **D.** 80 moves to the root, swaps with the larger child 85, then beats 50. A never percolates down; B shifts everything left like `list.pop(0)`.
 
   </details>
 
@@ -375,32 +486,66 @@ For a max-heap, push `-x` and negate what comes out.
   print(heapq.heappop(h), heapq.heappop(h), h[0])
   ```
 
-  <!-- answer:8.6 blanks: 1 3 7 -->
+  A. `9 7 3`
+
+  B. `1 3 7`
+
+  C. `7 3 9`
+
+  D. `1 3 9`
+
+  <!-- answer:8.6 choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - `heapq` is a min-heap: pops give 1, then 3, and the smallest left, 7, is at `h[0]`.
+  - **B.** `heapq` is a min-heap: pops give 1, then 3, and the smallest left, 7, is at `h[0]`. A treats it as a max-heap; C as a first-in, first-out queue.
 
   </details>
 
 - **8.7** Pick the Big-O.
 
-  | Operation | Big-O |
-  |---|---|
-  | BST search, average | |
-  | BST search, keys inserted in sorted order | |
-  | Inorder traversal | |
-  | Max-heap insert, worst | |
-  | Read a max-heap's largest key | |
-  | Heapify n items | |
+  **a)** BST search, keys inserted in sorted order?
 
-  <!-- answer:8.7a-f table [O(1), O(log n), O(n), O(n log n)]: O(log n); O(n); O(n); O(log n); O(1); O(n) -->
+  A. O(n)
+
+  B. O(log n)
+
+  C. O(1)
+
+  D. O(n log n)
+
+  <!-- answer:8.7a choice: A -->
+
+  **b)** Max-heap insert, worst case?
+
+  A. O(1)
+
+  B. O(n)
+
+  C. O(log n)
+
+  D. O(n log n)
+
+  <!-- answer:8.7b choice: C -->
+
+  **c)** Heapify n items?
+
+  A. O(log n)
+
+  B. O(n log n)
+
+  C. O(n²)
+
+  D. O(n)
+
+  <!-- answer:8.7c choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - A random BST is about log n tall; sorted input makes a chain, n − 1 tall. A traversal visits all n nodes.
-  - Insert climbs at most the height; the max sits at index 0; heapify is O(n) since most nodes start low.
+  - **a)** **A.** Sorted input makes a chain, n − 1 tall. B is the average for random order.
+  - **b)** **C.** Insert climbs at most the height, about log n. A is the best case, with no swaps.
+  - **c)** **D.** Most nodes start near the bottom and sink only a little. B is what n separate inserts would cost.
 
   </details>

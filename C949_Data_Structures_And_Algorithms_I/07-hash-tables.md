@@ -102,55 +102,71 @@ A key must be **hashable**, meaning immutable: numbers, strings, tuples of those
 
 ## Questions
 
-- **7.1** Chaining. A table has 7 buckets, uses `key % 7`, and chains collisions.
+- **7.1** Chaining. A table has 7 buckets, uses `key % 7`, and chains collisions. Insert 15, 22, 9, 30 and 6.
 
-  **a)** Which bucket does each key go in?
+  **a)** Which buckets do the keys go in, in that order?
 
-  | Key | Bucket |
-  |---|---|
-  | 15 | |
-  | 22 | |
-  | 9 | |
-  | 30 | |
-  | 6 | |
+  A. 2, 2, 3, 3, 7
 
-  <!-- answer:7.1a-e table: 1; 1; 2; 2; 6 -->
+  B. 1, 1, 2, 2, 6
 
-  **b)** After all five are in, how many keys does a search for 22 compare against, at most?
+  C. 1, 2, 3, 4, 6
 
-  <!-- answer:7.1b blanks: 2 -->
+  D. 2, 3, 1, 4, 0
+
+  <!-- answer:7.1a choice: B -->
+
+  **b)** After all five are in, a search for 29 (not in the table) compares against how many keys?
+
+  A. 1
+
+  B. 0
+
+  C. 2
+
+  D. 5
+
+  <!-- answer:7.1b choice: C -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** 15 % 7 = 1, 22 % 7 = 1, 9 % 7 = 2, 30 % 7 = 2, 6 % 7 = 6.
-  - **b)** 2. Bucket 1 holds 15 and 22, and only bucket 1 is searched.
+  - **a)** **B.** Take each remainder: 15 % 7 = 1, 22 % 7 = 1, 9 % 7 = 2, 30 % 7 = 2, 6 % 7 = 6. D is the quotient (`//`) instead; C probes for a free bucket, which chaining never does.
+  - **b)** **C, 2.** 29 % 7 = 1, so only bucket 1's list, 15 and 22, is checked. D searches every key, as a plain list would.
 
   </details>
 
 - **7.2** Linear probing. A table has 10 buckets and probes `(key % 10 + i) % 10`. Insert 41, 21, 31, 5 and 11, in that order.
 
-  **a)** Which bucket does each key land in?
+  **a)** Which buckets do the keys land in, in that order?
 
-  | Key | Bucket |
-  |---|---|
-  | 41 | |
-  | 21 | |
-  | 31 | |
-  | 5 | |
-  | 11 | |
+  A. 1, 1, 1, 5, 1
 
-  <!-- answer:7.2a-e table: 1; 2; 3; 5; 4 -->
+  B. 4, 2, 3, 0, 1
+
+  C. 2, 3, 4, 6, 5
+
+  D. 1, 2, 3, 5, 4
+
+  <!-- answer:7.2a choice: D -->
 
   **b)** Now 21 is removed. How many buckets does a search for 11 look at?
 
-  <!-- answer:7.2b blanks: 4 -->
+  A. 4
+
+  B. 2
+
+  C. 3
+
+  D. 1
+
+  <!-- answer:7.2b choice: A -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** 41 → 1. 21 → 1 is taken, so 2. 31 → 1, 2 taken, so 3. 5 → 5. 11 → 1, 2, 3 are taken, so 4.
-  - **b)** 4: buckets 1, 2 (empty-after-removal, so keep going), 3, and 4.
+  - **a)** **D.** 41 → 1. 21 → 1 is taken, so 2. 31 → 3. 5 → 5. 11 → 1, 2, 3 are taken, so 4. C starts probing at i = 1, skipping the home bucket; A forgets that a bucket holds only one key.
+  - **b)** **A, 4:** buckets 1, 2 (empty-after-removal, so keep going), 3, and 4. B stops at bucket 2 as if it were never used, and misses 11.
 
   </details>
 
@@ -158,42 +174,93 @@ A key must be **hashable**, meaning immutable: numbers, strings, tuples of those
 
   **a)** A table uses `key % 101`. Which bucket does 7777 go in?
 
-  <!-- answer:7.3a blanks: 0 -->
+  A. 101
+
+  B. 77
+
+  C. 0
+
+  D. 76
+
+  <!-- answer:7.3a choice: C -->
 
   **b)** What does `print(-17 % 5)` show in Python?
 
-  <!-- answer:7.3b blanks: 3 -->
+  A. 3
+
+  B. -2
+
+  C. 2
+
+  D. -4
+
+  <!-- answer:7.3b choice: A -->
 
   **c)** What is the load factor of 12 items in 16 buckets?
 
-  <!-- answer:7.3c blanks: 0.75 | .75 | 3/4 -->
+  A. 0
+
+  B. 1.33
+
+  C. 0.25
+
+  D. 0.75
+
+  <!-- answer:7.3c choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** 7777 = 77 × 101 exactly, so **0**.
-  - **b)** **3**, since −17 = −4 × 5 + 3.
-  - **c)** 12 / 16 = **0.75**.
+  - **a)** **C, 0.** 7777 = 77 × 101 exactly. A subtracts 76 × 101 and stops, but 101 isn't a bucket in 0 to 100.
+  - **b)** **A, 3**, since −17 = −4 × 5 + 3. B is the remainder some other languages give; D is `-17 // 5`.
+  - **c)** **D.** 12 / 16 = 0.75. B divides buckets by items; A is `12 // 16`.
 
   </details>
 
 - **7.4** Pick the Big-O for n items.
 
-  | Operation | Big-O |
-  |---|---|
-  | Hash table search, average | |
-  | Hash table search, worst | |
-  | One resize | |
-  | `x in some_list` | |
-  | `x in some_set`, average | |
+  **a)** Hash table search, worst case?
 
-  <!-- answer:7.4a-e table [O(1), O(log n), O(n)]: O(1); O(n); O(n); O(n); O(1) -->
+  A. O(1)
+
+  B. O(n)
+
+  C. O(log n)
+
+  D. O(n log n)
+
+  <!-- answer:7.4a choice: B -->
+
+  **b)** One resize?
+
+  A. O(1)
+
+  B. O(log n)
+
+  C. O(n)
+
+  D. O(n²)
+
+  <!-- answer:7.4b choice: C -->
+
+  **c)** `x in some_list`, then `x in some_set` on average?
+
+  A. O(n), then O(1)
+
+  B. O(1), then O(1)
+
+  C. O(n), then O(n)
+
+  D. O(log n), then O(1)
+
+  <!-- answer:7.4c choice: A -->
 
   <details>
   <summary>Answer</summary>
 
-  - Hashing is O(1) on average, O(n) when every key collides. A resize rehashes all n items.
-  - A list is scanned item by item; a set hashes to one bucket.
+  - **a)** **B.** Every key can collide into one chain or cluster. A is the average case.
+  - **b)** **C.** A resize rehashes all n items. A confuses it with the average insert, which stays O(1) because resizes are rare.
+  - **c)** **A.** A list is scanned item by item; a set hashes to one bucket. D treats the list as if it were sorted and binary searched.
 
   </details>
 
@@ -209,41 +276,51 @@ A key must be **hashable**, meaning immutable: numbers, strings, tuples of those
   print(len(ages), ages["Ana"], ages.get("Bo", -1))
   ```
 
-  <!-- answer:7.5a blanks: 2 31 -1 -->
+  A. `3 31 -1`
+
+  B. `2 30 -1`
+
+  C. `2 31 None`
+
+  D. `2 31 -1`
+
+  <!-- answer:7.5a choice: D -->
 
   **b)** Which can't be a dict key?
 
   A. `(4, 5)`
 
-  B. `"id"`
+  B. `[4, 5]`
 
-  C. `[4, 5]`
+  C. `"id"`
 
-  <!-- answer:7.5b choice: C -->
+  D. `45`
+
+  <!-- answer:7.5b choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** **2 31 -1.** "Ana" is replaced, "Cy" added, "Bo" removed; `get` returns the default.
-  - **b)** **C.** A list can change, so it isn't hashable.
+  - **a)** **D.** "Ana" is replaced, "Cy" added, "Bo" removed, and `get` returns the default given. B keeps the old value, but assigning to an existing key replaces it.
+  - **b)** **B.** A list can change, so it isn't hashable. A tuple of numbers can't change, so A is fine.
 
   </details>
 
-- **7.6** Which structure fits each job best?
+- **7.6** Which structures fit these jobs best, in order: count how many times each word appears; track which usernames are taken; keep songs in play order, with repeats?
 
-  | Job | Structure |
-  |---|---|
-  | Count how many times each word appears | |
-  | Track which usernames are taken | |
-  | Keep songs in play order, with repeats | |
+  A. set, dict, list
 
-  <!-- answer:7.6a-c table [list, set, dict]: dict; set; list -->
+  B. list, set, dict
+
+  C. dict, set, list
+
+  D. dict, list, set
+
+  <!-- answer:7.6 choice: C -->
 
   <details>
   <summary>Answer</summary>
 
-  - Each word has a count: key-value pairs, a **dict**.
-  - Only membership matters: a **set**.
-  - Order and repeats matter: a **list**.
+  - **C.** Each word has a count: key-value pairs, a **dict**. Only membership matters for usernames: a **set**. Order and repeats matter for songs: a **list**. D would drop repeated songs.
 
   </details>

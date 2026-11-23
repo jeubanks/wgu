@@ -1,6 +1,6 @@
 # Practice quiz
 
-Each quiz is 10 new questions, built from random values every time. Check each answer as you go to see whether you got it right and why. Your score shows at the top, and **Start a new quiz** gives you a fresh set.
+Each quiz is 10 new multiple-choice questions, built from random values every time. The wrong choices are the answers common mistakes give, so pick carefully: you see right away whether you got it right and why. Your score shows at the top, and **Start a new quiz** gives you a fresh set.
 
 Use the topic boxes to focus on what you need. The questions follow the same conventions as the topic pages:
 

@@ -154,21 +154,50 @@ linked: head -> 4 -> 9 -> 2 -> None
 
 ## Questions
 
-- **10.1** Data types.
+- **10.1** Data types. Pick the Java type for each.
 
-  | Description | Java type |
-  |---|---|
-  | One letter, like `'Q'` | |
-  | A 64-bit decimal | |
-  | An 8-bit whole number | |
-  | true or false | |
+  **a)** A 64-bit decimal
 
-  <!-- answer:10.1a-d table [boolean, byte, int, char, float, double, String]: char; double; byte; boolean -->
+  A. `float`
+
+  B. `int`
+
+  C. `byte`
+
+  D. `double`
+
+  <!-- answer:10.1a choice: D -->
+
+  **b)** An 8-bit whole number
+
+  A. `byte`
+
+  B. `char`
+
+  C. `int`
+
+  D. `boolean`
+
+  <!-- answer:10.1b choice: A -->
+
+  **c)** One letter, like `'Q'`
+
+  A. `String`
+
+  B. `byte`
+
+  C. `char`
+
+  D. `int`
+
+  <!-- answer:10.1c choice: C -->
 
   <details>
   <summary>Answer</summary>
 
-  - `char`, then `double` (a `float` is only 32-bit), then `byte`, then `boolean`.
+  - **a)** **D, `double`.** A `float` is only 32-bit.
+  - **b)** **A, `byte`.** An `int` is 32-bit. B fits the C language, whose `char` is 8-bit; Java's is 16-bit.
+  - **c)** **C, `char`.** Single quotes mean one character in Java. A `String` uses double quotes.
 
   </details>
 
@@ -182,6 +211,8 @@ linked: head -> 4 -> 9 -> 2 -> None
 
   C. Weak typing
 
+  D. Strong typing
+
   <!-- answer:10.2a choice: B -->
 
   **b)** What does Python do with `"3" * 2 + 1`?
@@ -191,6 +222,8 @@ linked: head -> 4 -> 9 -> 2 -> None
   B. Gives "331"
 
   C. Raises a TypeError
+
+  D. Gives "33"
 
   <!-- answer:10.2b choice: C -->
 
@@ -204,23 +237,61 @@ linked: head -> 4 -> 9 -> 2 -> None
 
 - **10.3** What does each Python expression give?
 
-  | Expression | Value |
-  |---|---|
-  | `17 // 5` | |
-  | `17 % 5` | |
-  | `9 / 3` | |
-  | `-9 // 2` | |
-  | `2 + 3 * 4 % 5` | |
-  | `2 ** 3 ** 2` | |
+  **a)** `17 // 5` and `17 % 5`
 
-  <!-- answer:10.3a-f table: 3; 2; 3.0; -5; 4; 512 -->
+  A. `3.4` and `2`
+
+  B. `2` and `3`
+
+  C. `4` and `2`
+
+  D. `3` and `2`
+
+  <!-- answer:10.3a choice: D -->
+
+  **b)** `-9 // 2`
+
+  A. `-5`
+
+  B. `-4`
+
+  C. `-4.5`
+
+  D. `-5.0`
+
+  <!-- answer:10.3b choice: A -->
+
+  **c)** `2 + 3 * 4 % 5`
+
+  A. `0`
+
+  B. `4`
+
+  C. `14`
+
+  D. `2`
+
+  <!-- answer:10.3c choice: B -->
+
+  **d)** `2 ** 3 ** 2`
+
+  A. `64`
+
+  B. `12`
+
+  C. `512`
+
+  D. `18`
+
+  <!-- answer:10.3d choice: C -->
 
   <details>
   <summary>Answer</summary>
 
-  - 17 = 3 × 5 + 2, so **3** and **2**. `/` always gives a float: **3.0**. −4.5 rounds down to **−5**.
-  - `3 * 4` is 12, `12 % 5` is 2, `2 + 2` is **4**.
-  - `**` goes right to left: `2 ** 9` is **512**.
+  - **a)** **D.** 17 = 3 × 5 + 2. A is `/`, which gives `3.4`.
+  - **b)** **A, `-5`.** −4.5 rounds down, toward −∞. B rounds toward zero. Two ints give an int, not D.
+  - **c)** **B, `4`.** `3 * 4` is 12, `12 % 5` is 2, `2 + 2` is 4. A adds first: `(2 + 3) * 4 % 5`.
+  - **d)** **C, `512`.** `**` goes right to left: `2 ** 9`. A goes left to right: `8 ** 2`.
 
   </details>
 
@@ -237,9 +308,17 @@ linked: head -> 4 -> 9 -> 2 -> None
   print(x)
   ```
 
-  **a)** What does it print?
+  **a)** What happens?
 
-  <!-- answer:10.4a blanks: 107 -->
+  A. It prints 7.
+
+  B. It prints 70.
+
+  C. It raises a ZeroDivisionError.
+
+  D. It prints 107.
+
+  <!-- answer:10.4a choice: D -->
 
   **b)** Why doesn't `x / 0` raise an error?
 
@@ -249,12 +328,14 @@ linked: head -> 4 -> 9 -> 2 -> None
 
   C. Comparisons run before division.
 
+  D. Python returns infinity for `x / 0`.
+
   <!-- answer:10.4b choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** x becomes 7, and the `elif` is skipped, since only the first true branch runs. 7 % 2 is 1, so x becomes **107**.
+  - **a)** **D.** x becomes 7, and the `elif` is skipped, since only the first true branch runs. 7 % 2 is 1, so x becomes 107. B runs both branches.
   - **b)** **B.** Short-circuiting: the left side is True, so the right side never runs.
 
   </details>
@@ -269,7 +350,15 @@ linked: head -> 4 -> 9 -> 2 -> None
       n = n - 1
   ```
 
-  <!-- answer:10.5a blanks: 0 -->
+  A. 0
+
+  B. 1
+
+  C. 2
+
+  D. It never stops.
+
+  <!-- answer:10.5a choice: A -->
 
   **b)** Which loop always runs its body at least once?
 
@@ -279,18 +368,28 @@ linked: head -> 4 -> 9 -> 2 -> None
 
   C. A do-while, as in Java
 
+  D. A `for` loop over `range(0)`
+
   <!-- answer:10.5b choice: C -->
 
-  **c)** What values does `range(10, 2, -3)` give? Separate them with commas.
+  **c)** What values does `range(10, 2, -3)` give?
 
-  <!-- answer:10.5c blanks: 10, 7, 4 | 10,7,4 -->
+  A. 10, 7, 4, 1
+
+  B. 10, 7, 4
+
+  C. 7, 4, 1
+
+  D. 10, 7
+
+  <!-- answer:10.5c choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** **0.** `while` checks first, and `0 > 0` is False.
+  - **a)** **A.** `while` checks first, and `0 > 0` is False. B is a do-while.
   - **b)** **C.** It checks after the body.
-  - **c)** **10, 7, 4.** The next, 1, is past the stop.
+  - **c)** **B.** The next value, 1, is past the stop. A keeps going past it.
 
   </details>
 
@@ -313,7 +412,15 @@ linked: head -> 4 -> 9 -> 2 -> None
 
   **a)** What does it print?
 
-  <!-- answer:10.6a blanks: p.size => 6; r.size => 3 -->
+  A. `6 3`
+
+  B. `3 6`
+
+  C. `3 3`
+
+  D. `6 6`
+
+  <!-- answer:10.6a choice: A -->
 
   **b)** What runs when `Box(3)` is called?
 
@@ -323,13 +430,15 @@ linked: head -> 4 -> 9 -> 2 -> None
 
   C. Nothing until a method is called
 
+  D. A method named `Box`
+
   <!-- answer:10.6b choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** `q = p` copies the reference, so `q.grow()` doubles their one shared box: **6**. `r` is a separate box: **3**.
-  - **b)** **B.** Creating an object runs `__init__`.
+  - **a)** **A.** `q = p` copies the reference, so `q.grow()` doubles their one shared box: 6. `r` is a separate box: 3. C treats `q = p` as a copy.
+  - **b)** **B.** Creating an object runs `__init__`. D is Java's constructor.
 
   </details>
 
@@ -345,9 +454,13 @@ linked: head -> 4 -> 9 -> 2 -> None
 
   A. Yes: `del` frees the object.
 
-  B. No: `b` still refers to it, so its reference count is 1.
+  B. Yes: `b = a` made a copy, so the original has no references.
 
-  <!-- answer:10.7a choice: B -->
+  C. No: Python frees objects only when the program ends.
+
+  D. No: `b` still refers to it, so its reference count is 1.
+
+  <!-- answer:10.7a choice: D -->
 
   **b)** Which allocation reads item i in O(1)?
 
@@ -355,12 +468,16 @@ linked: head -> 4 -> 9 -> 2 -> None
 
   B. Linked
 
+  C. Both
+
+  D. Neither
+
   <!-- answer:10.7b choice: A -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** **B.** `del a` removes one reference. The list is freed when its count reaches 0.
+  - **a)** **D.** `del a` removes one reference. The list is freed when its count reaches 0. A confuses removing a name with freeing the object.
   - **b)** **A.** Side by side, the address is computed directly. Linked follows i pointers.
 
   </details>

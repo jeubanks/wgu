@@ -140,18 +140,43 @@ Two common claims are wrong:
 
 ## Questions
 
-- **5.1** Label each one a data type, a data structure, or an ADT.
+- **5.1** Data type, data structure, or ADT?
 
-  | Name | Kind |
-  |---|---|
-  | `str` | |
-  | Stack | |
-  | Hash table | |
-  | Dictionary | |
-  | Heap | |
-  | Priority queue | |
+  **a)** Which one is an ADT?
 
-  <!-- answer:5.1a-f table [Data type, Data structure, ADT]: Data type; ADT; Data structure; ADT; Data structure; ADT -->
+  A. Hash table
+
+  B. Heap
+
+  C. `str`
+
+  D. Dictionary
+
+  <!-- answer:5.1a choice: D -->
+
+  **b)** Which one is a data structure?
+
+  A. Stack
+
+  B. Heap
+
+  C. Priority queue
+
+  D. Dictionary
+
+  <!-- answer:5.1b choice: B -->
+
+  **c)** Which labels `str`, hash table, and stack, in that order?
+
+  A. Data type, data structure, ADT
+
+  B. Data type, ADT, data structure
+
+  C. Data structure, data structure, ADT
+
+  D. ADT, data structure, ADT
+
+  <!-- answer:5.1c choice: A -->
 
   <details>
   <summary>Answer</summary>
@@ -159,6 +184,9 @@ Two common claims are wrong:
   - `str` is a kind of value: a data type.
   - Stack, dictionary, and priority queue only promise behavior: ADTs.
   - A hash table and a heap are memory layouts: data structures.
+  - **a)** **D.** A is the structure Python builds a dictionary on, not the ADT itself.
+  - **b)** **B.** C is the ADT a heap usually builds; the names are easy to swap.
+  - **c)** **A.** B swaps the last two: the table is how it's stored, the stack is what it promises.
 
   </details>
 
@@ -174,17 +202,25 @@ Two common claims are wrong:
   print(s.pop(), s[-1])
   ```
 
-  <!-- answer:5.2 blanks: 1 3 | 1, 3 -->
+  A. `1 5`
+
+  B. `3 1`
+
+  C. `1 3`
+
+  D. `1 1`
+
+  <!-- answer:5.2 choice: C -->
 
   <details>
   <summary>Answer</summary>
 
-  - `[8, 3, 5]`, then `pop()` removes 5, the last item.
-  - Appending 1 gives `[8, 3, 1]`. `pop()` returns 1, leaving `[8, 3]`, so `s[-1]` is 3.
+  - **C.** `[8, 3, 5]`, then `pop()` removes 5, the last item. Appending 1 gives `[8, 3, 1]`. `pop()` returns 1, leaving `[8, 3]`, so `s[-1]` is 3.
+  - A forgets the first `pop()`. D reads `s[-1]` before the `pop()`, but arguments run left to right.
 
   </details>
 
-- **5.3** What does `d` hold at the end? Write the values left to right, separated by commas.
+- **5.3** What does `d` hold at the end, left to right?
 
   ```python
   from collections import deque
@@ -196,13 +232,21 @@ Two common claims are wrong:
   d.appendleft(1)
   ```
 
-  <!-- answer:5.3 blanks: 1, 6, 2, 9 | 1,6,2,9 -->
+  A. `6 2 9 1`
+
+  B. `1 6 2 9`
+
+  C. `1 2 9 7`
+
+  D. `2 9 4 1`
+
+  <!-- answer:5.3 choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - The two appends give `4 6 2 9 7`.
-  - `popleft()` removes 4 and `pop()` removes 7: `6 2 9`. Then `appendleft(1)`: `1 6 2 9`.
+  - **B.** The two appends give `4 6 2 9 7`. `popleft()` removes 4 and `pop()` removes 7: `6 2 9`. Then `appendleft(1)`: `1 6 2 9`.
+  - C treats `pop()` as taking from the left too; it takes from the right.
 
   </details>
 
@@ -220,59 +264,106 @@ Two common claims are wrong:
 
   What are `a` and `b`?
 
-  <!-- answer:5.4 blanks: a => 5; b => 12 -->
+  A. a = 12, b = 30
+
+  B. a = 30, b = 18
+
+  C. a = 18, b = 5
+
+  D. a = 5, b = 12
+
+  <!-- answer:5.4 choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - `heapq` is a min-heap, so `heappop` returns the smallest value left: 5, then 12.
+  - **D.** `heapq` is a min-heap, so `heappop` returns the smallest value left: 5, then 12.
+  - B is a max-heap's answer. A is arrival order, C newest first.
 
   </details>
 
 - **5.5** Pick the ADT that fits each job best.
 
-  | Job | ADT |
-  |---|---|
-  | Help-line calls, answered in arrival order | |
-  | Looking up a book's title by its ISBN | |
-  | The distinct ZIP codes in a day's orders | |
-  | An editor's Undo command | |
-  | Patients, treated most urgent first | |
-  | An (x, y) pair that must never change | |
-  | Raffle tickets in a drum, several per person | |
+  **a)** Help-line calls, answered in arrival order
 
-  <!-- answer:5.5a-g table [List, Tuple, Stack, Queue, Bag, Set, Priority queue, Dictionary]: Queue; Dictionary; Set; Stack; Priority queue; Tuple; Bag -->
+  A. Queue
+
+  B. Stack
+
+  C. Priority queue
+
+  D. Bag
+
+  <!-- answer:5.5a choice: A -->
+
+  **b)** An editor's Undo command
+
+  A. Queue
+
+  B. Set
+
+  C. Stack
+
+  D. Priority queue
+
+  <!-- answer:5.5b choice: C -->
+
+  **c)** Raffle tickets in a drum, several per person
+
+  A. Set
+
+  B. Tuple
+
+  C. Dictionary
+
+  D. Bag
+
+  <!-- answer:5.5c choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - Arrival order: **queue**. Newest first: **stack**. Most urgent first: **priority queue**.
-  - By key: **dictionary**. Unique, unordered: **set**. Unchangeable: **tuple**. Repeats, unordered: **bag**.
+  - **a)** **A.** Arrival order is first in, first out. B would answer the newest caller first.
+  - **b)** **C.** Undo reverses the most recent edit first. A would undo the oldest edit.
+  - **c)** **D.** No order, repeats allowed. A drops repeats, so each person would hold one ticket.
 
   </details>
 
-- **5.6** Label each structure's shape.
+- **5.6** Shapes.
 
-  | Structure | Shape |
-  |---|---|
-  | Doubly linked list | |
-  | Max-heap | |
-  | Cities joined by roads | |
-  | Deque | |
-  | Binary search tree | |
+  **a)** Which labels a doubly linked list, a max-heap, and cities joined by roads, in that order?
 
-  <!-- answer:5.6a-e table [Linear, Hierarchical, Network]: Linear; Hierarchical; Network; Linear; Hierarchical -->
+  A. Linear, linear, network
+
+  B. Linear, hierarchical, network
+
+  C. Linear, hierarchical, hierarchical
+
+  D. Hierarchical, hierarchical, network
+
+  <!-- answer:5.6a choice: B -->
+
+  **b)** Which one is not linear?
+
+  A. Deque
+
+  B. Stack
+
+  C. Binary search tree
+
+  D. Doubly linked list
+
+  <!-- answer:5.6b choice: C -->
 
   <details>
   <summary>Answer</summary>
 
-  - Lists and deques keep items in one line: linear.
-  - Heaps and BSTs are trees: hierarchical.
-  - Roads form a graph, with no root and loops allowed: network.
+  - **a)** **B.** A list keeps items in one line; a heap is a tree; roads form a graph, with no root and loops allowed. A goes by the heap's array storage, not its shape.
+  - **b)** **C.** A BST is a tree: hierarchical. D's two pointers per node still keep one line.
 
   </details>
 
-- **5.7** What does this print? Fill in each value.
+- **5.7** What does this print?
 
   ```python
   d = {"red": 1, "blue": 2}
@@ -282,36 +373,68 @@ Two common claims are wrong:
   print(d.get("blue", 0), len(d), d["red"])
   ```
 
-  <!-- answer:5.7 blanks: get => 0; len => 2; red value => 4 -->
+  A. `0 2 4`
+
+  B. `0 3 4`
+
+  C. `0 2 1`
+
+  D. `2 3 4`
+
+  <!-- answer:5.7 choice: A -->
 
   <details>
   <summary>Answer</summary>
 
-  - `d["red"] = 4` replaces the value; keys are unique.
-  - After `del`, the keys are "red" and "green": `len(d)` is 2.
-  - `get` returns its default, 0, for a missing key.
+  - **A.** `d["red"] = 4` replaces the value; keys are unique. After `del`, the keys are "red" and "green", so `len(d)` is 2. `get` returns its default, 0, for a missing key.
+  - B counts a second "red" key; C keeps the old value.
 
   </details>
 
-- **5.8** Pick the Big-O of each, for n items.
+- **5.8** Pick the Big-O, for n items.
 
-  | Operation | Big-O |
-  |---|---|
-  | `q.popleft()` on a `deque` | |
-  | `a.pop(0)` on a `list` | |
-  | `heapq.heappop(h)` | |
-  | `x in s` for a set, average case | |
-  | `x in a` for a list, worst case | |
-  | `d[k]` on a dict when every key collides | |
+  **a)** `a.pop(0)` on a `list`
 
-  <!-- answer:5.8a-f table [O(1), O(log n), O(n)]: O(1); O(n); O(log n); O(1); O(n); O(n) -->
+  A. O(1)
+
+  B. O(n)
+
+  C. O(log n)
+
+  D. O(n log n)
+
+  <!-- answer:5.8a choice: B -->
+
+  **b)** `heapq.heappop(h)`
+
+  A. O(log n)
+
+  B. O(1)
+
+  C. O(n)
+
+  D. O(n log n)
+
+  <!-- answer:5.8b choice: A -->
+
+  **c)** `d[k]` on a dict when every key collides
+
+  A. O(1)
+
+  B. O(log n)
+
+  C. O(n log n)
+
+  D. O(n)
+
+  <!-- answer:5.8c choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - `popleft` unlinks one end; `pop(0)` shifts every other item left.
-  - `heappop` sinks the new root one level at a time.
-  - Hashing goes straight to a bucket on average; if every key shares one bucket, a lookup checks them all. A list is checked item by item.
+  - **a)** **B.** `pop(0)` shifts every other item left. A is a `deque`'s `popleft()`.
+  - **b)** **A.** `heappop` sinks the new root one level at a time. B is the cost of peeking at `h[0]`, not of removing it.
+  - **c)** **D.** If every key shares one bucket, a lookup checks them all. A is the average case.
 
   </details>
 
@@ -326,7 +449,15 @@ Two common claims are wrong:
 
   **a)** What does it print?
 
-  <!-- answer:5.9a blanks: 3 -->
+  A. 5
+
+  B. 2
+
+  C. 3
+
+  D. 6
+
+  <!-- answer:5.9a choice: C -->
 
   **b)** What would `s.remove(9)` do in place of `s.discard(9)`?
 
@@ -336,12 +467,14 @@ Two common claims are wrong:
 
   C. Remove the last item added
 
+  D. Return `False` and leave the set unchanged
+
   <!-- answer:5.9b choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** The set holds one each of 2, 4, and 7. The `add` and `discard` change nothing.
-  - **b)** **B.** `remove` raises an error for a missing item; `discard` doesn't.
+  - **a)** **C.** The set holds one each of 2, 4, and 7. The `add` and `discard` change nothing. A counts the duplicates in the literal.
+  - **b)** **B.** `remove` raises an error for a missing item; `discard` doesn't. D is how some other languages report it.
 
   </details>

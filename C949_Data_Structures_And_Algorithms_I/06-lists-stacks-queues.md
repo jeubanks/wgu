@@ -155,21 +155,46 @@ Add and remove at the same end, and it acts as a stack; at opposite ends, a queu
 
   **a)** `a.insert(1, 15)` runs. How many items shift right?
 
-  <!-- answer:6.1a blanks: 4 -->
+  A. 1
+
+  B. 3
+
+  C. 4
+
+  D. 5
+
+  <!-- answer:6.1a choice: C -->
 
   **b)** What is the index of 40 now?
 
-  <!-- answer:6.1b blanks: 4 -->
+  A. 4
+
+  B. 3
+
+  C. 5
+
+  D. 2
+
+  <!-- answer:6.1b choice: A -->
 
   **c)** Another list's array has 8 slots, all full. When one more item is appended, how many items are copied to the new array?
 
-  <!-- answer:6.1c blanks: 8 -->
+  A. 1
+
+  B. 8
+
+  C. 9
+
+  D. 16
+
+  <!-- answer:6.1c choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** 20, 30, 40, and 50 shift right to open index 1, so 40 moves from index 3 to **b)** 4.
-  - **c)** All 8 are copied, then the new item goes in.
+  - **a)** **C.** 20, 30, 40, and 50 shift right to open index 1. D shifts 10 too, but it sits before the gap.
+  - **b)** **A.** 40 moves from index 3 to 4. B is its old index.
+  - **c)** **B.** All 8 are copied, then the new item goes in. C copies the new item too; D is the new array's size.
 
   </details>
 
@@ -180,59 +205,103 @@ Add and remove at the same end, and it acts as a stack; at opposite ends, a queu
   3. Remove the node holding 9
   4. Insert 6 after the node holding 1
 
-  **a)** What does the list hold, head to tail? Separate the values with commas.
+  **a)** What does the list hold, head to tail?
 
-  <!-- answer:6.2a blanks: 7, 4, 1, 6, 3 | 7,4,1,6,3 -->
+  A. `7 → 4 → 1 → 3 → 6`
+
+  B. `4 → 1 → 6 → 7 → 3`
+
+  C. `7 → 9 → 1 → 6 → 3`
+
+  D. `7 → 4 → 1 → 6 → 3`
+
+  <!-- answer:6.2a choice: D -->
 
   **b)** Which values are at the head and the tail?
 
-  <!-- answer:6.2b blanks: Head => 7; Tail => 3 -->
+  A. Head 7, tail 3
+
+  B. Head 7, tail 6
+
+  C. Head 4, tail 3
+
+  D. Head 7, tail 1
+
+  <!-- answer:6.2b choice: A -->
 
   <details>
   <summary>Answer</summary>
 
   - Steps 1 and 2: `7 → 4 → 9 → 1 → 3`. Step 3 points 4 past 9: `7 → 4 → 1 → 3`.
   - Step 4: `7 → 4 → 1 → 6 → 3`. Node 1 wasn't the tail, so `tail` stays at 3.
+  - **a)** **D.** A treats 1 as still the tail. C removes the node before 9 instead of 9.
+  - **b)** **A.** B moves `tail` after step 4, which is only right when inserting after the tail.
 
   </details>
 
-- **6.3** Pick the Big-O of each, for n items.
+- **6.3** Pick the Big-O, for n items.
 
-  | Operation | Big-O |
-  |---|---|
-  | Remove the tail of a singly linked list with a tail pointer | |
-  | Remove the tail of a doubly linked list | |
-  | Read the 50th item of a linked list | |
-  | `a[50]` on a Python list | |
-  | `a.insert(0, x)` on a Python list | |
-  | Prepend to a singly linked list | |
-  | `a.append(x)`, averaged over many appends | |
+  **a)** Removing the tail of a singly linked list with a tail pointer, and of a doubly linked list
 
-  <!-- answer:6.3a-g table [O(1), O(log n), O(n)]: O(n); O(1); O(n); O(1); O(n); O(1); O(1) -->
+  A. Singly O(1), doubly O(1)
+
+  B. Singly O(n), doubly O(1)
+
+  C. Singly O(1), doubly O(n)
+
+  D. Singly O(n), doubly O(n)
+
+  <!-- answer:6.3a choice: B -->
+
+  **b)** Reading the middle item of a linked list, and of a Python list
+
+  A. Linked O(1), Python list O(1)
+
+  B. Linked O(n), Python list O(n)
+
+  C. Linked O(n), Python list O(1)
+
+  D. Linked O(1), Python list O(n)
+
+  <!-- answer:6.3b choice: C -->
+
+  **c)** `a.append(x)` on a Python list, averaged over many appends
+
+  A. O(n)
+
+  B. O(log n)
+
+  C. O(n log n)
+
+  D. O(1)
+
+  <!-- answer:6.3c choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - Singly linked tail removal walks to the node before the tail; doubly linked has `prev`.
-  - A linked list follows pointers to reach an index; an array computes the address.
-  - `insert(0, x)` shifts every item. Prepend and amortized append are O(1).
+  - **a)** **B.** Singly linked tail removal walks to the node before the tail; doubly linked has `prev`. A assumes the tail pointer is enough, but the new tail is the node before it.
+  - **b)** **C.** A linked list follows pointers to reach an index; an array computes the address. B treats both as a walk.
+  - **c)** **D.** Resizes are rare, so their copying averages out to O(1) per append. A is the cost of the one append that resizes.
 
   </details>
 
-- **6.4** You insert `new` after node `cur` in a singly linked list. Which order is correct?
+- **6.4** You insert `new` after node `cur` in a singly linked list. Which is correct?
 
-  A. `cur.next = new`, then `new.next = cur.next`
+  A. `new.next = cur.next`, then `cur.next = new`
 
-  B. `new.next = cur.next`, then `cur.next = new`
+  B. `cur.next = new`, then `new.next = cur.next`
 
-  C. Either order works
+  C. `cur.next = new`, then `new.next = None`
 
-  <!-- answer:6.4 choice: B -->
+  D. Either order of A's two lines works
+
+  <!-- answer:6.4 choice: A -->
 
   <details>
   <summary>Answer</summary>
 
-  **B.** In A, `cur.next` is overwritten first, so `new.next = cur.next` points `new` at itself and the rest of the list is lost.
+  **A.** In B, `cur.next` is overwritten first, so `new.next = cur.next` points `new` at itself and the rest of the list is lost. C cuts the list off after `new`.
 
   </details>
 
@@ -249,19 +318,35 @@ Add and remove at the same end, and it acts as a stack; at opposite ends, a queu
   Peek()
   ```
 
-  **a)** What do the three Pops return, in order? Separate them with commas.
+  **a)** What do the three Pops return, in order?
 
-  <!-- answer:6.5a blanks: 1, 3, 8 | 1,3,8 -->
+  A. `6, 1, 8`
+
+  B. `1, 3, 8`
+
+  C. `1, 8, 3`
+
+  D. `3, 8, 1`
+
+  <!-- answer:6.5a choice: B -->
 
   **b)** What does Peek return?
 
-  <!-- answer:6.5b blanks: 6 -->
+  A. 1
+
+  B. 3
+
+  C. 6
+
+  D. 8
+
+  <!-- answer:6.5b choice: C -->
 
   <details>
   <summary>Answer</summary>
 
-  - After pushing 6 and 1, Pop returns **1**. Pushing 8 and 3 gives `6 8 3`; the Pops return **3**, then **8**.
-  - **b)** Only 6 is left.
+  - **a)** **B.** After pushing 6 and 1, Pop returns 1. Pushing 8 and 3 gives `6 8 3`; the Pops return 3, then 8. A treats it as a queue. D does all the pushes before any pops.
+  - **b)** **C.** Only 6 is left. D is the last value popped, which is gone.
 
   </details>
 
@@ -278,32 +363,41 @@ Add and remove at the same end, and it acts as a stack; at opposite ends, a queu
   print(q.popleft(), q[0])
   ```
 
-  <!-- answer:6.6 blanks: 2 9 | 2, 9 -->
+  A. `5 2`
+
+  B. `4 5`
+
+  C. `2 4`
+
+  D. `2 9`
+
+  <!-- answer:6.6 choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - The first `popleft()` removes 5, the oldest. The queue is `2 9 4`.
-  - `popleft()` returns 2, and the front is then 9.
+  - **D.** The first `popleft()` removes 5, the oldest. The queue is `2 9 4`. `popleft()` returns 2, and the front is then 9.
+  - C reads `q[0]` as the back; `q[0]` is the front.
 
   </details>
 
-- **6.7** Each row adds with the first call and removes with the second, on a `deque`. Does it behave as a stack or a queue?
+- **6.7** Each pair adds with the first call and removes with the second, on a `deque`. Which two pairs make it behave as a stack?
 
-  | Add / remove | Behaves as |
-  |---|---|
-  | `append` / `pop` | |
-  | `append` / `popleft` | |
-  | `appendleft` / `pop` | |
-  | `appendleft` / `popleft` | |
+  A. Only `append` / `pop`
 
-  <!-- answer:6.7a-d table [Stack, Queue]: Stack; Queue; Queue; Stack -->
+  B. `append` / `popleft` and `appendleft` / `pop`
+
+  C. `append` / `pop` and `appendleft` / `popleft`
+
+  D. `append` / `pop` and `append` / `popleft`
+
+  <!-- answer:6.7 choice: C -->
 
   <details>
   <summary>Answer</summary>
 
-  - Adding and removing at the same end gives the newest item back: a stack.
-  - Adding at one end and removing at the other gives the oldest back: a queue.
+  - **C.** Adding and removing at the same end gives the newest item back: a stack.
+  - B is the two queue pairs: adding at one end and removing at the other gives the oldest back. A misses that the left end works the same way.
 
   </details>
 
@@ -311,7 +405,15 @@ Add and remove at the same end, and it acts as a stack; at opposite ends, a queu
 
   **a)** How many pointers change when you insert a node between two others in a doubly linked list?
 
-  <!-- answer:6.8a blanks: 4 | four -->
+  A. 4
+
+  B. 2
+
+  C. 3
+
+  D. 6
+
+  <!-- answer:6.8a choice: A -->
 
   **b)** A loop walks a circular singly linked list from `head`. When does it stop?
 
@@ -321,12 +423,14 @@ Add and remove at the same end, and it acts as a stack; at opposite ends, a queu
 
   C. Never
 
+  D. When `cur` is `None`
+
   <!-- answer:6.8b choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** The new node's `next` and `prev`, the node before's `next`, and the node after's `prev`.
-  - **b)** **B.** No `next` is ever `None`, so checking for `None` would loop forever.
+  - **a)** **A.** The new node's `next` and `prev`, the node before's `next`, and the node after's `prev`. B is the singly linked count.
+  - **b)** **B.** No `next` is ever `None`, so A and D would loop forever.
 
   </details>

@@ -190,23 +190,33 @@ For more drills, see the [tracing lesson](code/07-tracing.md).
 
   **a)** How many times does the body of `for i from 2 to 9` run?
 
-  <!-- answer:1.1a blanks: 8 -->
+  A. 7
+
+  B. 8
+
+  C. 9
+
+  D. 10
+
+  <!-- answer:1.1a choice: B -->
 
   **b)** Which Python loop runs over the same values?
 
-  A. `for i in range(2, 9)`
+  A. `for i in range(1, 9)`
 
-  B. `for i in range(2, 10)`
+  B. `for i in range(2, 9)`
 
-  C. `for i in range(1, 9)`
+  C. `for i in range(1, 10)`
 
-  <!-- answer:1.1b choice: B -->
+  D. `for i in range(2, 10)`
+
+  <!-- answer:1.1b choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** 8: 2 through 9 with both ends is 9 − 2 + 1.
-  - **b)** **B.** `range` stops before its second number, so it needs 10 to include 9.
+  - **a)** **B. 8**: 2 through 9 with both ends is 9 − 2 + 1. A, 7, is 9 − 2 without the +1.
+  - **b)** **D.** `range` stops before its second number, so it needs 10 to include 9. B stops at 8.
 
   </details>
 
@@ -223,11 +233,27 @@ For more drills, see the [tracing lesson](code/07-tracing.md).
 
   **a)** What are a and b at the output?
 
-  <!-- answer:1.2a blanks: a => 27; b => 13 -->
+  A. a = 9, b = 4
+
+  B. a = 27, b = 39
+
+  C. a = 27, b = 13
+
+  D. a = 81, b = 40
+
+  <!-- answer:1.2a choice: C -->
 
   **b)** How many times is `a < 20` checked?
 
-  <!-- answer:1.2b blanks: 4 -->
+  A. 4
+
+  B. 3
+
+  C. 5
+
+  D. 2
+
+  <!-- answer:1.2b choice: A -->
 
   <details>
   <summary>Answer</summary>
@@ -239,8 +265,8 @@ For more drills, see the [tracing lesson](code/07-tracing.md).
   | 3 | 9: yes | 13 | 27 |
   | 4 | 27: no | | |
 
-  - **a)** a is **27** and b is **13**.
-  - **b)** **4**: three passes plus the check that fails.
+  - **a)** **C.** a is 27 and b is 13. B adds the new a to b, running the two body lines in the wrong order.
+  - **b)** **A. 4**: three passes plus the check that fails. B, 3, forgets that last check.
 
   </details>
 
@@ -252,19 +278,35 @@ For more drills, see the [tracing lesson](code/07-tracing.md).
         output j
   ```
 
-  **a)** What does it output, in order? Separate the values with commas.
+  **a)** What does it output, in order?
 
-  <!-- answer:1.3a blanks: 1, 1, 2, 1, 2, 3 | 1,1,2,1,2,3 -->
+  A. 1, 1, 2, 1, 2, 3
+
+  B. 1, 2, 3, 2, 3, 3
+
+  C. 1, 2, 2, 3, 3, 3
+
+  D. 1, 2, 3, 1, 2, 3
+
+  <!-- answer:1.3a choice: A -->
 
   **b)** How many times does `output j` run?
 
-  <!-- answer:1.3b blanks: 6 -->
+  A. 3
+
+  B. 6
+
+  C. 9
+
+  D. 10
+
+  <!-- answer:1.3b choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** i = 1 gives 1. i = 2 gives 1, 2. i = 3 gives 1, 2, 3: **1, 1, 2, 1, 2, 3**.
-  - **b)** 1 + 2 + 3 = **6**.
+  - **a)** **A.** i = 1 gives 1. i = 2 gives 1, 2. i = 3 gives 1, 2, 3. C outputs i instead of j.
+  - **b)** **B.** 1 + 2 + 3 = 6. C, 9, treats the inner loop as always running 3 times.
 
   </details>
 
@@ -281,13 +323,21 @@ For more drills, see the [tracing lesson](code/07-tracing.md).
   output total
   ```
 
-  <!-- answer:1.4 blanks: 19 -->
+  A. 12
+
+  B. 27
+
+  C. 28
+
+  D. 19
+
+  <!-- answer:1.4 choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - 3 and 6 are skipped. 1 + 2 + 4 + 5 + 7 = **19**.
-  - At k = 8, the `continue` test fails (8 % 3 is 2), and 8 > 7 breaks the loop.
+  - **D.** 3 and 6 are skipped: 1 + 2 + 4 + 5 + 7 = 19. At k = 8 the `continue` test fails (8 % 3 is 2), and 8 > 7 breaks the loop.
+  - B adds 8 before breaking. C forgets that `continue` skips 3 and 6.
 
   </details>
 
@@ -302,17 +352,33 @@ For more drills, see the [tracing lesson](code/07-tracing.md).
 
   **a)** What does `Bits(13)` return?
 
-  <!-- answer:1.5a blanks: 3 -->
+  A. 1
+
+  B. 2
+
+  C. 3
+
+  D. 4
+
+  <!-- answer:1.5a choice: C -->
 
   **b)** How many calls are made in all, counting the first?
 
-  <!-- answer:1.5b blanks: 4 -->
+  A. 4
+
+  B. 3
+
+  C. 5
+
+  D. 2
+
+  <!-- answer:1.5b choice: A -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** The calls are on 13, 6, 3, 1. `Bits(1)` returns 1, `Bits(3)` = 1 + 1 = 2, `Bits(6)` = 2 + 0 = 2, `Bits(13)` = 2 + 1 = **3**.
-  - **b)** **4** calls.
+  - **a)** **C. 3.** The calls are on 13, 6, 3, 1. `Bits(1)` returns 1, `Bits(3)` = 1 + 1 = 2, `Bits(6)` = 2 + 0 = 2, `Bits(13)` = 2 + 1 = 3. B drops the first call's `13 % 2`.
+  - **b)** **A. 4** calls. B, 3, leaves out the first.
 
   </details>
 
@@ -320,17 +386,33 @@ For more drills, see the [tracing lesson](code/07-tracing.md).
 
   **a)** What does `Fib(6)` return?
 
-  <!-- answer:1.6a blanks: 8 -->
+  A. 3
+
+  B. 5
+
+  C. 8
+
+  D. 13
+
+  <!-- answer:1.6a choice: C -->
 
   **b)** How many calls does `Fib(5)` make in all, counting the first?
 
-  <!-- answer:1.6b blanks: 15 -->
+  A. 15
+
+  B. 9
+
+  C. 25
+
+  D. 5
+
+  <!-- answer:1.6b choice: A -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** 0, 1, 1, 2, 3, 5, 8: F(6) is **8**.
-  - **b)** The calls for n are 1 plus the calls for n − 1 and n − 2. For n = 0 to 5: 1, 1, 3, 5, 9, **15**.
+  - **a)** **C.** 0, 1, 1, 2, 3, 5, 8: F(6) is 8. B is F(5) and D is F(7): the count started one off.
+  - **b)** **A.** The calls for n are 1 plus the calls for n − 1 and n − 2. For n = 0 to 5: 1, 1, 3, 5, 9, 15. D is the value of `Fib(5)`, not its calls.
 
   </details>
 
@@ -345,27 +427,37 @@ For more drills, see the [tracing lesson](code/07-tracing.md).
 
   **a)** Which call causes infinite recursion?
 
-  A. `Steps(7)`
+  A. Neither
 
-  B. `Steps(8)`
+  B. `Steps(7)`
 
-  C. Both
+  C. `Steps(8)`
 
-  <!-- answer:1.7a choice: B -->
+  D. Both
+
+  <!-- answer:1.7a choice: C -->
 
   **b)** What does `Steps(7)` return?
 
-  <!-- answer:1.7b blanks: 3 -->
+  A. 4
+
+  B. 3
+
+  C. 2
+
+  D. 0
+
+  <!-- answer:1.7b choice: B -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** **B.** 8, 6, 4, 2, 0, −2, ... stays even, so it never lands on 1. Python raises `RecursionError`.
-  - **b)** 7, 5, 3, 1: three calls each add 1, then the base case returns 0: **3**.
+  - **a)** **C.** 8, 6, 4, 2, 0, −2, ... stays even, so it never lands on 1. Python raises `RecursionError`. A assumes `n - 2` always reaches the base case.
+  - **b)** **B.** 7, 5, 3, 1: three calls each add 1, then the base case returns 0. A, 4, counts the calls instead.
 
   </details>
 
-- **1.8** Work after the call. What does `Show(3)` output, in order? Separate the values with commas.
+- **1.8** Work after the call. What does `Show(3)` output, in order?
 
   ```
   Show(n)
@@ -375,11 +467,19 @@ For more drills, see the [tracing lesson](code/07-tracing.md).
      output n
   ```
 
-  <!-- answer:1.8 blanks: 1, 2, 3 | 1,2,3 -->
+  A. 3, 2, 1
+
+  B. 0, 1, 2, 3
+
+  C. 3, 2, 1, 0
+
+  D. 1, 2, 3
+
+  <!-- answer:1.8 choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - The output comes after the recursive call, so it runs on the way back up, deepest call first: **1, 2, 3**.
+  - **D.** The output comes after the recursive call, so it runs on the way back up, deepest call first. A is the order if `output n` came before the call. B forgets the base case returns without output.
 
   </details>
