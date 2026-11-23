@@ -254,11 +254,9 @@ nav:
           - 9. Sets and graphs: c949/09-sets-graphs.md
       - "Applies Algorithms":
           - 10. Programming basics: c949/10-programming-basics.md
-      - Final practice: c949/11-final-practice.md
-      - Beyond the guide: c949/beyond-the-guide.md
-      - Practice quiz: c949/practice-quiz.md
-      - Topic map: c949/topics.md
-      - Big-O cheat sheet: c949/big-o.md
+      - Practice:
+          - Final practice: c949/11-final-practice.md
+          - Practice quiz: c949/practice-quiz.md
       - Practice in code:
           - Overview: c949/code/README.md
           - Lesson 1 – Big-O: c949/code/01-big-o.md
@@ -269,3 +267,7 @@ nav:
           - Lesson 6 – Graphs: c949/code/06-graphs.md
           - Lesson 7 – Tracing pseudocode: c949/code/07-tracing.md
           - Running the checks: c949/c949-practice/README.md
+      - Reference:
+          - Big-O cheat sheet: c949/big-o.md
+          - Beyond the guide: c949/beyond-the-guide.md
+          - Topic map: c949/topics.md
