@@ -38,6 +38,7 @@ Nothing here yet.
 
 ## Done
 
+- C949 menu: removed the duplicate top-level "Tracing pseudocode" entry. It opened the same page as Lesson 7 under Practice in code, and page 1 already links there (#75)
 - Card and color cleanup:
   - **Cards ran together.** D427 exercise cards no longer sit inside section cards. Each section heading is now a banner, and the exercise cards sit on the page with their colored edge.
   - **Colors didn't match between elements.** Header and section cards, the quiz box, callouts, exercise cards, figures, benches, and tables now use one set of light and dark surfaces. Drawings inside a section card are insets.

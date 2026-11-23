@@ -259,7 +259,6 @@ nav:
       - Practice quiz: c949/practice-quiz.md
       - Topic map: c949/topics.md
       - Big-O cheat sheet: c949/big-o.md
-      - Tracing pseudocode: c949/code/07-tracing.md
       - Practice in code:
           - Overview: c949/code/README.md
           - Lesson 1 – Big-O: c949/code/01-big-o.md
