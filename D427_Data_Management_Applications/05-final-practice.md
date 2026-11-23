@@ -4,6 +4,12 @@
 
 Do this part last, as a timed practice run.
 
+After this part you can:
+
+- Create and alter linked tables from a written spec
+- Insert, update, and delete rows across related tables
+- Join, group, and subquery data, then add views and indexes
+
 ## 14. Final practice
 
 > [!NOTE]

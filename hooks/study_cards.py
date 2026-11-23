@@ -15,6 +15,13 @@ matching `pages` gets:
       label: Page
       groups:                      # accent key -> title and page numbers
         explains: {title: Explains Algorithms, pages: [1, 2, 3, 4]}
+      badges: true                 # number badges on section headings (2.1, 2.2, ...)
+      reading: true                # "N min read" in the meta row
+      sections: false              # "N sections" in the meta row
+      noun: question               # what the meta row counts ("12 questions")
+
+A "← Back" link paragraph right after the title moves to the bottom of the
+header card, and an "**In this part:**" paragraph of links becomes jump chips.
 
 Pages stay plain Markdown, so GitHub shows the same content without cards.
 """
@@ -27,8 +34,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import courses  # noqa: E402
 
 H1 = re.compile(r"(<h1\b[^>]*>.*?</h1>)\s*", re.S)
+NAV = re.compile(r"\A<p>(?P<nav><a href=\"[^\"]*\">← .*?)</p>\s*", re.S)
+JUMP = re.compile(r"\A<p><strong>In this part:</strong>(?P<links>.*?)</p>\s*", re.S)
+LINK = re.compile(r"<a\b[^>]*>.*?</a>", re.S)
 LEAD = re.compile(r"\A<p>(?P<lead>.*?)</p>\s*", re.S)
-LEARN = re.compile(r"\A<p>After this page you can:</p>\s*<ul>(?P<items>.*?)</ul>\s*", re.S)
+LEARN = re.compile(r"\A<p>(?P<title>After this (?:page|part) you can:)</p>\s*<ul>(?P<items>.*?)</ul>\s*", re.S)
 H2 = re.compile(r"(?=<h2\b)")
 H2_OPEN = re.compile(r"<h2\b(?P<attrs>[^>]*)>")
 QUESTION = re.compile(r"^- \*\*\d+\.\d+\*\*", re.M)
@@ -78,28 +88,44 @@ def on_page_content(html, page, **kwargs):
     label = course.cards.get("label", "Page")
     eyebrow = " · ".join(x for x in (title or course.slug.upper(), f"{label} {number}" if number else "") if x)
 
+    nav = NAV.match(rest)
+    nav_html = ""
+    if nav:
+        nav_html = f'<p class="wgu-nav">{nav["nav"]}</p>'
+        rest = rest[nav.end():]
     lead = LEAD.match(rest)
     lead_html = ""
     if lead:
         lead_html = f'<p class="wgu-lead">{lead["lead"]}</p>'
         rest = rest[lead.end():]
-    learn = LEARN.match(rest)
-    learn_html = ""
-    if learn:
-        learn_html = ('<p class="wgu-learn-title">After this page you can:</p>'
-                      f'<ul class="wgu-learn">{learn["items"]}</ul>')
-        rest = rest[learn.end():]
+    # The learn list and the "In this part" links can come in either order.
+    jump_html = learn_html = ""
+    for _ in range(2):
+        jump = None if jump_html else JUMP.match(rest)
+        if jump:
+            links = "".join(LINK.findall(jump["links"]))
+            jump_html = f'<p class="wgu-learn-title">In this part</p><nav class="wgu-jump" aria-label="In this part">{links}</nav>'
+            rest = rest[jump.end():]
+        learn = None if learn_html else LEARN.match(rest)
+        if learn:
+            learn_html = (f'<p class="wgu-learn-title">{learn["title"]}</p>'
+                          f'<ul class="wgu-learn">{learn["items"]}</ul>')
+            rest = rest[learn.end():]
 
     words = len(TAGS.sub(" ", rest.split('<h2 id="questions"')[0]).split())
     minutes = max(1, round(words / 200))
     count = _questions.get(page.file.src_uri, 0)
-    meta = [f"{minutes} min read"]
+    noun = course.cards.get("noun", "question")
+    meta = [f"{minutes} min read"] if course.cards.get("reading", True) else []
+    sections = len(H2.findall(rest)) - (1 if '<h2 id="questions"' in rest else 0)
+    if course.cards.get("sections") and sections > 1:
+        meta.append(f"{sections} sections")
     if count:
-        meta.append(f"{count} question{'s' if count != 1 else ''}")
+        meta.append(f"{count} {noun}{'s' if count != 1 else ''}")
     meta_html = '<div class="wgu-meta">' + "".join(f"<span>{x}</span>" for x in meta) + "</div>"
 
     hero = (f'<header class="wgu-hero"><span class="wgu-eyebrow">{eyebrow}</span>'
-            f"{h1}{lead_html}{learn_html}{meta_html}</header>")
+            f"{h1}{lead_html}{learn_html}{jump_html}{meta_html}{nav_html}</header>")
 
     chunks = H2.split(rest)
     out, k = [chunks[0]], 0
@@ -108,7 +134,8 @@ def on_page_content(html, page, **kwargs):
             out.append(f'<section class="wgu-questions">{chunk}</section>')
             continue
         k += 1
-        badge = f'<span class="wgu-secnum" aria-hidden="true">{number}.{k}</span>' if number else ""
+        badge = (f'<span class="wgu-secnum" aria-hidden="true">{number}.{k}</span>'
+                 if number and course.cards.get("badges", True) else "")
         chunk = H2_OPEN.sub(lambda h: f"<h2{h['attrs']}>{badge}", chunk, count=1)
         out.append(f'<section class="wgu-card">{chunk}</section>')
 

@@ -214,7 +214,7 @@ C949 is a concise study guide first, organized by the course study guide's three
 - **Section cards:** one per `##` section, with a number badge. The Questions section isn't wrapped.
 - **Accent color:** each competency's group in `cards.groups` picks it.
 
-Start each topic page with `# N. Title`, then one lead sentence. Next comes the exact line `After this page you can:` and three verb-first bullets. On GitHub this reads as ordinary Markdown.
+Start each topic page with `# N. Title`, then one lead sentence. Next comes the exact line `After this page you can:` and three verb-first bullets. D427 parts use `After this part you can:`, placed before any `**In this part:**` line. On D427 that line becomes jump chips, and the "← Exercise index" line moves to the bottom of the header card. On GitHub this reads as ordinary Markdown.
 
 Every C949 question part is single-answer multiple choice (`choice`) with four options, A–D. Each wrong option is the answer a specific mistake gives (an off-by-one, the wrong traversal, stack vs queue, `/` vs `//`), all four share one format, and the correct letters are spread across A–D. The folded Answer names the letter, explains it, and says which slip leads to the most tempting wrong option. The practice quiz follows the same rule: each generator returns `wrong` answers from real mistakes, and `toChoice` fills to four. Its optional Python lessons live in `code/`, with their own `build_solutions.py` (in the course folder) instead of a `solutions.sql`. Each lesson page `code/0N-*.md` pairs with `c949-practice/lessonN.py` and `c949-practice/solutions/lessonN.py`:
 
