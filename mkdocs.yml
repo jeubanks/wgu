@@ -137,6 +137,20 @@ extra:
       progress:
         overview: exercises.md
         pages: "0[0-9]-*.md"
+      # Study-card layout on the parts (hooks/study_cards.py). Section titles
+      # already carry their numbers, so no badges.
+      cards:
+        pages: "0[0-9]-*.md"
+        label: Part
+        badges: false
+        reading: false
+        sections: true
+        noun: exercise
+        groups:
+          explains: {title: D427 Data Management, pages: [1]}
+          impact: {title: D427 Data Management, pages: [2]}
+          applies: {title: D427 Data Management, pages: [3]}
+          practice: {title: D427 Data Management, pages: [4, 5]}
       # Sample data for the ER diagrams, concept diagrams, and SQL runner.
       setup_sql: setup.sql
       # "Show tables" diagrams; the full diagram replaces the Mermaid block in readme.

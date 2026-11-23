@@ -4,9 +4,18 @@
 
 These sections only read data from the tables that `setup.sql` created, so you can redo any exercise at any time.
 
+After this part you can:
+
+- Write SELECT queries that filter, sort, and limit rows
+- Summarize groups with aggregates, GROUP BY, and HAVING
+- Combine tables with joins and subqueries
+
 **In this part:** [1. SELECT basics](#1-select-basics) · [2. Filtering](#2-filtering) · [3. Built-in functions](#3-built-in-functions) · [4. Aggregates, GROUP BY, HAVING](#4-aggregates-group-by-having) · [5. Joins](#5-joins) · [6. Subqueries](#6-subqueries)
 
 ## 1. SELECT basics
+
+> [!IMPORTANT]
+> **Key idea:** SELECT chooses the columns; the clauses after FROM decide which rows come back and in what order.
 
 ### Movie
 
@@ -156,6 +165,9 @@ These sections only read data from the tables that `setup.sql` created, so you c
 ---
 
 ## 2. Filtering
+
+> [!IMPORTANT]
+> **Key idea:** WHERE keeps only the rows whose condition is true, so a NULL or a negated condition can quietly drop rows.
 
 ### Movie
 
@@ -400,6 +412,9 @@ These sections only read data from the tables that `setup.sql` created, so you c
 ---
 
 ## 3. Built-in functions
+
+> [!IMPORTANT]
+> **Key idea:** A function in the SELECT list computes a new value for each row, and AS gives that column its name.
 
 ### Student
 
@@ -727,6 +742,9 @@ These sections only read data from the tables that `setup.sql` created, so you c
 
 ## 4. Aggregates, GROUP BY, HAVING
 
+> [!IMPORTANT]
+> **Key idea:** WHERE filters rows before grouping; HAVING filters the groups after GROUP BY.
+
 > [!NOTE]
 > **WHERE or HAVING?** Both clauses filter. The difference is *when* they filter.
 >
@@ -1025,6 +1043,9 @@ These sections only read data from the tables that `setup.sql` created, so you c
 ## 5. Joins
 
 A join puts rows from two tables side by side, wherever the ON condition matches. The kind of join decides what happens to a row that has **no** match. Here it is with two small made-up tables (they aren't in `setup.sql`): each driver's BusID points at a bus. Dana has no bus, and nobody drives the Green line.
+
+> [!IMPORTANT]
+> **Key idea:** The join type decides what happens to a row with no match: an inner join drops it, an outer join keeps it with NULLs.
 
 <!-- join-diagram
 table: Driver(DriverID, Name, BusID) = 1, Ana, 10; 2, Ben, 10; 3, Cruz, 20; 4, Dana, NULL
@@ -1403,6 +1424,9 @@ LEFT: With `Crew c LEFT JOIN Crew l`, every crew member stays. Rae's lead shows 
 ---
 
 ## 6. Subqueries
+
+> [!IMPORTANT]
+> **Key idea:** A subquery runs first and hands its result to the outer query, so write and test it on its own.
 
 ### Employee and Department
 

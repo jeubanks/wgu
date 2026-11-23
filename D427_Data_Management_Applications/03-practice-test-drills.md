@@ -4,6 +4,12 @@
 
 These drills come from the D427 practice tests and the D427 Challenge. They don't depend on Parts 1 and 2, so you can do them at any time.
 
+After this part you can:
+
+- Turn worded column specs into MySQL types and constraints
+- Pick inner, left, or right joins from the wording
+- Write practice-test-style queries that read and change data
+
 **In this part:** [11. Writing tables from a specification](#11-writing-tables-from-a-specification) · [12. Practice-test-style queries](#12-practice-test-style-queries)
 
 ## 11. Writing tables from a specification
@@ -12,6 +18,9 @@ These drills come from the D427 practice tests and the D427 Challenge. They don'
 > **This section needs MySQL.** These exercises create and change tables with MySQL types and constraints, in a second database. SQLite, which runs the Try it boxes elsewhere on this site, can't do that faithfully, so there are none here. Use MySQL from [Setup](README.md#setup): Docker, MySQL on your computer, or [DB Fiddle online](README.md#option-c-online-with-db-fiddle), with nothing to install.
 
 The D427 practice tests describe each column of a table in words, like *"integer with range 0 to 65 thousand, auto increment, primary key"*, and you turn that wording into the right data type and constraints. This section practices that step.
+
+> [!IMPORTANT]
+> **Key idea:** Pick the smallest type whose range covers the spec, and give each foreign key exactly its parent column's type.
 
 > [!TIP]
 > **Reading integer specs**
@@ -1382,6 +1391,9 @@ Run `USE d427;` when you finish the section. You can redo the section at any tim
 ## 12. Practice-test-style queries
 
 These exercises use the existing Book, YearSales, Passport, Visa, Compensation, and student_grades tables that `setup.sql` created in `d427`. You don't create any tables in this section. If `SHOW TABLES;` doesn't list them, your copy of the database is older than these exercises, so run `setup.sql` again.
+
+> [!IMPORTANT]
+> **Key idea:** Let the wording choose the join: "if available" or "regardless of whether" means an outer join, and neither means inner.
 
 ```
 YearSales(Year SMALLINT PK, TotalSales BIGINT UNSIGNED, Releases INT)
