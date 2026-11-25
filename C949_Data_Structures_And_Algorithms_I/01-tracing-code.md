@@ -101,6 +101,10 @@ A **recursive** function calls itself on a smaller input. The **base case** answ
 > [!IMPORTANT]
 > **Key idea:** Calls pile up until one reaches the base case, then the answers flow back up, deepest call first.
 
+**Example: factorial.** The factorial of a whole number multiplies it by every whole number below it, down to 1. The factorial of 3 is 3 * 2 * 1 = 6. The factorial of 1 is 1.
+
+Notice that 3 * 2 * 1 is 3 times the factorial of 2. So a function can find one factorial by asking for a smaller one:
+
 ```
 Factorial(n)
    if n <= 1
@@ -108,49 +112,73 @@ Factorial(n)
    return n * Factorial(n - 1)
 ```
 
+**n is the number in the parentheses when the function is called.** `Factorial(3)` runs this code with n = 3. Its last line then needs `Factorial(n - 1)`, which is `Factorial(2)`. That's a new call with its own n, equal to 2. The first call's n is still 3.
+
+- **Base case:** when n is 1 or less, return 1. No more calls.
+- **Recursive case:** otherwise, return n times the factorial of n − 1.
+
+### Tracing `Factorial(3)`
+
+**Going down**, each call stops at its last line, because it needs an answer from the next call:
+
+| Call | Its n | What it does |
+|---|---|---|
+| `Factorial(3)` | 3 | Needs 3 * `Factorial(2)`, so it calls `Factorial(2)` and waits |
+| `Factorial(2)` | 2 | Needs 2 * `Factorial(1)`, so it calls `Factorial(1)` and waits |
+| `Factorial(1)` | 1 | n is 1, the base case: returns 1 right away |
+
+**Coming back up**, each waiting call gets its answer, multiplies it by its own n, and returns:
+
+| Call | Its n | Answer it was waiting for | Returns |
+|---|---|---|---|
+| `Factorial(2)` | 2 | `Factorial(1)` = 1 | 2 * 1 = 2 |
+| `Factorial(3)` | 3 | `Factorial(2)` = 2 | 3 * 2 = 6 |
+
+So `Factorial(3)` is 6.
+
 ### The call stack
 
-Every call gets a **frame** holding its own n. A call waits for the call it made, so frames stack up and only the top one runs. While `Factorial(1)` runs, inside `Factorial(3)`:
+The computer keeps track of waiting calls in a **call stack**. Each call gets a **frame**, a box that holds its own n. A new call's frame goes on top, and only the top call runs. This is the stack at its tallest, while `Factorial(1)` runs. Read it from the bottom up, in the order the calls were made:
 
 <!-- figure
-frame: Factorial(1) | n = 1 | top: running, base case
-frame: Factorial(2) | n = 2 | waiting for Factorial(1)
-frame: Factorial(3) | n = 3 | waiting for Factorial(2)
-frame: the caller | |
+title: The call stack while Factorial(1) runs
+frame: Factorial(1) | n = 1 | running now: returns 1
+frame: Factorial(2) | n = 2 | waiting to compute 2 * Factorial(1)
+frame: Factorial(3) | n = 3 | waiting to compute 3 * Factorial(2)
 -->
 ```text
-Factorial(1)   n = 1   top: running, base case
-Factorial(2)   n = 2   waiting for Factorial(1)
-Factorial(3)   n = 3   waiting for Factorial(2)
-the caller
+Factorial(1)   n = 1   running now: returns 1
+Factorial(2)   n = 2   waiting to compute 2 * Factorial(1)
+Factorial(3)   n = 3   waiting to compute 3 * Factorial(2)
 ```
 <!-- /figure -->
 
-When the top frame returns, it's removed and the one below carries on. So code **before** the recursive call runs on the way down, and code **after** it runs on the way back up, deepest call first.
+When the top call returns, its frame is removed and the call below carries on with the answer. So code **before** the recursive call runs on the way down, and code **after** it runs on the way back up, deepest call first.
 
 ### The indented call list
 
-On a whiteboard, write each call indented under its caller. Go down to the base case, then fill in the returns from the bottom up.
+On a whiteboard, write each call on its own line, indented under the call that made it, with its n. Stop at the base case. Then fill in the returns from the bottom line up.
 
 <!-- figure
-call: Factorial(4) | | 4 * 6 = 24
-call: >Factorial(3) | | 3 * 2 = 6
-call: >>Factorial(2) | | 2 * 1 = 2
-call: >>>Factorial(1) | base case | 1
+title: Factorial(3): calls going down, answers coming back up
+call: Factorial(3) | n = 3 | 3 * 2 = 6
+call: >Factorial(2) | n = 2 | 2 * 1 = 2
+call: >>Factorial(1) | n = 1, base case | 1
 -->
 ```text
-Factorial(4)                 returns 4 * 6 = 24
-  Factorial(3)               returns 3 * 2 = 6
-    Factorial(2)             returns 2 * 1 = 2
-      Factorial(1)  base     returns 1
+Factorial(3)        n = 3              returns 3 * 2 = 6
+  Factorial(2)      n = 2              returns 2 * 1 = 2
+    Factorial(1)    n = 1, base case   returns 1
 ```
 <!-- /figure -->
 
-One call per level and n levels: O(n) time and O(n) frames.
+In each return, the first number is that call's n, and the second is the answer from the line below it.
+
+`Factorial(3)` makes 3 calls, and `Factorial(n)` makes n calls: O(n) time, and O(n) frames on the stack.
 
 ### Fibonacci: two calls per call
 
-The Fibonacci numbers start F(0) = 0 and F(1) = 1. Each later one is the sum of the two before: 0, 1, 1, 2, 3, 5, ...
+The Fibonacci numbers start F(0) = 0 and F(1) = 1. Each later one is the sum of the two before: 0, 1, 1, 2, 3, 5, ... Here n is the number's position, counting from 0, so `Fib(4)` is F(4), which is 3.
 
 ```
 Fib(n)
@@ -188,7 +216,7 @@ Drop(n)
    return Drop(n - 3)
 ```
 
-`Drop(6)` goes 6, 3, 0 and stops. `Drop(5)` goes 5, 2, −1, ... and jumps past 0 forever. Each call adds a frame, and running out of stack space is a **stack overflow**. Python stops at its recursion limit (usually 1000) and raises `RecursionError`. A base case of `if n <= 0` catches every path.
+Each call's n is 3 less than the one before. From `Drop(6)`, n goes 6, 3, 0 and stops. From `Drop(5)`, n goes 5, 2, −1, ... and jumps past 0 forever. Each call adds a frame, and running out of stack space is a **stack overflow**. Python stops at its recursion limit (usually 1000) and raises `RecursionError`. A base case of `if n <= 0` catches every path.
 
 ## Big-O summary
 
