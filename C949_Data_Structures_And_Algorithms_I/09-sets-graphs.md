@@ -230,9 +230,9 @@ See the [appendix](beyond-the-guide.md): [Dijkstra](beyond-the-guide.md#dijkstra
 
   </details>
 
-- **9.2** `s = {2, 6}`.
+- **9.2** Sets in Python.
 
-  **a)** Which line raises an error?
+  **a)** If `s = {2, 6}`, which of these lines raises an error?
 
   A. `s.add(2)`
 
@@ -264,7 +264,7 @@ See the [appendix](beyond-the-guide.md): [Dijkstra](beyond-the-guide.md#dijkstra
 
   </details>
 
-- **9.3** Which is true?
+- **9.3** Which statement about graphs and trees is true?
 
   A. Every graph has a root vertex, like a tree.
 
@@ -302,7 +302,7 @@ See the [appendix](beyond-the-guide.md): [Dijkstra](beyond-the-guide.md#dijkstra
 
   </details>
 
-- **9.5** Use this undirected graph. Take neighbors alphabetically.
+- **9.5** Use this undirected graph. Visit neighbors in alphabetical order.
 
   <!-- figure
   nodes: S 1 0, P 0 1, Q 1 1, R 2 1, T 0 2, U 2 2
@@ -317,7 +317,7 @@ See the [appendix](beyond-the-guide.md): [Dijkstra](beyond-the-guide.md#dijkstra
   ```
   <!-- /figure -->
 
-  **a)** The degree of Q?
+  **a)** What is the degree of vertex Q?
 
   A. 2
 
@@ -329,7 +329,7 @@ See the [appendix](beyond-the-guide.md): [Dijkstra](beyond-the-guide.md#dijkstra
 
   <!-- answer:9.5a choice: B -->
 
-  **b)** Is it a tree?
+  **b)** Is this graph a tree, and why?
 
   A. Yes: every vertex is connected
 
@@ -341,7 +341,7 @@ See the [appendix](beyond-the-guide.md): [Dijkstra](beyond-the-guide.md#dijkstra
 
   <!-- answer:9.5b choice: C -->
 
-  **c)** BFS order from P?
+  **c)** In what order does BFS visit the vertices, starting at P?
 
   A. P, Q, T, R, S, U
 
@@ -353,7 +353,7 @@ See the [appendix](beyond-the-guide.md): [Dijkstra](beyond-the-guide.md#dijkstra
 
   <!-- answer:9.5c choice: A -->
 
-  **d)** Recursive DFS order from P?
+  **d)** In what order does recursive DFS visit the vertices, starting at P?
 
   A. P, Q, T, R, S, U
 
@@ -390,7 +390,7 @@ See the [appendix](beyond-the-guide.md): [Dijkstra](beyond-the-guide.md#dijkstra
                   todo.append(w)
   ```
 
-  **a)** Which traversal is it?
+  **a)** Which traversal does this code perform?
 
   A. BFS
 
@@ -402,7 +402,7 @@ See the [appendix](beyond-the-guide.md): [Dijkstra](beyond-the-guide.md#dijkstra
 
   <!-- answer:9.6a choice: A -->
 
-  **b)** Its worst-case Big-O?
+  **b)** What is its worst-case Big-O, for V vertices and E edges?
 
   A. O(V)
 

@@ -38,6 +38,7 @@ Nothing here yet.
 
 ## Done
 
+- C949 question clarity: terse or ambiguous prompts are now full questions that say what to find (2.3 asks which index `linear_search(items, 3)` returns, and 8.2 asks for each traversal by name). Questions that bundled several answers into one choice ("1 linear, 2 binary, 3 linear") now ask about one item at a time: 2.6, 2.7, 3.8, 4.7, 5.1, 5.6, 6.3, 7.4, and 7.6. Cards with several parts (both courses) now show each part as its own step: a divider, a square letter badge that turns green or red, a bold prompt, rounded choices, and short choices two across (#76)
 - C949 menu: removed the duplicate top-level "Tracing pseudocode" entry. It opened the same page as Lesson 7 under Practice in code, and page 1 already links there. Links to it on the contents page and page 1 now say "Lesson 7: Tracing pseudocode", matching the menu. The loose items at the end of the C949 menu now sit under headers: Practice (final practice, practice quiz) right after the topic pages, then Practice in code, then Reference (Big-O cheat sheet, Beyond the guide, and the topic map last) (#75)
 - Card and color cleanup:
   - **Cards ran together.** D427 exercise cards no longer sit inside section cards. Each section heading is now a banner, and the exercise cards sit on the page with their colored edge.

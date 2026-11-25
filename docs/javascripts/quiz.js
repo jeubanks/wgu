@@ -406,6 +406,44 @@
     var fb = feedback(part, s);
     if (part.feedback) part.ui.replaceChild(fb, part.feedback); else part.ui.appendChild(fb);
     part.feedback = fb;
+    markStep(part, s);
+  }
+
+  // The part's letter badge shows how it went (the feedback line says so in words).
+  function markStep(part, s) {
+    if (!part.step) return;
+    var done = s.r.every(function (r) { return r !== null; });
+    var all = done && s.r.every(function (r) { return r === true; });
+    part.step.classList.toggle("is-right", all);
+    part.step.classList.toggle("is-missed", done && !all);
+  }
+
+  // In a question with several parts, each "a) ..." prompt and its controls go in
+  // one block, so the parts read as separate steps. What comes before the first
+  // prompt (shared code, a figure) stays outside; code between two parts belongs
+  // to the later one.
+  function groupSteps() {
+    parts.forEach(function (part) {
+      var li = part.block.li;
+      if (parts.filter(function (p) { return p.block.li === li; }).length < 2) return;
+      var prompt = part.block.elements.filter(function (e) {
+        var b = e.tagName === "P" && e.firstElementChild;
+        return b && b.tagName === "STRONG" && b === e.firstChild && /^[a-z]\)$/.test(b.textContent.trim());
+      })[0];
+      if (!prompt || prompt.parentNode !== li || part.ui.parentNode !== li) return;
+      var step = el("div", "quiz-step");
+      var first = parts.filter(function (p) { return p.block.li === li; })[0] === part;
+      var start = first ? prompt : part.block.elements.filter(function (e) { return !e.classList.contains("quiz-part"); })[0];
+      if (start.parentNode !== li) start = prompt;
+      li.insertBefore(step, start);
+      for (var n = start; n; n = next) {
+        var next = n === part.ui ? null : n.nextSibling;
+        step.appendChild(n);
+      }
+      prompt.classList.add("quiz-step__prompt");
+      part.step = step;
+      markStep(part, stateFor(part));
+    });
   }
 
   function questionDone(q) {
@@ -448,8 +486,13 @@
     if (!ok) { part.ui.remove(); return; }
     parts.push(part);
     renderPart(part);
+    var texts = part.ui.querySelectorAll(".quiz-option__text");
+    if (texts.length === 4 && Array.prototype.every.call(texts, function (t) { return t.textContent.length <= 24; })) {
+      part.ui.classList.add("quiz-part--short");
+    }
   });
   if (!parts.length) return;
+  groupSteps();
 
   /* ---------- Summary at the top ---------- */
 

@@ -172,9 +172,9 @@ linked: head -> 4 -> 9 -> 2 -> None
 
 ## Questions
 
-- **10.1** Data types. Pick the Java type for each.
+- **10.1** Which Java type holds each value?
 
-  **a)** A 64-bit decimal
+  **a)** A 64-bit number with a decimal part
 
   A. `float`
 
@@ -219,7 +219,7 @@ linked: head -> 4 -> 9 -> 2 -> None
 
   </details>
 
-- **10.2** Typing.
+- **10.2** Types in Python.
 
   **a)** `y = 4` followed by `y = "four"` runs without an error. What does that show?
 
@@ -253,7 +253,7 @@ linked: head -> 4 -> 9 -> 2 -> None
 
   </details>
 
-- **10.3** What does each Python expression give?
+- **10.3** What is the value of each Python expression?
 
   **a)** `17 // 5` and `17 % 5`
 
@@ -326,7 +326,7 @@ linked: head -> 4 -> 9 -> 2 -> None
   print(x)
   ```
 
-  **a)** What happens?
+  **a)** What happens when this code runs?
 
   A. It prints 7.
 
@@ -338,7 +338,7 @@ linked: head -> 4 -> 9 -> 2 -> None
 
   <!-- answer:10.4a choice: D -->
 
-  **b)** Why doesn't `x / 0` raise an error?
+  **b)** Why doesn't `x / 0` raise an error in this code?
 
   A. Python treats division by zero as 0.
 
@@ -468,7 +468,7 @@ linked: head -> 4 -> 9 -> 2 -> None
   del a
   ```
 
-  **a)** After `del a`, is the list freed?
+  **a)** After `del a` runs, is the list freed from memory?
 
   A. Yes: `del` frees the object.
 
@@ -480,7 +480,7 @@ linked: head -> 4 -> 9 -> 2 -> None
 
   <!-- answer:10.7a choice: D -->
 
-  **b)** Which allocation reads item i in O(1)?
+  **b)** Which kind of memory allocation lets a program read item i in O(1)?
 
   A. Sequential
 

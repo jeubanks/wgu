@@ -172,9 +172,9 @@ Add and remove at the same end, and it acts as a stack; at opposite ends, a queu
 
 ## Questions
 
-- **6.1** `a = [10, 20, 30, 40, 50]`.
+- **6.1** Start with `a = [10, 20, 30, 40, 50]`.
 
-  **a)** `a.insert(1, 15)` runs. How many items shift right?
+  **a)** When `a.insert(1, 15)` runs, how many items shift one place right?
 
   A. 1
 
@@ -186,7 +186,7 @@ Add and remove at the same end, and it acts as a stack; at opposite ends, a queu
 
   <!-- answer:6.1a choice: C -->
 
-  **b)** What is the index of 40 now?
+  **b)** After that insert, what is the index of 40?
 
   A. 4
 
@@ -260,54 +260,80 @@ Add and remove at the same end, and it acts as a stack; at opposite ends, a queu
 
   </details>
 
-- **6.3** Pick the Big-O, for n items.
+- **6.3** What is the Big-O of each operation on n items?
 
-  **a)** Removing the tail of a singly linked list with a tail pointer, and of a doubly linked list
+  **a)** Removing the tail of a singly linked list that has a tail pointer
 
-  A. Singly O(1), doubly O(1)
-
-  B. Singly O(n), doubly O(1)
-
-  C. Singly O(1), doubly O(n)
-
-  D. Singly O(n), doubly O(n)
-
-  <!-- answer:6.3a choice: B -->
-
-  **b)** Reading the middle item of a linked list, and of a Python list
-
-  A. Linked O(1), Python list O(1)
-
-  B. Linked O(n), Python list O(n)
-
-  C. Linked O(n), Python list O(1)
-
-  D. Linked O(1), Python list O(n)
-
-  <!-- answer:6.3b choice: C -->
-
-  **c)** `a.append(x)` on a Python list, averaged over many appends
-
-  A. O(n)
+  A. O(1)
 
   B. O(log n)
 
-  C. O(n log n)
+  C. O(n)
 
-  D. O(1)
+  D. O(n log n)
 
-  <!-- answer:6.3c choice: D -->
+  <!-- answer:6.3a choice: C -->
+
+  **b)** Removing the tail of a doubly linked list that has a tail pointer
+
+  A. O(1)
+
+  B. O(log n)
+
+  C. O(n)
+
+  D. O(n log n)
+
+  <!-- answer:6.3b choice: A -->
+
+  **c)** Reading the middle item of a linked list
+
+  A. O(1)
+
+  B. O(log n)
+
+  C. O(n)
+
+  D. O(n log n)
+
+  <!-- answer:6.3c choice: C -->
+
+  **d)** Reading the middle item of a Python list
+
+  A. O(1)
+
+  B. O(log n)
+
+  C. O(n)
+
+  D. O(n log n)
+
+  <!-- answer:6.3d choice: A -->
+
+  **e)** `a.append(x)` on a Python list, averaged over many appends
+
+  A. O(1)
+
+  B. O(log n)
+
+  C. O(n)
+
+  D. O(n log n)
+
+  <!-- answer:6.3e choice: A -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** **B.** Singly linked tail removal walks to the node before the tail; doubly linked has `prev`. A assumes the tail pointer is enough, but the new tail is the node before it.
-  - **b)** **C.** A linked list follows pointers to reach an index; an array computes the address. B treats both as a walk.
-  - **c)** **D.** Resizes are rare, so their copying averages out to O(1) per append. A is the cost of the one append that resizes.
+  - **a)** **C.** The new tail is the node before the old one, and finding it means walking from the head. A assumes the tail pointer is enough.
+  - **b)** **A.** The tail's `prev` leads straight to the new tail.
+  - **c)** **C.** A linked list follows pointers one node at a time.
+  - **d)** **A.** An array computes the item's address. C treats it as a walk.
+  - **e)** **A.** Resizes are rare, so their copying averages out to O(1) per append. C is the cost of the one append that resizes.
 
   </details>
 
-- **6.4** You insert `new` after node `cur` in a singly linked list. Which is correct?
+- **6.4** Which steps correctly insert the node `new` after the node `cur` in a singly linked list?
 
   A. `new.next = cur.next`, then `cur.next = new`
 

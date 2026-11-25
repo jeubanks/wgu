@@ -314,7 +314,7 @@ For a max-heap, push `-x` and negate what comes out.
 
   <!-- answer:8.1b choice: D -->
 
-  **c)** Which describes its shape?
+  **c)** Which of these describes the tree's shape?
 
   A. Neither full nor complete
 
@@ -335,9 +335,9 @@ For a max-heap, push `-x` and negate what comes out.
 
   </details>
 
-- **8.2** Traversals of the 8.1 tree.
+- **8.2** Traverse the tree from 8.1.
 
-  **a)** Preorder?
+  **a)** What is its preorder traversal?
 
   A. 50, 30, 70, 20, 40, 80, 10
 
@@ -349,7 +349,7 @@ For a max-heap, push `-x` and negate what comes out.
 
   <!-- answer:8.2a choice: C -->
 
-  **b)** Postorder?
+  **b)** What is its postorder traversal?
 
   A. 10, 20, 40, 30, 80, 70, 50
 
@@ -361,7 +361,7 @@ For a max-heap, push `-x` and negate what comes out.
 
   <!-- answer:8.2b choice: A -->
 
-  **c)** Level-order?
+  **c)** What is its level-order traversal?
 
   A. 50, 30, 20, 10, 40, 70, 80
 
@@ -382,9 +382,9 @@ For a max-heap, push `-x` and negate what comes out.
 
   </details>
 
-- **8.3** Removing from the 8.1 BST, starting fresh each time.
+- **8.3** Each part starts from the original tree in 8.1, which is a BST.
 
-  **a)** Remove 30. Which key takes its place?
+  **a)** If 30 is removed, which key takes its place?
 
   A. 10
 
@@ -396,7 +396,7 @@ For a max-heap, push `-x` and negate what comes out.
 
   <!-- answer:8.3a choice: B -->
 
-  **b)** Remove 20. How many nodes are left in the tree?
+  **b)** If 20 is removed, how many nodes are left in the tree?
 
   A. 4
 
@@ -416,9 +416,9 @@ For a max-heap, push `-x` and negate what comes out.
 
   </details>
 
-- **8.4** A max-heap is stored as `90 70 85 30 60 50 80`, root at index 0.
+- **8.4** A max-heap is stored in the array `90 70 85 30 60 50 80`. In parts a and b, the root is at index 0.
 
-  **a)** From index 2, what is the left child's index?
+  **a)** What is the index of the left child of the node at index 2?
 
   A. 3
 
@@ -430,7 +430,7 @@ For a max-heap, push `-x` and negate what comes out.
 
   <!-- answer:8.4a choice: D -->
 
-  **b)** From index 4, what is the parent's index?
+  **b)** What is the index of the parent of the node at index 4?
 
   A. 1
 
@@ -442,7 +442,7 @@ For a max-heap, push `-x` and negate what comes out.
 
   <!-- answer:8.4b choice: A -->
 
-  **c)** With the root at index 1 instead, what is the left child's index from index 3?
+  **c)** Now suppose the root is at index 1 instead. What is the index of the left child of the node at index 3?
 
   A. 4
 
@@ -463,9 +463,9 @@ For a max-heap, push `-x` and negate what comes out.
 
   </details>
 
-- **8.5** Start from the 8.4 heap each time.
+- **8.5** Each part starts from the original heap in 8.4.
 
-  **a)** Insert 88. What is the array afterward?
+  **a)** What is the array after 88 is inserted?
 
   A. 90 70 85 30 60 50 80 88
 
@@ -477,7 +477,7 @@ For a max-heap, push `-x` and negate what comes out.
 
   <!-- answer:8.5a choice: C -->
 
-  **b)** Remove the root. What is the array afterward?
+  **b)** What is the array after the root is removed?
 
   A. 80 70 85 30 60 50
 
@@ -524,9 +524,9 @@ For a max-heap, push `-x` and negate what comes out.
 
   </details>
 
-- **8.7** Pick the Big-O.
+- **8.7** What is the Big-O of each operation on n items?
 
-  **a)** BST search, keys inserted in sorted order?
+  **a)** Searching a BST whose keys were inserted in sorted order, in the worst case
 
   A. O(n)
 
@@ -538,7 +538,7 @@ For a max-heap, push `-x` and negate what comes out.
 
   <!-- answer:8.7a choice: A -->
 
-  **b)** Max-heap insert, worst case?
+  **b)** Inserting into a max-heap, in the worst case
 
   A. O(1)
 
@@ -550,7 +550,7 @@ For a max-heap, push `-x` and negate what comes out.
 
   <!-- answer:8.7b choice: C -->
 
-  **c)** Heapify n items?
+  **c)** Building a heap from n items with heapify
 
   A. O(log n)
 

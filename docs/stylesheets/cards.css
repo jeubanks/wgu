@@ -311,3 +311,31 @@
      benches keep their border because their buttons use the inset color */
   .md-typeset .wgu-card .dsf, .md-typeset .wgu-card .viz-figure, .md-typeset .wgu-card .viz-spectrum { background: var(--wgu-surface-2); border-color: transparent; }
 }
+
+/* ---------- questions with several parts (quiz.js groupSteps) ----------
+   A rule and a square letter badge start each part; choice letters stay round. */
+.md-typeset .quiz-step { margin-top: 1.1rem; padding-top: 1.1rem; border-top: 1px solid var(--wgu-line); }
+.md-typeset .quiz-step__prompt { position: relative; margin: 0 0 .65rem; padding-left: 2.1rem; min-height: 1.5rem; font-weight: 600; }
+.md-typeset .quiz-step__prompt > strong:first-child {
+  position: absolute; left: 0; top: -.05rem;
+  display: grid; place-items: center; width: 1.5rem; height: 1.5rem;
+  border-radius: .4rem; background: var(--acc-soft); color: var(--acc-ink);
+  font-size: .72rem; font-weight: 700;
+}
+.md-typeset .quiz-step.is-right > .quiz-step__prompt > strong:first-child { background: #15803d; color: #fff; }
+.md-typeset .quiz-step.is-missed > .quiz-step__prompt > strong:first-child { background: #b42318; color: #fff; }
+.md-typeset .quiz-step .quiz-feedback { margin-top: .5rem; }
+.md-typeset .quiz-step ~ details { margin-top: 1.1rem; }
+@media screen and (min-width: 45em) {
+  .md-typeset .quiz-step > *:not(.quiz-step__prompt) { margin-left: 2.1rem; }
+  /* Short choices sit two across, read left to right. */
+  .md-typeset .quiz-part--short .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: .45rem .6rem; }
+  .md-typeset .quiz-part--short .quiz-option { margin: 0; height: 100%; }
+}
+.md-typeset .quiz-option { align-items: center; border-radius: .5rem; border-color: var(--wgu-line); }
+.md-typeset .quiz-option__letter { display: grid; place-items: center; min-width: 0; width: 1.75em; height: 1.75em; padding: 0; border-radius: 50%; }
+.md-typeset .quiz-option.is-chosen { border-color: var(--sql-color); }
+.md-typeset .quiz-option.is-correct { border-color: var(--sql-ok); }
+.md-typeset .quiz-option.is-wrong { border-color: var(--sql-bad); }
+.md-typeset .quiz-step > :first-child { margin-top: 0; }
+.md-typeset .quiz-step > .highlight:first-child > pre { margin-top: 0; }

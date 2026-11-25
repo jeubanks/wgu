@@ -263,7 +263,7 @@ hundreds     2  45  66 170 802     sorted
 
   <!-- answer:3.2b choice: C -->
 
-  **c)** What is the list after insertion sort's i = 1, 2 and 3?
+  **c)** What is the list after insertion sort has finished the passes for i = 1, 2 and 3?
 
   A. `6 15 40 2 23 9`
 
@@ -284,7 +284,7 @@ hundreds     2  45  66 170 802     sorted
 
   </details>
 
-- **3.3** Quicksort's partition, middle item as pivot, on `36 12 50 21 8 44 17`.
+- **3.3** Quicksort partitions `36 12 50 21 8 44 17`, using the middle item as the pivot.
 
   **a)** What is the pivot?
 
@@ -386,9 +386,9 @@ hundreds     2  45  66 170 802     sorted
 
   </details>
 
-- **3.6** Give the Big-O.
+- **3.6** What is the Big-O of each sort on n items?
 
-  **a)** Bubble sort with the early stop, on sorted input:
+  **a)** Bubble sort that stops early, on a list that's already sorted
 
   A. O(log n)
 
@@ -400,7 +400,7 @@ hundreds     2  45  66 170 802     sorted
 
   <!-- answer:3.6a choice: B -->
 
-  **b)** Selection sort, on sorted input:
+  **b)** Selection sort, on a list that's already sorted
 
   A. O(log n)
 
@@ -412,7 +412,7 @@ hundreds     2  45  66 170 802     sorted
 
   <!-- answer:3.6b choice: D -->
 
-  **c)** Quicksort when every pivot is the largest value left:
+  **c)** Quicksort, when every pivot is the largest value left
 
   A. O(log n)
 
@@ -433,9 +433,9 @@ hundreds     2  45  66 170 802     sorted
 
   </details>
 
-- **3.7** Name each sort.
+- **3.7** Recognize each sort from its code.
 
-  **a)**
+  **a)** Which sort is `mystery`?
 
   ```python
   def mystery(items):
@@ -456,7 +456,7 @@ hundreds     2  45  66 170 802     sorted
 
   <!-- answer:3.7a choice: A -->
 
-  **b)**
+  **b)** Which sort is `mystery2`?
 
   ```python
   def mystery2(items):
@@ -486,27 +486,49 @@ hundreds     2  45  66 170 802     sorted
 
   </details>
 
-- **3.8** Which sort fits each job?
+- **3.8** Pick the best sort for each job.
 
-  | Job | Task |
-  |---|---|
-  | 1 | A list that's almost sorted already |
-  | 2 | Guaranteed O(n log n), O(1) extra memory |
-  | 3 | Guaranteed O(n log n), stable |
+  **a)** The list is almost sorted already.
 
-  A. 1 insertion, 2 heap, 3 merge
+  A. Insertion sort
 
-  B. 1 insertion, 2 quicksort, 3 merge
+  B. Heap sort
 
-  C. 1 insertion, 2 merge, 3 heap
+  C. Merge sort
 
-  D. 1 quicksort, 2 heap, 3 merge
+  D. Quicksort
 
-  <!-- answer:3.8 choice: A -->
+  <!-- answer:3.8a choice: A -->
+
+  **b)** The sort must be O(n log n) even in the worst case and use only O(1) extra memory.
+
+  A. Insertion sort
+
+  B. Heap sort
+
+  C. Merge sort
+
+  D. Quicksort
+
+  <!-- answer:3.8b choice: B -->
+
+  **c)** The sort must be O(n log n) even in the worst case and keep equal items in their original order.
+
+  A. Insertion sort
+
+  B. Heap sort
+
+  C. Merge sort
+
+  D. Quicksort
+
+  <!-- answer:3.8c choice: C -->
 
   <details>
   <summary>Answer</summary>
 
-  - **A.** Insertion sort nears O(n) when few items are out of place. Heap sort is O(n log n) always and in place; merge sort is O(n log n) always and stable. B forgets quicksort's O(n²) worst case; C swaps in place and stable.
+  - **a)** **A.** Few items are out of place, so insertion sort nears O(n). The other three still do O(n log n) work.
+  - **b)** **B.** Heap sort is always O(n log n) and sorts in place. C needs O(n) extra memory, and D's worst case is O(n²).
+  - **c)** **C.** Merge sort is always O(n log n) and stable. B has the speed but isn't stable.
 
   </details>

@@ -158,7 +158,7 @@ Two common claims are wrong:
 
 ## Questions
 
-- **5.1** Data type, data structure, or ADT?
+- **5.1** Telling data types, data structures and ADTs apart.
 
   **a)** Which one is an ADT?
 
@@ -184,15 +184,15 @@ Two common claims are wrong:
 
   <!-- answer:5.1b choice: B -->
 
-  **c)** Which labels `str`, hash table, and stack, in that order?
+  **c)** What is `str`?
 
-  A. Data type, data structure, ADT
+  A. A data type
 
-  B. Data type, ADT, data structure
+  B. A data structure
 
-  C. Data structure, data structure, ADT
+  C. An ADT
 
-  D. ADT, data structure, ADT
+  D. Both a data structure and an ADT
 
   <!-- answer:5.1c choice: A -->
 
@@ -204,7 +204,7 @@ Two common claims are wrong:
   - A hash table and a heap are memory layouts: data structures.
   - **a)** **D.** A is the structure Python builds a dictionary on, not the ADT itself.
   - **b)** **B.** C is the ADT a heap usually builds; the names are easy to swap.
-  - **c)** **A.** B swaps the last two: the table is how it's stored, the stack is what it promises.
+  - **c)** **A.** `str` says what kind of value something is. B would be a memory layout for holding many values.
 
   </details>
 
@@ -347,21 +347,45 @@ Two common claims are wrong:
 
   </details>
 
-- **5.6** Shapes.
+- **5.6** Which kind of structure is each of these?
 
-  **a)** Which labels a doubly linked list, a max-heap, and cities joined by roads, in that order?
+  **a)** A doubly linked list
 
-  A. Linear, linear, network
+  A. Linear
 
-  B. Linear, hierarchical, network
+  B. Hierarchical
 
-  C. Linear, hierarchical, hierarchical
+  C. Network
 
-  D. Hierarchical, hierarchical, network
+  D. Flat (buckets)
 
-  <!-- answer:5.6a choice: B -->
+  <!-- answer:5.6a choice: A -->
 
-  **b)** Which one is not linear?
+  **b)** A max-heap
+
+  A. Linear
+
+  B. Hierarchical
+
+  C. Network
+
+  D. Flat (buckets)
+
+  <!-- answer:5.6b choice: B -->
+
+  **c)** Cities joined by roads
+
+  A. Linear
+
+  B. Hierarchical
+
+  C. Network
+
+  D. Flat (buckets)
+
+  <!-- answer:5.6c choice: C -->
+
+  **d)** Which of these structures is not linear?
 
   A. Deque
 
@@ -371,13 +395,15 @@ Two common claims are wrong:
 
   D. Doubly linked list
 
-  <!-- answer:5.6b choice: C -->
+  <!-- answer:5.6d choice: C -->
 
   <details>
   <summary>Answer</summary>
 
-  - **a)** **B.** A list keeps items in one line; a heap is a tree; roads form a graph, with no root and loops allowed. A goes by the heap's array storage, not its shape.
-  - **b)** **C.** A BST is a tree: hierarchical. D's two pointers per node still keep one line.
+  - **a)** **A.** A doubly linked list keeps its items in one line; two pointers per node don't change that.
+  - **b)** **B.** A heap is a tree. A goes by its array storage, not its shape.
+  - **c)** **C.** Roads form a graph: no root, and loops are allowed. B would need one top city.
+  - **d)** **C.** A BST is a tree: hierarchical. D's two pointers per node still keep one line.
 
   </details>
 
@@ -409,7 +435,7 @@ Two common claims are wrong:
 
   </details>
 
-- **5.8** Pick the Big-O, for n items.
+- **5.8** What is the Big-O of each call, when the structure holds n items?
 
   **a)** `a.pop(0)` on a `list`
 
