@@ -36,7 +36,9 @@ The list must be **sorted**. Only then does "bigger than the middle item" mean "
 
 ### The steps
 
-Start with `low = 0` and `high` at the last index. While `low <= high`, compute `mid = (low + high) // 2`:
+`low`, `high` and `mid` are **indexes**: positions in the list, counted from 0. `low` and `high` mark the ends of the part still being searched, and `mid` is its middle.
+
+Start with `low = 0` and `high` at the last index. While `low <= high`, compute `mid = (low + high) // 2`. To work out `mid`, add `low` and `high`, then divide by 2. The `//` rounds down: with `low` 2 and `high` 3, the sum is 5, and `5 // 2` is 2. Then compare `items[mid]`, the value at that index, with the key:
 
 - `items[mid] == key`: found, return `mid`.
 - `items[mid] < key`: the key can only be right of mid, so `low = mid + 1`.
@@ -60,7 +62,7 @@ def binary_search(items, key):
 
 ### A trace
 
-Searching for 26 (faded cells are out of range). Write one line per step:
+This trace searches for 26. Each row is one check. The blue cell is the middle item being checked, and faded cells have been ruled out. The labels under a row show where `low`, `mid` and `high` point. When they point to the same cell, they're stacked.
 
 <!-- figure
 array: 4 11 19 26 33 47 52 64 78
@@ -75,12 +77,16 @@ items    4  11  19  26  33  47  52  64  78
 ```
 <!-- /figure -->
 
-| Step | low | high | mid | items[mid] | Result |
+Here's the same trace as a table, the way to write it on paper, with one row per check. Python's `//` divides and rounds down to a whole number: in step 2, 3 divided by 2 is 1.5, so `mid` is 1.
+
+| Step | low | high | mid = (low + high) // 2 | items[mid] | What happens |
 |---|---|---|---|---|---|
-| 1 | 0 | 8 | 4 | 33 | 26 < 33, so high = 3 |
-| 2 | 0 | 3 | 1 | 11 | 26 > 11, so low = 2 |
-| 3 | 2 | 3 | 2 | 19 | 26 > 19, so low = 3 |
-| 4 | 3 | 3 | 3 | 26 | found: return 3 |
+| 1 | 0 | 8 | (0 + 8) // 2 = 4 | 33 | 26 is smaller, go left: high = 3 |
+| 2 | 0 | 3 | (0 + 3) // 2 = 1 | 11 | 26 is bigger, go right: low = 2 |
+| 3 | 2 | 3 | (2 + 3) // 2 = 2 | 19 | 26 is bigger, go right: low = 3 |
+| 4 | 3 | 3 | (3 + 3) // 2 = 3 | 26 | Found: return 3 |
+
+Going left sets `high` to mid − 1, and going right sets `low` to mid + 1. The search returns the index, 3, not the value.
 
 ### Big-O
 
