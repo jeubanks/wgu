@@ -46,7 +46,7 @@ From slowest-growing (best) to fastest-growing (worst):
 Some code does different amounts of work on inputs of the same size. The **best case** is the luckiest input of size n (not a small n), the **average case** a typical random input, and the **worst case** the input that makes it run longest. When a question asks only for "the Big-O", it means the worst case.
 
 > [!IMPORTANT]
-> **Key idea:** The cases differ by which input of size n the code gets, never by making n small.
+> **Key idea:** Best, average and worst case compare different inputs of the same size n.
 
 ## Finding the Big-O of code
 

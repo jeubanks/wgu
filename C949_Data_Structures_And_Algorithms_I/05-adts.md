@@ -16,10 +16,10 @@ After this page you can:
 | **Data structure** | How many values are laid out in memory | Array, linked list, hash table, tree, heap |
 | **Abstract data type (ADT)** | Only behavior: which operations exist and what they promise | List, stack, queue, set, dictionary |
 
-An ADT is a contract: a stack promises "last in, first out" and says nothing about arrays or nodes. A data structure is one way to keep the promise. Swap the structure and code using the ADT still works, but its speed may change.
+A stack, for example, must be "last in, first out", but it can be built on an array or on linked nodes. If you swap one for the other, code that uses the stack still works, but its speed may change.
 
 > [!IMPORTANT]
-> **Key idea:** An ADT is the promise of what operations do, and a data structure is one way to keep that promise.
+> **Key idea:** An ADT says what the operations do. A data structure is one way to store the data so they work.
 
 ## The ADTs, one card each
 
@@ -91,7 +91,7 @@ An ADT is a contract: a stack promises "last in, first out" and says nothing abo
 Add 40, then 15, then 70 to each. The highlighted cell comes out next.
 
 > [!IMPORTANT]
-> **Key idea:** Each ADT is defined by which item it gives back next, so the same three adds can come out in different orders.
+> **Key idea:** These ADTs differ in which item they give back next, so the same three items can come out in different orders.
 
 <!-- figure
 title: After adding 40, then 15, then 70

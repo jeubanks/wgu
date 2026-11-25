@@ -16,7 +16,7 @@ Practice material I've built for WGU courses. Unofficial: not affiliated with or
 
     ---
 
-    A concise study guide organized by the course study guide's three competencies: each topic in plain words with a drawn example, its best, average, and worst-case Big-O, and questions to check yourself.
+    A concise study guide organized by the course study guide's three competencies: each topic has a plain explanation, a drawn example, its best, average, and worst-case Big-O, and questions to check yourself.
 
     [:octicons-arrow-right-24: Start here](c949/README.md)
 

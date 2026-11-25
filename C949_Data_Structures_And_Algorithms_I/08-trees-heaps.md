@@ -67,9 +67,13 @@ A **BST** adds a rule at every node: the left subtree is all **smaller**, the ri
 
 ### Search and insert
 
-**Search:** from the root, go left if smaller, right if larger, until you find the key or step off the tree (not there).
+**Search** for a key:
 
-**Insert:** search, and add a leaf where the search steps off.
+1. Start at the root.
+2. If the key is smaller than the node's, go left. If it's larger, go right.
+3. Repeat until you find the key or step off the tree, which means it isn't there.
+
+**Insert:** search for the key, and add a leaf where the search steps off.
 
 <!-- figure
 tree: Insert 40: the search path is highlighted :: 62@h{31@h{15, 47@h{40@h, 52}}, 84{73, 96}}
@@ -171,7 +175,7 @@ tree: Level-order: F B G A D I :: F^1{B^2{A^4, D^5}, G^3{, I^6}}
 A **max-heap** is a complete binary tree where every parent is **≥** its children, so the largest key is at the root. A **min-heap** flips that. There's no left-right rule, so finding an arbitrary key is O(n).
 
 > [!IMPORTANT]
-> **Key idea:** A heap only promises that each parent outranks its children, and its complete shape lets it live in an array with no gaps.
+> **Key idea:** In a heap, each parent comes before its children in priority, and the complete shape means it can be stored in an array with no gaps.
 
 ### Stored in an array
 
@@ -198,7 +202,10 @@ array  72 45 63 30 41 50 18            /    \
 
 ### Insert: percolate up
 
-Append the key, then swap it with its parent while it's larger. Inserting 68:
+1. Append the key at the end of the array.
+2. While it's larger than its parent, swap the two.
+
+Inserting 68:
 
 <!-- figure
 index: yes
@@ -215,7 +222,11 @@ swap        72 68 63 45 41 50 18 30   parent 72: stop
 
 ### Remove the root: percolate down
 
-Save the root, move the **last** item there, and swap it with its **larger** child while it's smaller. Removing 72:
+1. Save the root. It's the answer.
+2. Move the **last** item to the root.
+3. While it's smaller than one of its children, swap it with its **larger** child.
+
+Removing 72:
 
 <!-- figure
 index: yes
@@ -243,7 +254,7 @@ A min-heap flips the comparisons. **Heapify** builds a heap from an unsorted arr
 A **priority queue** dequeues the highest-priority item first. It's usually a heap: enqueue inserts, dequeue removes the root, peek reads it.
 
 > [!IMPORTANT]
-> **Key idea:** A priority queue always serves the most urgent item next, and a heap does that without keeping everything sorted.
+> **Key idea:** A priority queue removes the most urgent item next. A heap can do that without keeping all the items sorted.
 
 Python's `heapq` works on a plain list as a **min-heap**: `heappop` returns the **smallest**.
 

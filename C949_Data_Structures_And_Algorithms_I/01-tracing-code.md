@@ -11,7 +11,7 @@ After this page you can:
 ## Reading pseudocode
 
 > [!IMPORTANT]
-> **Key idea:** Before you trace anything, pin down exactly which values a loop covers, because pseudocode ranges include both ends.
+> **Key idea:** Before you trace a loop, work out which values it covers. Pseudocode ranges include both ends.
 
 Pseudocode mostly reads like Python, with a few differences:
 
@@ -30,7 +30,9 @@ Pseudocode mostly reads like Python, with a few differences:
 
 ## The variable table
 
-Write one column per variable. Add a row each time the loop checks its condition, **including the last check, the one that fails**. Run the body one line at a time, updating a value the moment it changes.
+1. Write one column per variable.
+2. Add a row each time the loop checks its condition, **including the last check, the one that fails**.
+3. Run the body one line at a time, and update a value the moment it changes.
 
 > [!IMPORTANT]
 > **Key idea:** A loop's condition is always checked one more time than its body runs, since the final check is the one that fails.
@@ -90,7 +92,15 @@ for n from 1 to 8
    output n
 ```
 
-n = 1 outputs 1. n = 2 is even, so `continue` skips its output. n = 3 outputs 3, and n = 4 is skipped. At n = 5, `break` ends the loop, so 6, 7 and 8 never run. The output is 1, 3.
+| n | What happens |
+|---|---|
+| 1 | Outputs 1 |
+| 2 | Even, so `continue` skips its output |
+| 3 | Outputs 3 |
+| 4 | Even, so it's skipped too |
+| 5 | `break` ends the loop, so 6, 7 and 8 never run |
+
+The output is 1, 3.
 
 ## Tracing recursion
 
@@ -99,11 +109,11 @@ n = 1 outputs 1. n = 2 is even, so `continue` skips its output. n = 3 outputs 3,
 A **recursive** function calls itself on a smaller input. The **base case** answers directly and stops the calls. The **recursive case** calls the function on a smaller input and uses the answer. Each call must get closer to the base case.
 
 > [!IMPORTANT]
-> **Key idea:** Calls pile up until one reaches the base case, then the answers flow back up, deepest call first.
+> **Key idea:** Each call waits for the call it makes. The base case returns first, then the waiting calls return in reverse order.
 
 **Example: factorial.** The factorial of a whole number multiplies it by every whole number below it, down to 1. The factorial of 3 is 3 * 2 * 1 = 6. The factorial of 1 is 1.
 
-Notice that 3 * 2 * 1 is 3 times the factorial of 2. So a function can find one factorial by asking for a smaller one:
+The factorial of 3 is 3 times the factorial of 2. So a function can find one factorial by asking for a smaller one:
 
 ```
 Factorial(n)
@@ -157,7 +167,11 @@ When the top call returns, its frame is removed and the call below carries on wi
 
 ### The indented call list
 
-On a whiteboard, write each call on its own line, indented under the call that made it, with its n. Stop at the base case. Then fill in the returns from the bottom line up.
+On a whiteboard:
+
+1. Write each call on its own line, indented under the call that made it, with its n.
+2. Stop at the base case.
+3. Fill in the returns, from the bottom line up.
 
 <!-- figure
 title: Factorial(3): calls going down, answers coming back up
@@ -216,7 +230,12 @@ Drop(n)
    return Drop(n - 3)
 ```
 
-Each call's n is 3 less than the one before. From `Drop(6)`, n goes 6, 3, 0 and stops. From `Drop(5)`, n goes 5, 2, −1, ... and jumps past 0 forever. Each call adds a frame, and running out of stack space is a **stack overflow**. Python stops at its recursion limit (usually 1000) and raises `RecursionError`. A base case of `if n <= 0` catches every path.
+Each call's n is 3 less than the one before:
+
+- **From `Drop(6)`**, n goes 6, 3, 0 and stops.
+- **From `Drop(5)`**, n goes 5, 2, −1, ... It jumps past 0 and never stops.
+
+Each call adds a frame, and running out of stack space is a **stack overflow**. Python stops at its recursion limit (usually 1000) and raises `RecursionError`. A base case of `if n <= 0` catches every path.
 
 ## Big-O summary
 

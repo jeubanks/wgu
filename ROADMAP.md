@@ -38,6 +38,7 @@ Nothing here yet.
 
 ## Done
 
+- C949 page 2: the binary search steps are a numbered list, one action per step, with **last index** in bold and explained as the length minus 1. About 30 other paragraphs that packed in several steps are now numbered steps, short lists, or a table: the sorts, tree and heap operations, BFS and DFS, linked lists and queues, probing and resizing, loop tracing, and the algorithms in Beyond the guide. A humanizer pass replaced metaphors and stock phrasings, mostly in C949 Key ideas, and fixed the D427 subquery Key idea, which was wrong for correlated subqueries (#80)
 - C949 2.1 asks why ignoring half the items is safe only in a sorted list, with wrong choices that are plainly wrong. The old choice A, about computing the middle index, could pass as correct (#79)
 - C949 page 2, binary search trace: the text explains the drawing (each row is one check, what blue and faded cells and the labels mean), says low, high and mid are indexes, and the table works out every mid and says why low or high moves (#78)
 - C949 page 1, Tracing recursion: the factorial example now says what a factorial is and what n is, and follows `Factorial(3)` throughout. Tables show each call's own n going down and the answers coming back up, and both drawings show n for every call. The Fibonacci and infinite-recursion examples say what n is too (#77)

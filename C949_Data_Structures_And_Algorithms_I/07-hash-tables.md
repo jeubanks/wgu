@@ -1,6 +1,6 @@
 # 7. Hash tables
 
-A hash table computes where a key belongs instead of searching for it.
+A hash table computes which bucket a key belongs in, so it doesn't search every item.
 
 After this page you can:
 
@@ -13,7 +13,7 @@ After this page you can:
 A hash table is an array of **buckets**. A **hash function** turns a key into a bucket index. The simplest is the **modulo hash**, `key % N`, where N is the number of buckets. With N = 10, key 47 goes in bucket 7, and a search for 47 looks only in bucket 7.
 
 > [!IMPORTANT]
-> **Key idea:** A hash function sends each key straight to one bucket, and because keys outnumber buckets, some keys will always have to share.
+> **Key idea:** A hash function sends each key to one bucket. There are more possible keys than buckets, so some keys collide.
 
 - **By hand:** 3045 % 1009: 3045 ÷ 1009 = 3.01..., so subtract 3 × 1009: 3045 − 3027 = **18**.
 - **Negative keys:** Python's `%` with a positive N always gives 0 to N − 1. `-13 % 10` is 7, because −13 = −2 × 10 + 7. Some languages give −3, so their tables add N.
@@ -43,7 +43,7 @@ bucket 4:  []
 <!-- /figure -->
 
 > [!IMPORTANT]
-> **Key idea:** With chaining, a table is only as fast as its longest bucket list, so an even spread of keys is what keeps it quick.
+> **Key idea:** With chaining, a search reads one bucket's list, so it's fast when the keys are spread evenly.
 
 Insert, search and remove work only on the key's bucket list. A search for 32 compares against 12, 7, then 32. Spread evenly, lists stay short: O(1) on average. All in one bucket: O(n).
 
@@ -52,11 +52,17 @@ Insert, search and remove work only on the key's bucket list. A search for 32 co
 With **open addressing**, each bucket holds one item. If the home bucket is taken, the table **probes** other buckets in a fixed order.
 
 > [!IMPORTANT]
-> **Key idea:** Insert, search, and remove all walk the same probe path, so nothing may break that path once keys depend on it.
+> **Key idea:** Insert, search, and remove all follow the same probe path, so a change that breaks the path can hide keys further along it.
 
 ### Linear probing
 
-Try the home bucket h, then the next, wrapping at the end: bucket `(h + i) % m` for i = 0, 1, 2, ..., with m buckets. Inserting 43, 13, 53, then 23 into 10 buckets:
+To insert into a table with m buckets:
+
+1. Try the home bucket h.
+2. If it's taken, try the next bucket. After the last bucket, wrap around to bucket 0.
+3. Repeat until you find an empty bucket.
+
+As a formula, try bucket `(h + i) % m` for i = 0, 1, 2, ... Inserting 43, 13, 53, then 23 into 10 buckets:
 
 <!-- figure
 index: yes
@@ -75,7 +81,7 @@ insert 23    -  -  - 43 13 53 23  -  -  -
 <!-- /figure -->
 
 - **Search** follows the same path until it finds the key or a never-used bucket.
-- **Remove** marks the bucket **empty-after-removal**, not truly empty. If bucket 4 above were just emptied, a search for 53 would stop there and miss it. Searches pass removed buckets; inserts may reuse them.
+- **Remove** marks the bucket **empty-after-removal**, not truly empty. Searches pass removed buckets; inserts may reuse them. If bucket 4 above were just emptied, a search for 53 would stop there and miss it.
 - Full runs like buckets 3 to 6 are **clusters**, and they grow as keys pile onto their ends.
 
 **Quadratic probing** jumps farther each try, `(h + c1·i + c2·i²) % m`, to break up clusters. **Double hashing** takes its step size from a second hash function, `(h1 + i·h2) % m`; h2 must never be 0.
@@ -93,7 +99,12 @@ The **load factor** is items ÷ buckets: 6 items in 10 buckets is 0.6. With chai
 > [!IMPORTANT]
 > **Key idea:** A table slows down as it fills, so it grows and rehashes every key before it gets too full.
 
-Past a threshold (often 0.75), the table **resizes**: about twice the buckets, and every item **rehashed**, since the index depends on N (17 is in bucket 7 of 10, but bucket 17 of 23). A resize is O(n) but rare, so inserts stay O(1) on average.
+Past a threshold (often 0.75), the table **resizes**:
+
+1. Make a new table with about twice the buckets.
+2. **Rehash** every item into it, since the index depends on N: 17 is in bucket 7 of 10, but bucket 17 of 23.
+
+A resize is O(n) but rare, so inserts stay O(1) on average.
 
 ## Python's dict and set
 

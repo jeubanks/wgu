@@ -12,7 +12,7 @@ After this page you can:
 
 - **Pass:** one trip through the list, or through its unsorted part. Simple sorts are traced pass by pass.
 - **Stable:** items with equal keys keep their original order. Sorting `5a 2 5b` (two 5s, told apart by letter) stably gives `2 5a 5b`, never `2 5b 5a`.
-- **In place:** uses only O(1) extra memory. That's about memory, not order: a sort can be stable without being in place, or the reverse.
+- **In place:** uses only O(1) extra memory. A sort can be stable without being in place, or the reverse.
 - **Comparison sort:** orders items only by comparing two at a time, and can't beat O(n log n) on average. Radix, counting and bucket sort look at digits or value ranges instead.
 
 The examples start from `29 4 17 8 42 11`. In the diagram below, compare sorted and reversed input.
@@ -25,10 +25,12 @@ The examples start from `29 4 17 8 42 11`. In the diagram below, compare sorted 
 
 ## Selection sort
 
-Find the smallest item in the unsorted part and swap it to the front of that part.
+1. Find the smallest item in the unsorted part.
+2. Swap it with the first item of the unsorted part. That item is now sorted.
+3. Repeat with the rest of the list.
 
 > [!IMPORTANT]
-> **Key idea:** Selection sort can't tell when a list is already sorted, so it does the same quadratic work on every input.
+> **Key idea:** Selection sort does the same amount of work whatever order the list starts in.
 
 <!-- figure
 row: start | 29 4 17 8 42 11
@@ -46,10 +48,14 @@ pass 2    4  8 17 29 42 11     swap 8 with 29
 
 ## Insertion sort
 
-Take the next item and shift it left past every bigger item in the sorted part, like sorting a hand of cards.
+It works like sorting a hand of cards. The first item counts as sorted.
+
+1. Take the next item.
+2. Shift it left past every bigger item in the sorted part.
+3. Repeat until every item has been placed.
 
 > [!IMPORTANT]
-> **Key idea:** Insertion sort does little work when items are already close to their places and the most when they're in reverse.
+> **Key idea:** Insertion sort is fast when items are close to their places, and slowest when they're in reverse order.
 
 <!-- figure
 row: start | 29 4 17 8 42 11
@@ -68,7 +74,8 @@ i = 2     4 17 29  8 42 11     17 stops at 4
 
 ## Bubble sort
 
-Compare each pair of neighbors and swap them if they're out of order. Each pass carries the largest remaining item to the end.
+1. Compare each pair of neighbors, from left to right, and swap them if they're out of order. That's one pass, and it carries the largest remaining item to the end.
+2. Repeat the pass on the items before it, until everything is in order.
 
 <!-- figure
 row: start | 29 4 17 8 42 11
@@ -85,16 +92,24 @@ pass 1     4 17  8 29 11 42     42 bubbled up
 
 ## Shell sort
 
-Insertion sort on items a **gap** apart, then smaller gaps, ending with gap 1: plain insertion sort, now fast on a nearly sorted list. This guide uses gaps that are powers of 2 minus 1, below the length (for 100 items: 63, 31, 15, 7, 3, 1).
+1. Insertion sort the items that are a **gap** apart.
+2. Repeat with smaller and smaller gaps.
+3. Finish with gap 1. That's plain insertion sort, and it's fast now because the list is nearly sorted.
+
+This guide uses gaps that are powers of 2 minus 1, below the length (for 100 items: 63, 31, 15, 7, 3, 1).
 
 **Best** O(n log n) on sorted input; **average** about O(n^1.5), depending on the gaps; **worst** O(n²) with poor gaps.
 
 ## Quicksort
 
 > [!IMPORTANT]
-> **Key idea:** Quicksort is only as fast as its pivots: splits near the middle keep it quick, and lopsided splits make it quadratic.
+> **Key idea:** The pivots set quicksort's speed: it's fast when they split the list near the middle, and slow when the splits are lopsided.
 
-Pick a **pivot**, then **partition**: smaller values to the left, larger to the right. Then quicksort each side. Many books pivot on the last item; zyBooks and these pages use the **middle** item, at (low + high) // 2. To partition:
+1. Pick a **pivot**. Many books use the last item; zyBooks and these pages use the **middle** item, at (low + high) // 2.
+2. **Partition**: move smaller values to the left and larger values to the right.
+3. Quicksort each side.
+
+To partition:
 
 1. `low` moves right while its item is smaller than the pivot.
 2. `high` moves left while its item is bigger than the pivot.
@@ -120,10 +135,12 @@ done      3  7 15 | 61 38 24 50   low passed high
 
 ## Merge sort
 
-Split the list in half, merge sort each half, then **merge** the sorted halves by repeatedly taking the smaller front item.
+1. Split the list in half.
+2. Merge sort each half.
+3. **Merge** the sorted halves: keep taking the smaller of the two front items.
 
 > [!IMPORTANT]
-> **Key idea:** Merge sort's cost never depends on the input order, but it needs a second list's worth of memory to merge into.
+> **Key idea:** Merge sort's cost never depends on the input order, but merging needs O(n) extra memory.
 
 <!-- figure
 row: split | 29 4 17 // 8 42 11
@@ -141,7 +158,11 @@ merge           4  8 11 17 29 42
 
 ## Heap sort
 
-Build a max-heap in place (see [heaps](08-trees-heaps.md)), then repeat: swap the root, the largest item, with the heap's last item, shrink the heap by one, and percolate the new root down.
+1. Build a max-heap in place (see [heaps](08-trees-heaps.md)).
+2. Swap the root, the largest item, with the heap's last item.
+3. Shrink the heap by one. The largest item is now in its final place.
+4. Percolate the new root down.
+5. Repeat steps 2 to 4 until one item is left.
 
 <!-- figure
 index: yes
@@ -161,7 +182,11 @@ percolate    29 11 17  8  4 42     11 swaps with 29
 
 ## Radix sort
 
-Sort non-negative integers one digit at a time, ones digit first. Each pass drops every number into one of 10 **buckets** by that digit, then reads buckets 0 to 9 back in order.
+For non-negative integers, one digit at a time, ones digit first:
+
+1. Drop every number into one of 10 **buckets** by the current digit.
+2. Read buckets 0 to 9 back in order.
+3. Repeat with the next digit to the left.
 
 <!-- figure
 row: start | 170 45 802 2 66
