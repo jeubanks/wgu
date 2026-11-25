@@ -38,13 +38,17 @@ The list must be **sorted**. Only then does "bigger than the middle item" mean "
 
 `low`, `high` and `mid` are **indexes**: positions in the list, counted from 0. `low` and `high` mark the ends of the part still being searched, and `mid` is its middle.
 
-Start with `low = 0` and `high` at the **last index**. That's one less than the length of the list, since indexes start at 0: a list of 9 items has last index 8. While `low <= high`, compute `mid = (low + high) // 2`. To work out `mid`, add `low` and `high`, then divide by 2. The `//` rounds down: with `low` 2 and `high` 3, the sum is 5, and `5 // 2` is 2. Then compare `items[mid]`, the value at that index, with the key:
+1. **Set the ends.** Set `low` to 0 and `high` to the **last index**, which is the length of the list minus 1. A list of 9 items has last index 8.
+2. **Find the middle.** `mid = (low + high) // 2`. Add the two indexes, divide by 2, and round down. If `low` is 2 and `high` is 3, the sum is 5, and half of that rounds down to 2.
+3. **Compare** the key with `items[mid]`, the value at the middle index:
 
-- `items[mid] == key`: found, return `mid`.
-- `items[mid] < key`: the key can only be right of mid, so `low = mid + 1`.
-- `items[mid] > key`: the key can only be left of mid, so `high = mid - 1`.
+   - If they're equal, you found it: return `mid`.
+   - If the key is bigger, it can only be to the right: set `low` to `mid + 1`.
+   - If the key is smaller, it can only be to the left: set `high` to `mid - 1`.
 
-When `low` passes `high`, the range is empty: return −1.
+4. **Repeat** steps 2 and 3 while `low <= high`. Once `low` passes `high`, nothing is left to search: return −1.
+
+In Python:
 
 ```python
 def binary_search(items, key):
