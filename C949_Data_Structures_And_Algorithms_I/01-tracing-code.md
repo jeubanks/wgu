@@ -11,7 +11,7 @@ After this page you can:
 ## Reading pseudocode
 
 > [!IMPORTANT]
-> **Key idea:** Before you trace anything, pin down exactly which values a loop covers, because pseudocode ranges include both ends.
+> **Key idea:** Before you trace a loop, work out which values it covers. Pseudocode ranges include both ends.
 
 Pseudocode mostly reads like Python, with a few differences:
 
@@ -109,11 +109,11 @@ The output is 1, 3.
 A **recursive** function calls itself on a smaller input. The **base case** answers directly and stops the calls. The **recursive case** calls the function on a smaller input and uses the answer. Each call must get closer to the base case.
 
 > [!IMPORTANT]
-> **Key idea:** Calls pile up until one reaches the base case, then the answers flow back up, deepest call first.
+> **Key idea:** Each call waits for the call it makes. The base case returns first, then the waiting calls return in reverse order.
 
 **Example: factorial.** The factorial of a whole number multiplies it by every whole number below it, down to 1. The factorial of 3 is 3 * 2 * 1 = 6. The factorial of 1 is 1.
 
-Notice that 3 * 2 * 1 is 3 times the factorial of 2. So a function can find one factorial by asking for a smaller one:
+The factorial of 3 is 3 times the factorial of 2. So a function can find one factorial by asking for a smaller one:
 
 ```
 Factorial(n)

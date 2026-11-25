@@ -167,7 +167,7 @@ After this part you can:
 ## 2. Filtering
 
 > [!IMPORTANT]
-> **Key idea:** WHERE keeps only the rows whose condition is true, so a NULL or a negated condition can quietly drop rows.
+> **Key idea:** WHERE keeps only the rows whose condition is true, so a NULL or a negated condition can drop rows you expected to see.
 
 ### Movie
 
@@ -1426,7 +1426,7 @@ LEFT: With `Crew c LEFT JOIN Crew l`, every crew member stays. Rae's lead shows 
 ## 6. Subqueries
 
 > [!IMPORTANT]
-> **Key idea:** A subquery runs first and hands its result to the outer query, so write and test it on its own.
+> **Key idea:** If a subquery doesn't use columns from the outer query, you can write and test it on its own first.
 
 ### Employee and Department
 

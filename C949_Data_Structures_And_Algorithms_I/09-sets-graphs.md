@@ -13,7 +13,7 @@ After this page you can:
 A **set** holds each item at most once, in no order, like a sign-in sheet where signing twice doesn't count twice. Adding a duplicate changes nothing, and {8, 3, 12} equals {12, 8, 3}. Python's `set` is a [hash table](07-hash-tables.md), so items must be hashable (not lists).
 
 > [!IMPORTANT]
-> **Key idea:** A set cares only about whether an item is in it, and each set operation builds a new set from two others.
+> **Key idea:** A set records only whether an item is in it. Each set operation builds a new set from two others.
 
 ```python
 s = {3, 1, 4}
@@ -50,7 +50,7 @@ S1 is a **subset** of S2 when every item of S1 is in S2 (`S1 <= S2`). Every set 
 A **graph** is a set of **vertices** joined by **edges**, like towns joined by roads.
 
 > [!IMPORTANT]
-> **Key idea:** A graph models connections, and making edges one-way or giving them costs changes what a path means.
+> **Key idea:** A graph models connections. Directed edges limit which way a path can go, and weights give each path a total cost.
 
 <!-- figure
 nodes: A 0 0, B 1 0, C 2 0, D 0 1, E 1 1

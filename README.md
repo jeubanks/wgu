@@ -5,7 +5,7 @@ Unofficial practice material for WGU courses, published at **[jeubanks.github.io
 | Course | What's there |
 |---|---|
 | [D427 Data Management – Applications](D427_Data_Management_Applications/) | 151 MySQL exercises with hints and solutions, a concepts-check quiz, a final practice set, ER and join diagrams, and SQL you can run in the browser. [Setup](D427_Data_Management_Applications/README.md) · [Start here](D427_Data_Management_Applications/exercises.md) |
-| [C949 Data Structures and Algorithms I](C949_Data_Structures_And_Algorithms_I/) | A study guide by zyBooks chapter: how each structure and algorithm works, best/average/worst Big-O, and questions. Optional Python lessons. [Start here](C949_Data_Structures_And_Algorithms_I/README.md) |
+| [C949 Data Structures and Algorithms I](C949_Data_Structures_And_Algorithms_I/) | A study guide organized by the course's three competencies: how each structure and algorithm works, best/average/worst Big-O, and multiple-choice questions. Optional Python lessons. [Start here](C949_Data_Structures_And_Algorithms_I/README.md) |
 
 ## Layout
 

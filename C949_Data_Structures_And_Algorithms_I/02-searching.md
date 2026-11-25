@@ -13,7 +13,7 @@ After this page you can:
 Check each item in order, from the first, until you find the key or run out of items. It works on any list, sorted or not.
 
 > [!IMPORTANT]
-> **Key idea:** Linear search asks nothing of the data, and pays for that by possibly checking every item.
+> **Key idea:** Linear search works on data in any order, but it may have to check every item.
 
 ```python
 def linear_search(items, key):
@@ -27,10 +27,10 @@ def linear_search(items, key):
 
 ## Binary search
 
-Think of a printed dictionary: open near the middle, see whether your word comes before or after that page, and ignore the other half. Binary search compares the key with the middle item and drops the half that can't hold it.
+It works like looking up a word in a printed dictionary: open near the middle, see whether your word comes before or after that page, and ignore the other half. Binary search compares the key with the middle item and drops the half that can't hold it.
 
 > [!IMPORTANT]
-> **Key idea:** Binary search throws away half of what's left with every comparison, which only makes sense when the list is in order.
+> **Key idea:** Every comparison rules out half of the remaining items, so even a very long list takes few checks.
 
 The list must be **sorted**. Only then does "bigger than the middle item" mean "to the right". Unsorted, it can miss a key that's there.
 
@@ -81,7 +81,7 @@ items    4  11  19  26  33  47  52  64  78
 ```
 <!-- /figure -->
 
-Here's the same trace as a table, the way to write it on paper, with one row per check. Python's `//` divides and rounds down to a whole number: in step 2, 3 divided by 2 is 1.5, so `mid` is 1.
+On paper, write the trace as a table with one row per check. Python's `//` divides and rounds down to a whole number: in step 2, 3 divided by 2 is 1.5, so `mid` is 1.
 
 | Step | low | high | mid = (low + high) // 2 | items[mid] | What happens |
 |---|---|---|---|---|---|
@@ -122,7 +122,7 @@ Still O(log n) time, but the waiting calls use O(log n) stack memory where the l
 Binary search with a smarter guess: it uses the key's value to estimate where it should sit, like opening a phone book near the back for "W". On sorted, evenly spread values it averages O(log log n); on lopsided values the guesses go wrong, and the worst case is O(n).
 
 > [!IMPORTANT]
-> **Key idea:** Interpolation search is only as good as its guesses: evenly spread values make it faster than binary search, and lopsided values make it slower.
+> **Key idea:** Evenly spread values make interpolation search faster than binary search, and lopsided values make it slower.
 
 ## Big-O summary
 

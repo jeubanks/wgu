@@ -1,6 +1,6 @@
 # 7. Hash tables
 
-A hash table computes where a key belongs instead of searching for it.
+A hash table computes which bucket a key belongs in, so it doesn't search every item.
 
 After this page you can:
 
@@ -13,7 +13,7 @@ After this page you can:
 A hash table is an array of **buckets**. A **hash function** turns a key into a bucket index. The simplest is the **modulo hash**, `key % N`, where N is the number of buckets. With N = 10, key 47 goes in bucket 7, and a search for 47 looks only in bucket 7.
 
 > [!IMPORTANT]
-> **Key idea:** A hash function sends each key straight to one bucket, and because keys outnumber buckets, some keys will always have to share.
+> **Key idea:** A hash function sends each key to one bucket. There are more possible keys than buckets, so some keys collide.
 
 - **By hand:** 3045 % 1009: 3045 ÷ 1009 = 3.01..., so subtract 3 × 1009: 3045 − 3027 = **18**.
 - **Negative keys:** Python's `%` with a positive N always gives 0 to N − 1. `-13 % 10` is 7, because −13 = −2 × 10 + 7. Some languages give −3, so their tables add N.
@@ -43,7 +43,7 @@ bucket 4:  []
 <!-- /figure -->
 
 > [!IMPORTANT]
-> **Key idea:** With chaining, a table is only as fast as its longest bucket list, so an even spread of keys is what keeps it quick.
+> **Key idea:** With chaining, a search reads one bucket's list, so it's fast when the keys are spread evenly.
 
 Insert, search and remove work only on the key's bucket list. A search for 32 compares against 12, 7, then 32. Spread evenly, lists stay short: O(1) on average. All in one bucket: O(n).
 
@@ -52,7 +52,7 @@ Insert, search and remove work only on the key's bucket list. A search for 32 co
 With **open addressing**, each bucket holds one item. If the home bucket is taken, the table **probes** other buckets in a fixed order.
 
 > [!IMPORTANT]
-> **Key idea:** Insert, search, and remove all walk the same probe path, so nothing may break that path once keys depend on it.
+> **Key idea:** Insert, search, and remove all follow the same probe path, so a change that breaks the path can hide keys further along it.
 
 ### Linear probing
 

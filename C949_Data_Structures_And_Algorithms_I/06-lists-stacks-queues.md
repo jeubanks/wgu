@@ -10,7 +10,7 @@ After this page you can:
 
 ## Arrays and Python lists
 
-An array keeps its items side by side in one block of memory. Item i's address is the start plus i times the item size, so `a[i]` is O(1). The catch: inserting in the middle shifts every later item right first:
+An array keeps its items side by side in one block of memory. Item i's address is the start plus i times the item size, so `a[i]` is O(1). Inserting in the middle is slower, because it shifts every later item right first:
 
 <!-- figure
 index: yes
@@ -25,7 +25,7 @@ after:   [K, P, M, R, T, W]     W, T, R shifted right (3 shifts)
 <!-- /figure -->
 
 > [!IMPORTANT]
-> **Key idea:** An array finds any index instantly, but every change in the middle moves all the items after it.
+> **Key idea:** An array is fast to read by index, but inserting or deleting in the middle moves all the items after it.
 
 Removing from the middle shifts the later items left. Both are O(n). The end is the cheap spot: `append` and `pop()` shift nothing.
 
@@ -47,7 +47,7 @@ A Python `list` is a **dynamic array** with spare slots. When they run out, `app
 Each **node** holds a value and a `next` pointer. The list keeps `head` (first node) and `tail` (last node). The last node's `next` is `None`.
 
 > [!IMPORTANT]
-> **Key idea:** A linked list makes changes next to a node you already hold cheap, but getting to that node means walking from the head.
+> **Key idea:** In a linked list, inserting after a node you already have is quick, but reaching that node means walking from the head.
 
 <!-- figure
 list: 3 8 5 2
@@ -101,7 +101,7 @@ edges: 6>2, 2>10, 10>7
 Each node also has a `prev` pointer to the node before it.
 
 > [!IMPORTANT]
-> **Key idea:** A `prev` pointer on every node buys backward walks and quick unlinking, paid for in memory and extra pointer updates.
+> **Key idea:** With a `prev` pointer on every node, you can walk backward and remove a node you already have without searching for the one before it, but each node takes more memory and each change updates more pointers.
 
 <!-- figure
 list: 3 8 5 2
@@ -112,7 +112,7 @@ None ← [3] ⇄ [8] ⇄ [5] ⇄ [2] → None
 ```
 <!-- /figure -->
 
-It costs memory and more pointer updates. In return:
+What changes:
 
 - **Remove** any node you have, the tail included, in O(1): `cur.prev.next = cur.next` and `cur.next.prev = cur.prev`.
 - **Insert after** `cur` changes four pointers: the new node's `next` and `prev`, `cur.next`, and the old successor's `prev`.
@@ -125,7 +125,7 @@ In a **circular** list, the tail's `next` points back to the head, so a walk sto
 A **stack** is last in, first out (LIFO). **Push** adds on top, **pop** removes and returns the top, and **peek** reads the top without removing it. Popping an empty stack is an error.
 
 > [!IMPORTANT]
-> **Key idea:** A stack always hands back the newest item, so keep its top at an end where adding and removing are both cheap.
+> **Key idea:** A stack returns the newest item, so put its top at an end where adding and removing are both O(1).
 
 Put the top where adding and removing are both O(1):
 
@@ -139,7 +139,7 @@ Stacks handle "most recent first" jobs: undo, matching brackets, the call stack.
 A **queue** is first in, first out (FIFO). **Enqueue** adds at the back, **dequeue** removes and returns the front, and **peek** reads the front.
 
 > [!IMPORTANT]
-> **Key idea:** A queue always hands back the oldest item, so it needs a structure that can take from the front without moving the rest.
+> **Key idea:** A queue returns the oldest item, so it needs a structure that can remove the front without moving the rest.
 
 A `list` makes a poor queue. `pop(0)` takes the front, then every other item shifts left to close the gap:
 

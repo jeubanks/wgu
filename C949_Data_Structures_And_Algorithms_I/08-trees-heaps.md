@@ -175,7 +175,7 @@ tree: Level-order: F B G A D I :: F^1{B^2{A^4, D^5}, G^3{, I^6}}
 A **max-heap** is a complete binary tree where every parent is **≥** its children, so the largest key is at the root. A **min-heap** flips that. There's no left-right rule, so finding an arbitrary key is O(n).
 
 > [!IMPORTANT]
-> **Key idea:** A heap only promises that each parent outranks its children, and its complete shape lets it live in an array with no gaps.
+> **Key idea:** In a heap, each parent comes before its children in priority, and the complete shape means it can be stored in an array with no gaps.
 
 ### Stored in an array
 
@@ -254,7 +254,7 @@ A min-heap flips the comparisons. **Heapify** builds a heap from an unsorted arr
 A **priority queue** dequeues the highest-priority item first. It's usually a heap: enqueue inserts, dequeue removes the root, peek reads it.
 
 > [!IMPORTANT]
-> **Key idea:** A priority queue always serves the most urgent item next, and a heap does that without keeping everything sorted.
+> **Key idea:** A priority queue removes the most urgent item next. A heap can do that without keeping all the items sorted.
 
 Python's `heapq` works on a plain list as a **min-heap**: `heappop` returns the **smallest**.
 

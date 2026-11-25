@@ -12,7 +12,7 @@ After this page you can:
 
 - **Pass:** one trip through the list, or through its unsorted part. Simple sorts are traced pass by pass.
 - **Stable:** items with equal keys keep their original order. Sorting `5a 2 5b` (two 5s, told apart by letter) stably gives `2 5a 5b`, never `2 5b 5a`.
-- **In place:** uses only O(1) extra memory. That's about memory, not order: a sort can be stable without being in place, or the reverse.
+- **In place:** uses only O(1) extra memory. A sort can be stable without being in place, or the reverse.
 - **Comparison sort:** orders items only by comparing two at a time, and can't beat O(n log n) on average. Radix, counting and bucket sort look at digits or value ranges instead.
 
 The examples start from `29 4 17 8 42 11`. In the diagram below, compare sorted and reversed input.
@@ -30,7 +30,7 @@ The examples start from `29 4 17 8 42 11`. In the diagram below, compare sorted 
 3. Repeat with the rest of the list.
 
 > [!IMPORTANT]
-> **Key idea:** Selection sort can't tell when a list is already sorted, so it does the same quadratic work on every input.
+> **Key idea:** Selection sort does the same amount of work whatever order the list starts in.
 
 <!-- figure
 row: start | 29 4 17 8 42 11
@@ -55,7 +55,7 @@ It works like sorting a hand of cards. The first item counts as sorted.
 3. Repeat until every item has been placed.
 
 > [!IMPORTANT]
-> **Key idea:** Insertion sort does little work when items are already close to their places and the most when they're in reverse.
+> **Key idea:** Insertion sort is fast when items are close to their places, and slowest when they're in reverse order.
 
 <!-- figure
 row: start | 29 4 17 8 42 11
@@ -103,7 +103,7 @@ This guide uses gaps that are powers of 2 minus 1, below the length (for 100 ite
 ## Quicksort
 
 > [!IMPORTANT]
-> **Key idea:** Quicksort is only as fast as its pivots: splits near the middle keep it quick, and lopsided splits make it quadratic.
+> **Key idea:** The pivots set quicksort's speed: it's fast when they split the list near the middle, and slow when the splits are lopsided.
 
 1. Pick a **pivot**. Many books use the last item; zyBooks and these pages use the **middle** item, at (low + high) // 2.
 2. **Partition**: move smaller values to the left and larger values to the right.
@@ -140,7 +140,7 @@ done      3  7 15 | 61 38 24 50   low passed high
 3. **Merge** the sorted halves: keep taking the smaller of the two front items.
 
 > [!IMPORTANT]
-> **Key idea:** Merge sort's cost never depends on the input order, but it needs a second list's worth of memory to merge into.
+> **Key idea:** Merge sort's cost never depends on the input order, but merging needs O(n) extra memory.
 
 <!-- figure
 row: split | 29 4 17 // 8 42 11
