@@ -67,9 +67,13 @@ A **BST** adds a rule at every node: the left subtree is all **smaller**, the ri
 
 ### Search and insert
 
-**Search:** from the root, go left if smaller, right if larger, until you find the key or step off the tree (not there).
+**Search** for a key:
 
-**Insert:** search, and add a leaf where the search steps off.
+1. Start at the root.
+2. If the key is smaller than the node's, go left. If it's larger, go right.
+3. Repeat until you find the key or step off the tree, which means it isn't there.
+
+**Insert:** search for the key, and add a leaf where the search steps off.
 
 <!-- figure
 tree: Insert 40: the search path is highlighted :: 62@h{31@h{15, 47@h{40@h, 52}}, 84{73, 96}}
@@ -198,7 +202,10 @@ array  72 45 63 30 41 50 18            /    \
 
 ### Insert: percolate up
 
-Append the key, then swap it with its parent while it's larger. Inserting 68:
+1. Append the key at the end of the array.
+2. While it's larger than its parent, swap the two.
+
+Inserting 68:
 
 <!-- figure
 index: yes
@@ -215,7 +222,11 @@ swap        72 68 63 45 41 50 18 30   parent 72: stop
 
 ### Remove the root: percolate down
 
-Save the root, move the **last** item there, and swap it with its **larger** child while it's smaller. Removing 72:
+1. Save the root. It's the answer.
+2. Move the **last** item to the root.
+3. While it's smaller than one of its children, swap it with its **larger** child.
+
+Removing 72:
 
 <!-- figure
 index: yes

@@ -76,7 +76,10 @@ edges: A-B, A-D, B-C, B-E, C-E, D-E
 
 ### Networks, not hierarchies
 
-A tree is **hierarchical**: one root, and every other node has exactly one parent. A graph has no root and no levels, any vertex can link to any other, and cycles are allowed. It's a **network**. A tree is just a connected graph with no cycles. (The course study guide's design table calls graphs hierarchical; they aren't.)
+- **A tree is hierarchical:** it has one root, and every other node has exactly one parent.
+- **A graph is a network:** it has no root and no levels, any vertex can link to any other, and cycles are allowed.
+
+A tree is just a connected graph with no cycles. (The course study guide's design table calls graphs hierarchical; they aren't.)
 
 ## Adjacency list vs adjacency matrix
 
@@ -126,7 +129,14 @@ Both visit every vertex reachable from a start, tracking which are seen, taking 
 
 </div>
 
-**Breadth-first search** spreads like a ripple, 1 edge out, then 2. With a **queue** (`collections.deque`): dequeue a vertex, visit it, enqueue its unseen neighbors. From A:
+**Breadth-first search** spreads like a ripple, 1 edge out, then 2. It uses a **queue** (`collections.deque`):
+
+1. Put the start vertex in the queue and mark it seen.
+2. Dequeue a vertex and visit it.
+3. Enqueue each of its unseen neighbors, and mark them seen.
+4. Repeat steps 2 and 3 until the queue is empty.
+
+From A:
 
 | Visit | Enqueue | Queue after |
 |---|---|---|
@@ -136,7 +146,10 @@ Both visit every vertex reachable from a start, tracking which are seen, taking 
 
 Order: A, B, D, C, E. BFS finds the path with the fewest edges.
 
-**Depth-first search** is a maze walk: go as deep as possible, then back up to the last fork. Recursively: visit the vertex, then call DFS on each unseen neighbor.
+**Depth-first search** is a maze walk: go as deep as possible, then back up to the last fork. Recursively:
+
+1. Visit the vertex.
+2. Call DFS on each neighbor that's still unseen, one at a time.
 
 <!-- figure
 call: dfs(A) | visit A

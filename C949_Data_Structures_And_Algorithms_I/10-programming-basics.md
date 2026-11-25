@@ -67,7 +67,13 @@ Python is dynamic and strong. Java is static and strong. JavaScript is dynamic a
 | 8 | `and` |
 | 9 | `or` |
 
-**Example 1:** `4 + 6 // 4 * 2`. `//` and `*` share a row, so left to right: `6 // 4` is 1, `1 * 2` is 2, then `4 + 2` is **6**. Drawn as a tree, the operator that runs first sits lowest:
+**Example 1:** `4 + 6 // 4 * 2`. `//` and `*` share a row, so they run left to right, before `+`:
+
+1. `6 // 4` is 1.
+2. `1 * 2` is 2.
+3. `4 + 2` is **6**.
+
+Drawn as a tree, the operator that runs first sits lowest:
 
 <!-- figure
 nary: +{4, *{//{6, 4}, 2}}

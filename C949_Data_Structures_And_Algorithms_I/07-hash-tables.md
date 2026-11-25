@@ -56,7 +56,13 @@ With **open addressing**, each bucket holds one item. If the home bucket is take
 
 ### Linear probing
 
-Try the home bucket h, then the next, wrapping at the end: bucket `(h + i) % m` for i = 0, 1, 2, ..., with m buckets. Inserting 43, 13, 53, then 23 into 10 buckets:
+To insert into a table with m buckets:
+
+1. Try the home bucket h.
+2. If it's taken, try the next bucket. After the last bucket, wrap around to bucket 0.
+3. Repeat until you find an empty bucket.
+
+As a formula, try bucket `(h + i) % m` for i = 0, 1, 2, ... Inserting 43, 13, 53, then 23 into 10 buckets:
 
 <!-- figure
 index: yes
@@ -75,7 +81,7 @@ insert 23    -  -  - 43 13 53 23  -  -  -
 <!-- /figure -->
 
 - **Search** follows the same path until it finds the key or a never-used bucket.
-- **Remove** marks the bucket **empty-after-removal**, not truly empty. If bucket 4 above were just emptied, a search for 53 would stop there and miss it. Searches pass removed buckets; inserts may reuse them.
+- **Remove** marks the bucket **empty-after-removal**, not truly empty. Searches pass removed buckets; inserts may reuse them. If bucket 4 above were just emptied, a search for 53 would stop there and miss it.
 - Full runs like buckets 3 to 6 are **clusters**, and they grow as keys pile onto their ends.
 
 **Quadratic probing** jumps farther each try, `(h + c1·i + c2·i²) % m`, to break up clusters. **Double hashing** takes its step size from a second hash function, `(h1 + i·h2) % m`; h2 must never be 0.
@@ -93,7 +99,12 @@ The **load factor** is items ÷ buckets: 6 items in 10 buckets is 0.6. With chai
 > [!IMPORTANT]
 > **Key idea:** A table slows down as it fills, so it grows and rehashes every key before it gets too full.
 
-Past a threshold (often 0.75), the table **resizes**: about twice the buckets, and every item **rehashed**, since the index depends on N (17 is in bucket 7 of 10, but bucket 17 of 23). A resize is O(n) but rare, so inserts stay O(1) on average.
+Past a threshold (often 0.75), the table **resizes**:
+
+1. Make a new table with about twice the buckets.
+2. **Rehash** every item into it, since the index depends on N: 17 is in bucket 7 of 10, but bucket 17 of 23.
+
+A resize is O(n) but rare, so inserts stay O(1) on average.
 
 ## Python's dict and set
 

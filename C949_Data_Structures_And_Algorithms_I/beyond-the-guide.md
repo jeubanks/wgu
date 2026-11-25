@@ -6,7 +6,12 @@ These come up in the zyBooks chapters but aren't in the course study guide's top
 
 An AVL tree is a [BST](08-trees-heaps.md) that keeps itself balanced. Every node has a **balance factor**: the height of its left subtree minus the height of its right subtree, counting a missing subtree as height −1. In an AVL tree every balance factor is −1, 0 or 1.
 
-After an insert or remove, the tree walks back up toward the root. If a node reaches +2 or −2, a **rotation** fixes it: a child moves up into the node's place and the node moves down, while the keys stay in BST order. A node that leans left-left or right-right needs one rotation; left-right or right-left needs two.
+After an insert or remove:
+
+1. Walk back up toward the root, checking balance factors.
+2. If a node reaches +2 or −2, fix it with a **rotation**: a child moves up into the node's place and the node moves down, while the keys stay in BST order.
+
+A node that leans left-left or right-right needs one rotation; left-right or right-left needs two.
 
 <!-- figure
 title: Right rotation at Y
@@ -41,7 +46,12 @@ New nodes go in red, then recoloring and rotations repair any broken rule. The r
 
 A B-tree node holds several sorted keys, which split a search several ways. In a B-tree of **order m**, a node has up to m children and m − 1 keys, a node with k keys has k + 1 children, and all leaves sit at the same depth. A **2-3-4 tree** is order 4: each node holds 1, 2 or 3 keys.
 
-New keys go into a leaf. A full node is **split**: its middle key moves up into the parent, and the keys on either side become two nodes. When the root splits, the tree grows one level taller at the top.
+New keys go into a leaf. A full node is **split**:
+
+1. Its middle key moves up into the parent.
+2. The keys on either side become two nodes.
+
+When the root splits, the tree grows one level taller at the top.
 
 <!-- figure
 btree: Full node :: 20 40 60
@@ -59,7 +69,12 @@ flow: yes
 
 ## Treaps
 
-A treap is a BST by key and a max-heap by a **random priority** given to each node when it's inserted. Insert as a normal BST leaf, then rotate the node up while its priority beats its parent's. To delete, rotate the node down until it's a leaf, then remove it. The random priorities make the tree's shape as if the keys had arrived in random order.
+A treap is a BST by key and a max-heap by a **random priority** given to each node when it's inserted.
+
+- **Insert:** add it as a normal BST leaf, then rotate the node up while its priority beats its parent's.
+- **Delete:** rotate the node down until it's a leaf, then remove it.
+
+The random priorities make the tree's shape as if the keys had arrived in random order.
 
 **Big-O:** O(log n) expected for search, insert and remove; O(n) worst case if the priorities come out badly.
 
@@ -97,13 +112,24 @@ It's greedy: once a vertex is taken, it's never revisited, which is why a negati
 
 ## Bellman-Ford
 
-Solves the same problem as Dijkstra but allows negative edge weights. It relaxes every edge in the graph, then does it again, V − 1 times in all, since a shortest path has at most V − 1 edges. One extra pass that still shortens a distance means there's a **negative cycle**, so no shortest path exists.
+Solves the same problem as Dijkstra but allows negative edge weights.
+
+1. Relax every edge in the graph. That's one pass.
+2. Make V − 1 passes in all, since a shortest path has at most V − 1 edges.
+3. Make one extra pass. If it still shortens a distance, there's a **negative cycle**, so no shortest path exists.
 
 **Big-O:** O(V·E) in every case.
 
 ## Topological sort
 
-Orders the vertices of a **directed acyclic graph** so every edge X → Y has X before Y, like listing courses so each comes after its prerequisites. One method: count each vertex's incoming edges, repeatedly output a vertex whose count is 0, and subtract 1 from each vertex it points to. A graph usually has several valid orders, and none if it has a cycle.
+Orders the vertices of a **directed acyclic graph** so every edge X → Y has X before Y, like listing courses so each comes after its prerequisites. One method:
+
+1. Count each vertex's incoming edges.
+2. Output a vertex whose count is 0.
+3. Subtract 1 from the count of each vertex it points to.
+4. Repeat steps 2 and 3 until no vertex with count 0 is left.
+
+A graph usually has several valid orders, and none if it has a cycle.
 
 **Big-O:** O(V + E).
 
@@ -111,13 +137,25 @@ Orders the vertices of a **directed acyclic graph** so every edge X → Y has X 
 
 A **minimum spanning tree** of a connected, weighted, undirected graph is a set of V − 1 edges that connects every vertex with the smallest total weight. It isn't a shortest-path map: two vertices can be farther apart inside the tree than in the graph.
 
-**Kruskal's algorithm** sorts the edges, cheapest first, and keeps each edge unless its two ends are already connected by kept edges (that would close a cycle). Sets of connected vertices track this; keeping an edge merges two sets.
+**Kruskal's algorithm:**
+
+1. Sort the edges, cheapest first.
+2. Take the next edge. Keep it unless its two ends are already connected by kept edges, which would close a cycle.
+3. Repeat step 2 until V − 1 edges are kept.
+
+Sets of connected vertices track this; keeping an edge merges two sets.
 
 **Big-O:** O(E log E), from sorting the edges.
 
 ## Floyd-Warshall
 
-Finds the shortest distance between **every** pair of vertices, in a V × V matrix. Start with each edge's weight, 0 on the diagonal and ∞ elsewhere. Then, for each vertex K, check every pair X, Y: if going X → K → Y is shorter than the current entry, replace it. It allows negative edges but not negative cycles.
+Finds the shortest distance between **every** pair of vertices, in a V × V matrix.
+
+1. Start with each edge's weight, 0 on the diagonal, and ∞ elsewhere.
+2. Pick a vertex K and check every pair X, Y. If going X → K → Y is shorter than the current entry, replace it.
+3. Repeat step 2 with every vertex as K.
+
+It allows negative edges but not negative cycles.
 
 **Big-O:** O(V³) time and O(V²) space.
 
@@ -174,7 +212,11 @@ Dynamic programming solves each smaller subproblem once, saves the answer, and b
 
   Each value is computed once: O(n). A loop that keeps only the last two values is O(n) time and O(1) space.
 
-- **Longest common subsequence:** the longest string of characters that appears, in order but not necessarily side by side, in both strings. CART and CHAT share CAT. Fill an N × M table: on a match, 1 + the entry up and to the left; otherwise, the larger of the entry above and the entry to the left. The bottom-right entry is the length. A **substring** instead must be unbroken, so a mismatch resets the entry to 0.
+- **Longest common subsequence:** the longest string of characters that appears, in order but not necessarily side by side, in both strings. CART and CHAT share CAT. Fill an N × M table, one entry per pair of characters:
+  - **If they match:** 1 + the entry up and to the left.
+  - **If not:** the larger of the entry above and the entry to the left.
+
+  The bottom-right entry is the length. A **substring** instead must be unbroken, so a mismatch resets the entry to 0.
 
 **Big-O:** LCS is O(NM) time and space.
 

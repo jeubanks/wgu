@@ -61,7 +61,14 @@ head                    tail
 
 - **Prepend:** point the new node at `head`, then move `head` to it. O(1).
 - **Append:** set `tail.next` to the new node, then move `tail` to it. O(1) with a tail pointer; O(n) without one, since you walk to the end first. In an empty list, both `head` and `tail` point at the new node.
-- **Insert after** a node `cur` you already have: set `new.next = cur.next`, then `cur.next = new`. O(1). Do it in that order: setting `cur.next` first loses the only pointer to the rest of the list. If `cur` was the tail, move `tail` too.
+
+**Insert after** a node `cur` you already have, in O(1):
+
+1. Set `new.next = cur.next`.
+2. Set `cur.next = new`.
+3. If `cur` was the tail, move `tail` to the new node.
+
+The order matters: setting `cur.next` first loses the only pointer to the rest of the list.
 
 <!-- figure
 title: Insert 10 after the node holding 2
@@ -75,9 +82,13 @@ edges: 6>2, 2>10, 10>7
 ```
 <!-- /figure -->
 
-- **Remove:** the node **before** the one leaving points past it (`prev.next = prev.next.next`). Removing the head is O(1): move `head` to `head.next`. Removing the **tail** is O(n) even with a tail pointer, because the new tail is the node before it, found by walking.
+**Remove** a node, depending on where it is:
 
-- **Search:** walk from `head` until you find the value or reach `None`. Best O(1) (it's the head); average and worst O(n) (near the end, or missing).
+- **In the middle:** the node **before** it points past it (`prev.next = prev.next.next`). Finding that node takes a walk: O(n).
+- **The head:** move `head` to `head.next`. O(1).
+- **The tail:** O(n) even with a tail pointer, because the new tail is the node before it, found by walking.
+
+**Search:** walk from `head` until you find the value or reach `None`. Best O(1) (it's the head); average and worst O(n) (near the end, or missing).
 
 <div class="viz" data-viz="linked-list" markdown>
 
@@ -144,7 +155,11 @@ after:   [B, C, D, ·]     B, C, D shifted left (3 shifts)
 ```
 <!-- /figure -->
 
-That's O(n) per dequeue. Use `collections.deque`: `append(x)` enqueues, `popleft()` dequeues, `q[0]` peeks, all O(1). A linked queue enqueues at the tail and dequeues at the head. An array queue uses a **circular array**, moving a `front` index (wrapping with `%`) instead of the items.
+That's O(n) per dequeue. These all take O(1):
+
+- **In Python:** use `collections.deque`. `append(x)` enqueues, `popleft()` dequeues, and `q[0]` peeks.
+- **A linked queue** enqueues at the tail and dequeues at the head.
+- **An array queue** uses a **circular array**: it moves a `front` index (wrapping with `%`) and leaves the items in place.
 
 <div class="viz" data-viz="stack-queue" markdown>
 
