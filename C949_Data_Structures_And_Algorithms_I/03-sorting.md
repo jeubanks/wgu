@@ -433,9 +433,9 @@ hundreds     2  45  66 170 802     sorted
 
   </details>
 
-- **3.7** Which sorting algorithm does each function implement?
+- **3.7** Recognize each sort from its code.
 
-  **a)**
+  **a)** Which sort is `mystery`?
 
   ```python
   def mystery(items):
@@ -456,7 +456,7 @@ hundreds     2  45  66 170 802     sorted
 
   <!-- answer:3.7a choice: A -->
 
-  **b)**
+  **b)** Which sort is `mystery2`?
 
   ```python
   def mystery2(items):
