@@ -38,6 +38,7 @@ Nothing here yet.
 
 ## Done
 
+- C949 page 2: the binary search steps put **last index** in bold and say it is one less than the list's length (#80)
 - C949 2.1 asks why ignoring half the items is safe only in a sorted list, with wrong choices that are plainly wrong. The old choice A, about computing the middle index, could pass as correct (#79)
 - C949 page 2, binary search trace: the text explains the drawing (each row is one check, what blue and faded cells and the labels mean), says low, high and mid are indexes, and the table works out every mid and says why low or high moves (#78)
 - C949 page 1, Tracing recursion: the factorial example now says what a factorial is and what n is, and follows `Factorial(3)` throughout. Tables show each call's own n going down and the answers coming back up, and both drawings show n for every call. The Fibonacci and infinite-recursion examples say what n is too (#77)

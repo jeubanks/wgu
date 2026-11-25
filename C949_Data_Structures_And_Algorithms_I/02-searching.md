@@ -38,7 +38,7 @@ The list must be **sorted**. Only then does "bigger than the middle item" mean "
 
 `low`, `high` and `mid` are **indexes**: positions in the list, counted from 0. `low` and `high` mark the ends of the part still being searched, and `mid` is its middle.
 
-Start with `low = 0` and `high` at the last index. While `low <= high`, compute `mid = (low + high) // 2`. To work out `mid`, add `low` and `high`, then divide by 2. The `//` rounds down: with `low` 2 and `high` 3, the sum is 5, and `5 // 2` is 2. Then compare `items[mid]`, the value at that index, with the key:
+Start with `low = 0` and `high` at the **last index**. That's one less than the length of the list, since indexes start at 0: a list of 9 items has last index 8. While `low <= high`, compute `mid = (low + high) // 2`. To work out `mid`, add `low` and `high`, then divide by 2. The `//` rounds down: with `low` 2 and `high` 3, the sum is 5, and `5 // 2` is 2. Then compare `items[mid]`, the value at that index, with the key:
 
 - `items[mid] == key`: found, return `mid`.
 - `items[mid] < key`: the key can only be right of mid, so `low = mid + 1`.
