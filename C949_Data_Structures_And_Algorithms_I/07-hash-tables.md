@@ -134,7 +134,7 @@ A key must be **hashable**, meaning immutable: numbers, strings, tuples of those
 
   <!-- answer:7.1a choice: B -->
 
-  **b)** After all five are in, a search for 29 (not in the table) compares against how many keys?
+  **b)** 29 isn't in the table. After all five inserts, how many keys does a search for 29 compare it with?
 
   A. 1
 
@@ -168,7 +168,7 @@ A key must be **hashable**, meaning immutable: numbers, strings, tuples of those
 
   <!-- answer:7.2a choice: D -->
 
-  **b)** Now 21 is removed. How many buckets does a search for 11 look at?
+  **b)** Next, 21 is removed. How many buckets does a search for 11 then check, counting the one where it's found?
 
   A. 4
 
@@ -188,7 +188,7 @@ A key must be **hashable**, meaning immutable: numbers, strings, tuples of those
 
   </details>
 
-- **7.3** By hand.
+- **7.3** Hash table arithmetic, by hand.
 
   **a)** A table uses `key % 101`. Which bucket does 7777 go in?
 
@@ -235,9 +235,9 @@ A key must be **hashable**, meaning immutable: numbers, strings, tuples of those
 
   </details>
 
-- **7.4** Pick the Big-O for n items.
+- **7.4** What is the Big-O of each operation on n items?
 
-  **a)** Hash table search, worst case?
+  **a)** A hash table search, in the worst case
 
   A. O(1)
 
@@ -249,7 +249,7 @@ A key must be **hashable**, meaning immutable: numbers, strings, tuples of those
 
   <!-- answer:7.4a choice: B -->
 
-  **b)** One resize?
+  **b)** Resizing a hash table once
 
   A. O(1)
 
@@ -261,24 +261,37 @@ A key must be **hashable**, meaning immutable: numbers, strings, tuples of those
 
   <!-- answer:7.4b choice: C -->
 
-  **c)** `x in some_list`, then `x in some_set` on average?
+  **c)** `x in some_list`, in the worst case
 
-  A. O(n), then O(1)
+  A. O(1)
 
-  B. O(1), then O(1)
+  B. O(log n)
 
-  C. O(n), then O(n)
+  C. O(n)
 
-  D. O(log n), then O(1)
+  D. O(n²)
 
-  <!-- answer:7.4c choice: A -->
+  <!-- answer:7.4c choice: C -->
+
+  **d)** `x in some_set`, on average
+
+  A. O(1)
+
+  B. O(log n)
+
+  C. O(n)
+
+  D. O(n²)
+
+  <!-- answer:7.4d choice: A -->
 
   <details>
   <summary>Answer</summary>
 
   - **a)** **B.** Every key can collide into one chain or cluster. A is the average case.
   - **b)** **C.** A resize rehashes all n items. A confuses it with the average insert, which stays O(1) because resizes are rare.
-  - **c)** **A.** A list is scanned item by item; a set hashes to one bucket. D treats the list as if it were sorted and binary searched.
+  - **c)** **C.** A list is scanned item by item. B treats it as if it were sorted and binary searched.
+  - **d)** **A.** A set hashes to one bucket. C is its worst case.
 
   </details>
 
@@ -304,7 +317,7 @@ A key must be **hashable**, meaning immutable: numbers, strings, tuples of those
 
   <!-- answer:7.5a choice: D -->
 
-  **b)** Which can't be a dict key?
+  **b)** Which of these can't be a key in a Python dict?
 
   A. `(4, 5)`
 
@@ -324,21 +337,49 @@ A key must be **hashable**, meaning immutable: numbers, strings, tuples of those
 
   </details>
 
-- **7.6** Which structures fit these jobs best, in order: count how many times each word appears; track which usernames are taken; keep songs in play order, with repeats?
+- **7.6** Pick the best Python structure for each job.
 
-  A. set, dict, list
+  **a)** Count how many times each word appears.
 
-  B. list, set, dict
+  A. list
 
-  C. dict, set, list
+  B. set
 
-  D. dict, list, set
+  C. dict
 
-  <!-- answer:7.6 choice: C -->
+  D. tuple
+
+  <!-- answer:7.6a choice: C -->
+
+  **b)** Track which usernames are taken.
+
+  A. list
+
+  B. set
+
+  C. dict
+
+  D. tuple
+
+  <!-- answer:7.6b choice: B -->
+
+  **c)** Keep songs in play order, with repeats, and add more later.
+
+  A. list
+
+  B. set
+
+  C. dict
+
+  D. tuple
+
+  <!-- answer:7.6c choice: A -->
 
   <details>
   <summary>Answer</summary>
 
-  - **C.** Each word has a count: key-value pairs, a **dict**. Only membership matters for usernames: a **set**. Order and repeats matter for songs: a **list**. D would drop repeated songs.
+  - **a)** **C.** Each word has a count: key-value pairs.
+  - **b)** **B.** Only membership matters, and a set checks it in O(1) on average. A would scan every name.
+  - **c)** **A.** Order and repeats both matter. B drops repeated songs, and D can't be changed.
 
   </details>

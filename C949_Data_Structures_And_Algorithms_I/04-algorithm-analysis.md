@@ -228,7 +228,7 @@ The same values get recomputed, and the tree nearly doubles each time n goes up 
 
 ## Questions
 
-- **4.1** Simplify each count to a Big-O.
+- **4.1** Each expression counts an algorithm's steps. What is its Big-O?
 
   **a)** 4n³ + 100n² + 7
 
@@ -295,7 +295,7 @@ The same values get recomputed, and the tree nearly doubles each time n goes up 
 
   </details>
 
-- **4.3** Two blocks.
+- **4.3** Two loops, one after the other.
 
   ```python
   count = 0
@@ -317,7 +317,7 @@ The same values get recomputed, and the tree nearly doubles each time n goes up 
 
   <!-- answer:4.3a choice: B -->
 
-  **b)** What is the Big-O?
+  **b)** What is the Big-O of this code, in terms of n?
 
   A. O(n²)
 
@@ -358,7 +358,7 @@ The same values get recomputed, and the tree nearly doubles each time n goes up 
 
   <!-- answer:4.4a choice: B -->
 
-  **b)** What is the Big-O?
+  **b)** What is the Big-O of this code, in terms of n?
 
   A. O(n²)
 
@@ -378,7 +378,7 @@ The same values get recomputed, and the tree nearly doubles each time n goes up 
 
   </details>
 
-- **4.5** Multiplying by 3.
+- **4.5** A loop variable that's multiplied by 3 each time.
 
   ```python
   count = 0
@@ -400,7 +400,7 @@ The same values get recomputed, and the tree nearly doubles each time n goes up 
 
   <!-- answer:4.5a choice: A -->
 
-  **b)** What is the Big-O?
+  **b)** What is the Big-O of this code, in terms of n?
 
   A. O(n)
 
@@ -428,7 +428,7 @@ The same values get recomputed, and the tree nearly doubles each time n goes up 
       print(x)
   ```
 
-  **a)** With n items, what is the Big-O?
+  **a)** What is the Big-O of this loop when `items` is a list of n items?
 
   A. O(1)
 
@@ -460,7 +460,7 @@ The same values get recomputed, and the tree nearly doubles each time n goes up 
 
   </details>
 
-- **4.7** Checking for a repeated value. What are its best and worst cases?
+- **4.7** This function checks a list of n items for a repeated value.
 
   ```python
   def has_repeat(items):
@@ -471,25 +471,39 @@ The same values get recomputed, and the tree nearly doubles each time n goes up 
       return False
   ```
 
-  A. Best O(n), worst O(n²)
+  **a)** What is its best-case Big-O?
 
-  B. Best O(1), worst O(n)
+  A. O(1)
 
-  C. Best O(n²), worst O(n²)
+  B. O(log n)
 
-  D. Best O(1), worst O(n²)
+  C. O(n)
 
-  <!-- answer:4.7 choice: D -->
+  D. O(n²)
+
+  <!-- answer:4.7a choice: A -->
+
+  **b)** What is its worst-case Big-O?
+
+  A. O(1)
+
+  B. O(log n)
+
+  C. O(n)
+
+  D. O(n²)
+
+  <!-- answer:4.7b choice: D -->
 
   <details>
   <summary>Answer</summary>
 
-  - **D.** Best: the first two items match, so it returns after one comparison. Worst: no value repeats, so it compares all n(n − 1) / 2 pairs.
-  - A assumes the outer loop must finish once; the `return` can end it on the first pass.
+  - **a)** **A.** If the first two items match, it returns after one comparison. C assumes the outer loop must finish once; the `return` can end it on the first pass.
+  - **b)** **D.** If no value repeats, it compares all n(n − 1) / 2 pairs.
 
   </details>
 
-- **4.8** Two calls on n − 1.
+- **4.8** Each call makes two calls on n − 1.
 
   ```python
   def f(n):
@@ -498,7 +512,7 @@ The same values get recomputed, and the tree nearly doubles each time n goes up 
       return f(n - 1) + f(n - 1)
   ```
 
-  **a)** How many calls does `f(3)` make in all, counting itself?
+  **a)** How many calls to `f` happen in all for `f(3)`, counting the first?
 
   A. 3
 
@@ -510,7 +524,7 @@ The same values get recomputed, and the tree nearly doubles each time n goes up 
 
   <!-- answer:4.8a choice: C -->
 
-  **b)** What is the Big-O?
+  **b)** What is the Big-O of this code, in terms of n?
 
   A. O(2ⁿ)
 

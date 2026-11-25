@@ -310,7 +310,7 @@ Topics in [Beyond the guide](beyond-the-guide.md) aren't asked here. For unlimit
 
   <!-- answer:11.5a choice: D -->
 
-  **b)** What index does the search return?
+  **b)** Which index does the search for 60 return?
 
   A. 11
 
@@ -416,7 +416,7 @@ Topics in [Beyond the guide](beyond-the-guide.md) aren't asked here. For unlimit
 
   <!-- answer:11.7b choice: B -->
 
-  **c)** Partition returns `high`, the last index of the left part. What index does it return?
+  **c)** Partition returns `high`, the last index of the left part. Which index does it return?
 
   A. 2
 
@@ -635,7 +635,7 @@ Topics in [Beyond the guide](beyond-the-guide.md) aren't asked here. For unlimit
 
   <!-- answer:11.11a choice: A -->
 
-  **b)** What is the Big-O?
+  **b)** What is the Big-O of this code, in terms of n?
 
   A. O(n)
 
@@ -678,7 +678,7 @@ Topics in [Beyond the guide](beyond-the-guide.md) aren't asked here. For unlimit
 
   <!-- answer:11.12a choice: C -->
 
-  **b)** What is the Big-O?
+  **b)** What is the Big-O of this code, in terms of n?
 
   A. O(n log n)
 
@@ -1144,7 +1144,7 @@ Topics in [Beyond the guide](beyond-the-guide.md) aren't asked here. For unlimit
 
   <!-- answer:11.20b choice: A -->
 
-  **c)** Then search for 53, which isn't in the table. How many buckets does the search check before it stops?
+  **c)** Then search for 53, which isn't in the table. How many buckets does the search check in all, counting the one that stops it?
 
   A. 1
 

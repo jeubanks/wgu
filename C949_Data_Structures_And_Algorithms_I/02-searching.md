@@ -167,7 +167,7 @@ Binary search with a smarter guess: it uses the key's value to estimate where it
 
   <!-- answer:2.2a choice: A -->
 
-  **b)** Searching for 5, which values does `items[mid]` take?
+  **b)** Searching for 5, which values does `items[mid]` take, in order?
 
   A. 30, 8
 
@@ -179,7 +179,7 @@ Binary search with a smarter guess: it uses the key's value to estimate where it
 
   <!-- answer:2.2b choice: D -->
 
-  **c)** What does the search for 5 return?
+  **c)** What number does the binary search for 5 return?
 
   A. 0
 
@@ -196,13 +196,13 @@ Binary search with a smarter guess: it uses the key's value to estimate where it
 
   - **a)** **A.** mid 4 (30): low = 5. mid 7 (59): low = 8. mid 8 (63): found. B rounds mid up; C sets `low = mid` and forgets the +1; D moves the wrong end.
   - **b)** **D.** mid 4 (30): high = 3. mid 1 (8): high = 0. mid 0 (2): low = 1. A stops before the last check, when low and high are both 0. C moves the wrong end.
-  - **c)** **B.** low passed high, so the key is missing: −1. C is where low ended, not a match.
+  - **c)** **B.** low passed high, so the function returns −1. C is where low ended, not a match.
 
   </details>
 
-- **2.3** `linear_search` on `7 3 9 3 5`.
+- **2.3** Let `items = [7, 3, 9, 3, 5]`, with indexes counted from 0. Use the `linear_search` function from this page.
 
-  **a)** What does searching for 3 return?
+  **a)** Which index does `linear_search(items, 3)` return?
 
   A. 1
 
@@ -214,7 +214,7 @@ Binary search with a smarter guess: it uses the key's value to estimate where it
 
   <!-- answer:2.3a choice: A -->
 
-  **b)** How many comparisons does searching for 6 make?
+  **b)** How many times does `linear_search(items, 6)` run the check `items[i] == key`?
 
   A. 3
 
@@ -229,8 +229,8 @@ Binary search with a smarter guess: it uses the key's value to estimate where it
   <details>
   <summary>Answer</summary>
 
-  - **a)** **A.** It returns at the first match, index 1. C is the last match; B counts from 1.
-  - **b)** **C.** 6 is missing, so all 5 items are checked. B stops one item short.
+  - **a)** **A.** The 3s are at indexes 1 and 3, and the search stops at the first one, index **1**. C is the index of the last 3, and also the value searched for. B counts positions from 1, and is also how many 3s there are.
+  - **b)** **C.** 6 isn't in the list, so all **5** items are checked. B stops one item short.
 
   </details>
 
@@ -253,9 +253,9 @@ Binary search with a smarter guess: it uses the key's value to estimate where it
 
   </details>
 
-- **2.5** Give the Big-O.
+- **2.5** What is the Big-O of each search on a list of n items?
 
-  **a)** Linear search, key is first:
+  **a)** Linear search, when the key is the first item
 
   A. O(1)
 
@@ -267,7 +267,7 @@ Binary search with a smarter guess: it uses the key's value to estimate where it
 
   <!-- answer:2.5a choice: A -->
 
-  **b)** Linear search, key missing:
+  **b)** Linear search, when the key isn't in the list
 
   A. O(1)
 
@@ -279,7 +279,7 @@ Binary search with a smarter guess: it uses the key's value to estimate where it
 
   <!-- answer:2.5b choice: C -->
 
-  **c)** Binary search, key missing:
+  **c)** Binary search, when the key isn't in the list
 
   A. O(1)
 
@@ -300,32 +300,54 @@ Binary search with a smarter guess: it uses the key's value to estimate where it
 
   </details>
 
-- **2.6** Which search fits each job?
+- **2.6** Pick the best search for each job.
 
-  | Job | Task |
-  |---|---|
-  | 1 | One lookup in an unsorted list |
-  | 2 | Many lookups in a large sorted Python list |
-  | 3 | A lookup in a sorted linked list |
+  **a)** You need one lookup in an unsorted Python list.
 
-  A. 1 binary, 2 binary, 3 binary
+  A. Linear search
 
-  B. 1 linear, 2 binary, 3 binary
+  B. Binary search
 
-  C. 1 binary, 2 binary, 3 linear
+  C. Sort the items first, then use binary search
 
-  D. 1 linear, 2 binary, 3 linear
+  D. Either one: they cost the same
 
-  <!-- answer:2.6 choice: D -->
+  <!-- answer:2.6a choice: A -->
+
+  **b)** You need many lookups in a large sorted Python list.
+
+  A. Linear search
+
+  B. Binary search
+
+  C. Sort the items first, then use binary search
+
+  D. Either one: they cost the same
+
+  <!-- answer:2.6b choice: B -->
+
+  **c)** You need one lookup in a sorted linked list.
+
+  A. Linear search
+
+  B. Binary search
+
+  C. Sort the items first, then use binary search
+
+  D. Either one: they cost the same
+
+  <!-- answer:2.6c choice: A -->
 
   <details>
   <summary>Answer</summary>
 
-  - **D.** Sorting first (O(n log n)) costs more than one O(n) scan. Binary search needs sorted data and O(1) index access; a linked list has no index, which B misses.
+  - **a)** **A.** One scan is O(n). C's sort alone costs O(n log n), more than the scan it saves.
+  - **b)** **B.** The list is sorted and can be indexed, so each lookup is O(log n) in place of O(n). C sorts a list that's already sorted.
+  - **c)** **A.** Binary search jumps to the middle by index, and a linked list has no index. B forgets the cost of walking there.
 
   </details>
 
-- **2.7** What is this, and what is its worst case?
+- **2.7** Read this code.
 
   ```python
   def find(a, x):
@@ -341,19 +363,34 @@ Binary search with a smarter guess: it uses the key's value to estimate where it
       return -1
   ```
 
-  A. Linear search, O(n)
+  **a)** Which search does it perform?
 
-  B. Binary search, O(n log n)
+  A. Interpolation search
 
-  C. Binary search, O(n)
+  B. Linear search
 
-  D. Binary search, O(log n)
+  C. Recursive binary search
 
-  <!-- answer:2.7 choice: D -->
+  D. Iterative binary search
+
+  <!-- answer:2.7a choice: D -->
+
+  **b)** What is its worst-case Big-O on n items?
+
+  A. O(1)
+
+  B. O(n)
+
+  C. O(log n)
+
+  D. O(n log n)
+
+  <!-- answer:2.7b choice: C -->
 
   <details>
   <summary>Answer</summary>
 
-  - **D.** A `lo`/`hi` range, a middle check, and one end moved past the middle: binary search, halving each pass. C treats the `while` as running once per item.
+  - **a)** **D.** A `lo`/`hi` range, a middle check, and one end moved past the middle, all in a `while` loop. C would call itself.
+  - **b)** **C.** Each pass halves the range. B treats the `while` as running once per item.
 
   </details>

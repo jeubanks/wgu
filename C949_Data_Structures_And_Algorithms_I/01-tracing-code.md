@@ -204,7 +204,7 @@ For more drills, see [Lesson 7: Tracing pseudocode](code/07-tracing.md) in Pract
 
 ## Questions
 
-- **1.1** Ranges.
+- **1.1** Pseudocode ranges.
 
   **a)** How many times does the body of `for i from 2 to 9` run?
 
@@ -218,7 +218,7 @@ For more drills, see [Lesson 7: Tracing pseudocode](code/07-tracing.md) in Pract
 
   <!-- answer:1.1a choice: B -->
 
-  **b)** Which Python loop runs over the same values?
+  **b)** Which Python loop gives `i` the same values as `for i from 2 to 9`?
 
   A. `for i in range(1, 9)`
 
@@ -249,7 +249,7 @@ For more drills, see [Lesson 7: Tracing pseudocode](code/07-tracing.md) in Pract
   output a, b
   ```
 
-  **a)** What are a and b at the output?
+  **a)** Which values of `a` and `b` are output?
 
   A. a = 9, b = 4
 
@@ -261,7 +261,7 @@ For more drills, see [Lesson 7: Tracing pseudocode](code/07-tracing.md) in Pract
 
   <!-- answer:1.2a choice: C -->
 
-  **b)** How many times is `a < 20` checked?
+  **b)** How many times is the condition `a < 20` checked, counting the check that ends the loop?
 
   A. 4
 
@@ -296,7 +296,7 @@ For more drills, see [Lesson 7: Tracing pseudocode](code/07-tracing.md) in Pract
         output j
   ```
 
-  **a)** What does it output, in order?
+  **a)** Which values does this code output, in order?
 
   A. 1, 1, 2, 1, 2, 3
 
@@ -328,7 +328,7 @@ For more drills, see [Lesson 7: Tracing pseudocode](code/07-tracing.md) in Pract
 
   </details>
 
-- **1.4** break and continue. What is the output?
+- **1.4** `break` and `continue`. What number does this code output?
 
   ```
   total = 0
@@ -380,7 +380,7 @@ For more drills, see [Lesson 7: Tracing pseudocode](code/07-tracing.md) in Pract
 
   <!-- answer:1.5a choice: C -->
 
-  **b)** How many calls are made in all, counting the first?
+  **b)** How many calls to `Bits` does `Bits(13)` make in all, counting the first?
 
   A. 4
 
@@ -434,7 +434,7 @@ For more drills, see [Lesson 7: Tracing pseudocode](code/07-tracing.md) in Pract
 
   </details>
 
-- **1.7** Which call never finishes?
+- **1.7** This function finishes for some inputs and not for others.
 
   ```
   Steps(n)
@@ -443,7 +443,7 @@ For more drills, see [Lesson 7: Tracing pseudocode](code/07-tracing.md) in Pract
      return 1 + Steps(n - 2)
   ```
 
-  **a)** Which call causes infinite recursion?
+  **a)** Which call never reaches the base case?
 
   A. Neither
 
