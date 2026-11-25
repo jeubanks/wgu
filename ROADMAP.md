@@ -38,6 +38,7 @@ Nothing here yet.
 
 ## Done
 
+- C949 2.1 asks why ignoring half the items is safe only in a sorted list, with wrong choices that are plainly wrong. The old choice A, about computing the middle index, could pass as correct (#79)
 - C949 page 2, binary search trace: the text explains the drawing (each row is one check, what blue and faded cells and the labels mean), says low, high and mid are indexes, and the table works out every mid and says why low or high moves (#78)
 - C949 page 1, Tracing recursion: the factorial example now says what a factorial is and what n is, and follows `Factorial(3)` throughout. Tables show each call's own n going down and the answers coming back up, and both drawings show n for every call. The Fibonacci and infinite-recursion examples say what n is too (#77)
 - C949 question clarity: terse or ambiguous prompts are now full questions that say what to find (2.3 asks which index `linear_search(items, 3)` returns, and 8.2 asks for each traversal by name). Questions that bundled several answers into one choice ("1 linear, 2 binary, 3 linear") now ask about one item at a time: 2.6, 2.7, 3.8, 4.7, 5.1, 5.6, 6.3, 7.4, and 7.6. Cards with several parts (both courses) now show each part as its own step: a divider, a square letter badge that turns green or red, a bold prompt, rounded choices, and short choices two across (#76)

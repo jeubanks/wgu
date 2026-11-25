@@ -130,22 +130,23 @@ Binary search with a smarter guess: it uses the key's value to estimate where it
 
 ## Questions
 
-- **2.1** Why must the list be sorted for binary search?
+- **2.1** After each check, binary search ignores half of the remaining items. Why is that safe only when the list is sorted?
 
-  A. So the middle index can be computed with `//`
+  A. In an unsorted list, `(low + high) // 2` gives the wrong middle index
 
-  B. So the search can stop at the first match
+  B. In an unsorted list, the search can't stop at the first match
 
-  C. So one comparison with the middle item rules out a half
+  C. In an unsorted list, the ignored half could still hold the key
 
-  D. So the key is always close to the middle item
+  D. In an unsorted list, the key is never at the middle index
 
   <!-- answer:2.1 choice: C -->
 
   <details>
   <summary>Answer</summary>
 
-  - **C.** Sorted, everything right of the middle is at least as big, so one comparison rules out a half. B is true of linear search too, sorted or not.
+  - **C.** In a sorted list, every item on the ignored side is too small or too big to be the key. In an unsorted list, the key could be on either side.
+  - A is wrong because the middle index depends only on `low` and `high`, not on the order of the items. B describes something any search can do, and in D the key can be anywhere.
 
   </details>
 
